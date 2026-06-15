@@ -305,7 +305,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Cena</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type="number" {...field} className="h-11 pr-12 bg-white/5 border-white/10 rounded-xl text-sm font-mono font-bold text-cyan-400 focus:border-cyan-500/50 transition-all" />
+                            <Input type="number" {...field} value={field.value as string} className="h-11 pr-12 bg-white/5 border-white/10 rounded-xl text-sm font-mono font-bold text-cyan-400 focus:border-cyan-500/50 transition-all" />
                             <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-500 pointer-events-none uppercase tracking-widest">
                               {currency}
                             </span>
@@ -324,7 +324,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Gate Cena</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type="number" {...field} value={field.value ?? ""} onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))} className="h-11 pr-12 bg-white/5 border-white/10 rounded-xl text-sm font-mono text-slate-400 focus:border-cyan-500/50 transition-all opacity-85" />
+                            <Input type="number" {...field} value={String(field.value ?? "")} onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))} className="h-11 pr-12 bg-white/5 border-white/10 rounded-xl text-sm font-mono text-slate-400 focus:border-cyan-500/50 transition-all opacity-85" />
                             <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-500 pointer-events-none uppercase tracking-widest">
                               {currency}
                             </span>
@@ -438,7 +438,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                       <FormItem>
                         <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Min. Osoba</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} className="h-11 bg-white/5 border-white/10 rounded-xl text-sm font-bold text-slate-200" onChange={e => field.onChange(Number(e.target.value))} />
+                          <Input type="number" {...field} value={field.value as string} className="h-11 bg-white/5 border-white/10 rounded-xl text-sm font-bold text-slate-200" onChange={e => field.onChange(Number(e.target.value))} />
                         </FormControl>
                       </FormItem>
                     )}
@@ -450,7 +450,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                       <FormItem>
                         <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Max. Osoba</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} value={field.value || ""} className="h-11 bg-white/5 border-white/10 rounded-xl text-sm font-bold text-slate-200" onChange={e => field.onChange(e.target.value === "" ? null : Number(e.target.value))} />
+                          <Input type="number" {...field} value={String(field.value ?? "")} className="h-11 bg-white/5 border-white/10 rounded-xl text-sm font-bold text-slate-200" onChange={e => field.onChange(e.target.value === "" ? null : Number(e.target.value))} />
                         </FormControl>
                       </FormItem>
                     )}

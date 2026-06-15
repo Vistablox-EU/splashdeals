@@ -151,6 +151,37 @@ test-results/
 # SEO scripts & reports (agent-generated)
 scripts/seo/
 reports/seo/
+gsc-compile-report.py
+gsc-admin.js
+gsc-report-pull.js
+
+# SEO audit dumps
+SeoAudit.md
+petroland.html
+
+# Agent onboarding / workshop files
+AGENTS.md
+HEARTBEAT.md
+IDENTITY.md
+SOUL.md
+TOOLS.md
+USER.md
+BACKEND_ONBOARDING.md
+FRONTEND_ONBOARDING.md
+ONBOARDING_SUMMARY.md
+ONBOARDING_SUMMARY_DEVOPS.md
+QA_ONBOARDING_SUMMARY.md
+DESIGN.md
+DEVOPS.md
+
+# Transient lint / type-check output
+tsc_output.txt
+tsc-errors.txt
+fresh-tsc-errors.txt
+
+# GSC data reports (agent-generated)
+data/seo/gsc-morning-report-*.md
+data/seo/gsc-report-*.md
 
 # Docs (agent-generated)
 docs/

@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     }
 
     const stripe = new Stripe(stripeSecret, {
-      apiVersion: "2026-02-25.clover",
+      apiVersion: "2026-05-27.dahlia",
     });
 
     const body = await request.json();

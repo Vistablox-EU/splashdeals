@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   }
 
   const stripe = new Stripe(stripeSecret, {
-    apiVersion: "2026-02-25.clover",
+    apiVersion: "2026-05-27.dahlia",
   });
 
   let event: Stripe.Event;

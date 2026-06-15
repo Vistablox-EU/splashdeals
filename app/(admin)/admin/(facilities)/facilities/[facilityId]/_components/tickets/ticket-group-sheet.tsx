@@ -278,7 +278,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                 <FormItem className="space-y-2">
                                   <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Cena (RSD)</FormLabel>
                                   <FormControl>
-                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 font-bold text-sm rounded-lg" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 font-bold text-sm rounded-lg" {...field} value={field.value as string} onChange={e => field.onChange(Number(e.target.value))} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -291,7 +291,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                 <FormItem className="space-y-2">
                                   <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Gate Cena</FormLabel>
                                   <FormControl>
-                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg opacity-60" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} />
+                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg opacity-60" {...field} value={String(field.value ?? "")} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -349,7 +349,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                 <FormItem className="space-y-2">
                                   <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Min. Osoba</FormLabel>
                                   <FormControl>
-                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg" {...field} value={field.value as string} onChange={e => field.onChange(Number(e.target.value))} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -362,7 +362,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                 <FormItem className="space-y-2">
                                   <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Max. Osoba</FormLabel>
                                   <FormControl>
-                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} />
+                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg" {...field} value={String(field.value ?? "")} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>

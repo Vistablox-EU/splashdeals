@@ -19,7 +19,7 @@ export function getStripeClient(): Stripe {
       "STRIPE_SECRET_KEY is required. Set it in .env or pass as env var."
     );
   }
-  return new Stripe(key, { apiVersion: "2026-02-25.clover" });
+  return new Stripe(key, { apiVersion: "2026-05-27.dahlia" });
 }
 
 /**

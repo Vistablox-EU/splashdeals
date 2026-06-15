@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   }
 
   const stripe = new Stripe(stripeSecret, {
-    apiVersion: "2026-02-25.clover",
+    apiVersion: "2026-05-27.dahlia",
   });
 
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);

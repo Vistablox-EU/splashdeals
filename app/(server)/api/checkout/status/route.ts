@@ -51,7 +51,7 @@ export async function GET(req: Request) {
       const stripeSecret = process.env.STRIPE_SECRET_KEY;
       if (stripeSecret) {
         const stripe = new Stripe(stripeSecret, {
-          apiVersion: "2026-02-25.clover",
+          apiVersion: "2026-05-27.dahlia",
         });
         const session = await stripe.checkout.sessions.retrieve(sessionId);
         if (session.payment_status === "paid") {
