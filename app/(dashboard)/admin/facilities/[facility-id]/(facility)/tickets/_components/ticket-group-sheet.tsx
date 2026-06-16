@@ -42,6 +42,7 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { DayType, TimeSlot } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
+import type { SerializedAdminTicket } from "./columns"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -67,7 +68,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
       slug: group?.slug || "",
       isActive: group?.isActive ?? true,
       displayOrder: group?.displayOrder ?? 0,
-      tickets: (group?.tickets || group?.tiers)?.map((t: any) => ({
+      tickets: (group?.tickets || group?.tiers)?.map((t: SerializedAdminTicket) => ({
         id: t.id,
         title: t.title || t.label || "Standard",
         label: t.title || t.label || "Standard",

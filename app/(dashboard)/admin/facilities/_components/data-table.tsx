@@ -36,6 +36,7 @@ import { cn } from "@/lib/utils"
 import { bulkUpdateFacilityStatusAction } from "@/server/actions/facilities"
 import { FacilityStatus } from "@prisma/client"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -134,7 +135,7 @@ export function DataTable<TData, TValue>({
         setRowSelection({})
         router.refresh()
       } else {
-        alert(result.error)
+        toast.error(result.error)
       }
     })
   }

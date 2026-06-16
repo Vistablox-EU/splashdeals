@@ -1,8 +1,6 @@
 "use client"
 
 import { Icon } from "@/components/ui/Icon";
- 
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -61,10 +59,12 @@ export function OnboardFacilityForm() {
     
     const result = await createFacilityAction(values)
     
-    if (result?.success && "id" in result) {
-      router.push(`/admin/facilities/${result.id}`)
+    if (result?.success) {
+      const { id } = result as { success: true; id: string }
+      router.push(`/admin/facilities/${id}`)
     } else {
-      setServerError((result && "error" in result ? result.error : null) || "Failed to create facility.")
+      const error = result && "error" in result ? (result as { success: false; error: string }).error : null
+      setServerError(error || "Failed to create facility.")
       setIsSubmitting(false)
     }
   }

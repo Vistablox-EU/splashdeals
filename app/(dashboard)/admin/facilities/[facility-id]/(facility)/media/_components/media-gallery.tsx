@@ -1,9 +1,6 @@
 "use client"
 
 import { Icon } from "@/components/ui/Icon";
- 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import Image from "next/image"
 import { useState, useTransition, useMemo, useEffect, useRef, useCallback } from "react"
 import { FacilityMedia } from "@prisma/client"
@@ -598,8 +595,11 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
             { id: "HIDDEN", label: "Skriveno" },
             { id: "MISSING_ALT", label: "⚠️ Bez ALT taga" },
           ].map((filt) => (
-            <button
+            <Button
               key={filt.id}
+              variant={activeFilter === filt.id ? "default" : "outline"}
+              size="sm"
+              type="button"
               onClick={() => setActiveFilter(filt.id as any)}
               className={cn(
                 "h-7 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
@@ -609,7 +609,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
               )}
             >
               {filt.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -765,7 +765,9 @@ function MediaItemCard({
   isSelected?: boolean,
   isSelectionMode?: boolean,
   onSelect?: () => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   listeners?: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attributes?: any,
   onToggleHero?: () => void,
   onToggleCardBG?: () => void,
@@ -1003,6 +1005,7 @@ function MediaItemCard({
           <input
             type="text"
             placeholder="Add descriptive SEO ALT tag..."
+            key={item.caption || ""}
             defaultValue={item.caption || ""}
             onBlur={async (e) => {
               const val = e.target.value.trim() || null;
@@ -1294,8 +1297,11 @@ function CropModal({
                 { id: "4:3", label: "4:3 (Kartica BG)" },
                 { id: "1:1", label: "1:1 (Kvadrat)" },
               ].map((ratio) => (
-                <button
+                <Button
                   key={ratio.id}
+                  variant={aspectRatio === ratio.id ? "default" : "outline"}
+                  size="sm"
+                  type="button"
                   onClick={() => setAspectRatio(ratio.id as any)}
                   className={cn(
                     "py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
@@ -1305,7 +1311,7 @@ function CropModal({
                   )}
                 >
                   {ratio.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

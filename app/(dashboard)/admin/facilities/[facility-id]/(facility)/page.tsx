@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/Icon";
 import { prisma } from "@/server/lib/prisma"
 import { connection } from "next/server"
@@ -92,20 +93,17 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
         </div>
         
         <div className="flex items-center gap-3">
-          <Link 
-            href={`/admin/facilities/${facilityId}/profile`}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted/30 border border-border text-xs font-bold text-foreground/80 hover:bg-muted/50 hover:text-foreground transition-all"
-          >
-            <Icon name="settings" className="text-[14px]" />
-            Edit Profile
-          </Link>
-          <Link 
-            href={`/facilities/${facility.category.toLowerCase()}/${facility.slug}`}
-            target="_blank"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-black text-slate-950 hover:opacity-90 transition-all"
-          >
-            Live View
-          </Link>
+          <Button asChild variant="outline" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted/30 border border-border text-xs font-bold text-foreground/80 hover:bg-muted/50 hover:text-foreground transition-all">
+            <Link href={`/admin/facilities/${facilityId}/profile`}>
+              <Icon name="settings" className="text-[14px]" />
+              Edit Profile
+            </Link>
+          </Button>
+          <Button asChild className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-black text-slate-950 hover:opacity-90 transition-all">
+            <Link href={`/facilities/${facility.category.toLowerCase()}/${facility.slug}`} target="_blank">
+              Live View
+            </Link>
+          </Button>
         </div>
       </div>
 

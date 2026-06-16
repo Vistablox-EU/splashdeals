@@ -1,4 +1,4 @@
-import { FacilityProfileForm } from "../_components/facility-profile-form"
+import { FacilityProfileForm } from "./_components/facility-profile-form"
 import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import { connection } from "next/server"

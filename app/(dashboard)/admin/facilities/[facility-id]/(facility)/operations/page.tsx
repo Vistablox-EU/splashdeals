@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import { connection } from "next/server"
-import { OperationsTable } from "../_components/operations-control-manager"
+import { OperationsTable } from "./_components/operations-control-manager"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 

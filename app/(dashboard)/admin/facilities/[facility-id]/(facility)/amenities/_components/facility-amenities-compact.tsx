@@ -417,7 +417,9 @@ export function CompactAmenitiesTable({
                     {item.checked ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             type="button"
                             onClick={() => handleToggleFeatured(item.id)}
                             className="outline-none focus:ring-1 focus:ring-cyan-500 rounded p-1 group cursor-pointer"
@@ -428,7 +430,7 @@ export function CompactAmenitiesTable({
                                   ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)] scale-110" 
                                   : "text-muted-foreground/60 hover:text-muted-foreground"
                               }`} />
-                          </button>
+                          </Button>
                         </TooltipTrigger>
                         <TooltipContent className="bg-background border border-border text-foreground/90 text-[10px] font-medium tracking-wide">
                           {item.isFeatured ? "Unfeature amenity on landing" : "Feature amenity on landing"}
@@ -444,14 +446,16 @@ export function CompactAmenitiesTable({
                     {!item.isSeeded ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             type="button"
                             onClick={() => handleDeleteCustom(item.id, item.name)}
                             className="text-muted-foreground/80 hover:text-rose-500 transition-colors p-1.5 rounded-lg hover:bg-rose-500/10 cursor-pointer animate-in fade-in zoom-in-95 duration-100"
                             aria-label="Delete custom amenity permanently"
                           >
                             <Icon name="delete" className="text-[14px]" />
-                          </button>
+                          </Button>
                         </TooltipTrigger>
                         <TooltipContent className="bg-background border border-border text-foreground/90 text-[10px] font-medium tracking-wide">
                           Delete custom amenity permanently
@@ -496,7 +500,7 @@ export function CompactAmenitiesTable({
 
           <Select
             value={newRow.type}
-            onValueChange={(val: any) => setNewRow(prev => ({ ...prev, type: val }))}
+            onValueChange={(val: string) => setNewRow(prev => ({ ...prev, type: val as "BOOLEAN" | "QUANTIFIABLE" | "TEXT" }))}
           >
             <SelectTrigger className="w-[140px] h-9 bg-muted border-border/50 text-xs text-foreground/80 rounded-lg">
               <SelectValue placeholder="Value Type" />

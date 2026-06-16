@@ -6,7 +6,7 @@ import { connection } from "next/server"
 import { FacilityNav, FacilityNavSkeleton } from "./_components/nav"
 import { FacilityActionSidebar, FacilityActionSidebarSkeleton } from "./_components/sidebar"
 import { Metadata } from "next"
-import { FacilityLayoutContextHandler } from "./_components/FacilityLayoutContextHandler"
+import { FacilityLayoutContextHandler } from "./_components/facility-layout-context-handler"
 import { FacilityProvider } from "./_components/facility-context"
 
 export async function generateMetadata({

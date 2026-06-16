@@ -1,8 +1,6 @@
 "use client"
 
 import { Icon } from "@/components/ui/Icon";
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { ColumnDef } from "@tanstack/react-table"
 import { Ticket } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
@@ -241,7 +239,7 @@ export const createColumns = ({
             </div>
           ) : (
             <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-muted/10 border border-border/50 opacity-50">
-               <div className="size-1.5 rounded-full bg-slate-500" />
+               <div className="size-1.5 rounded-full bg-muted-foreground/50" />
                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Pauzirano</span>
             </div>
           )}

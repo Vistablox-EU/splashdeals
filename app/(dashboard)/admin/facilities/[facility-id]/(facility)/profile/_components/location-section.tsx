@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { Textarea } from "@/components/ui/textarea"
 import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
@@ -79,13 +80,15 @@ export function LocationSection() {
           <FormItem className="space-y-1">
             <div className="flex items-center justify-between">
               <FormLabel className="text-[9px] uppercase tracking-widest font-black opacity-60">Building/Unit</FormLabel>
-              <button
+              <Button
                 type="button"
+                variant="link"
+                size="sm"
                 onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(`${getValues('streetName')} ${field.value}, ${getValues('city')}`)}`, '_blank')}
                 className="text-[8px] font-black text-cyan-400 hover:underline uppercase tracking-tighter"
               >
                 Verify Map
-              </button>
+              </Button>
             </div>
             <FormControl>
               <Input className="bg-background/40 border-border/50 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />

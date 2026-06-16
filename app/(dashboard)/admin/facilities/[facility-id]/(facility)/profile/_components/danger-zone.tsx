@@ -99,7 +99,7 @@ export function DangerZone({
             <Icon name="lock" className="text-[16px] text-rose-400 mt-0.5 shrink-0" />
             <div className="space-y-1">
               <p className="text-xs font-black uppercase tracking-wider text-rose-400">Deletion Locked</p>
-              <p className="text-[10px] text-muted-foreground font-medium leading-normal leading-relaxed">
+              <p className="text-[10px] text-muted-foreground font-medium leading-relaxed">
                 This facility is linked to <strong className="text-foreground">{transactionCount} active or historical transaction records</strong> in the system ledger.
                 Hard deletion is disabled to preserve accounting audits. Set the facility status to <strong className="text-foreground">CLOSED</strong> instead.
               </p>

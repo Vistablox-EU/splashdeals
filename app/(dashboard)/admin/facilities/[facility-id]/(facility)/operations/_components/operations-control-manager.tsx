@@ -91,8 +91,11 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
         </div>
         <div className="flex items-center gap-2">
           {fields.length > 0 && (
-            <button
+            <Button
               type="button"
+              variant="link"
+              size="sm"
+              className="text-[9px] font-black uppercase tracking-tighter text-cyan-400 hover:underline flex items-center gap-1"
               onClick={() => {
                 const first = getValues("hours.0")
                 if (!first) return
@@ -105,11 +108,10 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
                 setValue("hours", updatedHours, { shouldDirty: true })
                 toast.success("Schedule synchronized across nodes")
               }}
-              className="text-[9px] font-black uppercase tracking-tighter text-cyan-400 hover:underline flex items-center gap-1"
             >
               <Icon name="undo" className="text-[10px]" />
               Sync Cluster
-            </button>
+            </Button>
           )}
           <Button
             type="button"
@@ -203,13 +205,15 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
                           />
                         )}
                       />
-                      <button 
+                      <Button 
+                        variant="ghost"
+                        size="icon"
                         type="button"
                         onClick={() => remove(index)}
                         className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-rose-500 transition-all"
                       >
                         <Icon name="delete" className="text-[12px]" />
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 </tr>

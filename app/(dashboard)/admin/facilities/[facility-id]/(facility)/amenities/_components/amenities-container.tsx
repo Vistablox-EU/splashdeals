@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { AmenitiesSkeleton } from "./amenities-skeleton"
 import { AmenitiesError } from "./amenities-error-boundary"
 import { CompactAmenitiesTable } from "./facility-amenities-compact"
 
@@ -15,10 +14,6 @@ interface ErrorBoundaryState {
   error: Error | null
 }
 
-/**
- * 🛡️ React class-based Error Boundary
- * Zero-dependency error isolation to prevent crashes from cascading.
- */
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
@@ -55,27 +50,14 @@ interface AmenitiesContainerProps {
   initialFacilityAmenities: any[]
 }
 
-/**
- * 🧱 CompactAmenitiesTableContainer
- * 
- * Modular entrypoint wrapped with:
- * - ErrorBoundary: catches and recovers from DB or fetch exceptions.
- * - Suspense: enables PPR-compliant skeleton layouts to prevent CLS.
- */
 export function CompactAmenitiesTableContainer(props: AmenitiesContainerProps) {
   return (
-    <ErrorBoundary 
+    <ErrorBoundary
       fallback={({ error, resetErrorBoundary }) => (
         <AmenitiesError error={error} resetErrorBoundary={resetErrorBoundary} />
       )}
     >
-      <React.Suspense fallback={<AmenitiesSkeleton />}>
-        <CompactAmenitiesTable {...props} />
-      </React.Suspense>
+      <CompactAmenitiesTable {...props} />
     </ErrorBoundary>
   )
 }
-
-// Export main container as default & named for backward compatibility
-export { CompactAmenitiesTableContainer as CompactAmenitiesTable }
-export default CompactAmenitiesTableContainer

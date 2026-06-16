@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
- 
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function OverviewLoading() {

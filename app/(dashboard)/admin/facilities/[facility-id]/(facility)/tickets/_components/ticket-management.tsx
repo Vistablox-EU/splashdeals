@@ -1,4 +1,5 @@
 "use client"
+import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react"
@@ -45,7 +46,10 @@ export function TicketManagement({
     <div className="flex flex-col h-full">
       {/* ── Mobile Tab Toggle (visible only on <lg) ─────────────────────────── */}
       <div className="flex lg:hidden items-center gap-1 p-3 border-b border-border/50 bg-background/60 backdrop-blur-md shrink-0">
-        <button
+        <Button
+          variant={mobileView === "groups" ? "default" : "outline"}
+          size="sm"
+          type="button"
           onClick={() => setMobileView("groups")}
           className={cn(
             "flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
@@ -56,8 +60,11 @@ export function TicketManagement({
         >
           <Icon name="dashboard" className="text-[14px]" />
           Grupe ({initialGroups.length})
-        </button>
-        <button
+        </Button>
+        <Button
+          variant={mobileView === "tickets" ? "default" : "outline"}
+          size="sm"
+          type="button"
           onClick={() => setMobileView("tickets")}
           className={cn(
             "flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
@@ -68,7 +75,7 @@ export function TicketManagement({
         >
           <Icon name="confirmation_number" className="text-[14px]" />
           Ulaznice ({initialTickets.length})
-        </button>
+        </Button>
       </div>
 
       {/* ── Split Panel (lg+) / Single Panel (mobile) ───────────────────────── */}

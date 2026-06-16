@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { Prisma } from "@prisma/client"
-import { useState, useEffect, useTransition } from "react"
+import { useState, useEffect, useTransition, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
@@ -174,20 +174,24 @@ export function FacilityProfileForm({
   }, [activeSection])
  
   // 🛡️ Persistence Pipeline: Data Loss Prevention
+  const isDirtyRef = useRef(form.formState.isDirty)
+  isDirtyRef.current = form.formState.isDirty
+
   useEffect(() => {
     const handleSyncOnWake = () => {
       // FIX: Only refresh if the form is clean to avoid wiping unsaved user input
-      if (document.visibilityState === "visible" && !form.formState.isDirty) {
+      if (document.visibilityState === "visible" && !isDirtyRef.current) {
         router.refresh()
       }
     }
     document.addEventListener("visibilitychange", handleSyncOnWake)
     return () => document.removeEventListener("visibilitychange", handleSyncOnWake)
-  }, [router, form.formState.isDirty])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     const handlePreventLoss = (e: BeforeUnloadEvent) => {
-      if (form.formState.isDirty) {
+      if (isDirtyRef.current) {
         e.preventDefault()
         e.returnValue = ""
         return ""
@@ -195,7 +199,8 @@ export function FacilityProfileForm({
     }
     window.addEventListener("beforeunload", handlePreventLoss)
     return () => window.removeEventListener("beforeunload", handlePreventLoss)
-  }, [form.formState.isDirty])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function onSubmit(values: UpdateFacilityGovernanceValues) {
     startTransition(async () => {

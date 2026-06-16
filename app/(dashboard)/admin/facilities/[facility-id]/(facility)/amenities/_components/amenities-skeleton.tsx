@@ -11,10 +11,10 @@ export function AmenitiesSkeleton() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="w-full max-w-md h-9 bg-background/40 rounded-lg border border-border/50 flex items-center px-3 gap-2">
           <div className="size-4 rounded bg-muted" />
-          <div className="h-3 w-32 bg-slate-850 rounded" />
+          <div className="h-3 w-32 bg-muted rounded" />
         </div>
         <div className="flex items-center gap-3">
-          <div className="h-4 w-28 bg-slate-850 rounded" />
+          <div className="h-4 w-28 bg-muted rounded" />
           <div className="h-6 w-10 bg-muted rounded-full" />
         </div>
       </div>

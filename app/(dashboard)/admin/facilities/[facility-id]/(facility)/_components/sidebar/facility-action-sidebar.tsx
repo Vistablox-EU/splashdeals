@@ -8,15 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 interface FacilityActionSidebarProps {
   facility: {
     id: string
-    status: string
-    updatedAt: Date
-    description: string | null
-    metaTitle: string | null
-    metaDescription: string | null
-    hours: any[]
-    media: any[]
-    tickets: any[]
-    socialLinks?: any
+    socialLinks?: unknown
     publicPhone?: string | null
     publicEmail?: string | null
   }
@@ -41,7 +33,7 @@ export function FacilityActionSidebar({ facility }: FacilityActionSidebarProps) 
         
         <SocialLinksWidget 
           facilityId={facility.id} 
-          initialSocialLinks={facility.socialLinks} 
+          initialSocialLinks={(facility.socialLinks ?? {}) as Record<string, string | undefined>}
         />
         
         <PublicContactWidget

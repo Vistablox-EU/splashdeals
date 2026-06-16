@@ -14,6 +14,14 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { Badge } from "@/components/ui/badge"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { manageCitiesAction } from "@/server/actions/cities"
 import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
@@ -38,6 +46,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
   
   const [isPending, startTransition] = React.useTransition()
   const [isRegistryPending, setIsRegistryPending] = React.useState(false)
+  const [cityToPurge, setCityToPurge] = React.useState<City | null>(null)
   
   const [prevAvailableCities, setPrevAvailableCities] = React.useState(availableCities)
   const [localCities, setLocalCities] = React.useState(availableCities)
@@ -47,11 +56,13 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
   
   const dropdownRef = React.useRef<HTMLDivElement>(null)
 
-  // Adjust state directly during rendering when prop changes
-  if (availableCities !== prevAvailableCities) {
-    setPrevAvailableCities(availableCities)
-    setLocalCities(availableCities)
-  }
+  // Sync handle auto-selection of newly created regions
+  React.useEffect(() => {
+    if (availableCities !== prevAvailableCities) {
+      setPrevAvailableCities(availableCities)
+      setLocalCities(availableCities)
+    }
+  }, [availableCities, prevAvailableCities])
 
   // Sync handle auto-selection of newly created regions
   React.useEffect(() => {
@@ -177,23 +188,28 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
 
   // Advanced Action: Delete city globally from registry
   const purgeCityFromRegistry = React.useCallback(async (city: City) => {
-    if (confirm(`Are you sure? This will delete "${city.name}" globally and remove it from all facilities.`)) {
-      setIsRegistryPending(true)
-      try {
-        const deleteRes = await manageCitiesAction([{ ...city, isDeleted: true }])
-        if (deleteRes.success) {
-          setValue("targetCityIds", selectedCityIds.filter(id => id !== city.id), { shouldDirty: true })
-          setLocalCities(prev => prev.filter(c => c.id !== city.id))
-          toast.success("Region purged from registry")
-          router.refresh()
-        } else {
-          toast.error(deleteRes.error || "Purge failed")
-        }
-      } finally {
-        setIsRegistryPending(false)
+    setCityToPurge(city)
+  }, [])
+
+  const confirmPurge = React.useCallback(async () => {
+    if (!cityToPurge) return
+    const city = cityToPurge
+    setCityToPurge(null)
+    setIsRegistryPending(true)
+    try {
+      const deleteRes = await manageCitiesAction([{ ...city, isDeleted: true }])
+      if (deleteRes.success) {
+        setValue("targetCityIds", selectedCityIds.filter(id => id !== city.id), { shouldDirty: true })
+        setLocalCities(prev => prev.filter(c => c.id !== city.id))
+        toast.success("Region purged from registry")
+        router.refresh()
+      } else {
+        toast.error(deleteRes.error || "Purge failed")
       }
+    } finally {
+      setIsRegistryPending(false)
     }
-  }, [setValue, selectedCityIds, router])
+  }, [cityToPurge, selectedCityIds, setValue, router])
 
   return (
     <GlassCard className="p-4 sm:p-6 overflow-hidden relative">
@@ -226,21 +242,25 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
           </div>
           
           <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest">
-            <button 
-              type="button" 
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setValue("targetCityIds", localCities.map(c => c.id), { shouldDirty: true })}
-              className="text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
+              className="text-cyan-400 hover:text-cyan-300"
             >
               Select All
-            </button>
+            </Button>
             <span className="text-muted-foreground/40">|</span>
-            <button 
-              type="button" 
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setValue("targetCityIds", [], { shouldDirty: true })}
-              className="text-red-400 hover:text-red-300 transition-colors cursor-pointer"
+              className="text-red-400 hover:text-red-300"
             >
               Reset
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -408,6 +428,45 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
         </details>
 
       </div>
+
+      <Dialog open={!!cityToPurge} onOpenChange={(open) => { if (!open) setCityToPurge(null) }}>
+        <DialogContent className="bg-background border-border text-foreground max-w-md rounded-2xl p-6 outline-none">
+          <DialogHeader className="space-y-3">
+            <div className="flex items-center gap-2 text-rose-400">
+              <DialogTitle className="text-base font-black uppercase tracking-wider">Purge Region</DialogTitle>
+            </div>
+            <DialogDescription className="text-xs text-muted-foreground leading-normal">
+              Are you sure? This will delete <strong className="text-foreground">{cityToPurge?.name}</strong> globally and remove it from all facilities.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setCityToPurge(null)}
+              className="h-10 border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground text-[9px] font-black uppercase tracking-widest rounded-xl transition-all"
+              disabled={isRegistryPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={confirmPurge}
+              disabled={isRegistryPending}
+              className="h-10 bg-rose-600 hover:bg-rose-500 disabled:bg-rose-950/20 disabled:text-rose-900/50 text-foreground text-[9px] font-black uppercase tracking-widest rounded-xl transition-all"
+            >
+              {isRegistryPending ? (
+                <Icon name="progress_activity" className="size-3.5 animate-spin" />
+              ) : (
+                <>
+                  <Icon name="delete" className="size-3.5 mr-2" />
+                  Purge Region
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </GlassCard>
   )
 }

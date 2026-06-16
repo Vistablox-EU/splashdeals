@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { connection } from "next/server"
 import { prisma } from "@/server/lib/prisma"
-import { CompactAmenitiesTable } from "../_components/amenities"
+import { CompactAmenitiesTable } from "./_components"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Icon } from "@/components/ui/Icon"

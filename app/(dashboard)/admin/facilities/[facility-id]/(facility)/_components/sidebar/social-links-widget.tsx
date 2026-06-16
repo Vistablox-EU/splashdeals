@@ -10,7 +10,7 @@ import { toast } from "sonner"
 
 interface SocialLinksWidgetProps {
   facilityId: string
-  initialSocialLinks: any
+  initialSocialLinks: Record<string, string | undefined>
 }
 
 export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLinksWidgetProps) {

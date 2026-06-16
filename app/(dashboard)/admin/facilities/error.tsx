@@ -44,13 +44,12 @@ export default function FacilitiesError({
             <Icon name="refresh" className="text-[16px]" />
             Try Again
           </Button>
-          <Link
-            href="/admin/facilities"
-            className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-white text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
-          >
-            <Icon name="apartment" className="text-[16px]" />
-            All Facilities
-          </Link>
+          <Button asChild variant="secondary" className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-white text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all">
+            <Link href="/admin/facilities">
+              <Icon name="apartment" className="text-[16px]" />
+              All Facilities
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { useForm, ControllerRenderProps, SubmitHandler, type Resolver, useWatch } from "react-hook-form"
+import { useForm, ControllerRenderProps, SubmitHandler, type Resolver, useWatch, type FieldErrors } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { TicketType, ValidityType, DayType, TimeSlot } from "@prisma/client"
 import {
@@ -225,15 +225,15 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
       } else {
         toast.error(result.error || "Greška pri čuvanju podešavanja karte")
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Critical submission crash:", error)
-      toast.error(error?.message || "Došlo je do neočekivane greške pri čuvanju.")
+      toast.error(error instanceof Error ? error.message : "Došlo je do neočekivane greške pri čuvanju.")
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const onInvalid = (errors: any) => {
+  const onInvalid = (errors: FieldErrors<TicketFormValues>) => {
     console.error("Validation errors encountered:", errors)
     toast.error("Molimo ispravite greške u formi pre čuvanja.")
   }

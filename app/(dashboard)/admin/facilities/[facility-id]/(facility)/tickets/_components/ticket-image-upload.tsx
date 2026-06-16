@@ -1,8 +1,6 @@
 "use client"
 
 import { Icon } from "@/components/ui/Icon";
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import Image from "next/image"
 import * as React from "react"
 import { Button } from "@/components/ui/button"

@@ -168,10 +168,8 @@ export function TicketPanel({
     setIsSheetOpen(true)
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const columns = React.useMemo(() => createColumns({ onEdit: handleEdit }), [])
+  const columns = React.useMemo(() => createColumns({ onEdit: handleEdit }), [handleEdit])
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable<SerializedAdminTicket>({
     data: displayedTickets,
     columns,

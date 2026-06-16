@@ -1,8 +1,6 @@
 "use client"
 
 import { Icon } from "@/components/ui/Icon";
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import Image from "next/image"
 import * as React from "react"
 import { Button } from "@/components/ui/button"
@@ -143,7 +141,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
           <div 
             onClick={() => fileInputRef.current?.click()}
             className={cn(
-              "relative h-full w-full rounded-2xl overflow-hidden border transition-all cursor-pointer flex items-center justify-center shadow-lg overflow-hidden",
+              "relative h-full w-full rounded-2xl overflow-hidden border transition-all cursor-pointer flex items-center justify-center shadow-lg",
               previewBg === "dark" ? "bg-background/40 border-border hover:border-cyan-500/40" : "bg-muted/50 border-muted/70 hover:border-cyan-600",
               isDragging && "border-cyan-400 bg-cyan-500/5 scale-105 border-dashed"
             )}
@@ -160,7 +158,9 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
               <Icon name="upload" className="text-[20px] text-cyan-400 animate-bounce" />
               <span className="text-[8px] font-black uppercase tracking-widest text-cyan-400">Swap Logo</span>
               
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
@@ -170,13 +170,15 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
                 title="Remove asset"
               >
                 <Icon name="close" className="text-[12px]" />
-              </button>
+              </Button>
             </div>
           )}
           </div>
           
           {/* 🌓 Contrast Mode Switcher */}
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             type="button"
             onClick={(e) => {
               e.stopPropagation()
@@ -186,12 +188,12 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
               "absolute bottom-2 left-2 z-20 p-1 rounded-md backdrop-blur-md border transition-all shadow-sm",
               previewBg === "dark" 
                 ? "bg-muted/60 border-border text-muted-foreground hover:text-foreground" 
-                : "bg-white/80 border-muted/50 text-muted-foreground/80 hover:text-slate-900"
+                : "bg-white/80 border-muted/50 text-muted-foreground/80 hover:text-foreground"
             )}
             title="Toggle Contrast Background"
           >
             {previewBg === "dark" ? <Icon name="light_mode" className="text-[10px]" /> : <Icon name="dark_mode" className="text-[10px]" />}
-          </button>
+          </Button>
         </div>
       ) : (
         <div 

@@ -126,20 +126,26 @@ function SortableGroupCard({
           className="absolute right-2 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center gap-1"
           onClick={(e) => e.stopPropagation()}
         >
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
             onClick={onEdit}
             className="size-6 rounded-md bg-muted/50 hover:bg-cyan-500/20 hover:text-cyan-400 flex items-center justify-center text-muted-foreground transition-colors"
             title="Izmeni grupu"
           >
             <Icon name="edit" className="text-[12px]" />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
             onClick={onDelete}
             className="size-6 rounded-md bg-muted/50 hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center text-muted-foreground transition-colors"
             title="Obriši grupu"
           >
             <Icon name="delete" className="text-[12px]" />
-          </button>
+          </Button>
         </div>
       </div>
     </div>
