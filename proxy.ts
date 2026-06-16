@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ROUTING_CONFIG } from './lib/routing/config';
+import { auth } from '@/server/lib/auth';
 
 /**
  * 🌊 Splashdeals Proxy (Next.js 16+ Architecture)
  * Consolidates Security, Affiliate Tracking, and Canonical Routing at the Edge.
  */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get('host');
   const isAdmin = pathname.startsWith('/admin') || pathname.includes('/admin');
@@ -186,17 +187,34 @@ export function proxy(request: NextRequest) {
 
 
 
-  // 5. 🛡️ LITE EDGE AUTH (Admin protection)
+  // 5. 🛡️ EDGE AUTH (Admin protection)
   if (isAdmin && !pathname.startsWith('/auth') && !pathname.startsWith('/api/auth')) {
-    // Allow API key auth for API routes — skip session check if x-api-key is present
-    const apiKey = request.headers.get('x-api-key');
-    if (!apiKey) {
-      const sessionToken = request.cookies.get('better-auth.session_token') || 
-                           request.cookies.get('__Secure-better-auth.session_token');
-      if (!sessionToken) {
-        const loginUrl = new URL('/auth/login', request.url);
-        loginUrl.searchParams.set('callbackUrl', pathname);
-        return NextResponse.redirect(loginUrl);
+    // API admin routes — full session validation
+    if (pathname.startsWith('/api/admin')) {
+      const apiKey = request.headers.get('x-api-key');
+      if (!apiKey) {
+        const session = await auth.api.getSession({
+          headers: request.headers,
+        });
+        if (!session) {
+          return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        const role = session.user.role?.toUpperCase();
+        if (role !== 'SUPER_ADMIN' && role !== 'FACILITY_STAFF') {
+          return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+      }
+    } else {
+      // Admin page routes — lightweight cookie existence check (full validation in layout)
+      const apiKey = request.headers.get('x-api-key');
+      if (!apiKey) {
+        const sessionToken = request.cookies.get('better-auth.session_token') || 
+                             request.cookies.get('__Secure-better-auth.session_token');
+        if (!sessionToken) {
+          const loginUrl = new URL('/auth/login', request.url);
+          loginUrl.searchParams.set('callbackUrl', pathname);
+          return NextResponse.redirect(loginUrl);
+        }
       }
     }
   }

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
-import { StatusToggle } from "../../../_components/status-toggle"
+import { StatusToggle } from "@/components/admin/StatusToggle"
 import { FacilityGovernanceSheet } from "./facility-governance-sheet"
 import { FacilityStatus } from "@prisma/client"
 

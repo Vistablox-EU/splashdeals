@@ -1,6 +1,6 @@
 export { CompactAmenitiesTable } from "./amenities/facility-amenities-compact";
 export { CompactAmenitiesTableContainer as AmenitiesSection } from "./amenities";
-export { AmenitiesSkeleton } from "./amenities/loading";
+export { AmenitiesSkeleton } from "./amenities/amenities-skeleton";
 export { BrandingLogoCard } from "./branding-logo-card";
 export { DangerZone } from "./danger-zone";
 export { DistributionLogic } from "./distribution-logic";

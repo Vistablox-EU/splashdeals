@@ -2,7 +2,6 @@
 
 import { Icon } from "@/components/ui/Icon";
 /* eslint-disable @typescript-eslint/no-unused-vars */
- 
 
 import Image from "next/image"
 import * as React from "react"
@@ -11,114 +10,12 @@ import { toast } from "sonner"
 import { upload } from "@vercel/blob/client"
 import { cn } from "@/lib/utils"
 import { updateFacilityLogoAction } from "@/server/actions/governance"
+import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer"
 
 interface FacilityLogoUploadProps {
   value?: string | null
   onChange: (value: string) => void
   facilityId: string
-}
-
-// 📐 HTML5 Canvas Client-Side Pre-processing for High-Fidelity preservation
-// 📐 HTML5 Hardware-Native Client-Side Pre-processing for Extreme Fidelity
-const optimizeLogoOnClient = async (file: File): Promise<Blob> => {
-  let bitmap: ImageBitmap | null = null;
-  try {
-    // 🔥 HARVEST POWER: Decode image directly off-main-thread on hardware
-    bitmap = await window.createImageBitmap(file)
-
-    // 1️⃣ Stage A: Generate Temp Canvas for Visual Scoping
-    const scanCanvas = window.document.createElement("canvas")
-    const sctx = scanCanvas.getContext("2d", { willReadFrequently: true })
-    
-    // Limit scan dimensions to prevent locks on ultra-high res source files
-    const scaleDown = bitmap.width > 1024 ? 1024 / bitmap.width : 1
-    scanCanvas.width = bitmap.width * scaleDown
-    scanCanvas.height = bitmap.height * scaleDown
-    
-    if (!sctx) {
-      throw new Error("Scanning Context Creation Failed")
-    }
-    
-    // Draw high-performance bitmap instantly (GPU path)
-    sctx.drawImage(bitmap, 0, 0, scanCanvas.width, scanCanvas.height)
-    const imageData = sctx.getImageData(0, 0, scanCanvas.width, scanCanvas.height).data
-    
-    // 2️⃣ Stage B: Bounding Box Scavenger (Identify minimum visual geometry)
-    let minX = scanCanvas.width, minY = scanCanvas.height, maxX = 0, maxY = 0
-    let hasContent = false
-
-    // Stepping by 2 optimizes performance 4x with zero perceptible cost
-    for (let y = 0; y < scanCanvas.height; y += 2) {
-      for (let x = 0; x < scanCanvas.width; x += 2) {
-        const alphaIndex = (y * scanCanvas.width + x) * 4 + 3
-        if (imageData[alphaIndex] > 8) { // Ignore noise
-           if (x < minX) minX = x
-           if (x > maxX) maxX = x
-           if (y < minY) minY = y
-           if (y > maxY) maxY = y
-           hasContent = true
-        }
-      }
-    }
-
-    // Map coordinate deltas back to raw source pixel grid
-    const sourceX = hasContent ? (minX / scaleDown) : 0
-    const sourceY = hasContent ? (minY / scaleDown) : 0
-    const sourceW = hasContent ? ((maxX - minX + 1) / scaleDown) : bitmap.width
-    const sourceH = hasContent ? ((maxY - minY + 1) / scaleDown) : bitmap.height
-
-    // 3️⃣ Stage C: Final Rastering Pipeline
-    const canvas = window.document.createElement("canvas")
-    const ctx = canvas.getContext("2d")
-    
-    canvas.width = 512
-    canvas.height = 512
-    
-    if (!ctx) {
-       throw new Error("Final rastering pipe failure")
-    }
-    
-    ctx.clearRect(0, 0, 512, 512)
-
-    // Maintain professional safe-bleed aesthetic boundaries
-    const innerBoundary = 512 - 48 
-    const visualAspectRatio = sourceW / sourceH
-    
-    let dWidth, dHeight
-    if (visualAspectRatio > 1) {
-      dWidth = innerBoundary
-      dHeight = innerBoundary / visualAspectRatio
-    } else {
-      dHeight = innerBoundary
-      dWidth = innerBoundary * visualAspectRatio
-    }
-    
-    const dX = (512 - dWidth) / 2
-    const dY = (512 - dHeight) / 2
-
-    ctx.imageSmoothingEnabled = true
-    ctx.imageSmoothingQuality = "high"
-
-    // Execute dynamic extraction & fitting
-    ctx.drawImage(bitmap, sourceX, sourceY, sourceW, sourceH, dX, dY, dWidth, dHeight)
-
-    // Final step: re-encode to high-density modern WebP representation
-    return await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob(
-        (blob) => blob ? resolve(blob) : reject(new Error("Re-encoding failure")),
-        "image/webp",
-        0.90
-      )
-    })
-  } catch (err) {
-    console.error("Hardware Raster Exception:", err)
-    throw new Error("Device failure encountered during bitmap reconstruction.")
-  } finally {
-    // 🗑️ CRITICAL GARBAGE PURGE: Flush heavy bitmap memory from hardware store immediately
-    if (bitmap) {
-      bitmap.close()
-    }
-  }
 }
 
 /**
@@ -141,7 +38,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
     setIsUploading(true)
 
     const uploadPromise = (async () => {
-      const optimizedBlob = await optimizeLogoOnClient(file)
+      const optimizedBlob = await optimizeImageOnClient(file, { mode: "smart-crop", size: 512, quality: 0.9 })
       const optimizedFile = new File(
         [optimizedBlob],
         `logo-main.webp`,

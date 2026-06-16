@@ -1,7 +1,7 @@
 export interface NavItem {
   title: string
   url: string
-  isActive?: boolean
+  icon?: string
   requiredRole?: "SUPER_ADMIN" | "FACILITY_STAFF"
   items?: NavItem[]
 }
@@ -11,28 +11,29 @@ export const adminNavData = {
     {
       title: "Command Center",
       url: "/admin",
-      isActive: true,
+      icon: "dashboard",
       items: [
         {
           title: "Global Overview",
           url: "/admin",
-          isActive: true,
+          icon: "globe",
         },
       ],
     },
     {
       title: "Facilities Registry",
       url: "/admin/facilities",
+      icon: "store",
       items: [
         {
           title: "Facility Directory",
           url: "/admin/facilities",
-          isActive: false,
+          icon: "list",
         },
         {
           title: "Register New Facility",
           url: "/admin/facilities/new",
-          isActive: false,
+          icon: "add_business",
           requiredRole: "SUPER_ADMIN",
         },
       ],
@@ -40,23 +41,24 @@ export const adminNavData = {
     {
       title: "Security & Operations",
       url: "/admin/support",
+      icon: "security",
       items: [
         {
           title: "Admin Users",
           url: "/admin/users",
-          isActive: false,
+          icon: "people",
           requiredRole: "SUPER_ADMIN",
         },
         {
           title: "Agent API Keys",
           url: "/admin/api-keys",
-          isActive: false,
+          icon: "key",
           requiredRole: "SUPER_ADMIN",
         },
         {
           title: "Customer Support Logs",
           url: "/admin/support",
-          isActive: false,
+          icon: "support",
           requiredRole: "SUPER_ADMIN",
         },
       ],

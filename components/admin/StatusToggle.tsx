@@ -1,7 +1,7 @@
 "use client"
 
 import { Icon } from "@/components/ui/Icon";
- 
+import { cn } from "@/lib/utils";
 
 import { useTransition } from "react"
 import { toast } from "sonner"
@@ -16,11 +16,6 @@ interface StatusToggleProps {
   compact?: boolean
 }
 
-/**
- * ⚡ StatusToggle Component
- * Lightweight inline toggle for rapid ACTIVE/DRAFT transitions.
- * Bypasses the heavy governance sheet for common state changes.
- */
 export function StatusToggle({ facilityId, status, compact }: StatusToggleProps) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
@@ -46,7 +41,6 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
     })
   }
 
-  // Only show quick toggle for DRAFT/ACTIVE states
   if (status !== "DRAFT" && status !== "ACTIVE") {
     return (
       <div className={cn(
@@ -82,7 +76,6 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
           {status}
         </span>
         
-        {/* Tooltip hint on hover */}
         <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-900 border border-white/10 rounded text-[8px] font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
           Click to {status === "ACTIVE" ? "Set Draft" : "Go Live"}
         </div>
@@ -110,7 +103,4 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
   )
 }
 
-// Helper for class names
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(" ")
-}
+

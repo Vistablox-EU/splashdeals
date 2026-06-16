@@ -2,7 +2,6 @@
 
 import { Icon } from "@/components/ui/Icon";
 /* eslint-disable @typescript-eslint/no-unused-vars */
- 
 
 import Image from "next/image"
 import * as React from "react"
@@ -10,66 +9,12 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { upload } from "@vercel/blob/client"
 import { cn } from "@/lib/utils"
+import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer"
 
 interface TicketImageUploadProps {
   value?: string | null
   onChange: (value: string) => void
   facilityId: string
-}
-
-// 📐 HTML5 Hardware-Native Client-Side Pre-processing (Option A: Extreme Performance)
-const optimizeImageOnClient = async (file: File): Promise<Blob> => {
-  let bitmap: ImageBitmap | null = null;
-  try {
-    // 🔥 DECODE ACCELERATOR: Hand-off binary decoding off-main-thread instantly
-    bitmap = await window.createImageBitmap(file)
-
-    const canvas = window.document.createElement("canvas")
-    const ctx = canvas.getContext("2d")
-    
-    if (!ctx) {
-      throw new Error("Image Raster Context creation failed")
-    }
-
-    // Force premium 1.91:1 aspect ratio at 1200x630 resolution
-    canvas.width = 1200
-    canvas.height = 630
-
-    const sourceAspect = bitmap.width / bitmap.height
-    const targetAspect = 1200 / 630
-    let sX = 0, sY = 0, sWidth = bitmap.width, sHeight = bitmap.height
-
-    // High-performance hardware clipping logic
-    if (sourceAspect > targetAspect) {
-      sWidth = bitmap.height * targetAspect
-      sX = (bitmap.width - sWidth) / 2
-    } else {
-      sHeight = bitmap.width / targetAspect
-      sY = (bitmap.height - sHeight) / 2
-    }
-
-    ctx.imageSmoothingEnabled = true
-    ctx.imageSmoothingQuality = "high"
-    
-    // Render optimized GPU buffer into target canvas grid
-    ctx.drawImage(bitmap, sX, sY, sWidth, sHeight, 0, 0, 1200, 630)
-
-    return await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob(
-        (blob) => blob ? resolve(blob) : reject(new Error("Hardware conversion failed")),
-        "image/webp",
-        0.85 // Superior modern WebP balance
-      )
-    })
-  } catch (err) {
-    console.error("Hardware Raster Engine Fault:", err)
-    throw new Error("Hardware rendering cycle aborted.")
-  } finally {
-    // 🗑️ PURGE: Flush heavy bitmap allocations from graphics memory immediately
-    if (bitmap) {
-      bitmap.close()
-    }
-  }
 }
 
 /**
@@ -89,7 +34,7 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
 
     const uploadPromise = (async () => {
       // Step 1: Optimize and resize directly on client (Canvas 1.91:1 WebP)
-      const optimizedBlob = await optimizeImageOnClient(file)
+      const optimizedBlob = await optimizeImageOnClient(file, { mode: "exact", width: 1200, height: 630, quality: 0.85 })
       const optimizedFile = new File(
         [optimizedBlob],
         `${file.name.split(".")[0] || "ticket"}-${Date.now()}.webp`,

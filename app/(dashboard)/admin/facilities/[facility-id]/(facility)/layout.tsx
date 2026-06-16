@@ -1,20 +1,23 @@
 import { ReactNode, Suspense } from "react"
 import { prisma } from "@/server/lib/prisma"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { connection } from "next/server"
+import { headers } from "next/headers"
 
 import { FacilityNav, FacilityNavSkeleton } from "./_components/nav"
 import { FacilityActionSidebar, FacilityActionSidebarSkeleton } from "./_components/sidebar"
 import { Metadata } from "next"
 import { FacilityLayoutContextHandler } from "./_components/FacilityLayoutContextHandler"
 import { FacilityProvider } from "./_components/facility-context"
+import { auth } from "@/server/lib/auth"
+import { validateFacilityAccess } from "@/server/lib/auth-guards"
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ facilityId: string }>
+  params: Promise<{ 'facility-id': string }>
 }): Promise<Metadata> {
-  const { facilityId } = await params
+  const { 'facility-id': facilityId } = await params
   const facility = await prisma.facility.findUnique({
     where: { id: facilityId },
     select: { name: true },
@@ -31,10 +34,10 @@ export default async function FacilityManagementLayout({
   params,
 }: {
   children: ReactNode
-  params: Promise<{ facilityId: string }>
+  params: Promise<{ 'facility-id': string }>
 }) {
   await connection()
-  const { facilityId } = await params
+  const { 'facility-id': facilityId } = await params
   const facility = await prisma.facility.findUnique({
     where: { id: facilityId },
     select: {
@@ -65,6 +68,15 @@ export default async function FacilityManagementLayout({
   })
 
   if (!facility) notFound()
+
+  // 🛡️ Validate staff has access to this facility
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (session) {
+    const userRole = (session.user as { role?: string }).role?.toUpperCase()
+    if (userRole === "FACILITY_STAFF") {
+      await validateFacilityAccess(facilityId).catch(() => redirect("/admin/forbidden"))
+    }
+  }
 
   return (
     <FacilityProvider facility={{ id: facility.id, name: facility.name, status: facility.status, slug: facility.slug, category: facility.category }}>

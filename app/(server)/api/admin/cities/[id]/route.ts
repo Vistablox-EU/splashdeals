@@ -15,11 +15,11 @@ const citySchema = z.object({
  */
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await authenticateRequest(request).catch(() => requireSuperAdmin())
-    const { id } = params
+    const { id } = await params
     
     const json = await request.json()
     const validated = citySchema.partial().parse(json)
@@ -38,11 +38,11 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await authenticateRequest(request).catch(() => requireSuperAdmin())
-    const { id } = params
+    const { id } = await params
 
     await prisma.city.delete({
       where: { id }

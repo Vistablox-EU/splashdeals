@@ -8,9 +8,9 @@ import { SerializedAdminTicket, SerializedTicketGroup } from "../_components/tic
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ facilityId: string }>
+  params: Promise<{ 'facility-id': string }>
 }): Promise<Metadata> {
-  const { facilityId } = await params
+  const { 'facility-id': facilityId } = await params
   const facility = await prisma.facility.findUnique({
     where: { id: facilityId },
     select: { name: true },
@@ -24,9 +24,9 @@ export async function generateMetadata({
 export default async function TicketsPage({
   params,
 }: {
-  params: Promise<{ facilityId: string }>
+  params: Promise<{ 'facility-id': string }>
 }) {
-  const { facilityId } = await params
+  const { 'facility-id': facilityId } = await params
   await connection()
 
   const [ticketsRaw, facilityWithGroups] = await Promise.all([

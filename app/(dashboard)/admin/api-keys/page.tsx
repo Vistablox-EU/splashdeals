@@ -1,21 +1,15 @@
+import { Metadata } from "next"
 import { prisma } from "@/server/lib/prisma"
 import { requireSuperAdmin } from "@/server/lib/auth-guards"
-import { serialize } from "@/lib/serialize"
-import { connection } from "next/server"
 import { ApiKeysClient } from "./api-keys-client"
 
-type ApiKey = {
-  id: string
-  name: string
-  prefix: string
-  createdAt: string
-  lastUsedAt: string | null
-  expiresAt: string | null
+export const metadata: Metadata = {
+  title: "API Keys | Splashdeals Admin",
+  description: "Manage agent API keys for Splashdeals integrations.",
 }
 
 export default async function ApiKeysPage() {
-  await connection()
-  await requireSuperAdmin()
+  await requireSuperAdmin({ redirect: true })
 
   const keys = await prisma.apiKey.findMany({
     orderBy: { createdAt: "desc" },
@@ -29,5 +23,12 @@ export default async function ApiKeysPage() {
     },
   })
 
-  return <ApiKeysClient initialKeys={serialize(keys) as unknown as ApiKey[]} />
+  const serializedKeys = keys.map((key) => ({
+    ...key,
+    createdAt: key.createdAt.toISOString(),
+    lastUsedAt: key.lastUsedAt?.toISOString() ?? null,
+    expiresAt: key.expiresAt?.toISOString() ?? null,
+  }))
+
+  return <ApiKeysClient initialKeys={serializedKeys} />
 }

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { StatusToggle } from "./status-toggle"
+import { StatusToggle } from "@/components/admin/StatusToggle"
 
 // Using a static wrapper component for rendering cells that might trigger non-deterministic behavior
 function ClientCell({ children }: { children: React.ReactNode }) {

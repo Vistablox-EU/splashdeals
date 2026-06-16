@@ -5,21 +5,32 @@ import { CompactAmenitiesTable } from "../_components/amenities"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Icon } from "@/components/ui/Icon"
-import { Metadata } from "next"
+import type { Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "Amenities | Splashdeals Admin",
-  description: "Manage facility features and active amenities.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ 'facility-id': string }>
+}): Promise<Metadata> {
+  const { 'facility-id': facilityId } = await params
+  const facility = await prisma.facility.findUnique({
+    where: { id: facilityId },
+    select: { name: true },
+  })
+  return {
+    title: `${facility?.name || "Facility"} — Amenities | Splashdeals Admin`,
+    description: `Manage features and active amenities for ${facility?.name || "this facility"}.`,
+  }
 }
 
 interface AmenitiesPageProps {
   params: Promise<{
-    facilityId: string
+    'facility-id': string
   }>
 }
 
 export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
-  const { facilityId } = await params
+  const { 'facility-id': facilityId } = await params
   await connection()
   
   const [facility, allAmenities] = await Promise.all([

@@ -65,59 +65,7 @@ const dropAnimation: DropAnimation = {
  * Downscales images to max 2000px on the longest side and converts them to high-density WebP
  * before upload, preventing Vercel's strict 4.5MB serverless payload limit from blocking the request.
  */
-const optimizeImageOnClient = async (file: File): Promise<File> => {
-  if (!file.type.startsWith("image/")) return file;
-  
-  let bitmap: ImageBitmap | null = null;
-  try {
-    bitmap = await window.createImageBitmap(file);
-    
-    const canvas = window.document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("Canvas rendering context creation failed");
-    
-    const MAX_DIM = 2000;
-    let width = bitmap.width;
-    let height = bitmap.height;
-    
-    if (width > MAX_DIM || height > MAX_DIM) {
-      if (width > height) {
-        height = Math.round((height * MAX_DIM) / width);
-        width = MAX_DIM;
-      } else {
-        width = Math.round((width * MAX_DIM) / height);
-        height = MAX_DIM;
-      }
-    }
-    
-    canvas.width = width;
-    canvas.height = height;
-    
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(bitmap, 0, 0, width, height);
-    
-    const webpBlob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob(
-        (blob) => blob ? resolve(blob) : reject(new Error("WebP re-encoding failed")),
-        "image/webp",
-        0.85
-      );
-    });
-    
-    const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-    const newName = `${baseName}.webp`;
-    
-    return new File([webpBlob], newName, { type: "image/webp" });
-  } catch (error) {
-    console.warn("Client-side optimization failed, falling back to raw file:", error);
-    return file;
-  } finally {
-    if (bitmap) {
-      bitmap.close();
-    }
-  }
-};
+import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer";
 
 export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
   const [media, setMedia] = useState(initialMedia)
@@ -248,7 +196,8 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
           } else {
             // Pre-process images on the client to avoid hitting the 4.5MB Serverless Function payload size limit
             const originalSize = file.size
-            const optimizedFile = await optimizeImageOnClient(file)
+            const optimizedBlob = await optimizeImageOnClient(file, { mode: "fit", maxWidth: 2000, maxHeight: 2000, quality: 0.85 }).catch(() => file)
+            const optimizedFile = optimizedBlob instanceof File ? optimizedBlob : new File([optimizedBlob], file.name.replace(/\.[^.]+$/, ".webp"), { type: "image/webp" })
             const optimizedSize = optimizedFile.size
             const savedBytes = originalSize - optimizedSize
             const savedPercent = originalSize > 0 ? Math.round((savedBytes / originalSize) * 100) : 0

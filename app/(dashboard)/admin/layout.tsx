@@ -1,8 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
 import * as React from "react";
-import "@/app/globals.css";
-import { cn } from "@/lib/utils";
 
 import { AdminSidebar } from "@/components/admin/sidebar/admin-sidebar"
 import {
@@ -66,7 +64,7 @@ async function LayoutWrapper({ children }: { children: React.ReactNode }) {
         } as React.CSSProperties
       }
     >
-      <AdminSidebar variant="inset" />
+      <AdminSidebar variant="inset" user={session.user} />
       <SidebarInset className="overflow-hidden">
         <AdminLayoutShell user={session.user}>
           <React.Suspense fallback={
@@ -102,7 +100,7 @@ async function AdminGuard({ children }: { children: React.ReactNode }) {
 
   if (!isAuthorized) {
     console.warn(`[Security] Unauthorized access attempt by ${session.user.email} (Role: ${role})`);
-    redirect("/auth/login?error=unauthorized");
+    redirect("/admin/forbidden");
   }
 
   return <>{children}</>;

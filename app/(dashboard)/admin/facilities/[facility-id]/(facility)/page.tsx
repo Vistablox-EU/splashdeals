@@ -7,12 +7,12 @@ import { Metadata } from "next"
 
 interface OverviewPageProps {
   params: Promise<{
-    facilityId: string
+    'facility-id': string
   }>
 }
 
 export async function generateMetadata({ params }: OverviewPageProps): Promise<Metadata> {
-  const { facilityId } = await params
+  const { 'facility-id': facilityId } = await params
   const facility = await prisma.facility.findUnique({
     where: { id: facilityId },
     select: { name: true }
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: OverviewPageProps): Promise<M
 
 export default async function FacilityOverviewPage({ params }: OverviewPageProps) {
   await connection()
-  const { facilityId } = await params
+  const { 'facility-id': facilityId } = await params
   
   const facility = await prisma.facility.findUnique({
     where: { id: facilityId },

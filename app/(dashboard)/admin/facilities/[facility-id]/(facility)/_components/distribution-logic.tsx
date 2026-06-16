@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form"
 import { Icon } from "@/components/ui/Icon"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
+
 import {
   FormDescription,
   FormLabel,
@@ -246,16 +246,11 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
 
         {/* 🏷️ Interactive Active Region Tag Cloud */}
         <div className="flex flex-wrap gap-1.5 p-3 min-h-[60px] border border-white/5 rounded-xl bg-slate-950/40 backdrop-blur-md">
-          <AnimatePresence initial={false}>
-            {selectedCities.map((city) => (
-              <motion.div
-                key={city.id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                layout
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              >
+          {selectedCities.map((city) => (
+            <div
+              key={city.id}
+              className="animate-in fade-in zoom-in-75 duration-150"
+            >
                 <Badge 
                   variant="outline" 
                   className="h-6 gap-1 bg-cyan-500/5 hover:bg-cyan-500/10 border-cyan-500/20 text-cyan-400 hover:text-cyan-300 pr-1 pl-2.5 rounded-lg select-none transition-colors"
@@ -270,9 +265,8 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                     <Icon name="close" className="text-[10px]" />
                   </button>
                 </Badge>
-              </motion.div>
+            </div>
             ))}
-          </AnimatePresence>
           {selectedCities.length === 0 && (
             <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-slate-500 m-auto select-none">
               <span>No marketplace regions selected</span>
@@ -300,15 +294,10 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
           </div>
 
           {/* Autocomplete Dropdown List */}
-          <AnimatePresence>
-            {isOpen && (search.length > 0 || filteredSuggestions.length > 0) && (
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 5 }}
-                transition={{ duration: 0.15 }}
-                className="absolute left-0 right-0 top-full mt-1.5 max-h-[180px] overflow-y-auto border border-white/10 rounded-xl bg-slate-950/95 backdrop-blur-xl shadow-2xl z-[70] divide-y divide-white/5 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent"
-              >
+          {isOpen && (search.length > 0 || filteredSuggestions.length > 0) && (
+            <div
+              className="absolute left-0 right-0 top-full mt-1.5 max-h-[180px] overflow-y-auto border border-white/10 rounded-xl bg-slate-950/95 backdrop-blur-xl shadow-2xl z-[70] divide-y divide-white/5 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent animate-in fade-in slide-in-from-top-1 duration-150"
+            >
                 {/* Available Matches */}
                 {filteredSuggestions.map((city) => (
                   <button
@@ -344,9 +333,8 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                     No remaining matching regions
                   </div>
                 )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+            </div>
+          )}
         </div>
 
         {/* ⚙️ Collapsible Advanced Global Registry Editor */}

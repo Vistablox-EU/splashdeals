@@ -8,11 +8,11 @@ import { handleServerActionError } from "@/server/lib/server-action-error"
  */
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await requireSuperAdmin()
-    const { id } = params
+    const { id } = await params
 
     await prisma.apiKey.delete({
       where: { id }

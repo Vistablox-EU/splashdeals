@@ -1,15 +1,14 @@
 import { Icon } from "@/components/ui/Icon";
 import { connection } from "next/server"
-import { Metadata } from "next"
-import { prisma } from "@/server/lib/prisma"
+import type { Metadata } from "next"
 import { Suspense } from "react"
 import { TableSkeleton } from "@/components/admin/TableSkeleton"
-import { AdminMetricCard } from "../facilities/_components/admin-metric-card"
+import { AdminMetricCard } from "@/components/admin/AdminMetricCard"
 import { UsersList } from "./_components/users-list"
-import { UserRole } from "@prisma/client"
 import { requireSuperAdmin } from "@/server/lib/auth-guards"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { getUserCounts } from "@/lib/data/admin"
 
 export const metadata: Metadata = {
   title: "User Management | Splashdeals Admin",
@@ -25,18 +24,12 @@ export default async function UsersManagementPage({
   const { page, limit } = await searchParams
   await requireSuperAdmin({ redirect: true })
 
-  const [total, superAdmins, staff] = await Promise.all([
-    prisma.user.count({
-      where: { role: { in: [UserRole.SUPER_ADMIN, UserRole.FACILITY_STAFF] } }
-    }),
-    prisma.user.count({ where: { role: UserRole.SUPER_ADMIN } }),
-    prisma.user.count({ where: { role: UserRole.FACILITY_STAFF } }),
-  ])
+  const counts = await getUserCounts()
 
   const stats = [
-    { label: "Total Admins", value: total, color: "text-white", glow: "border-white/10 bg-white/[0.02]" },
-    { label: "Super Admins", value: superAdmins, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
-    { label: "Facility Staff", value: staff, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
+    { label: "Total Admins", value: counts.total, color: "text-white", glow: "border-white/10 bg-white/[0.02]" },
+    { label: "Super Admins", value: counts.superAdmins, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
+    { label: "Facility Staff", value: counts.staff, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
   ]
 
   return (

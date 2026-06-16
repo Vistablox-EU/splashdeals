@@ -1,6 +1,12 @@
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Access Restricted | Splashdeals Admin",
+  description: "Your administrative clearance does not permit access to this sector.",
+}
 
 export default function ForbiddenPage() {
   return (

@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
  
-import { Metadata } from "next"
+import type { Metadata } from "next"
 import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import { connection } from "next/server"
@@ -8,19 +8,30 @@ import { OperationsTable } from "../_components/operations-control-manager"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
-export const metadata: Metadata = {
-  title: "Operations | Splashdeals Admin",
-  description: "Manage facility operating hours and seasonal schedules.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ 'facility-id': string }>
+}): Promise<Metadata> {
+  const { 'facility-id': facilityId } = await params
+  const facility = await prisma.facility.findUnique({
+    where: { id: facilityId },
+    select: { name: true },
+  })
+  return {
+    title: `${facility?.name || "Facility"} — Operations | Splashdeals Admin`,
+    description: `Manage operating hours and seasonal schedules for ${facility?.name || "this facility"}.`,
+  }
 }
 
 interface OperationsPageProps {
   params: Promise<{
-    facilityId: string
+    'facility-id': string
   }>
 }
 
 export default async function FacilityOperationsPage({ params }: OperationsPageProps) {
-  const { facilityId } = await params
+  const { 'facility-id': facilityId } = await params
   await connection()
 
   const facility = await prisma.facility.findUnique({

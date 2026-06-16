@@ -1,8 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { AmenitiesSkeleton } from "./loading"
-import { AmenitiesError } from "./error"
+import { AmenitiesSkeleton } from "./amenities-skeleton"
+import { AmenitiesError } from "./amenities-error-boundary"
 import { CompactAmenitiesTable } from "./facility-amenities-compact"
 
 interface ErrorBoundaryProps {

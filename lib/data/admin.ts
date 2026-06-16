@@ -40,25 +40,34 @@ export async function getFacilityCounts() {
   "use cache"
   cacheLife("minutes")
 
-  const [total, active, closed, emergency] = await Promise.all([
+  const [total, active, draft, closed, emergency] = await Promise.all([
     prisma.facility.count(),
     prisma.facility.count({ where: { status: "ACTIVE" } }),
+    prisma.facility.count({ where: { status: "DRAFT" } }),
     prisma.facility.count({ where: { status: "CLOSED" } }),
     prisma.facility.count({ where: { status: "EMERGENCY_SHUTDOWN" } }),
   ])
 
-  return { total, active, closed, emergency }
+  return { total, active, draft, closed, emergency }
 }
 
 export async function getUserCounts() {
   "use cache"
   cacheLife("minutes")
 
-  const [total, superAdmins, facilityStaff] = await Promise.all([
-    prisma.user.count(),
+  const [total, superAdmins, staff] = await Promise.all([
+    prisma.user.count({ where: { role: { in: ["SUPER_ADMIN", "FACILITY_STAFF"] } } }),
     prisma.user.count({ where: { role: "SUPER_ADMIN" } }),
     prisma.user.count({ where: { role: "FACILITY_STAFF" } }),
   ])
 
-  return { total, superAdmins, facilityStaff }
+  return { total, superAdmins, staff }
+}
+
+export async function getFacilityName(id: string) {
+  const facility = await prisma.facility.findUnique({
+    where: { id },
+    select: { name: true },
+  })
+  return facility?.name ?? null
 }

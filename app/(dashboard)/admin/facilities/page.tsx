@@ -1,13 +1,13 @@
 import { Icon } from "@/components/ui/Icon";
 import { connection } from "next/server"
-import { Metadata } from "next"
-import { prisma } from "@/server/lib/prisma"
+import type { Metadata } from "next"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Suspense } from "react"
 import { TableSkeleton } from "@/components/admin/TableSkeleton"
-import { AdminMetricCard } from "./_components/admin-metric-card"
+import { AdminMetricCard } from "@/components/admin/AdminMetricCard"
 import { FacilitiesList } from "./_components/facilities-list"
+import { getFacilityCounts } from "@/lib/data/admin"
 
 export const metadata: Metadata = {
   title: "Facilities Registry | Splashdeals Admin",
@@ -22,18 +22,13 @@ export default async function FacilitiesDirectoryPage({
   await connection()
   const { q, page, limit } = await searchParams
 
-  const [total, active, draft, closed] = await Promise.all([
-    prisma.facility.count(),
-    prisma.facility.count({ where: { status: "ACTIVE" } }),
-    prisma.facility.count({ where: { status: "DRAFT" } }),
-    prisma.facility.count({ where: { status: "CLOSED" } }),
-  ])
+  const counts = await getFacilityCounts()
 
   const stats = [
-    { label: "Total Registry", value: total, color: "text-white", glow: "border-white/10 bg-white/[0.02]" },
-    { label: "Active Nodes", value: active, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
-    { label: "Draft Ops", value: draft, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
-    { label: "Closed/Archived", value: closed, color: "text-slate-500", glow: "border-slate-500/10 bg-slate-500/[0.02]" },
+    { label: "Total Registry", value: counts.total, color: "text-white", glow: "border-white/10 bg-white/[0.02]" },
+    { label: "Active Nodes", value: counts.active, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
+    { label: "Draft Ops", value: counts.draft, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
+    { label: "Closed/Archived", value: counts.closed, color: "text-slate-500", glow: "border-slate-500/10 bg-slate-500/[0.02]" },
   ]
 
   return (

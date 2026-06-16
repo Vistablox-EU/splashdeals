@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/server/lib/prisma"
+import { authenticateRequest } from "@/server/lib/api-key-auth"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
 
-export async function GET() {
+export async function GET(request: Request) {
+  await authenticateRequest(request).catch(() => requireSuperAdmin())
   const [revenueRaw, facilityCount, userCount, ticketCount, recentActivity] = await Promise.all([
     prisma.transaction.aggregate({
       where: { status: "SUCCESS" },
