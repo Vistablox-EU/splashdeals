@@ -8,5 +8,8 @@ export default async function LegacyFacilitiesPage() {
 
 export async function generateMetadata() {
   await connection();
-  permanentRedirect("/");
+  return {
+    title: "Preusmeravanje... | Splashdeals",
+    robots: { index: false, follow: true },
+  };
 }

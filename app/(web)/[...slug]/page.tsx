@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { connection } from "next/server";
 import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate, getFacilityMetadata } from "../facilities/[categorySlug]/[facilitySlug]/page";
-import { DiscoveryTemplate, getDiscoveryMetadata } from "../facilities/[categorySlug]/page";
+import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 
 /**
  * 🏝️ Dynamic Short-URL Resolver Helper

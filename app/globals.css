@@ -3,25 +3,74 @@
 @import "shadcn/tailwind.css";
 @import "../styles/light.css";
 
-@theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
+:root {
+  --background: #020617;
+  --foreground: #f8fafc;
 
+  /* AquastreamUI Theme Tokens */
+  --color-primary: #06b6d4;
+  --color-primary-dark: #0891b2;
+  --color-secondary: #f59e0b;
+  --color-accent: #22d3ee;
+
+  --navy-deep: #020617;
+  --navy-muted: #0f172a;
+  --navy-glass: rgba(15, 23, 42, 0.85);
+
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-reflection: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
-  --color-primary: var(--primary);
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
   --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--color-secondary);
+  --color-navy-deep: var(--navy-deep);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
+  --color-accent: var(--color-accent);
   --color-accent-foreground: var(--accent-foreground);
-  
+  --font-sans: var(--font-geist-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
+
+  --animate-logo-shimmer: logo-shimmer 3s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s infinite;
+  --animate-kinetic-1: kinetic-1 30s linear infinite;
+  --animate-kinetic-2: kinetic-2 25s linear infinite;
+
+  @keyframes logo-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) skewX(-25deg); }
+    100% { transform: translateX(200%) skewX(-25deg); }
+  }
+  @keyframes kinetic-1 {
+    0%, 100% { transform: translate(-50px, -50px) scale(1); }
+    33% { transform: translate(50px, 20px) scale(1.1); }
+    66% { transform: translate(-20px, 80px) scale(1.05); }
+  }
+  @keyframes kinetic-2 {
+    0%, 100% { transform: translate(100px, 0) scale(1); }
+    33% { transform: translate(-50px, 50px) scale(1.2); }
+    66% { transform: translate(20px, 120px) scale(1.1); }
+  }
 }
 
 @layer base {
@@ -33,13 +82,55 @@
   }
 }
 
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
+/* Glass UI Utilities */
+.glass-frost {
+  background: var(--navy-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.splash-gradient {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #3b82f6 50%, #1d4ed8 100%);
+}
+
+.text-splash {
+  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #a5f3fc 50%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+}
+
+/* Scrollbar Utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 10px;
+  box-shadow: 0 0 10px var(--color-primary);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
