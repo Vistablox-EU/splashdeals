@@ -306,10 +306,6 @@ async function main() {
     server.kill();
     clearTimeout(overallTimeout);
   }
-    // 3. Shutdown
-    server.kill();
-    clearTimeout(overallTimeout);
-  }
 
   // 4. Report
   console.log("\n" + "=".repeat(60));
