@@ -39,7 +39,7 @@ export async function createFacilityAction(data: FacilityFormValues) {
         slug,
         category,
         city,
-        cityId: cityId || city,
+        cityId: cityId || null,
         streetName,
         streetNumber,
         postalCode,

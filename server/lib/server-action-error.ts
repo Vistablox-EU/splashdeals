@@ -50,7 +50,7 @@ export function handleServerActionError<T = void>(error: unknown, context?: stri
     if (error.code === "P2003") {
       return {
         success: false,
-        error: "Zapis je povezan sa drugim podacima i ne može se obrisati."
+        error: "Referencirani zapis ne postoji (pogrešan ID grada ili veze)."
       }
     }
     return { 

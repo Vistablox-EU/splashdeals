@@ -96,8 +96,8 @@ model Facility {
   slug              String            @unique
   category          String
   city              String
-  cityId            String
-  primaryCity           City              @relation(fields: [cityId], references: [id], name: "facilityCityRel")
+  cityId            String?
+  primaryCity           City?             @relation(fields: [cityId], references: [id], name: "facilityCityRel")
   streetName        String
   streetNumber      String
   postalCode        String
