@@ -247,5 +247,6 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
     }
   }
   
+  redirect("/");
   notFound();
 }
