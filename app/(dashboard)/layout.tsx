@@ -16,8 +16,6 @@ export default function DashboardLayout({
 }) {
   return (
     <html lang="sr" className={cn("dark font-sans", firaSans.variable)}>
-      <head>
-      </head>
       <body className="min-h-screen antialiased bg-[#020617] text-slate-100 selection:bg-cyan-500/20 font-sans">
         {children}
       </body>
