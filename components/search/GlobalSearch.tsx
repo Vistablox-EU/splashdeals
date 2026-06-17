@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { getClientDictionary } from "@/lib/client-dictionaries"
-import type { Dict } from "@/lib/types"
+
 
 /**
  * 🔍 Global Search Command Palette
@@ -19,9 +19,9 @@ export function GlobalSearch() {
 
   const [prevQ, setPrevQ] = React.useState(q)
   const [query, setQuery] = React.useState(q)
-  const [results, setResults] = React.useState<{ id: string; name: string; slug: string; category: string; city: string }[]>([])
+  const [results, setResults] = React.useState<any[]>([])
   const [isLoading, setIsLoading] = React.useState(false)
-  const [dict, setDict] = React.useState<Dict | null>(null)
+  const [dict, setDict] = React.useState<any | null>(null)
 
   React.useEffect(() => {
     getClientDictionary().then(setDict)

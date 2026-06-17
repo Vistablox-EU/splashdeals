@@ -28,75 +28,6 @@ import {
   City
 } from "@prisma/client"
 
-/** Shape used for ticket tier display */
-interface TicketTier {
-  id: string;
-  label: string;
-  labelSr: string;
-  price: number;
-  originalPrice: number | null;
-  minPeople: number;
-  maxPeople: number | null;
-  imageUrl: string | null;
-  isActive: boolean;
-  saleStart: string | null;
-  saleEnd: string | null;
-  title: string;
-  titleSr: string | null;
-  groupId: string | null;
-  displayOrder: number;
-  [key: string]: unknown;
-}
-
-/** Group with computed tiers for rendering */
-interface TicketGroupWithTiers {
-  id: string;
-  title: string;
-  titleSr: string | null;
-  description: string | null;
-  descriptionSr: string | null;
-  slug: string | null;
-  isActive: boolean;
-  displayOrder: number;
-  tiers: TicketTier[];
-}
-
-/** Media item shape used in this page */
-interface PageMedia {
-  id: string;
-  url: string;
-  type: string;
-  isHero: boolean;
-  isCardBackground: boolean;
-  order: number;
-  thumbnailUrl: string | null;
-  [key: string]: unknown;
-}
-
-/** Data shape returned by getFacility (after serialize) */
-interface FacilityData {
-  id: string;
-  name: string;
-  slug: string;
-  category: string;
-  city: string;
-  lat: number | null;
-  lng: number | null;
-  description: string | null;
-  metaTitle: string | null;
-  metaDescription: string | null;
-  publicPhone: string | null;
-  streetName: string | null;
-  streetNumber: string | null;
-  postalCode: string | null;
-  status: string;
-  media: PageMedia[];
-  tickets: Ticket[];
-  ticketGroups: { id: string; title: string; titleSr: string | null; description: string | null; descriptionSr: string | null; slug: string | null; isActive: boolean; displayOrder: number; tickets: Ticket[] }[];
-  hours: OperatingHours[];
-  [key: string]: unknown;
-}
-
 // 🏝️ Islands: Client Components for interactive portions
 import { ShowcaseHero, WeatherBadge } from "./_components/ShowcaseHero"
 import { OperationalPortal, CurrentOperationalStatus } from "./_components/OperationalPortal"
@@ -164,7 +95,7 @@ interface FacilityPageProps {
 /**
  * 🔒 Reusable cached fetcher forperformance and consistency
  */
-async function getFacility(slug: string): Promise<FacilityData | null> {
+async function getFacility(slug: string): Promise<any> {
   "use cache";
   cacheLife("minutes");
 
@@ -204,7 +135,7 @@ async function getFacility(slug: string): Promise<FacilityData | null> {
 
   if (result) {
     cacheTag(result.id);
-    return serialize(result) as FacilityData;
+    return serialize(result);
   }
   return null;
 }
@@ -221,14 +152,14 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
   const currentYear = new Date().getFullYear();
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
-  const activeTickets = (facility.tickets || []).filter((t: Ticket) => t.isActive);
+  const activeTickets = (facility.tickets || []).filter((t: any) => t.isActive);
   const ticketCount = activeTickets.length;
   const ticketHint = ticketCount > 0 
     ? ` | ${ticketCount} vrsta ulaznica dostupno`
     : '';
 
   const minPrice = activeTickets.length > 0 
-    ? Math.min(...activeTickets.map((t: Ticket) => Number(t.price)))
+    ? Math.min(...activeTickets.map((t: any) => Number(t.price)))
     : null;
 
   const priceHint = minPrice 
@@ -236,7 +167,13 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
     : '';
 
   // Prioritize metaTitle from database, fall back to dynamic formula
-  const maxDiscount = calculateMaxDiscount(facility.tickets || []);
+  const maxDiscount = calculateMaxDiscount(
+    (facility.tickets || []).map((t: { isActive: boolean; price: unknown; originalPrice: unknown | null }) => ({
+      isActive: t.isActive,
+      price: Number(t.price),
+      originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
+    }))
+  );
   
   // Localize and normalize the facility name (e.g. "AquaPark Petroland" -> "Akva park Petroland")
   const localizedName = facility.name
@@ -259,9 +196,9 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
   const baseDescription = facility.metaDescription || (facility.description?.slice(0, 140) || fallbackDescription);
   const finalDescription = baseDescription.includes("Već od") ? baseDescription : `${baseDescription}${priceHint}${ticketHint}`;
 
-  const ogImage = facility.media.find((m: PageMedia) => m.isHero && m.type === 'PHOTO')?.url 
-    || facility.media.find((m: PageMedia) => m.isCardBackground && m.type === 'PHOTO')?.url
-    || facility.media.find((m: PageMedia) => m.type === 'PHOTO')?.url
+  const ogImage = facility.media.find((m: any) => m.isHero && m.type === 'PHOTO')?.url 
+    || facility.media.find((m: any) => m.isCardBackground && m.type === 'PHOTO')?.url
+    || facility.media.find((m: any) => m.type === 'PHOTO')?.url
     || "/og-image.png";
 
   const canonicalUrl = subPath 
@@ -381,15 +318,15 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
   // Find all active tickets (used in either fallback or virtual group)
-  const activeTickets = (facility.tickets || []).filter((t: Ticket) => t.isActive)
+  const activeTickets = (facility.tickets || []).filter((t: any) => t.isActive)
   const ticketCount = activeTickets.length
 
-  let mappedGroups: TicketGroupWithTiers[] = []
+  let mappedGroups: any[] = []
 
   if (facility.ticketGroups && facility.ticketGroups.length > 0) {
-    mappedGroups = facility.ticketGroups.map((g) => ({
+    mappedGroups = facility.ticketGroups.map((g: any) => ({
       ...g,
-      tiers: g.tickets.map((t: Ticket) => ({
+      tiers: g.tickets.map((t: any) => ({
         ...t,
         label: t.title,
         labelSr: t.titleSr || t.title,
@@ -399,10 +336,10 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         maxPeople: t.maxPeople || null,
         imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
       }))
-    })) as unknown as TicketGroupWithTiers[]
+    }))
 
     // Fetch active tickets that have no group and bundle them into a virtual group
-    const ungroupedTickets = activeTickets.filter((t: Ticket) => !t.groupId)
+    const ungroupedTickets = activeTickets.filter((t: any) => !t.groupId)
     if (ungroupedTickets.length > 0) {
       mappedGroups.push({
         id: "default-group",
@@ -411,9 +348,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         slug: "standardne-ponude",
-        isActive: true,
-        displayOrder: 999,
-        tiers: ungroupedTickets.map((t: Ticket) => ({
+        tiers: ungroupedTickets.map((t: any) => ({
           ...t,
           label: t.title,
           labelSr: t.titleSr || t.title,
@@ -435,9 +370,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         slug: "standardne-ponude",
-        isActive: true,
-        displayOrder: 999,
-        tiers: activeTickets.map((t: Ticket) => ({
+        tiers: activeTickets.map((t: any) => ({
           ...t,
           label: t.title,
           labelSr: t.titleSr || t.title,
@@ -452,12 +385,12 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   }
 
   // 🎥 Logic: Priority Hero Selection (Protocol)
-  const explicitHero = facility.media.find((m: PageMedia) => m.isHero);
-  const firstVideo = facility.media.find((m: PageMedia) => m.type === "VIDEO");
+  const explicitHero = facility.media.find((m: any) => m.isHero);
+  const firstVideo = facility.media.find((m: any) => m.type === "VIDEO");
   const heroMedia = explicitHero || firstVideo || facility.media[0];
 
   // 🧠 Structured Data Block
-  const allTiers = mappedGroups.flatMap((group: TicketGroupWithTiers) => group.tiers || []);
+  const allTiers = mappedGroups.flatMap((group: any) => group.tiers || []);
 
   // Deterministic ratings removed — AggregateRating requires real user reviews,
   // not values computed from facility name hashes. Remove once a review system exists.
@@ -472,8 +405,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const aggregateOffer = allTiers.length > 0 ? {
     "@type": "AggregateOffer",
     "priceCurrency": "RSD",
-    "lowPrice": Math.min(...allTiers.map((t: TicketTier) => Number(t.price))),
-    "highPrice": Math.max(...allTiers.map((t: TicketTier) => Number(t.price))),
+    "lowPrice": Math.min(...allTiers.map((t: any) => Number(t.price))),
+    "highPrice": Math.max(...allTiers.map((t: any) => Number(t.price))),
     "offerCount": allTiers.length,
     "shippingDetails": {
       "@type": "OfferShippingDetails",
@@ -583,9 +516,9 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     })
   } : null;
 
-  const videoThumbnailFallback = facility.media.find((m: PageMedia) => m.type === 'PHOTO' && m.isHero)?.url
-    || facility.media.find((m: PageMedia) => m.type === 'PHOTO' && m.isCardBackground)?.url
-    || facility.media.find((m: PageMedia) => m.type === 'PHOTO')?.url
+  const videoThumbnailFallback = facility.media.find((m: any) => m.type === 'PHOTO' && m.isHero)?.url
+    || facility.media.find((m: any) => m.type === 'PHOTO' && m.isCardBackground)?.url
+    || facility.media.find((m: any) => m.type === 'PHOTO')?.url
     || "/og-image.png";
 
   const videoThumbnail = heroMedia?.thumbnailUrl || videoThumbnailFallback;
@@ -731,7 +664,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
            </div>
             <Suspense fallback={<TicketGridSkeleton />}>
                <ShowcaseTicketGroups 
-                  groups={mappedGroups as unknown as TicketGroupWithTiers[]} 
+                  groups={mappedGroups as any} 
                   facilityId={facility.id}
                   facilityName={facility.name}
                   category={facility.category}
@@ -768,7 +701,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               )}
 
               <ShowcaseAmenities 
-                amenities={serialize(facility.amenities)} 
+                amenities={serialize(facility.amenities) as any} 
                 dict={dict} 
               />
            </div>

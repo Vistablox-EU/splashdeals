@@ -7,7 +7,7 @@ import { FacilityGridSkeleton } from "../_components/FacilitySkeletons";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { prisma } from "@/server/lib/prisma";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/SEO/JsonLd";
 
 interface PageProps {
@@ -79,18 +79,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     "wellness-center": "wellness-i-spa"
   };
   const target = legacyMapping[categorySlug.toLowerCase()] || categorySlug;
-  permanentRedirect(`/${target}`);
+  const canonicalUrl = `https://www.splashdeals.rs/${target}`;
+  return {
+    title: `Preusmeravanje... | Splashdeals`,
+    robots: { index: false, follow: true },
+    alternates: { canonical: canonicalUrl },
+  };
 }
 
 /**
  * 🌊 Discovery Template Component (Used natively by catching routes)
  */
 export async function DiscoveryTemplate({ params }: PageProps) {
+  await connection();
   const { categorySlug } = await params;
   const dict = await getDictionary();
-  
-  // Instruct Next.js to use Partial Prerendering
-  await connection();
 
 
   const hasCategory = await prisma.facility.findFirst({
@@ -184,15 +187,9 @@ export async function DiscoveryTemplate({ params }: PageProps) {
 /**
  * 🌊 Legacy Page Entry (Triggers HTTP 301 Permanent Redirect)
  */
-export default async function DiscoveryPage({ params }: PageProps) {
+export default async function DiscoveryPage(_props: PageProps) {
   await connection();
-  const { categorySlug } = await params;
-  
-  const legacyMapping: Record<string, string> = {
-    "waterpark": "akva-parkovi",
-    "swimming-pool": "bazeni",
-    "wellness-center": "wellness-i-spa"
-  };
-  const target = legacyMapping[categorySlug.toLowerCase()] || categorySlug;
-  permanentRedirect(`/${target}`);
+  // This page is never rendered in production — proxy.ts handles the redirect at edge.
+  // Render minimal shell to satisfy prerender.
+  return <div />;
 }

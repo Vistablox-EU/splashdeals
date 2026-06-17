@@ -6,10 +6,10 @@ import { Logo } from "./Logo";
 import { AccountButton } from "./AccountButton";
 import { CartButton } from "./CartButton";
 import { MobileTopNav } from "./MobileTopNav";
-import type { Dict } from "@/lib/types";
+
 
 interface DesktopTopNavProps {
-  dict: Dict;
+  dict: any;
   cities: { id: string; name: string; slug: string }[];
   mounted: boolean;
   totalItems: number;

@@ -8,14 +8,14 @@ import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
-import type { Dict } from "@/lib/types";
+;
 
 export const CartDrawer = () => {
   const { isCartOpen, closeCart } = useUIState();
   const { items, removeItem, updateQuantity, getTotalPrice } = useCart();
   const totalPrice = getTotalPrice();
   const [isMounted, setIsMounted] = React.useState(false);
-  const [dict, setDict] = React.useState<Dict | null>(null);
+  const [dict, setDict] = React.useState<any | null>(null);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('sr-RS').format(price);

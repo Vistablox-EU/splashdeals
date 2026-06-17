@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
-import type { Dict } from "@/lib/types";
 
 interface City {
   id: string;
@@ -16,7 +15,7 @@ interface CityGridProps {
   cities: City[];
   loading: boolean;
   onCityClick: () => void;
-  dict: Dict;
+  dict: any;
 }
 
 const POPULAR_SLUGS = [

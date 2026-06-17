@@ -3,10 +3,10 @@
 import React from "react";
 import { Icon } from "@/components/ui/Icon";
 import { LiquidButton } from "@/components/ui/LiquidButton";
-import type { Dict } from "@/lib/types";
+
 
 interface AccountButtonProps {
-  dict: Dict;
+  dict: any;
 }
 
 export function AccountButton({ dict }: AccountButtonProps) {

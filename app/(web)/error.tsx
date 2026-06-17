@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { getClientDictionary } from "@/lib/client-dictionaries"
-import type { Dict } from "@/lib/types"
+
 
 /**
  * 🛡️ Aquastream Global Web Error Boundary
@@ -21,11 +21,11 @@ export default function GlobalWebError({
 }) {
   const params = useParams()
   
-  const [dict, setDict] = useState<Dict | null>(null)
+  const [dict, setDict] = useState<any | null>(null)
 
   useEffect(() => {
     console.error("Global Web Error:", error)
-    getClientDictionary().then(setDict)
+    getClientDictionary().then((d) => setDict(d))
   }, [error])
 
   // Fallback while dictionary loads (matching the style)

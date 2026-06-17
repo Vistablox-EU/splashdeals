@@ -4,10 +4,10 @@ import React from "react";
 import { Icon } from "@/components/ui/Icon";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { cn } from "@/lib/utils";
-import type { Dict } from "@/lib/types";
+
 
 interface CartButtonProps {
-  dict: Dict;
+  dict: any;
   isOnline: boolean;
   mounted: boolean;
   totalItems: number;

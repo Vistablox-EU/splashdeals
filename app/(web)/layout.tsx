@@ -94,7 +94,6 @@ export default async function WebLayout({
   params: Promise<Record<string, never>>;
 }) {
   
-  await connection();
   const dict = await getDictionary();
   const cities = await getActiveCities();
   

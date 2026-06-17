@@ -334,7 +334,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                         }}
                         className={cn(
                           "w-full h-14 font-black uppercase tracking-widest text-[10px] transition-all",
-                          addedId === t.id ? "bg-emerald-500 text-slate-950" : ""
+                          addedId === t.id ? "bg-green-500 text-slate-950" : ""
                         )}
                       >
                         <span className="flex items-center justify-center gap-2">

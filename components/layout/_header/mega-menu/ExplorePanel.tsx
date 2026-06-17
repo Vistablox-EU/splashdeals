@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import { CityGrid } from "./CityGrid";
-import type { Dict } from "@/lib/types";
+
 
 interface FeaturedFacility {
   id: string;
@@ -22,7 +22,7 @@ interface ExplorePanelProps {
   featured: FeaturedFacility | null;
   cities: { id: string; name: string; slug: string }[];
   loading: boolean;
-  dict: Dict;
+  dict: any;
   onClose: () => void;
 }
 
