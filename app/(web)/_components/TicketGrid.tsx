@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cacheLife } from 'next/cache';
 import { Card } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
-import { Badge } from "./Badge";
+import { Badge } from "@/components/ui/badge";
 
 import { connection } from "next/server";
 
@@ -32,7 +32,7 @@ async function getTickets() {
   return data.map(ticket => ({
     ...ticket,
     price: Number(ticket.price),
-    // Pre-calculate category slug for links
+    originalPrice: ticket.originalPrice ? Number(ticket.originalPrice) : null,
     categorySlug: ticket.facility.category.toLowerCase().replace(/\s+/g, '-')
   }));
 }
@@ -58,7 +58,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
             key={ticket.id}
             className="h-full transition-all duration-700"
           >
-            <Card className="h-full flex flex-col group border-white/5 hover:border-cyan-500/30 transition-all duration-500 hover:-translate-y-2">
+            <Card className="h-full flex flex-col group border-white/5 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
               <div className="relative h-52 w-full overflow-hidden rounded-t-[1.5rem]">
                 <Link 
                   href={ticketUrl} 
@@ -85,7 +85,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                 
                 <div className="absolute bottom-4 left-4 z-20 pointer-events-none">
                    <div className="flex items-center gap-2 mb-1">
-                      <Badge className="bg-cyan-500 text-slate-950 border-none text-[8px] font-black uppercase tracking-widest px-2 py-0.5 ring-0">
+                      <Badge className="bg-primary text-slate-950 border-none text-[8px] font-black uppercase tracking-widest px-2 py-0.5 ring-0">
                          {(dict?.categories as Record<string, string>)?.[ticket.facility.category.toLowerCase()] || ticket.facility.category}
                       </Badge>
                    </div>

@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
-import { LiquidButton } from "@/components/ui/LiquidButton";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 interface IssuedTicket {
@@ -249,21 +249,20 @@ export function SuccessClient({
             style={{ animationDelay: "0.8s", animationFillMode: "both" }}
         >
             <Link href="/facilities" className="w-full sm:w-auto">
-            <LiquidButton variant="secondary" size="lg" className="w-full sm:w-auto h-16 px-10">
+            <Button variant="outline" size="lg" className="w-full sm:w-auto h-16 px-10 bg-white/5 text-white hover:bg-white/10 border border-white/10 rounded-full">
                 <Icon name="arrow_back" className="text-[20px] mr-3" />
                 {dict.actions.continue}
-            </LiquidButton>
+            </Button>
             </Link>
             
-            <LiquidButton 
+            <Button 
                 onClick={() => window.print()}
-                variant="primary" 
                 size="lg" 
-                className="w-full sm:w-auto h-16 px-10 shadow-[0_0_30px_rgba(6,182,212,0.3)]"
+                className="w-full sm:w-auto h-16 px-10 shadow-[0_0_30px_rgba(6,182,212,0.3)] bg-primary text-black hover:bg-primary/90 rounded-full"
             >
                 <Icon name="download" className="text-[20px] mr-3 text-black" />
                 {dict.actions.download}
-            </LiquidButton>
+            </Button>
         </div>
 
         <div className="text-center pt-8">

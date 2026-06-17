@@ -25,7 +25,8 @@ import {
   Ticket, 
   OperatingHours, 
   FacilityCity,
-  City
+  City,
+  Prisma
 } from "@prisma/client"
 
 // 🏝️ Islands: Client Components for interactive portions
@@ -95,7 +96,23 @@ interface FacilityPageProps {
 /**
  * 🔒 Reusable cached fetcher forperformance and consistency
  */
-async function getFacility(slug: string): Promise<any> {
+async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
+  include: {
+    media: { orderBy: { order: "asc" } },
+    tickets: { where: { isActive: true }, orderBy: { displayOrder: "asc" } },
+    ticketGroups: {
+      where: { isActive: true },
+      include: {
+        tickets: { where: { isActive: true }, orderBy: { displayOrder: "asc" } }
+      },
+      orderBy: { displayOrder: "asc" }
+    },
+    policy: true,
+    hours: { orderBy: { dayOfWeek: "asc" } },
+    amenities: { include: { amenity: true }, orderBy: { displayOrder: "asc" } },
+    marketplaceCities: { include: { city: true } }
+  }
+}> | null> {
   "use cache";
   cacheLife("minutes");
 
@@ -152,7 +169,7 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
   const currentYear = new Date().getFullYear();
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
-  const activeTickets = (facility.tickets || []).filter((t: { isActive: boolean }) => t.isActive);
+  const activeTickets = (facility.tickets || []).filter((t) => t.isActive);
   const ticketCount = activeTickets.length;
   const ticketHint = ticketCount > 0 
     ? ` | ${ticketCount} vrsta ulaznica dostupno`
@@ -318,50 +335,38 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
   // Find all active tickets (used in either fallback or virtual group)
-  const activeTickets = (facility.tickets || []).filter((t: { isActive: boolean }) => t.isActive)
+  const activeTickets = (facility.tickets || []).filter((t) => t.isActive) as any[]
   const ticketCount = activeTickets.length
 
-  let mappedGroups: Array<{
-    id: string;
-    title: string;
-    titleSr: string;
-    description: string;
-    descriptionSr: string;
-    slug: string;
-    tiers: Array<{
-      id: string;
-      label: string;
-      labelSr: string;
-      price: number;
-      originalPrice: number | null;
-      minPeople: number;
-      maxPeople: number | null;
-      dayType: string | null;
-      timeSlot: string | null;
-      isSeasonPass: boolean;
-      requiresIdentity: boolean;
-      requiresPhoto: boolean;
-      imageUrl: string | null;
-    }>;
-  }> = []
+  let mappedGroups: any[] = []
 
   if (facility.ticketGroups && facility.ticketGroups.length > 0) {
-    mappedGroups = facility.ticketGroups.map((g: { id: string; title: string; titleSr: string | null; description: string | null; descriptionSr: string | null; slug: string | null; tickets: Array<{ id: string; title: string; titleSr: string | null; groupId: string | null; price: number; originalPrice: number | null; minPeople: number; maxPeople: number | null; dayType: string | null; timeSlot: string | null; isSeasonPass: boolean; requiresIdentity: boolean; requiresPhoto: boolean }> }) => ({
-      ...g,
-      tiers: g.tickets.map((t) => ({
-        ...t,
-        label: t.title,
-        labelSr: t.titleSr || t.title,
+    mappedGroups = facility.ticketGroups.map((g: { id: string; title: string; titleSr: string | null; description: string | null; descriptionSr: string | null; slug: string | null; tickets: Array<Record<string, unknown>> }) => ({
+      id: g.id,
+      title: g.title,
+      titleSr: g.titleSr || g.title,
+      description: g.description,
+      descriptionSr: g.descriptionSr || g.description,
+      slug: g.slug || g.title.toLowerCase().replace(/\s+/g, "-"),
+      tiers: g.tickets.map((t: Record<string, unknown>) => ({
+        id: t.id as string,
+        label: t.title as string,
+        labelSr: (t.titleSr as string) || (t.title as string),
         price: Number(t.price),
         originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
-        minPeople: t.minPeople || 1,
-        maxPeople: t.maxPeople || null,
-        imageUrl: (t as { imageUrl?: string | null }).imageUrl || facility.media?.[0]?.url || null,
+        minPeople: (t.minPeople as number) || 1,
+        maxPeople: (t.maxPeople as number) || null,
+        dayType: (t.dayType as string) || null,
+        timeSlot: (t.timeSlot as string) || null,
+        isSeasonPass: Boolean(t.isSeasonPass),
+        requiresIdentity: Boolean(t.requiresIdentity),
+        requiresPhoto: Boolean(t.requiresPhoto),
+        imageUrl: (t.imageUrl as string) || facility.media?.[0]?.url || null,
       }))
     }))
 
     // Fetch active tickets that have no group and bundle them into a virtual group
-    const ungroupedTickets = activeTickets.filter((t: { groupId: string | null }) => !t.groupId)
+    const ungroupedTickets = activeTickets.filter((t) => !t.groupId)
     if (ungroupedTickets.length > 0) {
       mappedGroups.push({
         id: "default-group",
@@ -370,15 +375,20 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         slug: "standardne-ponude",
-        tiers: ungroupedTickets.map((t: { id: string; title: string; titleSr: string | null; price: number; originalPrice: number | null; minPeople: number; maxPeople: number | null; isSeasonPass: boolean; requiresIdentity: boolean; requiresPhoto: boolean; imageUrl?: string | null }) => ({
-          ...t,
+        tiers: ungroupedTickets.map((t) => ({
+          id: t.id,
           label: t.title,
           labelSr: t.titleSr || t.title,
           price: Number(t.price),
           originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
           minPeople: t.minPeople || 1,
           maxPeople: t.maxPeople || null,
-          imageUrl: (t as { imageUrl?: string | null }).imageUrl || facility.media?.[0]?.url || null,
+          dayType: t.dayType || null,
+          timeSlot: t.timeSlot || null,
+          isSeasonPass: t.isSeasonPass,
+          requiresIdentity: t.requiresIdentity,
+          requiresPhoto: t.requiresPhoto,
+          imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
         }))
       })
     }
@@ -392,7 +402,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         slug: "standardne-ponude",
-        tiers: activeTickets.map((t: any) => ({
+        tiers: activeTickets.map((t) => ({
           ...t,
           label: t.title,
           labelSr: t.titleSr || t.title,
@@ -400,15 +410,15 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
           originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
           minPeople: t.minPeople || 1,
           maxPeople: t.maxPeople || null,
-          imageUrl: (t as { imageUrl?: string | null }).imageUrl || facility.media?.[0]?.url || null,
+          imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
         }))
       }]
     }
   }
 
   // 🎥 Logic: Priority Hero Selection (Protocol)
-  const explicitHero = facility.media.find((m: any) => m.isHero);
-  const firstVideo = facility.media.find((m: any) => m.type === "VIDEO");
+  const explicitHero = facility.media.find((m: { isHero: boolean }) => m.isHero);
+  const firstVideo = facility.media.find((m: { type: string }) => m.type === "VIDEO");
   const heroMedia = explicitHero || firstVideo || facility.media[0];
 
   // 🧠 Structured Data Block
@@ -538,9 +548,9 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     })
   } : null;
 
-  const videoThumbnailFallback = facility.media.find((m: any) => m.type === 'PHOTO' && m.isHero)?.url
-    || facility.media.find((m: any) => m.type === 'PHOTO' && m.isCardBackground)?.url
-    || facility.media.find((m: any) => m.type === 'PHOTO')?.url
+  const videoThumbnailFallback = facility.media.find((m: { type: string; isHero: boolean; isCardBackground: boolean }) => m.type === 'PHOTO' && m.isHero)?.url
+    || facility.media.find((m: { type: string; isHero: boolean; isCardBackground: boolean }) => m.type === 'PHOTO' && m.isCardBackground)?.url
+    || facility.media.find((m: { type: string; isHero: boolean; isCardBackground: boolean }) => m.type === 'PHOTO')?.url
     || "/og-image.png";
 
   const videoThumbnail = heroMedia?.thumbnailUrl || videoThumbnailFallback;

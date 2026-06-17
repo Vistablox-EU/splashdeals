@@ -43,7 +43,7 @@ export default function CartLoading() {
 
         {/* 📋 SUMMARY SKELETON */}
         <div className="w-full lg:w-96 flex-shrink-0 space-y-6 pt-12 lg:pt-0">
-          <Card className="p-8 border-cyan-500/10 bg-slate-950/25 relative overflow-hidden space-y-8">
+          <Card className="p-8 border-primary/10 bg-slate-950/25 relative overflow-hidden space-y-8">
             <div className="space-y-4">
               <Skeleton className="h-6 w-36 bg-white/5 rounded-lg" />
               <Skeleton className="h-10 w-28 bg-white/5 rounded-xl" />

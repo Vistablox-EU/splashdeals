@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
-import { LiquidButton } from "@/components/ui/LiquidButton";
+import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
@@ -419,15 +419,23 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
 
               {/* Checkout Trigger CTA stack */}
               <div className="flex flex-col gap-3.5 z-10 w-full">
-                <LiquidButton 
+                <Button 
                   onClick={handleCheckout} 
-                  isLoading={isCheckingOut}
-                  disabled={isAdding || isAdded}
-                  className="w-full h-14 text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-2 shadow-[0_4px_30px_rgba(6,182,212,0.25)]"
+                  disabled={isCheckingOut || isAdding || isAdded}
+                  className="w-full h-14 text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-2 shadow-[0_4px_30px_rgba(6,182,212,0.25)] bg-primary text-black hover:bg-primary/90 rounded-full"
                 >
-                  <span>Kupi Odmah (1-Klik)</span>
-                  <Icon name="bolt" className="text-[16px] fill-current animate-pulse" />
-                </LiquidButton>
+                  {isCheckingOut ? (
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  ) : (
+                    <>
+                      <span>Kupi Odmah (1-Klik)</span>
+                      <Icon name="bolt" className="text-[16px] fill-current animate-pulse" />
+                    </>
+                  )}
+                </Button>
 
                 <button 
                   onClick={handleAddToCart} 

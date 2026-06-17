@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/SEO/JsonLd";
 import Link from "next/link";
 import React, { Suspense } from "react";
 import { StatsGrid } from "@/components/ui/StatsGrid";
-import { LiquidButton } from "@/components/ui/LiquidButton";
+import { Button } from "@/components/ui/button";
 import { TicketCardSkeleton } from "@/components/ui/TicketCardSkeleton";
 import { TicketGrid } from "./_components/TicketGrid";
 
@@ -130,12 +130,12 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
             <div
               className="flex flex-col sm:flex-row gap-6 items-center cursor-pointer transition-all duration-800"
             >
-              <LiquidButton className="px-12 py-6 min-w-[240px]">
+              <Button className="px-12 py-6 min-w-[240px] bg-primary text-black hover:bg-primary/90 rounded-full">
                 <Link href="#inventory" className="flex items-center justify-center gap-2 w-full h-full">
                   {dict.home.facilities_btn}
                   <Icon name="arrow_forward" className="text-[20px] transition-transform group-hover:translate-x-1" />
                 </Link>
-              </LiquidButton>
+              </Button>
               
               <Link 
                 href={`/how-it-works`}

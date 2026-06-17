@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LiquidButton } from "@/components/ui/LiquidButton";
+import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { cn } from "@/lib/utils";
@@ -309,7 +309,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                         </button>
                       </div>
  
-                      <LiquidButton 
+                      <Button 
                         onClick={() => {
                           if (typeof navigator !== 'undefined' && "vibrate" in navigator) {
                             navigator.vibrate([15, 80, 15]); // Soft confirmation pattern
@@ -333,7 +333,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                           setTimeout(() => setAddedId(null), 2000);
                         }}
                         className={cn(
-                          "w-full h-14 font-black uppercase tracking-widest text-[10px] transition-all",
+                          "w-full h-14 font-black uppercase tracking-widest text-[10px] transition-all bg-primary text-black hover:bg-primary/90 rounded-full",
                           addedId === t.id ? "bg-green-500 text-slate-950" : ""
                         )}
                       >
@@ -350,7 +350,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                             </>
                           )}
                         </span>
-                      </LiquidButton>
+                      </Button>
                     </div>
                   </Card>
                 </div>

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LiquidButton } from "@/components/ui/LiquidButton";
+import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { cn } from "@/lib/utils";
@@ -412,9 +412,9 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
           </button>
         </div>
 
-        <LiquidButton onClick={onAdd} className="w-full h-16 text-xs font-black tracking-[0.2em] uppercase">
+        <Button onClick={onAdd} className="w-full h-16 text-xs font-black tracking-[0.2em] uppercase bg-primary text-black hover:bg-primary/90 rounded-full">
           Dodaj u korpu
-        </LiquidButton>
+        </Button>
       </div>
     </Card>
   );
@@ -546,9 +546,9 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                 </button>
               </div>
 
-              <LiquidButton onClick={() => onAdd(tier)} className="h-11 px-6 text-[10px] font-black uppercase tracking-widest flex-1 md:flex-initial min-w-[140px] md:min-w-[120px]">
+              <Button onClick={() => onAdd(tier)} className="h-11 px-6 text-[10px] font-black uppercase tracking-widest flex-1 md:flex-initial min-w-[140px] md:min-w-[120px] bg-primary text-black hover:bg-primary/90 rounded-full">
                 Dodaj
-              </LiquidButton>
+              </Button>
             </div>
 
           </div>
@@ -801,9 +801,9 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
           </button>
         </div>
 
-        <LiquidButton onClick={() => onAdd(tier)} className="h-12 px-4 text-[10px] font-black uppercase tracking-[0.15em]">
+        <Button onClick={() => onAdd(tier)} className="h-12 px-4 text-[10px] font-black uppercase tracking-[0.15em] bg-primary text-black hover:bg-primary/90 rounded-full">
           Dodaj u korpu
-        </LiquidButton>
+        </Button>
       </div>
     </div>
   );

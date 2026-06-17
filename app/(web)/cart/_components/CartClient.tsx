@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import * as React from "react";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { Card } from "@/components/ui/card";
-import { LiquidButton } from "@/components/ui/LiquidButton";
+import { Button } from "@/components/ui/button";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import Image from "next/image";
 import Link from "next/link";
@@ -92,9 +92,9 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
              <p className="text-slate-400 font-bold">Izgleda da još uvek niste dodali nijednu Splash ponudu.</p>
           </div>
           <Link href={`/akva-parkovi`}>
-            <LiquidButton className="h-16 px-12 font-black uppercase tracking-widest text-xs">
+            <Button className="h-16 px-12 font-black uppercase tracking-widest text-xs rounded-full bg-primary text-black hover:bg-primary/90">
               {dict.facilities.discovery_engine || "Pretraga Objekata"}
-            </LiquidButton>
+            </Button>
           </Link>
           
           <p className="text-[10px] text-slate-600 font-bold max-w-xs leading-relaxed mt-12">
@@ -127,7 +127,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                    <Card className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent hover:border-white/10 transition-all group">
                      <div className="flex flex-col md:flex-row items-center gap-8">
                        {/* Icon/Image Placeholder */}
-                       <div className="w-20 h-20 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform relative overflow-hidden">
+                       <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform relative overflow-hidden">
                           {item.imageUrl ? (
                             <Image 
                               src={item.imageUrl} 
@@ -137,14 +137,14 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                               className="object-cover"
                             />
                           ) : (
-                            <Icon name="confirmation_number" className="text-[40px] text-cyan-400" />
+                            <Icon name="confirmation_number" className="text-[40px] text-primary" />
                           )}
                        </div>
 
                        {/* Info */}
                        <div className="flex-grow space-y-2 text-center md:text-left">
                           <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                             <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400/60">{item.facilityName || "Splash Deal"}</span>
+                             <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">{item.facilityName || "Splash Deal"}</span>
                              {item.validityType === 'SUMMER_SEASON' && (
                                <span className="text-[8px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Sezonska karta</span>
                              )}
@@ -222,16 +222,22 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
               </div>
 
               <div className="space-y-4">
-                 <LiquidButton 
+                 <Button
                    onClick={handleStartCheckout}
-                   isLoading={isCheckingOut}
-                   className="w-full h-20 text-lg font-black uppercase italic tracking-widest shadow-[0_0_40px_rgba(var(--color-primary-rgb),0.2)]"
+                   disabled={isCheckingOut}
+                   className="w-full h-20 text-lg font-black uppercase italic tracking-widest rounded-full bg-primary text-black hover:bg-primary/90 shadow-lg shadow-primary/20"
                  >
-                    <span className="flex items-center justify-center gap-3">
-                       Nastavi na Plaćanje
-                       <Icon name="keyboard_arrow_right" className="text-[20px]" />
-                    </span>
-                 </LiquidButton>
+                   <span className="flex items-center justify-center gap-3">
+                     {isCheckingOut && (
+                       <svg className="size-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                       </svg>
+                     )}
+                     {!isCheckingOut && <Icon name="keyboard_arrow_right" className="text-[20px]" />}
+                     Nastavi na Plaćanje
+                   </span>
+                 </Button>
 
                  <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
