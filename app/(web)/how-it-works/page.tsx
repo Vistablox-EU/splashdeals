@@ -11,11 +11,11 @@ interface PageProps {
 
 export async function generateMetadata({ params: _params }: PageProps): Promise<Metadata> {
   return {
-    title: "Kako kupiti digitalne karte za akva parkove | Splashdeals",
+    title: "Kako kupiti digitalne karte za akva parkove",
     description: "Saznajte kako da u 3 jednostavna koraka kupite online karte za akva parkove u Srbiji, preskočite čekanje na ulazu i uživate u letu bez stresa.",
     alternates: { canonical: "https://www.splashdeals.rs/how-it-works" },
     openGraph: {
-      title: "Kako kupiti digitalne karte za akva parkove | Splashdeals",
+      title: "Kako kupiti digitalne karte za akva parkove",
       description: "Saznajte kako da u 3 jednostavna koraka kupite online karte za akva parkove u Srbiji, preskočite čekanje na ulazu i uživate u letu bez stresa.",
       images: ["/og-image.png"],
       locale: "sr_RS",
@@ -23,7 +23,7 @@ export async function generateMetadata({ params: _params }: PageProps): Promise<
     },
     twitter: {
       card: "summary_large_image",
-      title: "Kako kupiti digitalne karte za akva parkove | Splashdeals",
+      title: "Kako kupiti digitalne karte za akva parkove",
       description: "Saznajte kako da u 3 jednostavna koraka kupite online karte za akva parkove u Srbiji, preskočite čekanje na ulazu i uživate u letu bez stresa.",
       images: ["/og-image.png"],
     },
