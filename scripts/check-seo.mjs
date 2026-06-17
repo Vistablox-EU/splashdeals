@@ -160,7 +160,7 @@ async function checkPage(path, label) {
   pass("Status", path, `HTTP ${status}`);
 
   // Skip all meta/content checks for noindex pages
-  if (html.match(/<meta\s+name=["']robots["']\s+content=["']noindex/i)) {
+  if (html.match(/<meta[^>]*name=["']robots["'][^>]*content=["']noindex/i) || html.match(/<meta[^>]*content=["']noindex[^>]*name=["']robots["']/i)) {
     pass("Meta", path, "noindex page — skipping content checks");
     return;
   }
