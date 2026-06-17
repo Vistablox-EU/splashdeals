@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     // For now, we simply acknowledge the beacon signal to keep the client non-blocking.
     
     return new NextResponse("OK", { status: 200 });
-  } catch (error) {
+  } catch {
     return new NextResponse("Invalid Payload", { status: 400 });
   }
 }
