@@ -2,8 +2,6 @@ import { prisma } from "@/server/lib/prisma"
 import { DataTable } from "./data-table"
 import { columns } from "./columns"
 import { Prisma } from "@prisma/client"
-import { Suspense } from "react"
-import { TableSkeleton } from "@/app/(dashboard)/admin/_common/TableSkeleton"
 
 interface FacilitiesListProps {
   q?: string
@@ -40,15 +38,13 @@ export async function FacilitiesList({ q, page, limit }: FacilitiesListProps) {
   ])
 
   return (
-    <Suspense fallback={<TableSkeleton />}>
-      <DataTable 
-        columns={columns} 
-        data={partners} 
-        totalCount={totalCount} 
-        currentPage={currentPage}
-        pageSize={pageSize}
-        initialQ={q}
-      />
-    </Suspense>
+    <DataTable 
+      columns={columns} 
+      data={partners} 
+      totalCount={totalCount} 
+      currentPage={currentPage}
+      pageSize={pageSize}
+      initialQ={q}
+    />
   )
 }
