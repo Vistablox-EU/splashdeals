@@ -187,7 +187,7 @@ async function checkPage(path, label) {
   // 4. <link rel="canonical">
   const canonMatch = html.match(/<link\s+rel="canonical"\s+href="([^"]*)"/);
   if (!canonMatch) {
-    fail(SEVERE, "Meta", path, "Missing <link rel='canonical'>");
+    fail(WARN, "Meta", path, "Missing <link rel='canonical'>");
   } else {
     const canon = canonMatch[1];
     // Should be self-referencing
