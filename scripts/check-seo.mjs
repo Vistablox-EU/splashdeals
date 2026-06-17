@@ -167,15 +167,12 @@ async function checkPage(path, label) {
     return;
   }
 
-  // 2. Check for noindex indicators before <title>
-  const isNoindexResponse = html.includes('noindex') || html.includes('robots');
-  if (isNoindexResponse && (!titleMatch || !titleMatch[1].trim())) {
-    fail(WARN, "Meta", path, "Missing <title> tag (noindex page)");
+  // 2. <title>
+  const titleMatch = html.match(/<title>([^<]*)<\/title>/);
+  const isNoindexPage = html.includes('noindex') || html.includes('robots');
+  if (!titleMatch || !titleMatch[1].trim()) {
+    fail(isNoindexPage ? WARN : SEVERE, "Meta", path, "Missing <title> tag");
   } else {
-    const titleMatch = html.match(/<title>([^<]*)<\/title>/);
-    if (!titleMatch || !titleMatch[1].trim()) {
-      fail(SEVERE, "Meta", path, "Missing <title> tag");
-    } else {
     const title = titleMatch[1].trim();
     if (title.length < 15) fail(WARN, "Meta", path, `Title too short (${title.length} chars): "${title}"`);
     if (title.length > 65) fail(WARN, "Meta", path, `Title too long (${title.length} chars) — may be truncated in SERP`);
