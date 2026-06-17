@@ -6,6 +6,8 @@
     "node": ">=24.0.0"
   },
   "scripts": {
+    "seed": "tsx prisma/seed.ts",
+    "seed:enhanced": "tsx prisma/seed-enhanced.ts",
     "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "next build",
