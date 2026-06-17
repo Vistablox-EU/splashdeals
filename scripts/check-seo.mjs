@@ -219,7 +219,7 @@ async function checkPage(path, label) {
   }
 
   // 7. <h1> heading
-  const h1Match = html.match(/<h1[^>]*>([^<]*)<\/h1>/i);
+  const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
   if (!h1Match || !h1Match[1].trim()) {
     fail(WARN, "Content", path, "Missing <h1> heading");
   } else {
