@@ -76,6 +76,22 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, { status: 301 });
   }
 
+  // 0.6 🔄 UNKNOWN SINGLE-SEGMENT PATHS — redirect to / to avoid PPR soft-404
+  const KNOWN_STATIC_PATHS = new Set([
+    '/', '/how-it-works', '/terms', '/privacy', '/support', '/cookies',
+    '/search', '/success', '/sitemap.xml', '/robots.txt', '/icon.png', '/icon-xgl6v7.png',
+  ]);
+  const firstSeg = '/' + pathname.split('/').filter(Boolean)[0];
+  if (
+    pathname.split('/').filter(Boolean).length === 1
+    && !KNOWN_STATIC_PATHS.has(firstSeg)
+    && !pathname.startsWith('/admin')
+    && !pathname.startsWith('/_next')
+    && !pathname.startsWith('/api')
+  ) {
+    return NextResponse.redirect(new URL('/', request.url), { status: 301 });
+  }
+
   // 0. 🏰 CANONICAL DOMAIN ENFORCEMENT (Apex -> WWW)
   if (process.env.NODE_ENV === 'production' && host === 'splashdeals.rs') {
     const canonicalUrl = new URL(pathname, `https://www.splashdeals.rs`);
