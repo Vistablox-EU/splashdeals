@@ -37,7 +37,7 @@ export async function optimizeImageOnClient(file: File, options: OptimizerOption
     const fmt = options.format ?? "image/webp"
 
     if (options.mode === "fit") {
-      let { width, height } = fitWithin(bitmap.width, bitmap.height, options.maxWidth, options.maxHeight)
+      const { width, height } = fitWithin(bitmap.width, bitmap.height, options.maxWidth, options.maxHeight)
       canvas.width = width
       canvas.height = height
       ctx.imageSmoothingEnabled = true
