@@ -39,7 +39,7 @@ export function AdminLayoutShell({ children, user }: AdminLayoutShellProps) {
         </div>
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/30 border border-border/50">
-              <div className="h-1 w-1 rounded-full bg-cyan-500" />
+              <div className="h-1 w-1 rounded-full bg-primary" />
               <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Node: {nodeLabel}</span>
           </div>
           

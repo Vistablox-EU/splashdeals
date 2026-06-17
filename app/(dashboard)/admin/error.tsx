@@ -53,7 +53,7 @@ export default function AdminError({
            </button>
            <Link 
              href="/admin"
-             className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-white text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
+             className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-foreground/10 text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
            >
              <Icon name="home" className="text-[16px]" />
               Kontrolna tabla

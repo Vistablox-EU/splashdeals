@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 export default function FacilityNotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-      <div className="text-6xl font-bold text-cyan-400/40">404</div>
-      <h2 className="text-xl font-semibold text-cyan-200">Facility Not Found</h2>
+      <div className="text-6xl font-bold text-primary/40">404</div>
+      <h2 className="text-xl font-semibold text-primary">Facility Not Found</h2>
       <p className="text-muted-foreground text-sm max-w-md text-center">
         The facility you&apos;re looking for doesn&apos;t exist or has been removed.
       </p>

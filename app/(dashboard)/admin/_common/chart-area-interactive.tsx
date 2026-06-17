@@ -190,7 +190,7 @@ export function ChartAreaInteractive() {
   }
 
   return (
-    <Card className="@container/card h-full border-border/50 bg-[#0f172a]/40 backdrop-blur-md">
+    <Card className="@container/card h-full border-border/50 bg-card/40 backdrop-blur-md">
       <CardHeader className="py-3 px-4 sm:px-6 flex flex-row items-center justify-between space-y-0">
         <div className="flex flex-col @[540px]/card:flex-row @[540px]/card:items-baseline gap-0 @[540px]/card:gap-2">
           <CardTitle className="text-foreground text-base">

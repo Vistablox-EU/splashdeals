@@ -128,9 +128,9 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
         <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center gap-3 animate-in fade-in zoom-in-95 duration-300">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-md animate-pulse" />
-            <Icon name="progress_activity" className="text-[32px] animate-spin text-cyan-400 relative z-10" />
+            <Icon name="progress_activity" className="text-[32px] animate-spin text-primary relative z-10" />
           </div>
-          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-400 animate-pulse">Rasterizing...</p>
+          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary animate-pulse">Rasterizing...</p>
         </div>
       )}
 
@@ -143,7 +143,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
             className={cn(
               "relative h-full w-full rounded-2xl overflow-hidden border transition-all cursor-pointer flex items-center justify-center shadow-lg",
               previewBg === "dark" ? "bg-background/40 border-border hover:border-cyan-500/40" : "bg-muted/50 border-muted/70 hover:border-cyan-600",
-              isDragging && "border-cyan-400 bg-cyan-500/5 scale-105 border-dashed"
+              isDragging && "border-primary bg-primary/5 scale-105 border-dashed"
             )}
           >
           <Image 
@@ -155,8 +155,8 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
           />
           {!isUploading && (
             <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
-              <Icon name="upload" className="text-[20px] text-cyan-400 animate-bounce" />
-              <span className="text-[8px] font-black uppercase tracking-widest text-cyan-400">Swap Logo</span>
+              <Icon name="upload" className="text-[20px] text-primary animate-bounce" />
+              <span className="text-[8px] font-black uppercase tracking-widest text-primary">Swap Logo</span>
               
               <Button
                 variant="ghost"
@@ -201,19 +201,19 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
           className={cn(
             "relative h-32 w-32 rounded-2xl border-2 border-dashed bg-background/30 hover:bg-background/60 transition-all duration-300 cursor-pointer mx-auto flex flex-col items-center justify-center text-center p-4 group/drop box-border",
             isDragging 
-              ? "border-cyan-400 bg-cyan-500/10 scale-[1.02] shadow-[0_0_25px_rgba(6,182,212,0.15)]" 
+              ? "border-primary bg-primary/10 scale-[1.02] shadow-[0_0_25px_rgba(6,182,212,0.15)]" 
               : "border-border/50 hover:border-cyan-500/30"
           )}
         >
           <div className={cn(
              "p-2.5 rounded-xl transition-all duration-300 mb-2",
-             isDragging ? "bg-cyan-500/20 text-cyan-400 scale-110" : "bg-muted/50 text-muted-foreground group-hover/drop:bg-cyan-500/10 group-hover/drop:text-cyan-400"
+             isDragging ? "bg-primary/20 text-primary scale-110" : "bg-muted/50 text-muted-foreground group-hover/drop:bg-primary/10 group-hover/drop:text-primary"
           )}>
              <Icon name="upload" className="text-[20px]" />
           </div>
           <span className={cn(
             "text-[9px] font-black uppercase tracking-widest transition-colors",
-            isDragging ? "text-cyan-300" : "text-muted-foreground group-hover/drop:text-foreground/90"
+            isDragging ? "text-primary" : "text-muted-foreground group-hover/drop:text-foreground/90"
           )}>
              {isDragging ? "Release File" : "Upload Logo"}
           </span>

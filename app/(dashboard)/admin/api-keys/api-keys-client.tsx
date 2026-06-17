@@ -77,7 +77,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
           }
         }}>
           <DialogTrigger asChild>
-            <Button className="bg-cyan-500 hover:bg-cyan-600 text-black font-black uppercase tracking-tight">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-tight">
               <Icon name="add" className="mr-2 text-[16px]" />
               Novi ključ
             </Button>
@@ -137,7 +137,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                     if (newKeyName) handleCreate(newKeyName)
                   }} 
                   disabled={isCreating || !newKeyName}
-                  className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-black uppercase"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase"
                 >
                   {isCreating ? <Icon name="progress_activity" className="text-[16px] animate-spin" /> : "Generiši ključ"}
                 </Button>
@@ -157,7 +157,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
       <Card className="bg-background/40 border-border/50 backdrop-blur-xl overflow-hidden shadow-2xl">
         <CardHeader className="border-b border-border/50">
           <CardTitle className="text-lg font-black uppercase tracking-tight flex items-center gap-2">
-            <Icon name="key" className="text-[20px] text-cyan-500" />
+            <Icon name="key" className="text-[20px] text-primary" />
             Aktivni API ključevi
           </CardTitle>
           <CardDescription className="text-xs font-mono opacity-50 uppercase">
@@ -188,7 +188,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                   <TableRow key={key.id} className="border-border/50 group transition-colors hover:bg-muted/10">
                     <TableCell className="font-bold text-sm text-foreground">{key.name}</TableCell>
                     <TableCell>
-                      <code className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 border border-border font-mono text-cyan-400">
+                      <code className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 border border-border font-mono text-primary">
                         {key.prefix}...
                       </code>
                     </TableCell>

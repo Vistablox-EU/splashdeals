@@ -44,7 +44,7 @@ export default function NewFacilityError({
             <Icon name="refresh" className="text-[16px]" />
             Pokušaj ponovo
           </Button>
-          <Button asChild variant="secondary" className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-white text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all">
+          <Button asChild variant="secondary" className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-foreground/10 text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all">
             <Link href="/admin/facilities">
               <Icon name="arrow_back" className="text-[16px]" />
               Nazad na objekte

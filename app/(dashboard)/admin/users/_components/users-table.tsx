@@ -120,7 +120,7 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
                 <TableCell>
                   <Badge variant="outline" className={
                     user.role === "SUPER_ADMIN" 
-                      ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20 font-black text-[9px] uppercase tracking-widest"
+                      ? "bg-primary/10 text-primary border-primary/20 font-black text-[9px] uppercase tracking-widest"
                       : "bg-amber-500/10 text-amber-400 border-amber-500/20 font-black text-[9px] uppercase tracking-widest"
                   }>
                     {user.role.replace("_", " ")}
@@ -156,7 +156,7 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
                       <DropdownMenuSeparator className="bg-muted/30" />
                       <DropdownMenuItem 
                           onClick={() => handleRoleUpdate(user.id, UserRole.SUPER_ADMIN)}
-                          className="gap-2 text-xs focus:bg-muted/30 focus:text-cyan-400 cursor-pointer"
+                          className="gap-2 text-xs focus:bg-muted/30 focus:text-primary cursor-pointer"
                       >
                         <Icon name="shield" className="text-[14px]" />
                         Make Super Admin

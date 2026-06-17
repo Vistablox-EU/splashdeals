@@ -26,7 +26,7 @@ export default async function FacilitiesDirectoryPage({
 
   const stats = [
     { label: "Ukupno", value: counts.total, color: "text-foreground", glow: "border-border bg-muted/10" },
-    { label: "Aktivni", value: counts.active, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
+    { label: "Aktivni", value: counts.active, color: "text-primary", glow: "border-primary/10 bg-primary/[0.02]" },
     { label: "Nacrti", value: counts.draft, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
     { label: "Zatvoreni", value: counts.closed, color: "text-muted-foreground", glow: "border-muted/10 bg-muted/5" },
   ]
@@ -44,7 +44,7 @@ export default async function FacilitiesDirectoryPage({
             Manage all waterpark entities, onboard new locations, and overview global status.
           </p>
         </div>
-        <Button asChild size="lg" className="shrink-0 bg-cyan-500 text-slate-950 hover:bg-cyan-400 font-black uppercase tracking-widest text-[11px] rounded-xl h-11 px-6 shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all duration-300">
+        <Button asChild size="lg" className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 font-black uppercase tracking-widest text-[11px] rounded-xl h-11 px-6 shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all duration-300">
           <Link href="/admin/facilities/new">
             <Icon name="add" className="mr-2 text-[16px]" />
             Novi objekat

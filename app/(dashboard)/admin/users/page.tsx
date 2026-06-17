@@ -28,7 +28,7 @@ export default async function UsersManagementPage({
 
   const stats = [
     { label: "Ukupno administratora", value: counts.total, color: "text-foreground", glow: "border-border bg-muted/10" },
-    { label: "Super administratori", value: counts.superAdmins, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
+    { label: "Super administratori", value: counts.superAdmins, color: "text-primary", glow: "border-primary/10 bg-primary/[0.02]" },
     { label: "Osoblje", value: counts.staff, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
   ]
 
@@ -45,7 +45,7 @@ export default async function UsersManagementPage({
             Control administrative access, assign roles, and audit security accounts.
           </p>
         </div>
-        <Button asChild size="lg" className="shrink-0 bg-cyan-500 text-slate-950 hover:bg-cyan-400 font-black uppercase tracking-widest text-[11px] rounded-xl h-11 px-6 shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all duration-300">
+        <Button asChild size="lg" className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 font-black uppercase tracking-widest text-[11px] rounded-xl h-11 px-6 shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all duration-300">
           <Link href="/admin/users/new">
             <Icon name="person_add" className="mr-2 size-4" />
             Novi administrator

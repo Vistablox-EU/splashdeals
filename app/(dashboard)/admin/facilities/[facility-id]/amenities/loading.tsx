@@ -12,7 +12,7 @@ export default function AmenitiesLoading() {
         </div>
       </div>
       <div className="border border-border/50 rounded-xl overflow-hidden bg-background/20">
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-border/50">
           <div className="grid grid-cols-6 gap-4 p-4 bg-background/60 border-b border-border/50">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="h-3 w-16 bg-muted rounded" />

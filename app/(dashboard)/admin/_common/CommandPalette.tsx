@@ -100,7 +100,7 @@ export function CommandPalette() {
                 onSelect={() => runCommand(() => router.push(`/admin/facilities/${f.id}`, { scroll: false }))}
                 className="flex items-center gap-3 py-3"
               >
-                <Icon name="business" className="text-[16px] text-cyan-400" />
+                <Icon name="business" className="text-[16px] text-primary" />
                 <div className="flex flex-col">
                   <span className="font-bold text-xs">{f.name}</span>
                   <span className="text-[9px] text-muted-foreground uppercase tracking-tighter">{f.city} • {f.category}</span>

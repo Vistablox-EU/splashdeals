@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function AdminSkeleton() {
   return (
-    <div className="flex h-screen w-full bg-[#020617]">
+    <div className="flex h-screen w-full bg-background">
       {/* Sidebar Placeholder */}
       <div className="hidden lg:flex flex-col w-[280px] border-r border-border/50 p-4 gap-4">
         <Skeleton className="h-8 w-40 bg-muted/30" />

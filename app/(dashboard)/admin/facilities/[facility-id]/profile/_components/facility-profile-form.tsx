@@ -257,7 +257,7 @@ export function FacilityProfileForm({
                 className="h-10 px-6 border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground font-black uppercase tracking-widest text-[10px] rounded-xl"
               >
                 <a href={publicPreviewUrl} target="_blank" rel="noopener noreferrer">
-                  <Icon name="visibility" className="size-3.5 mr-2 text-cyan-400" />
+                  <Icon name="visibility" className="size-3.5 mr-2 text-primary" />
                   View Node
                 </a>
               </Button>
@@ -271,7 +271,7 @@ export function FacilityProfileForm({
             {/* Identity & Discovery */}
             <section id="identity" className="scroll-mt-32 space-y-4">
               <div className="flex items-center gap-3">
-                <Icon name="language" className="text-[16px] text-cyan-400" />
+                <Icon name="language" className="text-[16px] text-primary" />
                 <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/70">Identity & Global Discovery</h2>
               </div>
               <ProfileAndSEO facilityId={facility.id} />
@@ -332,7 +332,7 @@ export function FacilityProfileForm({
               className="h-10 px-5 border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground font-black uppercase tracking-widest text-[9px] rounded-xl transition-all"
             >
               <a href={publicPreviewUrl} target="_blank" rel="noopener noreferrer">
-                <Icon name="visibility" className="size-3 mr-2 text-cyan-400" />
+                <Icon name="visibility" className="size-3 mr-2 text-primary" />
                 Live Preview
               </a>
             </Button>
@@ -343,7 +343,7 @@ export function FacilityProfileForm({
               className={cn(
                 "h-10 px-8 font-black uppercase tracking-[0.2em] text-[9px] rounded-xl transition-all relative overflow-hidden",
                 form.formState.isDirty 
-                  ? "bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20" 
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20" 
                   : "bg-muted/30 text-muted-foreground border border-border/50"
               )}
             >

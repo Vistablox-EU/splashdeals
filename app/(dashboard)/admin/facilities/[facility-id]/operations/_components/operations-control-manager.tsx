@@ -95,7 +95,7 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
               type="button"
               variant="link"
               size="sm"
-              className="text-[9px] font-black uppercase tracking-tighter text-cyan-400 hover:underline flex items-center gap-1"
+              className="text-[9px] font-black uppercase tracking-tighter text-primary hover:underline flex items-center gap-1"
               onClick={() => {
                 const first = getValues("hours.0")
                 if (!first) return
@@ -151,7 +151,7 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
               <th className="px-3 py-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground text-right w-[60px]">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-border/50">
             {fields.map((field, index) => {
               const isClosed = watch(`hours.${index}.isClosed`)
               return (

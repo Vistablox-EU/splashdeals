@@ -95,7 +95,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                 </div>
                 <FormControl>
                   <Input 
-                    className="bg-background/40 border-border/50 focus-visible:ring-cyan-500/50 h-10 text-sm font-mono text-cyan-400" 
+                    className="bg-background/40 border-border/50 focus-visible:ring-primary/50 h-10 text-sm font-mono text-primary" 
                     {...field} 
                     value={field.value || ""} 
                     onChange={(e) => {
@@ -133,14 +133,14 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
       {/* SEO Discovery Module */}
       <Card className="p-4 border-border/50 bg-background/40 space-y-4">
         <header className="flex items-center justify-between">
-          <h3 className="text-[10px] font-black uppercase tracking-widest text-cyan-400">Search Engine Discovery (GEO)</h3>
-          <Icon name="bar_chart" className="size-3.5 text-cyan-400 opacity-50" />
+          <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Search Engine Discovery (GEO)</h3>
+          <Icon name="bar_chart" className="size-3.5 text-primary opacity-50" />
         </header>
 
         <div className="bg-background/80 rounded-xl p-4 border border-border/50 group/serp relative overflow-hidden transition-all hover:border-cyan-500/20">
            <div className="flex items-center gap-2 mb-1.5 opacity-60">
-             <Icon name="language" className="text-[12px] text-cyan-400" />
-             <span className="text-[9px] font-mono text-muted-foreground">splashdeals.rs <span className="text-cyan-500/50">›</span> {facilitySlug}</span>
+             <Icon name="language" className="text-[12px] text-primary" />
+             <span className="text-[9px] font-mono text-muted-foreground">splashdeals.rs <span className="text-primary/50">›</span> {facilitySlug}</span>
            </div>
            <h4 className="text-sm font-bold text-blue-400 line-clamp-1 mb-1">
              {metaTitle || "Facility Title Placeholder"}

@@ -66,7 +66,7 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
           </p>
         </div>
         <div className="px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
-           <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">Live Editor</span>
+           <span className="text-[10px] font-black text-primary uppercase tracking-widest">Live Editor</span>
         </div>
       </div>
 

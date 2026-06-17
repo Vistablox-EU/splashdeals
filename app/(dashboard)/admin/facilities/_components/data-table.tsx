@@ -176,7 +176,7 @@ export function DataTable<TData, TValue>({
             >
               <SelectTrigger className="flex-1 sm:w-[160px] h-9 bg-background/40 border-border/50 text-[10px] font-black uppercase tracking-wider relative hover:bg-background/60 transition-colors">
                 <SelectValue placeholder="Status" />
-                <Badge variant="outline" className="ml-2 h-5 px-1.5 bg-cyan-500/10 border-cyan-500/20 text-[9px] font-black pointer-events-none text-cyan-400">
+                <Badge variant="outline" className="ml-2 h-5 px-1.5 bg-primary/10 border-primary/20 text-[9px] font-black pointer-events-none text-primary">
                   {totalCount}
                 </Badge>
               </SelectTrigger>

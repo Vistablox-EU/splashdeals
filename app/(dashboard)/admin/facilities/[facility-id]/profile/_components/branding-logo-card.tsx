@@ -29,7 +29,7 @@ export function BrandingLogoCard({ facilityId }: BrandingLogoCardProps) {
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-cyan-500/10">
-            <Icon name="image" className="text-[14px] text-cyan-400" />
+            <Icon name="image" className="text-[14px] text-primary" />
           </div>
           <h3 className="text-[10px] font-black uppercase tracking-widest text-foreground">Branding Logo Asset</h3>
         </div>

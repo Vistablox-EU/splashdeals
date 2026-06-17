@@ -23,7 +23,7 @@ export function TableSkeleton({ rows = 10, density = "compact" }: { rows?: numbe
               <Skeleton className="h-3 w-2/12 bg-muted/50 ml-4" />
            </div>
         </div>
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-border/50">
           {Array.from({ length: rows }).map((_, i) => (
             <div key={i} className={cn("flex items-center px-3", density === "compact" ? "h-9" : "h-12")}>
               <Skeleton className="h-4 w-4/12 bg-muted/30" />

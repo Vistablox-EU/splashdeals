@@ -61,7 +61,7 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
         className={cn(
           "group relative inline-flex items-center px-2.5 py-0.5 rounded-md border text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300",
           status === "ACTIVE" 
-            ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20 shadow-[0_0_12px_rgba(6,182,212,0.1)] hover:bg-cyan-500/20" 
+            ? "bg-primary/10 text-primary border-primary/20 shadow-[0_0_12px_rgba(6,182,212,0.1)] hover:bg-primary/20" 
             : "bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20"
         )}
       >
@@ -69,7 +69,7 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
           {isPending ? (
             <Icon name="progress_activity" className="text-[12px] animate-spin" />
           ) : status === "ACTIVE" ? (
-            <Icon name="bolt" className="text-[12px] text-cyan-400" />
+            <Icon name="bolt" className="text-[12px] text-primary" />
           ) : (
             <Icon name="bolt" className="text-[12px] text-amber-500" />
           )}

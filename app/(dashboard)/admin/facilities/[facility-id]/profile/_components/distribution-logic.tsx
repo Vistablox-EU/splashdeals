@@ -218,7 +218,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
       
       <header className="flex items-center gap-3 mb-6 relative z-10">
         <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
-          <Icon name="tag" className="text-[16px] text-cyan-400 animate-pulse" />
+          <Icon name="tag" className="text-[16px] text-primary animate-pulse" />
         </div>
         <div>
           <h3 className="text-md font-black tracking-tight uppercase text-foreground">Marketplace Reach</h3>
@@ -234,7 +234,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
             <FormLabel className="text-[10px] uppercase tracking-widest font-black opacity-70 flex items-center gap-2">
               Target Marketplace Nodes
               {dirtyFields.targetCityIds && (
-                <div className="h-1 w-1 rounded-full bg-cyan-500 animate-pulse" />
+                <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
               )}
             </FormLabel>
             <FormDescription className="text-[9px] mt-0.5">
@@ -248,7 +248,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
               variant="ghost"
               size="sm"
               onClick={() => setValue("targetCityIds", localCities.map(c => c.id), { shouldDirty: true })}
-              className="text-cyan-400 hover:text-cyan-300"
+              className="text-primary hover:text-primary/80"
             >
               Select All
             </Button>
@@ -281,7 +281,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                     type="button"
                     onClick={() => removeCity(city.id)}
                     aria-label={`Remove ${city.name}`}
-                    className="size-4 rounded-md inline-flex items-center justify-center hover:bg-red-500/10 text-cyan-500/60 hover:text-red-400 transition-colors cursor-pointer"
+                    className="size-4 rounded-md inline-flex items-center justify-center hover:bg-red-500/10 text-primary/60 hover:text-red-400 transition-colors cursor-pointer"
                   >
                     <Icon name="close" className="text-[10px]" />
                   </button>
@@ -310,14 +310,14 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
               className="h-9 pl-9 bg-background/40 border-border/50 text-[11px] font-bold focus-visible:ring-1 focus-visible:ring-cyan-500/20 placeholder:text-muted-foreground/80 rounded-xl"
             />
             {isPending && (
-              <Icon name="progress_activity" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[14px] animate-spin text-cyan-400" />
+              <Icon name="progress_activity" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[14px] animate-spin text-primary" />
             )}
           </div>
 
           {/* Autocomplete Dropdown List */}
           {isOpen && (search.length > 0 || filteredSuggestions.length > 0) && (
             <div
-              className="absolute left-0 right-0 top-full mt-1.5 max-h-[180px] overflow-y-auto border border-border rounded-xl bg-background/95 backdrop-blur-xl shadow-2xl z-[70] divide-y divide-white/5 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent animate-in fade-in slide-in-from-top-1 duration-150"
+              className="absolute left-0 right-0 top-full mt-1.5 max-h-[180px] overflow-y-auto border border-border rounded-xl bg-background/95 backdrop-blur-xl shadow-2xl z-[70] divide-y divide-border/50 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent animate-in fade-in slide-in-from-top-1 duration-150"
             >
                 {/* Available Matches */}
                 {filteredSuggestions.map((city) => (
@@ -325,10 +325,10 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                     key={city.id}
                     type="button"
                     onClick={() => selectCity(city.id)}
-                    className="flex items-center justify-between w-full px-3 py-2 text-left text-[11px] font-semibold text-foreground/80 hover:text-foreground hover:bg-white/[0.04] transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full px-3 py-2 text-left text-[11px] font-semibold text-foreground/80 hover:text-foreground hover:bg-foreground/5 transition-colors cursor-pointer"
                   >
                     <span>{city.name}</span>
-                    <span className="text-[9px] font-mono text-cyan-500/40">/{city.slug}</span>
+                    <span className="text-[9px] font-mono text-primary/40">/{city.slug}</span>
                   </button>
                 ))}
 
@@ -387,7 +387,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                       value={city.slug}
                       disabled={isRegistryPending}
                       onChange={(e) => updateCityRegistry(city.id, { slug: e.target.value })}
-                      className="h-7 px-2 bg-background/50 border-border/50 text-[10px] font-mono text-cyan-400/90 focus-visible:ring-cyan-500/20"
+                      className="h-7 px-2 bg-background/50 border-border/50 text-[10px] font-mono text-primary/90 focus-visible:ring-primary/20"
                       placeholder="url-slug"
                     />
                   </div>

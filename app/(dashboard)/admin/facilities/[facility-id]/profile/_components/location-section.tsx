@@ -85,7 +85,7 @@ export function LocationSection() {
                 variant="link"
                 size="sm"
                 onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(`${getValues('streetName')} ${field.value}, ${getValues('city')}`)}`, '_blank')}
-                className="text-[8px] font-black text-cyan-400 hover:underline uppercase tracking-tighter"
+                className="text-[8px] font-black text-primary hover:underline uppercase tracking-tighter"
               >
                 Verify Map
               </Button>

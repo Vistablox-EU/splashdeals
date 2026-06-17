@@ -99,7 +99,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
               Izmeni profil
             </Link>
           </Button>
-          <Button asChild className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-black text-slate-950 hover:opacity-90 transition-all">
+          <Button asChild className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-black text-primary-foreground hover:opacity-90 transition-all">
             <Link href={`/facilities/${facility.category.toLowerCase()}/${facility.slug}`} target="_blank">
               Prikaz na sajtu
             </Link>
@@ -136,7 +136,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
           </div>
           <div className="rounded-2xl border border-border/50 bg-muted/20 overflow-hidden">
             {recentTickets.length > 0 ? (
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-border/50">
                 {recentTickets.map((ticket) => (
                   <div key={ticket.id} className="flex items-center justify-between p-4 hover:bg-muted/10 transition-colors">
                     <div className="flex flex-col gap-1">

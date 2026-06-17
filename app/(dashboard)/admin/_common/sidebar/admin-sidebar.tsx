@@ -129,8 +129,8 @@ function SidebarNavItems({ userRole }: { userRole?: string | null }) {
                           <>
                             <SidebarMenuItem>
                               <div className="flex items-center gap-2 px-2 py-1.5 mx-2 rounded-md bg-sidebar-accent border border-sidebar-border">
-                                <Icon name="business" className="size-3 text-cyan-400 shrink-0" />
-                                <span className="text-xs font-bold text-cyan-300 truncate">
+                                <Icon name="business" className="size-3 text-primary shrink-0" />
+                                <span className="text-xs font-bold text-primary/80 truncate">
                                   {currentFacilityId?.split('-')[0]}
                                 </span>
                               </div>
@@ -260,13 +260,13 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
     <Sidebar {...props}>
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3 px-2 py-2">
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-accent border border-sidebar-border text-cyan-400">
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-accent border border-sidebar-border text-primary">
             <span className="font-bold text-lg tracking-tight">SD</span>
           </div>
           <div className="flex flex-col gap-0.5 leading-none">
             <span className="font-bold text-sm tracking-tight text-sidebar-foreground uppercase">Splashdeals</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-cyan-400 font-black tracking-widest uppercase">Admin</span>
+              <span className="text-[10px] text-primary font-black tracking-widest uppercase">Admin</span>
               <div className="size-1 rounded-full bg-sidebar-border" />
               <span className="text-[10px] text-sidebar-foreground/50 font-mono tracking-tighter uppercase">v{APP_VERSION}</span>
             </div>
@@ -316,7 +316,7 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
           <div className="flex items-center gap-2">
             <span className={cn(
               "size-1.5 rounded-full shadow-[0_0_8px_rgba(6,182,212,0.5)] animate-pulse",
-              userRole === "SUPER_ADMIN" ? "bg-cyan-500" : "bg-blue-500"
+              userRole === "SUPER_ADMIN" ? "bg-primary" : "bg-blue-500"
             )} />
             {userRole === "SUPER_ADMIN" ? "Mode: Master" : "Mode: Operator"}
           </div>

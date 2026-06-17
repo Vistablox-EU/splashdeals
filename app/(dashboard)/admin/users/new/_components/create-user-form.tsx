@@ -132,7 +132,7 @@ export function CreateUserForm() {
                   </SelectItem>
                   <SelectItem value={UserRole.SUPER_ADMIN} className="focus:bg-muted/30 cursor-pointer">
                     <div className="flex items-center gap-2">
-                        <Icon name="security" className="text-[14px] text-cyan-400" />
+                        <Icon name="security" className="text-[14px] text-primary" />
                         <span>Super Admin</span>
                     </div>
                   </SelectItem>
@@ -146,7 +146,7 @@ export function CreateUserForm() {
         <Button 
           type="submit" 
           disabled={isPending}
-          className="w-full bg-cyan-500 text-slate-950 hover:bg-cyan-400 font-black uppercase tracking-widest text-[11px] rounded-xl h-11 shadow-[0_0_20px_rgba(6,182,212,0.25)] transition-all duration-300"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-black uppercase tracking-widest text-[11px] rounded-xl h-11 shadow-[0_0_20px_rgba(6,182,212,0.25)] transition-all duration-300"
         >
           {isPending ? <Icon name="progress_activity" className="text-[16px] animate-spin" /> : "Authorize Admin Access"}
         </Button>

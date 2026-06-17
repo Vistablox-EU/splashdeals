@@ -37,12 +37,12 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
           <div className="rounded-lg border border-border/50 bg-muted/20 p-5 flex flex-col min-h-[400px]">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                <Icon name="monitor_heart" className="size-3.5 text-cyan-400" />
+                <Icon name="monitor_heart" className="size-3.5 text-primary" />
                 Puls aktivnosti
               </div>
-              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
-                <div className="h-1 w-1 rounded-full bg-cyan-500 animate-pulse" />
-                <span className="text-[9px] font-black text-cyan-500 uppercase tracking-tight">Uživo</span>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
+                <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
+                <span className="text-[9px] font-black text-primary uppercase tracking-tight">Uživo</span>
               </div>
             </div>
 
@@ -50,7 +50,7 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
               {recentActivity && recentActivity.length > 0 ? (
                 recentActivity.map((act) => (
                   <div key={act.id} className="group relative flex items-start gap-3 p-2.5 rounded-lg hover:bg-muted/20 transition-all border border-transparent hover:border-border/50">
-                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)] shrink-0" />
+                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(6,182,212,0.5)] shrink-0" />
                     <div className="flex flex-col gap-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-[11px] font-bold text-foreground tracking-tight font-mono">{act.totalAmount.toLocaleString()} RSD</span>
@@ -59,7 +59,7 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5 text-[9px] font-bold text-muted-foreground uppercase tracking-widest truncate">
-                        <span className="text-cyan-400/60 font-mono">@{act.city}</span>
+                        <span className="text-primary/60 font-mono">@{act.city}</span>
                         <span>•</span>
                         <span className="font-mono">{new Date(act.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
@@ -90,7 +90,7 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
               </div>
               <div className="flex items-center justify-between p-2 rounded-md bg-muted/10 border border-border/50">
                 <span className="text-[9px] font-bold text-muted-foreground uppercase">Okruženje</span>
-                <span className="text-[9px] font-mono text-cyan-400 uppercase">SD-2026-BETA</span>
+                <span className="text-[9px] font-mono text-primary uppercase">SD-2026-BETA</span>
               </div>
             </div>
           </div>
@@ -108,7 +108,7 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
             <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
               Primarni čvor
             </div>
-            <div className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black text-cyan-500 uppercase tracking-widest">
+            <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[9px] font-black text-primary uppercase tracking-widest">
               v2.4.1
             </div>
           </div>
