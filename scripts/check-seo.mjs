@@ -159,6 +159,12 @@ async function checkPage(path, label) {
   }
   pass("Status", path, `HTTP ${status}`);
 
+  // Skip all meta/content checks for noindex pages
+  if (html.match(/<meta\s+name=["']robots["']\s+content=["']noindex/i)) {
+    pass("Meta", path, "noindex page — skipping content checks");
+    return;
+  }
+
   // 2. <title>
   const titleMatch = html.match(/<title>([^<]*)<\/title>/);
   if (!titleMatch || !titleMatch[1].trim()) {
