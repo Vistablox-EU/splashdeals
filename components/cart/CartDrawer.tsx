@@ -22,7 +22,7 @@ export const CartDrawer = () => {
   };
 
   React.useEffect(() => {
-    setIsMounted(true);
+    setTimeout(() => setIsMounted(true));
     getClientDictionary().then(setDict);
   }, []);
 
