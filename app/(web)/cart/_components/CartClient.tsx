@@ -8,7 +8,6 @@ import { LiquidButton } from "@/components/ui/LiquidButton";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -121,14 +120,9 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
            </div>
 
            <div className="space-y-4">
-             <AnimatePresence mode="popLayout">
                {items.map((item) => (
-                 <motion.div
+                 <div
                    key={item.id}
-                   layout
-                   initial={{ opacity: 0, x: -20 }}
-                   animate={{ opacity: 1, x: 0 }}
-                   exit={{ opacity: 0, x: 20 }}
                  >
                    <GlassCard className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent hover:border-white/10 transition-all group">
                      <div className="flex flex-col md:flex-row items-center gap-8">
@@ -201,9 +195,8 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                        </div>
                      </div>
                    </GlassCard>
-                 </motion.div>
+                 </div>
                ))}
-             </AnimatePresence>
            </div>
         </div>
 

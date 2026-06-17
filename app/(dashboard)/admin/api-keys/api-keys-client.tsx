@@ -64,7 +64,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-foreground uppercase">Agent API Keys</h1>
+          <h1 className="text-3xl font-black tracking-tight text-foreground uppercase">API ključevi</h1>
           <p className="text-muted-foreground text-sm uppercase font-mono mt-1 opacity-70">
             Manage headless access for Paperclip Facility Administrator agents
           </p>
@@ -79,21 +79,21 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
           <DialogTrigger asChild>
             <Button className="bg-cyan-500 hover:bg-cyan-600 text-black font-black uppercase tracking-tight">
               <Icon name="add" className="mr-2 text-[16px]" />
-              Generate New Key
+              Novi ključ
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-background border-border text-foreground">
             <DialogHeader>
-              <DialogTitle className="text-xl font-black uppercase tracking-tight">Generate API Key</DialogTitle>
+              <DialogTitle className="text-xl font-black uppercase tracking-tight">Generiši API ključ</DialogTitle>
               <DialogDescription className="text-muted-foreground font-mono text-xs">
-                Give your API key a name to identify it later.
+                Dajte ime vašem API ključu radi identifikacije.
               </DialogDescription>
             </DialogHeader>
 
             {!generatedKey ? (
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-xs font-black uppercase opacity-70">Key Name</Label>
+                  <Label htmlFor="name" className="text-xs font-black uppercase opacity-70">Naziv ključa</Label>
                   <Input 
                     id="name" 
                     placeholder="e.g. Facility Admin Agent" 
@@ -108,9 +108,9 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                 <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                   <Icon name="error" className="text-[20px] text-amber-500 shrink-0 mt-0.5" />
                   <div className="space-y-1">
-                    <p className="text-xs font-black text-amber-500 uppercase">Security Warning</p>
+                    <p className="text-xs font-black text-amber-500 uppercase">Upozorenje</p>
                     <p className="text-[10px] text-amber-500/80 font-mono leading-relaxed">
-                      Copy this key now. For security reasons, you will not be able to see it again.
+                      Kopirajte ključ odmah. Iz bezbednosnih razloga, nećete moći ponovo da ga vidite.
                     </p>
                   </div>
                 </div>
@@ -139,14 +139,14 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                   disabled={isCreating || !newKeyName}
                   className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-black uppercase"
                 >
-                  {isCreating ? <Icon name="progress_activity" className="text-[16px] animate-spin" /> : "Generate Key"}
+                  {isCreating ? <Icon name="progress_activity" className="text-[16px] animate-spin" /> : "Generiši ključ"}
                 </Button>
               ) : (
                 <Button 
                   onClick={() => setGeneratedKey(null)}
                   className="w-full bg-muted/30 hover:bg-muted/50 text-foreground font-black uppercase"
                 >
-                  Done
+                  Gotovo
                 </Button>
               )}
             </DialogFooter>
@@ -158,29 +158,29 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
         <CardHeader className="border-b border-border/50">
           <CardTitle className="text-lg font-black uppercase tracking-tight flex items-center gap-2">
             <Icon name="key" className="text-[20px] text-cyan-500" />
-            Active API Keys
+            Aktivni API ključevi
           </CardTitle>
           <CardDescription className="text-xs font-mono opacity-50 uppercase">
-            Keys that currently have access to the REST backend
+            Ključevi koji trenutno imaju pristup REST backend-u
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted/10">
               <TableRow className="border-border/50 hover:bg-transparent">
-                <TableHead className="text-[10px] font-black uppercase opacity-40">Name</TableHead>
-                <TableHead className="text-[10px] font-black uppercase opacity-40">Prefix</TableHead>
+                <TableHead className="text-[10px] font-black uppercase opacity-40">Naziv</TableHead>
+                <TableHead className="text-[10px] font-black uppercase opacity-40">Prefiks</TableHead>
                 <TableHead className="text-[10px] font-black uppercase opacity-40">Status</TableHead>
-                <TableHead className="text-[10px] font-black uppercase opacity-40">Last Used</TableHead>
-                <TableHead className="text-[10px] font-black uppercase opacity-40">Created</TableHead>
-                <TableHead className="text-right text-[10px] font-black uppercase opacity-40">Actions</TableHead>
+                <TableHead className="text-[10px] font-black uppercase opacity-40">Poslednji put</TableHead>
+                <TableHead className="text-[10px] font-black uppercase opacity-40">Kreiran</TableHead>
+                <TableHead className="text-right text-[10px] font-black uppercase opacity-40">Akcije</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {keys.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="h-32 text-center text-muted-foreground font-mono text-xs uppercase opacity-40">
-                    No API keys generated yet
+                    Još uvek nema generisanih ključeva
                   </TableCell>
                 </TableRow>
               ) : (
@@ -194,11 +194,11 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className="text-[9px] font-black border-emerald-500/30 text-emerald-500 bg-emerald-500/5 uppercase tracking-tighter">
-                        Active
+                        Aktivan
                       </Badge>
                     </TableCell>
                     <TableCell className="text-[10px] font-mono opacity-60">
-                      {key.lastUsedAt ? format(new Date(key.lastUsedAt), "MMM d, HH:mm") : "Never"}
+                      {key.lastUsedAt ? format(new Date(key.lastUsedAt), "MMM d, HH:mm") : "Nikad"}
                     </TableCell>
                     <TableCell className="text-[10px] font-mono opacity-60">
                       {format(new Date(key.createdAt), "MMM d, yyyy")}
@@ -227,14 +227,14 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="bg-background border-border text-foreground">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black uppercase tracking-tight text-red-500">Revoke API Key</DialogTitle>
+            <DialogTitle className="text-xl font-black uppercase tracking-tight text-red-500">Povuci API ključ</DialogTitle>
             <DialogDescription className="text-muted-foreground font-mono text-xs leading-relaxed">
-              Are you sure? This will immediately terminate all access for this key. This action cannot be undone.
+              Da li ste sigurni? Ovo će odmah ukinuti sav pristup za ovaj ključ. Ova radnja je nepovratna.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="ghost" onClick={() => setIsDeleteDialogOpen(false)} className="font-black uppercase text-xs">
-              Cancel
+              Otkaži
             </Button>
             <Button 
               onClick={() => {
@@ -246,7 +246,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
               }} 
               className="bg-red-600 hover:bg-red-700 text-foreground font-black uppercase text-xs"
             >
-              Revoke Key
+              Povuci ključ
             </Button>
           </DialogFooter>
         </DialogContent>

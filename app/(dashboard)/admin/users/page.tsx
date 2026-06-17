@@ -11,7 +11,7 @@ import Link from "next/link"
 import { getUserCounts } from "@/lib/data/admin"
 
 export const metadata: Metadata = {
-  title: "User Management | Splashdeals Admin",
+  title: "Korisnici | Splashdeals Admin",
   description: "Manage administrative access and roles for Splashdeals.",
 }
 
@@ -27,9 +27,9 @@ export default async function UsersManagementPage({
   const counts = await getUserCounts()
 
   const stats = [
-    { label: "Total Admins", value: counts.total, color: "text-foreground", glow: "border-border bg-muted/10" },
-    { label: "Super Admins", value: counts.superAdmins, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
-    { label: "Facility Staff", value: counts.staff, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
+    { label: "Ukupno administratora", value: counts.total, color: "text-foreground", glow: "border-border bg-muted/10" },
+    { label: "Super administratori", value: counts.superAdmins, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
+    { label: "Osoblje", value: counts.staff, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
   ]
 
   return (
@@ -40,7 +40,7 @@ export default async function UsersManagementPage({
 
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">User Management</h1>
+          <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">Korisnici</h1>
           <p className="text-muted-foreground mt-1.5 text-xs font-medium uppercase tracking-wider opacity-80">
             Control administrative access, assign roles, and audit security accounts.
           </p>
@@ -48,7 +48,7 @@ export default async function UsersManagementPage({
         <Button asChild size="lg" className="shrink-0 bg-cyan-500 text-slate-950 hover:bg-cyan-400 font-black uppercase tracking-widest text-[11px] rounded-xl h-11 px-6 shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all duration-300">
           <Link href="/admin/users/new">
             <Icon name="person_add" className="mr-2 size-4" />
-            Onboard Admin
+            Novi administrator
           </Link>
         </Button>
       </div>

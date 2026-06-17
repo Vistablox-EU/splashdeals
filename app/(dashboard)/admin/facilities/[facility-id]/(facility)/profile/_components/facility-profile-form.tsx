@@ -315,7 +315,7 @@ export function FacilityProfileForm({
             </div>
             <div className="flex flex-col min-w-[120px]">
               <span className="text-[10px] font-black uppercase tracking-widest text-foreground">
-                 {form.formState.isDirty ? "Pending Mutations" : "Registry Synced"}
+                 {form.formState.isDirty ? "Unsaved Changes" : "All Changes Saved"}
               </span>
               <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-0.5 opacity-60">
                  {form.formState.isDirty ? "Unsaved local changes" : "Production state verified"}

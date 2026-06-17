@@ -16,6 +16,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import {
   Select,
@@ -129,6 +137,7 @@ export function CompactAmenitiesTable({
   })
 
   // 📝 New Amenity Row States
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null)
   const [newRow, setNewRow] = useState({
     name: "",
     type: "BOOLEAN" as "BOOLEAN" | "QUANTIFIABLE" | "TEXT",
@@ -217,9 +226,13 @@ export function CompactAmenitiesTable({
 
   // 🗑️ Delete Custom Amenity
   const handleDeleteCustom = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to permanently delete custom amenity "${name}" from the global registry?`)) {
-      return
-    }
+    setDeleteTarget({ id, name })
+  }
+
+  const confirmDeleteCustom = async () => {
+    if (!deleteTarget) return
+    const { id, name } = deleteTarget
+    setDeleteTarget(null)
 
     startTransition(async () => {
       try {
@@ -535,6 +548,22 @@ export function CompactAmenitiesTable({
         </div>
       </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteTarget !== null} onOpenChange={() => setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Amenity</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to permanently delete custom amenity &quot;{deleteTarget?.name}&quot; from the global registry?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDeleteCustom}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </TooltipProvider>
   )
 }

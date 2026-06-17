@@ -2,7 +2,6 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Badge } from "@/components/ui/badge";
@@ -158,10 +157,8 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                 )}
               >
                 {isActive && (
-                  <motion.div
-                    layoutId="activeShowcaseTab"
+                  <div
                     className="absolute inset-0 bg-cyan-400 rounded-full"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
                 <span className="relative z-10">{group.titleSr || group.title}</span>
@@ -172,16 +169,11 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
       </div>
 
       {/* Active group content with smooth transitions */}
-      <AnimatePresence mode="wait">
-        {activeGroup && (
-          <motion.div
-            key={activeGroupId}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="w-full space-y-6"
-          >
+      {activeGroup && (
+        <div
+          key={activeGroupId}
+          className="w-full space-y-6"
+        >
             {/* Description of active group if present */}
             {(activeGroup.descriptionSr || activeGroup.description) && (
               <div className="px-2 md:hidden">
@@ -255,9 +247,8 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                 );
               })}
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
 
       {/* Dynamic Sticky Checkout Drawer on Mobile */}
       {totalItems > 0 && (

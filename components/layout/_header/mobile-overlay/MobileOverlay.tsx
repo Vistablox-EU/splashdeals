@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@/components/ui/Icon";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { MobileOverlayHeader } from "./MobileOverlayHeader";
@@ -36,24 +35,16 @@ export function MobileOverlay({
   ];
 
   return (
-    <AnimatePresence>
+    <>
       {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: "100%" }}
-          transition={{ type: "spring", damping: 25, stiffness: 200 }}
-          className="fixed inset-0 z-[1000] bg-navy-deep/95 backdrop-blur-3xl md:hidden flex flex-col p-8 overflow-hidden"
+        <div
+          className="fixed inset-0 z-[1000] bg-navy-deep/95 backdrop-blur-3xl md:hidden flex flex-col p-8 overflow-hidden animate-in slide-in-from-right duration-300"
         >
           <MobileOverlayHeader onClose={() => setIsMobileMenuOpen(false)} />
 
           <div className="flex flex-col gap-6 overflow-hidden">
             {/* Explore First */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-both">
               <Link
                 href={navLinks[0].href}
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -62,28 +53,23 @@ export function MobileOverlay({
                 <Icon name="search" className="text-[32px] text-cyan-500" />
                 {navLinks[0].name}
               </Link>
-            </motion.div>
+            </div>
 
             {/* Cities Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-both">
               <MobileCityPicker
                 cities={cities}
                 dict={dict}
                 onCitySelect={() => setIsMobileMenuOpen(false)}
               />
-            </motion.div>
+            </div>
 
             {/* Remaining Links */}
             {navLinks.slice(1).map((link, i) => (
-              <motion.div
+              <div
                 key={link.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + (i * 0.1) }}
+                className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both"
+                style={{ animationDelay: `${300 + (i * 100)}ms` }}
               >
                 <Link
                   href={link.href}
@@ -93,7 +79,7 @@ export function MobileOverlay({
                   <Icon name={link.icon} className="text-[32px] text-cyan-500" />
                   {link.name}
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
 
@@ -105,8 +91,8 @@ export function MobileOverlay({
               Serbia&apos;s Best Water Parks
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 }

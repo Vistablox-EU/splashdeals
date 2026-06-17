@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { motion } from "framer-motion";
+
 import { cn } from "@/lib/utils";
 
 interface CategoryPillsProps {
@@ -69,11 +69,8 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
         const isActive = activeCategory?.toLowerCase() === cat.category.toLowerCase();
         
         return (
-          <motion.div
+          <div
             key={cat.category}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.05 }}
           >
             <button 
               onClick={() => toggleCategory(cat.category)}
@@ -112,14 +109,13 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
                 </span>
                 
                 {isActive && (
-                  <motion.div 
-                    layoutId="active-pill"
+                  <div
                     className="absolute bottom-0 left-0 right-0 h-1 bg-cyan-500"
                   />
                 )}
               </GlassCard>
             </button>
-          </motion.div>
+          </div>
         );
       })}
     </div>

@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { cn } from "@/lib/utils";
 
 interface City {
@@ -105,10 +105,8 @@ export function MegaMenu({ dict }: MegaMenuProps) {
               onMouseEnter={() => handleMouseEnter(idx)}
             >
               {isActive && (
-                <motion.div
-                  layoutId="nav-blob"
-                  transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                  className="absolute inset-0 bg-white/10 rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur-md border border-cyan-500/20 z-0"
+                <div
+                  className="absolute inset-0 bg-white/10 rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur-md border border-cyan-500/20 z-0 transition-all duration-300"
                 />
               )}
               <button
@@ -135,18 +133,13 @@ export function MegaMenu({ dict }: MegaMenuProps) {
       {/* ==========================================
           MORPHING DROPDOWN PANELS
           ========================================== */}
-      <AnimatePresence>
         {activeTab !== null && (
-          <motion.div
-            initial={{ opacity: 0, y: 18, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 18, scale: 0.97 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
+          <div
             onMouseEnter={() => {
               if (closeTimeout.current) clearTimeout(closeTimeout.current);
             }}
             className={cn(
-              "absolute top-full mt-6 bg-[#020617] border border-white/10 shadow-[0_28px_70px_rgba(0,0,0,0.75),inset_0_1px_0_rgba(255,255,255,0.06)] rounded-[2.5rem] z-[120] outline-none overflow-hidden",
+              "absolute top-full mt-6 bg-[#020617] border border-white/10 shadow-[0_28px_70px_rgba(0,0,0,0.75),inset_0_1px_0_rgba(255,255,255,0.06)] rounded-[2.5rem] z-[120] outline-none overflow-hidden transition-all duration-300",
               activeTab === 0 && "w-[1260px] -translate-x-[22%]",
               activeTab === 1 && "w-[960px] -translate-x-[38%]",
               activeTab === 2 && "w-[800px] -translate-x-[52%]"
@@ -533,9 +526,8 @@ export function MegaMenu({ dict }: MegaMenuProps) {
             )}
 
             </div>{/* end inner padding wrapper */}
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }

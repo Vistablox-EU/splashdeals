@@ -11,5 +11,5 @@ export default function MediaError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return <SlotError error={error} reset={reset} title="Media Gallery Error" />
+  return <SlotError error={error} reset={reset} title="Nije moguće učitati medije" />
 }

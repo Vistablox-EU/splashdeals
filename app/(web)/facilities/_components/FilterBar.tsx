@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+
 import { useState, useTransition } from "react";
 
 interface FilterBarProps {
@@ -68,10 +68,8 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
   const hasFilters = searchParams.size > 0;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-wrap items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md mb-8"
+    <div
+      className="flex flex-wrap items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md mb-8 relative"
       aria-busy={isPending}
     >
       <div className="flex items-center gap-2 mr-2">
@@ -162,9 +160,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
 
       {/* 🧹 Clear Button */}
       {hasFilters && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+        <div
           className="ml-auto w-full sm:w-auto"
         >
           <Button 
@@ -175,7 +171,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             <Icon name="close" className="text-[14px]" />
             {dict.filters.clear_filters}
           </Button>
-        </motion.div>
+        </div>
       )}
 
       {isPending && (
@@ -183,6 +179,6 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
           <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

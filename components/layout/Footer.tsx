@@ -3,7 +3,6 @@ import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useActionState } from "react"
@@ -48,33 +47,30 @@ export function Footer() {
                 <div className="absolute inset-0 z-20 pointer-events-none translate-x-[-100%] group-hover/logo:animate-logo-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg]" />
               </div>
 
-                {/* 🌊 Interactive Water Splash Particles */}
-                <AnimatePresence mode="popLayout">
-                  {isHovered && (
-                    <div className="absolute inset-0 pointer-events-none">
-                      {[...Array(10)].map((_, i) => (
-                        <motion.div
-                          key={`foot-drop-${i}`}
-                          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                          animate={{ 
-                            opacity: [0, 1, 0], 
-                            scale: [0, 1.2, 0.4],
-                            x: ((i * 37) % 70) - 35,
-                            y: ((i * 41) % 60) - 30,
-                          }}
-                          exit={{ opacity: 0 }}
-                          transition={{ 
-                            duration: 0.8, 
-                            ease: "easeOut",
-                            delay: i * 0.01 
-                          }}
-                          className="absolute top-1/2 left-1/2 w-1.2 h-1.2 bg-cyan-400 rounded-full blur-[1px]"
-                        />
-                      ))}
-                    </div>
-                  )}
-                </AnimatePresence>
-              
+              {/* 🌊 Water Splash Particles — CSS animated on hover */}
+              <div
+                className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+                  isHovered ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                {[...Array(10)].map((_, i) => (
+                  <div
+                    key={`foot-drop-${i}`}
+                    style={{
+                      animation: `splash-particle 0.8s ease-out ${i * 0.01}s forwards`,
+                      "--x": `${((i * 37) % 70) - 35}px`,
+                      "--y": `${((i * 41) % 60) - 30}px`,
+                    } as React.CSSProperties}
+                    className="absolute top-1/2 left-1/2 w-[5px] h-[5px] bg-cyan-400 rounded-full blur-[1px] opacity-0"
+                  />
+                ))}
+                {/* Ripple ring */}
+                <div
+                  style={{ animation: "splash-ripple 0.6s ease-out forwards" }}
+                  className="absolute inset-0 bg-cyan-400/30 rounded-xl blur-lg opacity-0"
+                />
+              </div>
+
               <span className="text-3xl font-black italic uppercase text-white group-hover:text-cyan-50 transition-colors -ml-1">
 
                 deals
@@ -239,6 +235,20 @@ export function Footer() {
           </div>
         </div>
       </div>
+
+      {/* CSS keyframes for splash particles */}
+      <style>{`
+        @keyframes splash-particle {
+          0% { opacity: 0; transform: scale(0) translate(0, 0); }
+          50% { opacity: 1; transform: scale(1.2) translate(var(--x, 0), var(--y, 0)); }
+          100% { opacity: 0; transform: scale(0.4) translate(var(--x, 0), var(--y, 0)); }
+        }
+        @keyframes splash-ripple {
+          0% { opacity: 0; transform: scale(0.5); }
+          50% { opacity: 0.4; transform: scale(2.5); }
+          100% { opacity: 0; transform: scale(2.5); }
+        }
+      `}</style>
     </footer>
   )
 }
@@ -288,20 +298,20 @@ function NewsletterForm({ dict }: { dict: any }) {
           {isPending ? (
             <Icon name="progress_activity" className="text-[16px] animate-spin" />
           ) : state?.success ? (
-            <Icon name="check_circle" className="text-[16px]" />
+            <Icon name="check_circle" className="text-[16px] " />
           ) : (
             dict?.footer?.join_button || "Pridruži se"
           )}
         </Button>
       </div>
       {state?.message && (
-        <motion.p 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`text-[10px] mt-2 font-black uppercase tracking-widest ${state.success ? "text-emerald-400" : "text-red-400"}`}
+        <p 
+          className={`text-[10px] mt-2 font-black uppercase tracking-widest transition-all duration-300 ${
+            state.success ? "text-emerald-400" : "text-red-400"
+          }`}
         >
           {state.message}
-        </motion.p>
+        </p>
       )}
     </form>
   );

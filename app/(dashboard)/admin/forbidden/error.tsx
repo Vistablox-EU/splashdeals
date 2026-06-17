@@ -30,9 +30,9 @@ export default function ForbiddenError({
           <h1 className="text-3xl font-black italic tracking-tighter uppercase leading-none text-foreground">
             Access <br />
             <span className="text-muted-foreground">Error</span>
-          </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
-            Something went wrong while checking your access permissions. Please try again.
+           </h1>
+           <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
+              Došlo je do greške prilikom provere vaših dozvola. Molimo pokušajte ponovo.
           </p>
         </div>
         <div className="flex flex-col gap-3 pt-4">
@@ -42,12 +42,12 @@ export default function ForbiddenError({
             className="font-black uppercase tracking-widest text-[10px] h-11 rounded-xl"
           >
             <Icon name="refresh" className="size-4" />
-            Try Again
+            Pokušaj ponovo
           </Button>
           <Button asChild variant="secondary" className="font-black uppercase tracking-widest text-[10px] h-11 rounded-xl">
             <Link href="/admin/dashboard">
               <Icon name="home" className="size-4" />
-              Dashboard
+              Kontrolna tabla
             </Link>
           </Button>
         </div>

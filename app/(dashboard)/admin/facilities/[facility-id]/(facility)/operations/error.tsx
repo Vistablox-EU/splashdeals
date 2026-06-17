@@ -9,5 +9,5 @@ export default function OperationsError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return <SlotError error={error} reset={reset} title="Operations Error" />
+  return <SlotError error={error} reset={reset} title="Nije moguće učitati radno vreme" />
 }

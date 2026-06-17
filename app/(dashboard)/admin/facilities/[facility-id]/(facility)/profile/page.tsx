@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { FacilityProfileForm } from "./_components/facility-profile-form"
 import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
@@ -5,6 +6,8 @@ import { connection } from "next/server"
 import { auth } from "@/server/lib/auth"
 import { headers } from "next/headers"
 import type { Metadata } from "next"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/Icon"
 
 export async function generateMetadata({
   params,
@@ -51,11 +54,18 @@ export default async function ProfilePage({ params }: { params: Promise<{ 'facil
   const userRole = session?.user?.role || "GUEST"
   
   return (
-    <FacilityProfileForm 
-      facility={facility} 
-      availableCities={availableCities} 
-      userRole={userRole}
-      transactionCount={transactionCount}
-    />
+    <div className="flex flex-col gap-4">
+      <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-muted/50">
+        <Link href={`/admin/facilities/${facilityId}`}>
+          <Icon name="keyboard_arrow_left" className="size-4" />
+        </Link>
+      </Button>
+      <FacilityProfileForm 
+        facility={facility} 
+        availableCities={availableCities} 
+        userRole={userRole}
+        transactionCount={transactionCount}
+      />
+    </div>
   )
 }

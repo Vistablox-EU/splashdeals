@@ -9,29 +9,29 @@ export interface NavItem {
 export const adminNavData = {
   navMain: [
     {
-      title: "Command Center",
+      title: "Kontrolna tabla",
       url: "/admin/dashboard",
       icon: "dashboard",
       items: [
         {
-          title: "Global Overview",
+          title: "Pregled",
           url: "/admin/dashboard",
           icon: "globe",
         },
       ],
     },
     {
-      title: "Facilities Registry",
+      title: "Objekti",
       url: "/admin/facilities",
       icon: "store",
       items: [
         {
-          title: "Facility Directory",
+          title: "Spisak objekata",
           url: "/admin/facilities",
           icon: "list",
         },
         {
-          title: "Register New Facility",
+          title: "Novi objekat",
           url: "/admin/facilities/new",
           icon: "add_business",
           requiredRole: "SUPER_ADMIN",
@@ -39,24 +39,24 @@ export const adminNavData = {
       ],
     },
     {
-      title: "Security & Operations",
+      title: "Bezbednost i operacije",
       url: "/admin/support",
       icon: "security",
       items: [
         {
-          title: "Admin Users",
+          title: "Administratori",
           url: "/admin/users",
           icon: "people",
           requiredRole: "SUPER_ADMIN",
         },
         {
-          title: "Agent API Keys",
+          title: "API ključevi",
           url: "/admin/api-keys",
           icon: "key",
           requiredRole: "SUPER_ADMIN",
         },
         {
-          title: "Customer Support Logs",
+          title: "Podrška",
           url: "/admin/support",
           icon: "support",
           requiredRole: "SUPER_ADMIN",

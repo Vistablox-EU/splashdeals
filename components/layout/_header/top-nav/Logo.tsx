@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -33,39 +32,29 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: 
         </div>
 
         <div className="relative">
-          {/* Water Splash Particles */}
-          <AnimatePresence mode="popLayout">
-            {(isHovered && !isReducedMotion) && (
-              <div className="absolute inset-0 pointer-events-none">
-                {[...Array(12)].map((_, i) => (
-                  <motion.div
-                    key={`drop-${i}`}
-                    initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                    animate={{
-                      opacity: [0, 1, 0],
-                      scale: [0, 1.2, 0.4],
-                      x: ((i * 37) % 80) - 40,
-                      y: ((i * 41) % 70) - 45,
-                    }}
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      duration: 0.8,
-                      ease: "easeOut",
-                      delay: i * 0.01,
-                    }}
-                    className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-cyan-400 rounded-full blur-[1px]"
-                  />
-                ))}
-                {/* Ripple Effect */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: [0, 0.4, 0], scale: 2.5 }}
-                  transition={{ duration: 0.6 }}
-                  className="absolute inset-0 bg-cyan-400/30 rounded-xl blur-lg"
-                />
-              </div>
-            )}
-          </AnimatePresence>
+          {/* Water Splash Particles — CSS animated on hover */}
+          <div
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+              (isHovered && !isReducedMotion) ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={`drop-${i}`}
+                style={{
+                  animation: `logo-particle 0.8s ease-out ${i * 0.01}s forwards`,
+                  "--x": `${((i * 37) % 80) - 40}px`,
+                  "--y": `${((i * 41) % 70) - 45}px`,
+                } as React.CSSProperties}
+                className="absolute top-1/2 left-1/2 w-[6px] h-[6px] bg-cyan-400 rounded-full blur-[1px] opacity-0"
+              />
+            ))}
+            {/* Ripple Effect */}
+            <div
+              style={{ animation: "logo-ripple 0.6s ease-out forwards" }}
+              className="absolute inset-0 bg-cyan-400/30 rounded-xl blur-lg opacity-0"
+            />
+          </div>
         </div>
 
         <span className="text-2xl md:text-3xl font-black italic uppercase text-white group-hover:text-cyan-50 transition-colors -ml-1">
@@ -77,6 +66,20 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: 
           <div className="absolute inset-0 w-1.5 h-1.5 rounded-full bg-cyan-300 animate-pulse delay-75 scale-150 opacity-20 pointer-events-none group-hover:scale-[3] transition-transform duration-500" />
         </div>
       </div>
+
+      {/* CSS keyframes for logo splash particles */}
+      <style>{`
+        @keyframes logo-particle {
+          0% { opacity: 0; transform: scale(0) translate(0, 0); }
+          50% { opacity: 1; transform: scale(1.2) translate(var(--x, 0), var(--y, 0)); }
+          100% { opacity: 0; transform: scale(0.4) translate(var(--x, 0), var(--y, 0)); }
+        }
+        @keyframes logo-ripple {
+          0% { opacity: 0; transform: scale(0.5); }
+          50% { opacity: 0.4; transform: scale(2.5); }
+          100% { opacity: 0; transform: scale(2.5); }
+        }
+      `}</style>
     </Link>
   );
 }

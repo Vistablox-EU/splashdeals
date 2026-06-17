@@ -11,5 +11,5 @@ export default function ProfileError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return <SlotError error={error} reset={reset} title="Profile Segment Error" />
+  return <SlotError error={error} reset={reset} title="Nije moguće učitati profil" />
 }

@@ -2,7 +2,6 @@ import { Icon } from "@/components/ui/Icon";
 import { prisma } from "@/server/lib/prisma";
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
-import * as motion from "framer-motion/client";
 
 interface LocationGridProps {
   
@@ -35,11 +34,9 @@ export async function LocationGrid({ facilitiesLabel }: LocationGridProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
       {activeCities.map((city, i) => (
-        <motion.div
+        <div
           key={city.id}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: i * 0.05 }}
+          className="transition-all duration-300"
         >
           <Link href={`/search?q=${encodeURIComponent(city.name)}`}>
             <GlassCard className="p-6 text-center hover:bg-cyan-500/10 transition-colors border-white/5 group relative overflow-hidden">
@@ -54,7 +51,7 @@ export async function LocationGrid({ facilitiesLabel }: LocationGridProps) {
               </span>
             </GlassCard>
           </Link>
-        </motion.div>
+        </div>
       ))}
     </div>
   );

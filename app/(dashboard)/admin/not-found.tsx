@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Page Not Found | Splashdeals Admin",
+  title: "Stranica nije pronađena | Splashdeals Admin",
   description: "This admin sector does not exist or has been relocated.",
 }
 
@@ -19,7 +19,7 @@ export default function AdminNotFound() {
       </div>
 
       <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-4">
-        Page Not Found
+        Stranica nije pronađena
       </h1>
 
       <p className="max-w-md text-muted-foreground font-medium leading-relaxed mb-8">
@@ -30,7 +30,7 @@ export default function AdminNotFound() {
       <Button asChild variant="secondary" size="lg" className="font-black uppercase tracking-widest text-[10px] rounded-xl">
         <Link href="/admin">
           <Icon name="arrow_back" className="size-4" />
-          Command Center
+          Kontrolna tabla
         </Link>
       </Button>
     </div>

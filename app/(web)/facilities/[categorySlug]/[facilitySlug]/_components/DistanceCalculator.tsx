@@ -2,7 +2,6 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface DistanceCalculatorProps {

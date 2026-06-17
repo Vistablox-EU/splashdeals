@@ -2,7 +2,6 @@
 import { Icon } from "@/components/ui/Icon";
 
 import React from "react"
-import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 interface Amenity {
@@ -132,12 +131,8 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
           const iconName = resolveAmenityIcon(fa.amenity.icon)
 
           return (
-            <motion.div
+            <div
               key={fa.amenityId}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05, duration: 0.4 }}
               className="relative group flex flex-row items-center gap-3 p-4 min-h-[76px] rounded-2xl border border-white/5 bg-slate-950/20 backdrop-blur-md hover:border-cyan-500/30 hover:bg-white/[0.02] transition-all duration-500 cursor-default overflow-hidden sm:flex-col sm:items-center sm:justify-center sm:text-center sm:p-8 sm:min-h-[170px]"
             >
               {/* 🔮 Glow Hover Effect */}
@@ -173,7 +168,7 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
                   </span>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )
         })}
       </div>

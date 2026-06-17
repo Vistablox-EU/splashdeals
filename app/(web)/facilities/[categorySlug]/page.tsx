@@ -4,7 +4,6 @@ import { connection } from "next/server";
 import { getDictionary } from "@/lib/dictionaries";
 import { FacilityGrid } from "../_components/FacilityGrid";
 import { FacilityGridSkeleton } from "../_components/FacilitySkeletons";
-import * as motion from "framer-motion/client";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { prisma } from "@/server/lib/prisma";
@@ -153,9 +152,7 @@ export async function DiscoveryTemplate({ params }: PageProps) {
 
       {/* 🏙️ DISCOVERY HEADER */}
       <header className="mb-20">
-         <motion.div 
-           initial={{ opacity: 0, x: -20 }}
-           animate={{ opacity: 1, x: 0 }}
+         <div 
            className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12"
          >
             <div className="max-w-3xl">
@@ -166,7 +163,7 @@ export async function DiscoveryTemplate({ params }: PageProps) {
                  {dict.facilities.best_label} <br/> <span className="text-splash capitalize">{displayName}</span> {dict.facilities.facilities_label}
                </h1>
             </div>
-         </motion.div>
+         </div>
       </header>
 
       {/* 🚀 FACILITIES GRID (Streaming) */}

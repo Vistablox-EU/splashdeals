@@ -34,25 +34,25 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
   const b = `/admin/facilities/${facility.id}`
 
   const tabs = [
-    { title: "Overview", href: b, active: isActive(b, true), icon: "dashboard" },
+    { title: "Pregled", href: b, active: isActive(b, true), icon: "dashboard" },
     {
-      title: "Tickets",
+      title: "Ulaznice",
       href: `${b}/tickets`,
       active: isActive(`${b}/tickets`),
       icon: "confirmation_number",
       count: (counts?.tickets ?? 0) + (counts?.ticketGroups ?? 0) || undefined,
     },
-    { title: "Profile", href: `${b}/profile`, active: isActive(`${b}/profile`, true), icon: "account_circle" },
+    { title: "Profil", href: `${b}/profile`, active: isActive(`${b}/profile`, true), icon: "account_circle" },
     {
-      title: "Amenities",
+      title: "Sadržaji",
       href: `${b}/amenities`,
       active: isActive(`${b}/amenities`),
       icon: "grid_view",
       count: counts?.amenities,
     },
-    { title: "Operations", href: `${b}/operations`, active: isActive(`${b}/operations`), icon: "schedule" },
+    { title: "Radno vreme", href: `${b}/operations`, active: isActive(`${b}/operations`), icon: "schedule" },
     {
-      title: "Media",
+      title: "Mediji",
       href: `${b}/media`,
       active: isActive(`${b}/media`),
       icon: "photo_library",
@@ -67,7 +67,7 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
         <div className="flex items-center gap-1 shrink-0">
           <SidebarTrigger className="size-8 rounded-lg hover:bg-accent hover:text-accent-foreground" />
           <Button variant="ghost" size="icon" asChild className="size-8 rounded-lg text-muted-foreground hover:text-foreground">
-            <Link href="/admin/facilities" title="Back to Facilities">
+            <Link href="/admin/facilities" title="Nazad na objekte">
               <Icon name="keyboard_arrow_left" className="size-4" />
             </Link>
           </Button>
@@ -80,7 +80,7 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider truncate max-w-[160px] sm:max-w-[240px]">
             {facility.name}
           </span>
-          <div className="size-1.5 rounded-full bg-emerald-500 shrink-0" />
+          <div className="size-1.5 rounded-full bg-emerald-500 shrink-0" aria-label="Facility online" />
         </div>
 
         <Separator orientation="vertical" className="h-5 mr-2 hidden md:block" />

@@ -3,7 +3,6 @@ import { Icon } from "@/components/ui/Icon";
 
 import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -113,13 +112,11 @@ export function SuccessClient({
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8 text-center pt-20">
         <div className="relative">
-            <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="text-cyan-500"
+            <div
+            className="text-cyan-500 animate-spin"
             >
             <Icon name="progress_activity" className="text-[80px]" />
-            </motion.div>
+            </div>
             <div className="absolute inset-0 flex items-center justify-center">
                 <Icon name="confirmation_number" className="text-[24px] text-cyan-400 opacity-50" />
             </div>
@@ -131,11 +128,10 @@ export function SuccessClient({
           <p className="text-slate-400 font-medium">{dict.processing.description}</p>
           <div className="flex justify-center gap-1">
             {[0, 1, 2].map((i) => (
-                <motion.div 
+                <div
                     key={i}
-                    animate={{ opacity: [0.3, 1, 0.3] }}
-                    transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
-                    className="w-1.5 h-1.5 rounded-full bg-cyan-500"
+                    className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse-dot"
+                    style={{ animationDelay: `${i * 0.2}s` }}
                 />
             ))}
           </div>
@@ -147,20 +143,11 @@ export function SuccessClient({
   return (
     <div className="space-y-16 pb-20">
       {/* 🌟 Header Section */}
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-6"
-      >
+      <div className="text-center space-y-6 animate-fade-in-up">
         <div className="relative inline-block">
-            <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", damping: 12, stiffness: 200 }}
-                className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 relative z-10"
-            >
+            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 relative z-10 animate-scale-in">
             <Icon name="check_circle" className="text-[56px]" />
-            </motion.div>
+            </div>
             <div className="absolute -top-4 -right-4 w-12 h-12 bg-cyan-500/20 blur-2xl rounded-full animate-pulse" />
             <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-blue-500/20 blur-2xl rounded-full animate-pulse delay-700" />
         </div>
@@ -173,18 +160,16 @@ export function SuccessClient({
               {dict.header.description}
             </p>
         </div>
-      </motion.div>
+      </div>
 
       {/* 🎟️ Ticket Container */}
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <AnimatePresence mode="popLayout">
             {transaction.issuedTickets.map((issuedTicket, index) => (
-                <motion.div
+                <div
                 key={issuedTicket.id}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + index * 0.1, type: "spring" }}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                 >
                 <GlassCard className="group overflow-hidden flex flex-col md:flex-row p-0 border-white/5 bg-slate-950/40 hover:border-cyan-500/30 transition-colors duration-500">
                     {/* QR Code Wing */}
@@ -255,17 +240,13 @@ export function SuccessClient({
                         </div>
                     </div>
                 </GlassCard>
-                </motion.div>
+                </div>
             ))}
-            </AnimatePresence>
         </div>
 
         {/* 🛠️ Footer Actions */}
-        <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10"
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10 animate-fade-in"
+            style={{ animationDelay: "0.8s", animationFillMode: "both" }}
         >
             <Link href="/facilities" className="w-full sm:w-auto">
             <LiquidButton variant="secondary" size="lg" className="w-full sm:w-auto h-16 px-10">
@@ -283,7 +264,7 @@ export function SuccessClient({
                 <Icon name="download" className="text-[20px] mr-3 text-black" />
                 {dict.actions.download}
             </LiquidButton>
-        </motion.div>
+        </div>
 
         <div className="text-center pt-8">
             <p className="text-xs text-slate-500 font-medium">

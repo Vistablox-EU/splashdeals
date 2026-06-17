@@ -28,10 +28,10 @@ export default function FacilitiesError({
 
         <div className="space-y-2">
           <h1 className="text-2xl font-black italic tracking-tighter uppercase text-foreground">
-            Facilities <span className="text-muted-foreground">Error</span>
-          </h1>
-          <p className="text-muted-foreground text-sm max-w-xs mx-auto">
-            Could not load the facilities section. Please try again.
+            Objekti <span className="text-muted-foreground">Greška</span>
+           </h1>
+           <p className="text-muted-foreground text-sm max-w-xs mx-auto">
+              Nije moguće učitati listu objekata. Molimo pokušajte ponovo.
           </p>
         </div>
 
@@ -42,12 +42,12 @@ export default function FacilitiesError({
             className="w-full px-8 py-4 rounded-xl bg-muted/30 hover:bg-muted/50 border border-border/50 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
           >
             <Icon name="refresh" className="text-[16px]" />
-            Try Again
+            Pokušaj ponovo
           </Button>
           <Button asChild variant="secondary" className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-white text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all">
             <Link href="/admin/facilities">
               <Icon name="apartment" className="text-[16px]" />
-              All Facilities
+              Svi objekti
             </Link>
           </Button>
         </div>

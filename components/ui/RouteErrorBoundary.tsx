@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { GlassCard } from "@/components/ui/GlassCard"
 import Link from "next/link"
 import { getClientDictionary } from "@/lib/client-dictionaries"
-import { motion } from "framer-motion"
 
 interface RouteErrorBoundaryProps {
   error: Error & { digest?: string }
@@ -47,10 +46,7 @@ export function RouteErrorBoundary({
   if (isModal) {
     return (
       <div className="flex items-center justify-center p-6 bg-navy-deep/80 backdrop-blur-md rounded-[2.5rem] border border-white/5 selection:bg-cyan-500/20 max-w-lg mx-auto">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
+        <div 
           className="text-center space-y-6 p-6 w-full"
         >
           <div className="relative inline-flex items-center justify-center h-16 w-16 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 mx-auto">
@@ -83,7 +79,7 @@ export function RouteErrorBoundary({
               {dict.errors.back_home}
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     )
   }
@@ -98,10 +94,7 @@ export function RouteErrorBoundary({
          </div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+      <div
         className="max-w-xl w-full relative z-10"
       >
         <GlassCard className="p-8 md:p-16 border-cyan-500/10 bg-white/5 text-center space-y-8">
@@ -136,7 +129,7 @@ export function RouteErrorBoundary({
              </Link>
           </div>
         </GlassCard>
-      </motion.div>
+      </div>
     </div>
   )
 }

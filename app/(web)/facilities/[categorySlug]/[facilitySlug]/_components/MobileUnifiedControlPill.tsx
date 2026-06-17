@@ -2,7 +2,6 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { formatTime24h } from "@/lib/utils/date-time";
 import type { OperatingHours } from "@prisma/client";
 
@@ -91,11 +90,8 @@ export function MobileUnifiedControlPill({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="flex items-center justify-between w-full max-w-md mx-auto h-16 bg-slate-950/40 backdrop-blur-xl border border-white/10 rounded-full px-5 shadow-2xl relative select-none"
+    <div
+      className="flex items-center justify-between w-full max-w-md mx-auto h-16 bg-slate-950/40 backdrop-blur-xl border border-white/10 rounded-full px-5 shadow-2xl relative select-none animate-fade-in-up"
     >
       {/* 🌤️ Segment 1: Weather */}
       <div className="flex items-center gap-2.5 px-2 flex-1 justify-center">
@@ -136,10 +132,9 @@ export function MobileUnifiedControlPill({
       <div className="w-px h-7 bg-white/10 self-center" />
 
       {/* 🧭 Segment 3: Navigation Trigger */}
-      <motion.button
-        whileTap={{ scale: 0.93 }}
+      <button
         onClick={handleNavigation}
-        className="flex items-center gap-2 px-3 flex-1 justify-center h-full text-cyan-400 hover:text-cyan-300 transition-colors active:opacity-80 group cursor-pointer"
+        className="flex items-center gap-2 px-3 flex-1 justify-center h-full text-cyan-400 hover:text-cyan-300 transition-colors active:scale-95 active:opacity-80 group cursor-pointer"
       >
         <Icon name="navigation" className="text-[24px] fill-current animate-pulse text-cyan-400 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
         {distance !== null ? (
@@ -151,7 +146,7 @@ export function MobileUnifiedControlPill({
             Ruta
           </span>
         )}
-      </motion.button>
-    </motion.div>
+      </button>
+    </div>
   );
 }

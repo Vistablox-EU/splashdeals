@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { createFacilityAction } from "@/server/actions/facilities"
+import { toast } from "sonner"
 import { facilitySchema, type FacilityFormValues } from "@/server/lib/validations/facility"
 
 import { IdentitySection } from "./sections/identity-section"
@@ -61,6 +62,7 @@ export function OnboardFacilityForm() {
     
     if (result?.success) {
       const { id } = result as { success: true; id: string }
+      toast.success("Facility created successfully")
       router.push(`/admin/facilities/${id}`)
     } else {
       const error = result && "error" in result ? (result as { success: false; error: string }).error : null

@@ -21,7 +21,7 @@ export default async function CreateUserPage() {
             </Link>
             </Button>
             <div>
-            <h1 className="text-2xl font-black tracking-tighter text-foreground uppercase italic">Onboard Admin</h1>
+            <h1 className="text-2xl font-black tracking-tighter text-foreground uppercase italic">Novi administrator</h1>
             <p className="text-muted-foreground mt-1 text-xs uppercase tracking-widest opacity-80">
                 Grant administrative clearance to a new team member.
             </p>

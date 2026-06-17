@@ -4,7 +4,7 @@ import { requireSuperAdmin } from "@/server/lib/auth-guards"
 import { ApiKeysClient } from "./api-keys-client"
 
 export const metadata: Metadata = {
-  title: "API Keys | Splashdeals Admin",
+  title: "API ključevi | Splashdeals Admin",
   description: "Manage agent API keys for Splashdeals integrations.",
 }
 

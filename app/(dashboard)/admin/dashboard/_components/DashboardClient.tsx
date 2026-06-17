@@ -38,11 +38,11 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 <Icon name="monitor_heart" className="size-3.5 text-cyan-400" />
-                Activity Pulse
+                Puls aktivnosti
               </div>
               <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
                 <div className="h-1 w-1 rounded-full bg-cyan-500 animate-pulse" />
-                <span className="text-[9px] font-black text-cyan-500 uppercase tracking-tight">Live</span>
+                <span className="text-[9px] font-black text-cyan-500 uppercase tracking-tight">Uživo</span>
               </div>
             </div>
 
@@ -73,9 +73,9 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
                     <div className="absolute inset-0 h-8 w-8 text-cyan-500/20 animate-ping" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Stream Quiet</h3>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Tok miruje</h3>
                     <p className="text-[9px] font-bold text-muted-foreground/80 uppercase leading-relaxed">
-                      No transactions recorded in the last hour.
+                      Nema transakcija u poslednjem satu.
                     </p>
                   </div>
                 </div>
@@ -83,13 +83,13 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
             </div>
 
             <div className="mt-6 pt-6 border-t border-border/50 space-y-3">
-              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em]">System Status</div>
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Status sistema</div>
               <div className="flex items-center justify-between p-2 rounded-md bg-muted/10 border border-border/50">
                 <span className="text-[9px] font-bold text-muted-foreground uppercase">Gateway</span>
-                <span className="text-[9px] font-mono text-emerald-400 uppercase">Online</span>
+                <span className="text-[9px] font-mono text-emerald-400 uppercase">Na mreži</span>
               </div>
               <div className="flex items-center justify-between p-2 rounded-md bg-muted/10 border border-border/50">
-                <span className="text-[9px] font-bold text-muted-foreground uppercase">Environment</span>
+                <span className="text-[9px] font-bold text-muted-foreground uppercase">Okruženje</span>
                 <span className="text-[9px] font-mono text-cyan-400 uppercase">SD-2026-BETA</span>
               </div>
             </div>
@@ -99,14 +99,14 @@ export function DashboardClient({ stats, recentActivity }: { stats: DashboardSta
         <div className="mt-4 p-8 rounded-xl border border-dashed border-border bg-muted/5 flex flex-col items-center justify-center text-center gap-3">
           <Icon name="database" className="size-6 text-muted-foreground/40" />
           <div className="space-y-1">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Operational Queue</h3>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Operativni red</h3>
             <p className="text-[10px] font-bold text-muted-foreground/80 uppercase">
-              The real-time operations engine is synchronized with the primary node.
+              Stvarni operativni pogon sinhronizovan je sa primarnim čvorom.
             </p>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
-              Primary Node
+              Primarni čvor
             </div>
             <div className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black text-cyan-500 uppercase tracking-widest">
               v2.4.1

@@ -22,6 +22,14 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { reorderTicketGroupsAction } from "@/server/actions/tickets"
 import { SerializedTicketGroup } from "./columns"
@@ -119,6 +127,7 @@ function SortableGroupCard({
             group.isActive ? "bg-emerald-500" : "bg-muted"
           )}
           title={group.isActive ? "Aktivno" : "Skica"}
+          aria-label={group.isActive ? "Active" : "Inactive"}
         />
 
         {/* Hover action buttons */}
@@ -163,6 +172,7 @@ export function GroupPanel({
   const [groups, setGroups] = React.useState(initialGroups)
   const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   const [selectedGroup, setSelectedGroup] = React.useState<SerializedTicketGroup | null>(null)
+  const [groupToDelete, setGroupToDelete] = React.useState<string | null>(null)
 
   // Sync when server refreshes data
   React.useEffect(() => {
@@ -229,10 +239,14 @@ export function GroupPanel({
   }
 
   const handleDelete = (id: string) => {
-    if (!confirm("Da li ste sigurni da želite da obrišete ovu grupu?")) return
-    // Optimistic removal; server-side delete happens in TicketGroupSheet
-    setGroups((prev) => prev.filter((g) => g.id !== id))
+    setGroupToDelete(id)
+  }
+
+  const confirmDelete = () => {
+    if (!groupToDelete) return
+    setGroups((prev) => prev.filter((g) => g.id !== groupToDelete))
     toast.success("Grupa obrisana")
+    setGroupToDelete(null)
   }
 
   return (
@@ -338,6 +352,22 @@ export function GroupPanel({
           onOpenChange={setIsSheetOpen}
         />
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={groupToDelete !== null} onOpenChange={() => setGroupToDelete(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Group</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this group? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setGroupToDelete(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </aside>
   )
 }

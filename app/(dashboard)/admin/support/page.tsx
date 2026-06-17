@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Support Logs | Splashdeals Admin",
+  title: "Podrška | Splashdeals Admin",
   description: "Customer support logs and escalation management.",
 }
 
@@ -14,7 +14,7 @@ export default function SupportPage() {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full -mr-64 -mt-64 pointer-events-none" />
 
       <div className="relative z-10">
-        <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">Customer Support Logs</h1>
+        <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">Podrška</h1>
         <p className="text-muted-foreground mt-1.5 text-xs font-medium uppercase tracking-wider opacity-80">
           Track and manage customer support tickets and escalations.
         </p>
@@ -31,7 +31,7 @@ export default function SupportPage() {
         <Button asChild variant="outline" className="mt-8 border-border hover:bg-muted/30 text-foreground font-bold uppercase tracking-widest text-[11px] h-11 px-8 rounded-xl">
           <Link href="/admin">
             <Icon name="arrow_back" className="mr-2 text-[16px]" />
-            Back to Dashboard
+            Nazad na kontrolnu tablu
           </Link>
         </Button>
       </div>

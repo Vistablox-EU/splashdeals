@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Access Restricted | Splashdeals Admin",
+  title: "Ograničen pristup | Splashdeals Admin",
   description: "Your administrative clearance does not permit access to this sector.",
 }
 
@@ -19,7 +19,7 @@ export default function ForbiddenPage() {
       </div>
       
       <h1 className="text-4xl font-black tracking-tighter text-foreground uppercase italic mb-4">
-        Access Restricted
+        Ograničen pristup
       </h1>
       
       <p className="max-w-md text-muted-foreground font-medium leading-relaxed mb-8">
@@ -30,7 +30,7 @@ export default function ForbiddenPage() {
       <Button asChild variant="outline" size="lg" className="rounded-xl">
         <Link href="/admin/dashboard">
           <Icon name="arrow_back" className="mr-2 size-4" />
-          Return to Command Center
+          Nazad na kontrolnu tablu
         </Link>
       </Button>
     </div>

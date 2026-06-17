@@ -22,10 +22,10 @@ export default function SupportError({
       </div>
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-black italic tracking-tighter uppercase text-foreground">
-          Support <span className="text-muted-foreground">Error</span>
+          Podrška <span className="text-muted-foreground">Greška</span>
         </h1>
         <p className="text-muted-foreground text-sm max-w-xs mx-auto">
-          Could not load the support section. Please try again.
+          Nije moguće učitati podršku. Molimo pokušajte ponovo.
         </p>
       </div>
       <div className="flex flex-col gap-3 max-w-sm mx-auto w-full pt-2">
@@ -35,14 +35,14 @@ export default function SupportError({
           className="w-full px-8 py-4 rounded-xl bg-muted/30 hover:bg-muted/50 border border-border/50 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
         >
           <Icon name="refresh" className="text-[16px]" />
-          Try Again
+          Pokušaj ponovo
         </Button>
         <Link
           href="/admin/support"
           className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-white text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
         >
           <Icon name="support_agent" className="text-[16px]" />
-          Support
+          Podrška
         </Link>
       </div>
     </div>

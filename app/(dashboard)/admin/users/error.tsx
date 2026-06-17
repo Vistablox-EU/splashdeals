@@ -24,10 +24,10 @@ export default function UsersError({
         </div>
         <div className="space-y-3">
           <h1 className="text-3xl font-black italic tracking-tighter uppercase leading-none text-foreground">
-            Users <span className="text-muted-foreground">Error</span>
-          </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
-            Something went wrong loading the users section.
+            Korisnici <span className="text-muted-foreground">Greška</span>
+           </h1>
+           <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
+              Došlo je do greške prilikom učitavanja korisnika.
           </p>
         </div>
         <div className="flex flex-col gap-3 pt-4">
@@ -37,12 +37,12 @@ export default function UsersError({
             className="font-black uppercase tracking-widest text-[10px] h-11 rounded-xl"
           >
             <Icon name="refresh" className="size-4" />
-            Try Again
+            Pokušaj ponovo
           </Button>
           <Button asChild variant="secondary" className="font-black uppercase tracking-widest text-[10px] h-11 rounded-xl">
             <Link href="/admin/users">
               <Icon name="arrow_back" className="size-4" />
-              Back to Users
+              Nazad na korisnike
             </Link>
           </Button>
         </div>

@@ -29,10 +29,10 @@ export default function NewUserError({
         <div className="space-y-3">
           <h1 className="text-3xl font-black italic tracking-tighter uppercase leading-none text-foreground">
             User <br />
-            <span className="text-muted-foreground">Onboarding Error</span>
-          </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
-            Something went wrong while creating the admin user. Please try again.
+            <span className="text-muted-foreground">Greška prilikom kreiranja</span>
+           </h1>
+           <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
+              Došlo je do greške prilikom kreiranja administratora. Molimo pokušajte ponovo.
           </p>
         </div>
         <div className="flex flex-col gap-3 pt-4">
@@ -42,14 +42,14 @@ export default function NewUserError({
             className="w-full px-8 py-4 rounded-xl bg-muted/30 hover:bg-muted/50 border border-border/50 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
           >
             <Icon name="refresh" className="text-[16px]" />
-            Try Again
+            Pokušaj ponovo
           </Button>
           <Link
             href="/admin/users"
             className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-white text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
           >
             <Icon name="arrow_back" className="text-[16px]" />
-            Back to Users
+            Nazad na korisnike
           </Link>
         </div>
       </GlassCard>

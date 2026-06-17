@@ -31,13 +31,6 @@ export function AmenitiesError({ error, resetErrorBoundary }: AmenitiesErrorProp
           A runtime database boundary exception or edge serialization error occurred while loading active assets.
         </p>
       </div>
-
-      {error.message && (
-        <div className="bg-background/80 border border-border/50 rounded-lg px-3 py-1.5 max-w-md font-mono text-[9px] text-rose-400 leading-tight">
-          {error.message}
-        </div>
-      )}
-
       <Button
         type="button"
         onClick={resetErrorBoundary}

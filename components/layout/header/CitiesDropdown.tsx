@@ -3,7 +3,6 @@ import { Icon } from "@/components/ui/Icon";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,12 +65,13 @@ export function CitiesDropdown({ label, allRegionsLabel }: CitiesDropdownProps) 
         >
           <Icon name="location_on" className="text-[12px] text-cyan-500/70 group-hover:text-cyan-400 transition-colors" />
           {label}
-          <motion.div
-            animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
+          <div
+            className={`transition-transform duration-200 ${
+              isOpen ? "rotate-180" : "rotate-0"
+            }`}
           >
             <Icon name="keyboard_arrow_down" className="text-[12px] opacity-50" />
-          </motion.div>
+          </div>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 

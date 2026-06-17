@@ -1,4 +1,3 @@
-import * as motion from "framer-motion/client";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Icon } from "@/components/ui/Icon";
 interface Step {
@@ -17,12 +16,9 @@ export function HowItWorksSteps({ steps }: HowItWorksStepsProps) {
   return (
     <div className="grid gap-8 mb-20">
       {steps.map((step, idx) => (
-        <motion.div
+        <div
           key={idx}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 * idx }}
+          className="transition-all duration-700"
         >
           <GlassCard className="p-8 sm:p-12 border-white/5 flex flex-col sm:flex-row gap-8 items-start relative overflow-hidden group">
             <div className={`p-6 rounded-2xl ${step.bg} ${step.color} shrink-0 group-hover:scale-110 transition-transform duration-500`}>
@@ -41,7 +37,7 @@ export function HowItWorksSteps({ steps }: HowItWorksStepsProps) {
             {/* Background Decor */}
             <div className={`absolute -right-8 -bottom-8 h-32 w-32 rounded-full ${step.bg} blur-3xl opacity-20`} />
           </GlassCard>
-        </motion.div>
+        </div>
       ))}
     </div>
   );

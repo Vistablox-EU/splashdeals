@@ -2,7 +2,6 @@ import { Icon } from "@/components/ui/Icon";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { connection } from "next/server";
-import * as motion from "framer-motion/client";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { JsonLd } from "@/components/SEO/JsonLd";
 
@@ -72,9 +71,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
       />
       {/* 🏙️ HEADER */}
       <header className="mb-20">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div 
           className="space-y-6"
         >
           <div className="flex items-center gap-3">
@@ -96,19 +93,16 @@ export default async function SupportPage({ params: _params }: PageProps) {
             <div className="h-1 w-1 rounded-full bg-slate-800" />
             <span>{dict.support.squad || "SplashDeals Tim"}</span>
           </div>
-        </motion.div>
+        </div>
       </header>
 
       {/* 📜 CONTENT GRID */}
       <div className="space-y-12">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-lg text-slate-300 leading-relaxed font-medium"
+        <div
+          className="text-lg text-slate-300 leading-relaxed font-medium transition-opacity duration-500"
         >
           {dict.support.intro}
-        </motion.div>
+        </div>
 
         <section className="space-y-8">
           <h2 className="text-2xl font-black uppercase italic tracking-tight text-white flex items-center gap-3">
@@ -118,11 +112,9 @@ export default async function SupportPage({ params: _params }: PageProps) {
 
           <div className="grid gap-6">
             {faqs.map((faq, idx) => (
-              <motion.div
+              <div
                 key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 * idx }}
+                className="transition-all duration-300"
               >
                 <GlassCard className="p-6 border-white/5 hover:border-cyan-500/20 transition-colors group">
                   <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-3">
@@ -133,16 +125,14 @@ export default async function SupportPage({ params: _params }: PageProps) {
                     {faq.a}
                   </p>
                 </GlassCard>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>
 
         {/* 📧 CONTACT SECTION */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+        <div
+          className="transition-all duration-500"
         >
           <GlassCard className="p-8 border-cyan-500/20 bg-cyan-500/5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
@@ -159,7 +149,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
               </div>
             </div>
           </GlassCard>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

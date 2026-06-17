@@ -7,7 +7,6 @@ import { LiquidButton } from "@/components/ui/LiquidButton";
 import { useCart } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -224,26 +223,19 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
   };
 
   return (
-    <AnimatePresence>
+    <>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6">
           {/* Backdrop Blur Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             onClick={onClose}
-            className="absolute inset-0 bg-[#020617]/95 backdrop-blur-md pointer-events-auto"
+            className="absolute inset-0 bg-[#020617]/95 backdrop-blur-md pointer-events-auto animate-fade-in"
           />
 
           {/* Modal Container */}
-          <motion.div
+          <div
             ref={modalRef}
-            initial={{ opacity: 0, scale: 0.9, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 15 }}
-            transition={{ type: "spring", damping: 25, stiffness: 220 }}
-            className="relative w-full max-w-lg md:max-w-xl z-10 overflow-visible"
+            className="relative w-full max-w-lg md:max-w-xl z-10 overflow-visible animate-fade-in-up"
           >
             <GlassCard className="p-8 md:p-10 overflow-visible border-white/10 relative z-10 flex flex-col gap-6 bg-gradient-to-br from-slate-900/95 via-slate-950/90 to-cyan-950/20 shadow-[0_30px_70px_rgba(0,0,0,0.85),_0_0_50px_rgba(6,182,212,0.05)] rounded-[2.2rem]">
               
@@ -445,9 +437,9 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
               </div>
 
             </GlassCard>
-          </motion.div>
+          </div>
         </div>
       )}
-    </AnimatePresence>
+    </>
   );
 }

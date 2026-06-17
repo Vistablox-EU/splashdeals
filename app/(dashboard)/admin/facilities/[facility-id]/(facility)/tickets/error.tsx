@@ -11,5 +11,5 @@ export default function TicketsError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return <SlotError error={error} reset={reset} title="Tickets Catalog Error" />
+  return <SlotError error={error} reset={reset} title="Nije moguće učitati ulaznice" />
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { motion, HTMLMotionProps } from "framer-motion";
+import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-interface LiquidButtonProps extends HTMLMotionProps<"button"> {
+interface LiquidButtonProps extends ComponentPropsWithoutRef<"button"> {
   variant?: "primary" | "secondary" | "ghost" | "danger";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
@@ -32,13 +32,11 @@ export const LiquidButton = React.forwardRef<HTMLButtonElement, LiquidButtonProp
     };
 
     return (
-      <motion.button
-        ref={ref}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className={cn(baseClasses, variants[variant], sizes[size], className)}
+      <button
+        ref={ref as React.Ref<HTMLButtonElement>}
+        className={cn(baseClasses, variants[variant], sizes[size], "hover:scale-[1.02] active:scale-[0.98] transition-transform", className)}
         disabled={isLoading || props.disabled}
-        {...props}
+        {...(props as React.ComponentPropsWithoutRef<"button">)}
       >
         {/* Glow Overlay effect */}
         {variant === 'primary' && (
@@ -63,7 +61,7 @@ export const LiquidButton = React.forwardRef<HTMLButtonElement, LiquidButtonProp
             </svg>
           </div>
         )}
-      </motion.button>
+      </button>
     );
   }
 );

@@ -1,6 +1,5 @@
 import { prisma } from "@/server/lib/prisma";
 import { FacilityCard } from "./FacilityCard";
-import * as motion from "framer-motion/client";
 
 interface FacilityGridProps {
   
@@ -80,9 +79,7 @@ export async function FacilityGrid({ dict,
   if (processedFacilities.length === 0 && noFacilitiesLabel) {
     return (
       <div className="text-center py-24 bg-white/5 rounded-[2.5rem] border border-white/5 backdrop-blur-sm">
-        <motion.div
-           initial={{ opacity: 0, scale: 0.9 }}
-           animate={{ opacity: 1, scale: 1 }}
+        <div
            className="flex flex-col items-center gap-4"
         >
           <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center border border-white/10">
@@ -94,7 +91,7 @@ export async function FacilityGrid({ dict,
           <span className="text-slate-600 text-[10px] uppercase font-bold tracking-widest max-w-xs leading-relaxed">
             {dict?.facilities?.no_results_hint || "Pokušajte da prilagodite filtere ili istražite druge kategorije."}
           </span>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -111,15 +108,9 @@ export async function FacilityGrid({ dict,
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
       {serializedFacilities.map((facility, idx) => (
-        <motion.div
+        <div
           key={facility.id}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.5,
-            delay: idx * 0.05,
-            ease: [0.23, 1, 0.32, 1]
-          }}
+          className="transition-all duration-500"
         >
           <FacilityCard 
             facility={facility} 
@@ -127,7 +118,7 @@ export async function FacilityGrid({ dict,
             fromLabel={fromLabel}
             isPriority={idx < 10}
           />
-        </motion.div>
+        </div>
       ))}
     </div>
   );

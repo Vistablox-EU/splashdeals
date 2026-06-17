@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { useCart, initCartSync } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useBreadcrumb } from "@/hooks/use-breadcrumb";
@@ -21,9 +20,7 @@ export const Header = ({ dict, cities }: HeaderProps) => {
   const totalItems = useCart((state) => state.getTotalItems());
 
   const {
-    headerBg,
-    headerBlur,
-    headerBorder,
+    scrolled,
     isOnline,
     isTabActive,
     isReducedMotion,
@@ -50,14 +47,16 @@ export const Header = ({ dict, cities }: HeaderProps) => {
 
   return (
     <>
-      <motion.header
-        style={{
-          backgroundColor: headerBg,
-          backdropFilter: headerBlur,
-          borderColor: headerBorder,
-          zIndex: 999,
-        }}
-        className="fixed top-0 inset-x-0 z-[999] border-b transition-colors duration-500 flex flex-col justify-center px-4 md:px-12"
+      <header
+        className={`
+          fixed top-0 inset-x-0 z-[999] border-b transition-all duration-500
+          flex flex-col justify-center px-4 md:px-12
+          ${
+            scrolled
+              ? "bg-[rgba(2,6,23,0.98)] backdrop-blur-[40px] border-white/[0.12]"
+              : "bg-[rgba(2,6,23,0.95)] backdrop-blur-[20px] border-white/[0.08]"
+          }
+        `}
       >
         <DesktopTopNav
           dict={dict}
@@ -79,7 +78,7 @@ export const Header = ({ dict, cities }: HeaderProps) => {
           backHref={backHref}
           hasBreadcrumbs={hasBreadcrumbs}
         />
-      </motion.header>
+      </header>
 
       <MobileOverlay
         isMobileMenuOpen={isMobileMenuOpen}

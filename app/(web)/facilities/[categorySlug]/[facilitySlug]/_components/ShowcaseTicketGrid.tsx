@@ -2,7 +2,6 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import { motion, AnimatePresence, LayoutGroup, Variants } from "framer-motion";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Badge } from "@/components/ui/badge";
 import { LiquidButton } from "@/components/ui/LiquidButton";
@@ -106,19 +105,9 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
     scrollContainerRef.current?.scrollBy({ left: offset, behavior: "smooth" });
   };
 
-  const fadeInUp: Variants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: (i: number) => ({
-      opacity: 1,
-      scale: 1,
-      transition: { delay: i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }
-    })
-  }
-
   return (
     <section id="tickets" className="space-y-12">
-      <LayoutGroup>
-        <div className="flex flex-col items-center text-center gap-12">
+      <div className="flex flex-col items-center text-center gap-12">
 
           {/* 🎫 NAVIGATION & FILTERS */}
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 justify-between w-full">
@@ -136,7 +125,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                 >
                   {f === "ALL" ? "Sve" : f === "FIXED_DATE" ? "Datum" : f === "SUMMER_SEASON" ? "Sezona" : "Flex"}
                   {filter === f && (
-                    <motion.div layoutId="active-filter" className="absolute inset-0 bg-cyan-500 -z-10" />
+                    <div className="absolute inset-0 bg-cyan-500 -z-10" />
                   )}
                 </button>
               ))}
@@ -146,68 +135,44 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
           {/* 🎟️ TICKET MAPPING CONTAINER WITH OVERLAYS */}
           <div className="relative group/container w-full">
             {/* Liquid Left Blur/Gradient */}
-            <AnimatePresence>
-              {canScrollLeft && (
-                <>
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-y-0 -left-4 w-40 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10 pointer-events-none hidden md:block" 
-                  />
-                  <motion.button
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    onClick={() => scroll(-420)}
-                    className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white shadow-3xl hover:bg-cyan-500 hover:text-navy-deep hover:scale-110 transition-all hidden md:flex active:scale-95"
-                  >
-                    <Icon name="keyboard_arrow_left" className="text-[24px]" />
-                  </motion.button>
-                </>
-              )}
-            </AnimatePresence>
+            {canScrollLeft && (
+              <>
+                <div
+                  className="absolute inset-y-0 -left-4 w-40 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10 pointer-events-none hidden md:block" 
+                />
+                <button
+                  onClick={() => scroll(-420)}
+                  className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white shadow-3xl hover:bg-cyan-500 hover:text-navy-deep hover:scale-110 transition-all hidden md:flex active:scale-95"
+                >
+                  <Icon name="keyboard_arrow_left" className="text-[24px]" />
+                </button>
+              </>
+            )}
 
             {/* Liquid Right Blur/Gradient */}
-            <AnimatePresence>
-              {canScrollRight && (
-                <>
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-y-0 -right-4 w-40 bg-gradient-to-l from-slate-950 via-slate-950/80 to-transparent z-10 pointer-events-none hidden md:block" 
-                  />
-                  <motion.button
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    onClick={() => scroll(420)}
-                    className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white shadow-3xl hover:bg-cyan-500 hover:text-navy-deep hover:scale-110 transition-all hidden md:flex active:scale-95"
-                  >
-                    <Icon name="keyboard_arrow_right" className="text-[24px]" />
-                  </motion.button>
-                </>
-              )}
-            </AnimatePresence>
+            {canScrollRight && (
+              <>
+                <div
+                  className="absolute inset-y-0 -right-4 w-40 bg-gradient-to-l from-slate-950 via-slate-950/80 to-transparent z-10 pointer-events-none hidden md:block" 
+                />
+                <button
+                  onClick={() => scroll(420)}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white shadow-3xl hover:bg-cyan-500 hover:text-navy-deep hover:scale-110 transition-all hidden md:flex active:scale-95"
+                >
+                  <Icon name="keyboard_arrow_right" className="text-[24px]" />
+                </button>
+              </>
+            )}
 
-            <motion.div 
+            <div 
               ref={scrollContainerRef}
-              layout 
               className="flex flex-row gap-8 overflow-x-auto pb-12 pt-4 px-4 -mx-4 no-scrollbar snap-x snap-mandatory scroll-smooth w-full cursor-grab active:cursor-grabbing select-none"
             >
-              <AnimatePresence mode="popLayout">
-                {filteredTickets.map((t, i) => (
-                  <motion.div
-                    key={t.id}
-                    layout
-                    initial="hidden"
-                    animate="visible"
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    custom={i}
-                    variants={fadeInUp}
-                    className="group flex-shrink-0 w-[340px] md:w-[420px] snap-start"
-                  >
+              {filteredTickets.map((t) => (
+                <div
+                  key={t.id}
+                  className="group flex-shrink-0 w-[340px] md:w-[420px] snap-start"
+                >
                   <GlassCard className={cn(
                     "h-full p-8 border-white/5 relative overflow-hidden flex flex-col justify-between transition-all duration-500",
                     t.isFeatured ? "border-cyan-500/30 bg-cyan-500/5 shadow-[0_0_40px_rgba(6,182,212,0.1)]" : "hover:bg-white/5",
@@ -388,29 +353,25 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                       </LiquidButton>
                     </div>
                   </GlassCard>
-                </motion.div>
+                </div>
               ))}
-            </AnimatePresence>
             {filteredTickets.length === 0 && (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+              <div
                 className="w-full py-24 text-center space-y-4"
               >
                 <Icon name="filter_list" className="text-[48px] text-slate-800 mx-auto" />
                 <p className="text-slate-500 italic">Nema karata u ovoj kategoriji.</p>
-              </motion.div>
+              </div>
             )}
-            </motion.div>
+            </div>
           </div>
 
           {/* 💧 LIQUID PROGRESS BAR */}
           <div className="w-full max-w-md mx-auto space-y-4">
              <div className="h-1 w-full bg-white/5 rounded-full relative overflow-hidden">
-                <motion.div 
+                <div 
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-cyan-500 to-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                  animate={{ width: `${scrollProgress}%` }}
-                  transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+                  style={{ width: `${scrollProgress}%` }}
                 />
              </div>
              <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-500 px-1 opacity-60">
@@ -419,7 +380,6 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
              </div>
           </div>
         </div>
-      </LayoutGroup>
     </section>
   )
 }

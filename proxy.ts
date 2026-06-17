@@ -1,16 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ROUTING_CONFIG } from './lib/routing/config';
-import { auth } from '@/server/lib/auth';
 
 /**
  * 🌊 Splashdeals Proxy (Next.js 16+ Architecture)
- * Consolidates Security, Affiliate Tracking, and Canonical Routing at the Edge.
+ * Edge-only gateway: URL normalization, redirects, cache, security headers.
+ * NO auth, NO business logic — those belong in the app layer.
  */
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get('host');
-  const isAdmin = pathname.startsWith('/admin') || pathname.includes('/admin');
 
   // 0. 🧹 URL NORMALIZATION: Replace spaces with hyphens
   if (pathname.includes('%20') || pathname.includes(' ')) {
@@ -21,9 +20,6 @@ export async function proxy(request: NextRequest) {
   }
 
   // 0.4 🗑️ PERMANENTLY DELETED PATHS — 410 Gone (checked before any redirect)
-  // These were previously indexed by Google. A real HTTP 410 (not 200+noindex) tells
-  // Google to permanently drop the URL from its index. Covers all path variants so
-  // the 301 /facilities/ → /{slug} chain never reaches the redirect block below.
   const DELETED_PROXY_PATHS = new Set([
     '/waterpark/petroland',
     '/facilities/waterpark/petroland',
@@ -61,12 +57,11 @@ export async function proxy(request: NextRequest) {
     const categorySlug = pathname.substring('/facilities/'.length).replace(/\/$/, "");
     const categorySlugLower = categorySlug.toLowerCase();
 
-    // Check if it's a deprecated city slug
     const CITY_SLUGS = new Set([
-      'beograd', 'belgrade', 'novi-sad', 'jagodina', 'vrnjacka-banja', 'subotica', 
-      'nis', 'kragujevac', 'arandjelovac', 'soko-banja', 'uzice', 'backi-petrovac', 
-      'petrovac-na-mlavi', 'zlatibor', 'vojvodina', 'central-serbia', 'apatin', 
-      'valjevo', 'ruma', 'indjija', 'stara-pazova', 'veliko-gradiste', 'krusevac', 
+      'beograd', 'belgrade', 'novi-sad', 'jagodina', 'vrnjacka-banja', 'subotica',
+      'nis', 'kragujevac', 'arandjelovac', 'soko-banja', 'uzice', 'backi-petrovac',
+      'petrovac-na-mlavi', 'zlatibor', 'vojvodina', 'central-serbia', 'apatin',
+      'valjevo', 'ruma', 'indjija', 'stara-pazova', 'veliko-gradiste', 'krusevac',
       'cacak', 'leskovac', 'sabac', 'kikinda', 'mionica'
     ]);
 
@@ -85,8 +80,7 @@ export async function proxy(request: NextRequest) {
   if (process.env.NODE_ENV === 'production' && host === 'splashdeals.rs') {
     const canonicalUrl = new URL(pathname, `https://www.splashdeals.rs`);
     request.nextUrl.searchParams.forEach((value, key) => canonicalUrl.searchParams.set(key, value));
-    
-    // Check for legacy redirects inside canonicalization
+
     for (const rule of ROUTING_CONFIG.LEGACY_REDIRECTS) {
       const match = pathname.match(rule.pattern);
       if (match) {
@@ -95,7 +89,7 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    // Strip i18n prefixes from canonical redirect path if present
+    // Strip i18n prefixes from canonical redirect path
     const i18nMatch = canonicalUrl.pathname.match(/^\/(en|rs)(?:\/|$)(.*)/i);
     if (i18nMatch) {
       canonicalUrl.pathname = '/' + i18nMatch[2];
@@ -104,7 +98,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(canonicalUrl, { status: 301 });
   }
 
-  // 1. 🌐 i18n PREFIX REMOVAL (301 redirect /en/... or /rs/... to equivalent path without prefix)
+  // 1. 🌐 i18n PREFIX REMOVAL
   const i18nMatch = pathname.match(/^\/(en|rs)(?:\/|$)(.*)/i);
   if (i18nMatch) {
     const [, , remainingPath] = i18nMatch;
@@ -119,8 +113,8 @@ export async function proxy(request: NextRequest) {
     const match = pathname.match(rule.pattern);
     if (match) {
       const destination = rule.destination(match);
-      return NextResponse.redirect(new URL(destination, request.url), { 
-        status: rule.permanent ? 301 : 302 
+      return NextResponse.redirect(new URL(destination, request.url), {
+        status: rule.permanent ? 301 : 302
       });
     }
   }
@@ -129,7 +123,6 @@ export async function proxy(request: NextRequest) {
   const ticketMatch = pathname.match(ROUTING_CONFIG.TICKET_MIGRATION.pattern);
   if (ticketMatch) {
     const [, ticketId] = ticketMatch;
-    // REWRITE internally to API handler
     return NextResponse.rewrite(
       new URL(`/api/seo/redirect-ticket?id=${ticketId}`, request.url)
     );
@@ -151,7 +144,7 @@ export async function proxy(request: NextRequest) {
     response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
     response.headers.set('Vary', 'User-Agent');
   } else {
-    // 3.7 ⚡ PERFORMANCE: Cache-Control Header Optimization (Browser Cache & Stale-While-Revalidate)
+    // 3.7 ⚡ PERFORMANCE: Cache-Control Header Optimization
     const isStaticPage = [
       '/terms',
       '/privacy',
@@ -160,10 +153,11 @@ export async function proxy(request: NextRequest) {
       '/cookies'
     ].some(path => pathname === path || pathname.startsWith(path + '/'));
 
-    const isApi = pathname.startsWith('/api/') || pathname === '/api';
-    const isCart = pathname.startsWith('/cart') || pathname === '/cart';
-    const isSuccess = pathname.startsWith('/success') || pathname === '/success';
-    const isAuth = pathname.startsWith('/auth') || pathname === '/auth';
+    const isApi = pathname === '/api' || pathname.startsWith('/api/');
+    const isAdmin = pathname.startsWith('/admin');
+    const isCart = pathname === '/cart' || pathname.startsWith('/cart/');
+    const isSuccess = pathname === '/success' || pathname.startsWith('/success/');
+    const isAuth = pathname === '/auth' || pathname.startsWith('/auth/');
 
     if (isStaticPage) {
       response.headers.set('Cache-Control', 'public, max-age=86400, immutable');
@@ -181,51 +175,33 @@ export async function proxy(request: NextRequest) {
       maxAge: 60 * 60 * 24 * 30,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax', 
+      sameSite: 'lax',
     });
   }
 
+  // 5. 🛡️ SECURITY HEADERS
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
-
-  // 5. 🛡️ EDGE AUTH (Admin protection)
-  if (isAdmin && !pathname.startsWith('/auth') && !pathname.startsWith('/api/auth')) {
-    // API admin routes — full session validation
-    if (pathname.startsWith('/api/admin')) {
-      const apiKey = request.headers.get('x-api-key');
-      if (!apiKey) {
-        const session = await auth.api.getSession({
-          headers: request.headers,
-        });
-        if (!session) {
-          return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-        const role = session.user.role?.toUpperCase();
-        if (role !== 'SUPER_ADMIN' && role !== 'FACILITY_STAFF') {
-          return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-        }
-      }
-    } else {
-      // Admin page routes — lightweight cookie existence check (full validation in layout)
-      const apiKey = request.headers.get('x-api-key');
-      if (!apiKey) {
-        const sessionToken = request.cookies.get('better-auth.session_token') || 
-                             request.cookies.get('__Secure-better-auth.session_token');
-        if (!sessionToken) {
-          const loginUrl = new URL('/auth/login', request.url);
-          loginUrl.searchParams.set('callbackUrl', pathname);
-          return NextResponse.redirect(loginUrl);
-        }
-      }
-    }
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
 
-  // 6. 🛡️ ROBOT PROTECTION: Admin exclusions and Cart/Auth/Success noindex
-  if (isAdmin || pathname.startsWith('/cart') || pathname === '/cart' || pathname.startsWith('/auth') || pathname.startsWith('/success')) {
+  // 6. 🛡️ ROBOT PROTECTION: Admin/Cart/Auth/Success noindex
+  const noindexPaths = [
+    pathname.startsWith('/admin'),
+    pathname === '/cart' || pathname.startsWith('/cart/'),
+    pathname === '/auth' || pathname.startsWith('/auth/'),
+    pathname === '/success' || pathname.startsWith('/success/'),
+  ];
+  if (noindexPaths.some(Boolean)) {
     response.headers.set('X-Robots-Tag', 'noindex, nofollow');
   }
 
-  // 7. Apex canonical link header (SEO link equity consolidation)
-  if (host && !host.startsWith('www.')) {
+  // 7. 🔗 CANONICAL LINK HEADER (production only)
+  if (process.env.NODE_ENV === 'production' && host && !host.startsWith('www.')) {
     response.headers.set('Link', `<https://www.splashdeals.rs${pathname}>; rel="canonical"`);
   }
 

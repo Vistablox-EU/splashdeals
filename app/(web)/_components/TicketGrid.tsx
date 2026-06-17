@@ -3,7 +3,6 @@ import Image from "next/image";
 import { prisma } from "@/server/lib/prisma";
 import Link from "next/link";
 import { cacheLife } from 'next/cache';
-import * as motion from "framer-motion/client";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { Badge } from "./Badge";
@@ -55,13 +54,9 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
         const cardImage = ticket.imageUrl || ticket.facility.media?.[0]?.url;
         
         return (
-          <motion.article 
+          <article 
             key={ticket.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 * idx }}
-            className="h-full"
+            className="h-full transition-all duration-700"
           >
             <GlassCard className="h-full flex flex-col group border-white/5 hover:border-cyan-500/30 transition-all duration-500 hover:-translate-y-2">
               <div className="relative h-52 w-full overflow-hidden rounded-t-[1.5rem]">
@@ -127,17 +122,14 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                 </div>
               </div>
             </GlassCard>
-          </motion.article>
+          </article>
         );
       })}
 
       {fillers.map((_, i) => (
-        <motion.div 
+        <div 
           key={`filler-${i}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.4 }}
-          transition={{ delay: 0.5 + (i * 0.1) }}
-          className="h-full pointer-events-none grayscale select-none"
+          className="h-full pointer-events-none grayscale select-none transition-opacity duration-500 opacity-40"
         >
            <GlassCard className="h-full flex flex-col border-dashed border-white/10 opacity-50">
               <div className="h-52 w-full bg-slate-900/50 flex items-center justify-center">
@@ -153,7 +145,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                 </div>
               </div>
            </GlassCard>
-        </motion.div>
+        </div>
       ))}
     </div>
   );

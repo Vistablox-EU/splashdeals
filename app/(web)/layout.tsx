@@ -81,7 +81,6 @@ const Footer = dynamic(() => import("@/components/layout/Footer").then((mod) => 
   ssr: true,
 });
 
-import { LazyMotion, domMax } from "framer-motion";
 import { WebVitals } from "./_components/WebVitals";
 
 export default async function WebLayout({
@@ -108,7 +107,6 @@ export default async function WebLayout({
       </head>
       <body className={`${geistSans.variable} antialiased selection:bg-cyan-500/20 bg-[#020617]`}>
         <WebVitals />
-        <LazyMotion features={domMax}>
           <div className="min-h-screen flex flex-col overflow-x-hidden font-sans">
             <GlobalAmbient />
             <Header dict={dict} cities={cities} />
@@ -126,7 +124,6 @@ export default async function WebLayout({
             <Footer />
             <CartDrawer />
           </div>
-        </LazyMotion>
       </body>
     </html>
   );

@@ -10,7 +10,7 @@ import { FacilitiesList } from "./_components/facilities-list"
 import { getFacilityCounts } from "@/lib/data/admin"
 
 export const metadata: Metadata = {
-  title: "Facilities Registry | Splashdeals Admin",
+  title: "Objekti | Splashdeals Admin",
   description: "Global directory of water park facilities and operational configurations.",
 }
 
@@ -25,10 +25,10 @@ export default async function FacilitiesDirectoryPage({
   const counts = await getFacilityCounts()
 
   const stats = [
-    { label: "Total Registry", value: counts.total, color: "text-foreground", glow: "border-border bg-muted/10" },
-    { label: "Active Nodes", value: counts.active, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
-    { label: "Draft Ops", value: counts.draft, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
-    { label: "Closed/Archived", value: counts.closed, color: "text-muted-foreground", glow: "border-muted/10 bg-muted/5" },
+    { label: "Ukupno", value: counts.total, color: "text-foreground", glow: "border-border bg-muted/10" },
+    { label: "Aktivni", value: counts.active, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
+    { label: "Nacrti", value: counts.draft, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
+    { label: "Zatvoreni", value: counts.closed, color: "text-muted-foreground", glow: "border-muted/10 bg-muted/5" },
   ]
 
   return (
@@ -39,7 +39,7 @@ export default async function FacilitiesDirectoryPage({
 
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">Facilities Registry</h1>
+          <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">Objekti</h1>
           <p className="text-muted-foreground mt-1.5 text-xs font-medium uppercase tracking-wider opacity-80">
             Manage all waterpark entities, onboard new locations, and overview global status.
           </p>
@@ -47,7 +47,7 @@ export default async function FacilitiesDirectoryPage({
         <Button asChild size="lg" className="shrink-0 bg-cyan-500 text-slate-950 hover:bg-cyan-400 font-black uppercase tracking-widest text-[11px] rounded-xl h-11 px-6 shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all duration-300">
           <Link href="/admin/facilities/new">
             <Icon name="add" className="mr-2 text-[16px]" />
-            New Facility
+            Novi objekat
           </Link>
         </Button>
       </div>

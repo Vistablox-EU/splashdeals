@@ -1,9 +1,12 @@
 import { Metadata } from "next"
+import Link from "next/link"
 import { connection } from "next/server"
 import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import { TicketManagement } from "./_components/ticket-management"
 import { SerializedAdminTicket, SerializedTicketGroup } from "./_components/columns"
+import { Button } from "@/components/ui/button"
+import { Icon } from "@/components/ui/Icon"
 
 export async function generateMetadata({
   params,
@@ -72,11 +75,18 @@ export default async function TicketsPage({
   })
 
   return (
-    <TicketManagement
-      facilityId={facilityId}
-      initialTickets={tickets}
-      initialGroups={groups}
-      facilityStatus={facilityWithGroups.status}
-    />
+    <div className="flex flex-col gap-4">
+      <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-muted/50">
+        <Link href={`/admin/facilities/${facilityId}`}>
+          <Icon name="keyboard_arrow_left" className="size-4" />
+        </Link>
+      </Button>
+      <TicketManagement
+        facilityId={facilityId}
+        initialTickets={tickets}
+        initialGroups={groups}
+        facilityStatus={facilityWithGroups.status}
+      />
+    </div>
   )
 }

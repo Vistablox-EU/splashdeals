@@ -133,6 +133,15 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
         </div>
       </header>
 
+      {fields.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
+          <Icon name="schedule" className="text-[32px] text-muted-foreground/40" />
+          <p className="text-xs font-medium text-muted-foreground">No operating hours configured</p>
+          <p className="text-[10px] text-muted-foreground/60">Click &quot;Add Node&quot; to set operating days and hours</p>
+        </div>
+      )}
+
+      {fields.length > 0 && (
       <div className="rounded-lg border border-border/50 bg-background/40 overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -222,6 +231,7 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
           </tbody>
         </table>
       </div>
+      )}
 
       <Button
         type="button"

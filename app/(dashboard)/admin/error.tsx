@@ -36,10 +36,10 @@ export default function AdminError({
         <div className="space-y-3">
            <h1 className="text-3xl font-black italic tracking-tighter uppercase leading-none text-foreground">
              Admin <br />
-             <span className="text-muted-foreground">System Error</span>
+            <span className="text-muted-foreground">Greška</span>
            </h1>
            <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
-             Something went wrong in the control center. Please try again or contact technical support.
+              Došlo je do greške. Molimo pokušajte ponovo ili kontaktirajte podršku.
            </p>
         </div>
 
@@ -49,14 +49,14 @@ export default function AdminError({
              className="w-full px-8 py-4 rounded-xl bg-muted/30 hover:bg-muted/50 border border-border/50 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
            >
              <Icon name="refresh" className="text-[16px]" />
-             Try Again
+              Pokušaj ponovo
            </button>
            <Link 
              href="/admin"
              className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-white text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
            >
              <Icon name="home" className="text-[16px]" />
-             Dashboard
+              Kontrolna tabla
            </Link>
         </div>
       </GlassCard>

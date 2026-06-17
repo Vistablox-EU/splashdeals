@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: OverviewPageProps): Promise<M
   })
   
   return {
-    title: `${facility?.name || 'Facility'} Overview | Splashdeals Admin`,
+    title: `${facility?.name || 'Objekat'} Pregled | Splashdeals Admin`,
   }
 }
 
@@ -51,21 +51,21 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
 
   const stats = [
     { 
-      label: "Active Tickets", 
+      label: "Ulaznice", 
       value: facility._count.tickets, 
       icon: "confirmation_number", 
       color: "text-blue-400",
       href: `/admin/facilities/${facilityId}/tickets`
     },
     { 
-      label: "Amenities", 
+      label: "Sadržaji", 
       value: facility._count.amenities, 
       icon: "auto_awesome", 
       color: "text-emerald-400",
       href: `/admin/facilities/${facilityId}/amenities`
     },
     { 
-      label: "Media Assets", 
+      label: "Mediji", 
       value: facility._count.media, 
       icon: "photo_library", 
       color: "text-amber-400",
@@ -96,12 +96,12 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
           <Button asChild variant="outline" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted/30 border border-border text-xs font-bold text-foreground/80 hover:bg-muted/50 hover:text-foreground transition-all">
             <Link href={`/admin/facilities/${facilityId}/profile`}>
               <Icon name="settings" className="text-[14px]" />
-              Edit Profile
+              Izmeni profil
             </Link>
           </Button>
           <Button asChild className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-black text-slate-950 hover:opacity-90 transition-all">
             <Link href={`/facilities/${facility.category.toLowerCase()}/${facility.slug}`} target="_blank">
-              Live View
+              Prikaz na sajtu
             </Link>
           </Button>
         </div>
@@ -132,7 +132,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
         <div className="lg:col-span-2 flex flex-col gap-4">
           <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
             <Icon name="monitor_heart" className="text-[14px] text-primary" />
-            Recent Ticket Updates
+            Poslednje izmene
           </div>
           <div className="rounded-2xl border border-border/50 bg-muted/20 overflow-hidden">
             {recentTickets.length > 0 ? (
@@ -155,12 +155,12 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
               <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
                 <Icon name="confirmation_number" className="text-[32px] text-muted-foreground/40" />
                 <div className="space-y-1">
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">No tickets found</p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Nema ulaznica</p>
                   <Link 
                     href={`/admin/facilities/${facilityId}/tickets`}
                     className="text-[10px] font-black text-primary uppercase hover:underline"
                   >
-                    Create your first ticket
+                    Kreirajte prvu ulaznicu
                   </Link>
                 </div>
               </div>
@@ -171,11 +171,11 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
         {/* Info Card */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-            Internal Details
+            Detalji
           </div>
           <div className="rounded-2xl border border-border/50 bg-muted/40 p-6 space-y-6">
             <div className="space-y-1.5">
-              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Onboarded On</span>
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Datum registracije</span>
               <p className="text-sm font-bold text-foreground/90">
                 {new Date(facility.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
@@ -191,14 +191,14 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
                 href={`/admin/facilities/${facilityId}/media`}
                 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors flex items-center justify-between"
               >
-                Manage Media Assets
+                Upravljanje medijima
                 <Icon name="arrow_forward" className="text-[12px]" />
               </Link>
               <Link 
                 href={`/admin/facilities/${facilityId}/profile`}
                 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors flex items-center justify-between"
               >
-                Governance Controls
+                Podešavanja
                 <Icon name="arrow_forward" className="text-[12px]" />
               </Link>
             </div>

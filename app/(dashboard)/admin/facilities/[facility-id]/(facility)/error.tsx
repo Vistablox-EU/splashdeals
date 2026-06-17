@@ -11,5 +11,5 @@ export default function OverviewError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return <SlotError error={error} reset={reset} title="Overview Segment Error" />
+  return <SlotError error={error} reset={reset} title="Nije moguće učitati pregled" />
 }

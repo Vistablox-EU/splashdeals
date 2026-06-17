@@ -25,6 +25,11 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
   const [saveStatus, setSaveStatus] = useState<Record<string, boolean>>({})
 
   const handleBlur = (field: string) => {
+    const value = links[field as keyof typeof links]
+    if (value && !value.startsWith('http://') && !value.startsWith('https://')) {
+      toast.error("Please enter a valid URL starting with http:// or https://")
+      return
+    }
     startTransition(async () => {
       const result = await updateFacilitySocialLinksAction(facilityId, links)
       if (result.success) {
@@ -32,6 +37,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
         setTimeout(() => {
           setSaveStatus(prev => ({ ...prev, [field]: false }))
         }, 2000)
+        toast.success("Sačuvano")
       } else {
         toast.error("Failed to save " + field)
       }

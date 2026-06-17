@@ -3,7 +3,6 @@ import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { getClientDictionary } from "@/lib/client-dictionaries"
@@ -64,19 +63,13 @@ export function GlobalSearch() {
   return (
     <div className="fixed inset-0 z-[2000] flex items-start justify-center pt-[15vh] px-4">
       {/* 🌑 Backdrop */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+      <div
         onClick={handleClose}
         className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl"
       />
 
       {/* ⌨️ Search Palette */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+      <div
         className="relative w-full max-w-2xl bg-slate-900 border border-white/10 rounded-3xl shadow-2xl shadow-cyan-500/10 overflow-hidden"
       >
         <div className="relative p-6 border-b border-white/5">
@@ -103,7 +96,6 @@ export function GlobalSearch() {
         </div>
 
         <div className="max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
-          <AnimatePresence mode="popLayout">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4" aria-busy="true">
                 <Icon name="progress_activity" className="text-[32px] text-cyan-500 animate-spin" />
@@ -131,11 +123,8 @@ export function GlobalSearch() {
             ) : results.length > 0 ? (
               <div className="space-y-1" aria-live="polite">
                 {results.map((result, i) => (
-                  <motion.button
+                  <button
                     key={result.id}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
                     onClick={() => router.push(result.href)}
                     className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-white/5 group transition-colors"
                   >
@@ -149,7 +138,7 @@ export function GlobalSearch() {
                       </div>
                     </div>
                     <Icon name="arrow_forward" className="text-[16px] text-slate-700 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
-                  </motion.button>
+                  </button>
                 ))}
               </div>
             ) : (
@@ -159,7 +148,6 @@ export function GlobalSearch() {
                 </p>
               </div>
             )}
-          </AnimatePresence>
         </div>
 
         <div className="p-4 bg-black/20 border-t border-white/5 flex items-center justify-between">
@@ -181,7 +169,7 @@ export function GlobalSearch() {
              {dict?.search?.brand_tag || "Splash Otkrivanje v2.0"}
            </span>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }

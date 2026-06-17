@@ -1,7 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { motion } from "framer-motion";
 export interface DetailedWeather {
   temperature: number;
   weathercode: number;

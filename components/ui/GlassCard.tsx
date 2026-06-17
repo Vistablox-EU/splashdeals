@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react"
-import { motion, useMotionTemplate, useMotionValue, HTMLMotionProps } from "framer-motion"
+import type { ComponentPropsWithoutRef } from "react"
 import { cn } from "@/lib/utils"
 
-export interface GlassCardProps extends Omit<HTMLMotionProps<"div">, "children"> {
+export interface GlassCardProps extends ComponentPropsWithoutRef<"div"> {
   className?: string;
   children?: React.ReactNode;
   innerClassName?: string;
@@ -12,19 +12,9 @@ export interface GlassCardProps extends Omit<HTMLMotionProps<"div">, "children">
 
 export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
   ({ className, children, innerClassName, ...props }, ref) => {
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-
-    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-      const { left, top } = currentTarget.getBoundingClientRect();
-      mouseX.set(clientX - left);
-      mouseY.set(clientY - top);
-    }
-
     return (
-      <motion.div
+      <div
         ref={ref}
-        onMouseMove={handleMouseMove}
         className={cn(
           "group relative overflow-hidden rounded-2xl",
           "bg-white/[0.03] backdrop-blur-2xl",
@@ -36,15 +26,8 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
         )}
         {...props}
       >
-        {/* Radial Glow (Aqua Base) */}
-        <motion.div
-          className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          style={{
-            background: useMotionTemplate`
-              radial-gradient(650px circle at ${mouseX}px ${mouseY}px, rgba(6, 182, 212, 0.1), transparent 80%)
-            `,
-          }}
-        />
+        {/* Radial Glow (Aqua Base) — CSS hover-only approach */}
+        <div className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-[radial-gradient(650px_circle_at_50%_50%,rgba(6,182,212,0.1),transparent_80%)]" />
 
         {/* 🏙️ Structural Reflections */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-30 group-hover:opacity-10 transition-opacity duration-700" />
@@ -58,7 +41,7 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
         <div className={cn("relative z-10 h-full w-full", innerClassName)}>
           {children}
         </div>
-      </motion.div>
+      </div>
     )
   }
 )

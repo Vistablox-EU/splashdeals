@@ -39,6 +39,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { upsertTicketAction, deleteTicketAction } from "@/server/actions/tickets"
 import { TicketImageUpload } from "./ticket-image-upload"
@@ -69,6 +77,8 @@ interface TicketSheetProps {
 
 export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGroups, defaultGroupId }: TicketSheetProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [showUnsavedDialog, setShowUnsavedDialog] = React.useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
   const router = useRouter()
 
   const form = useForm<TicketFormValues>({
@@ -181,9 +191,8 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen && form.formState.isDirty) {
-      if (!window.confirm("Imate nesačuvane izmene. Da li ste sigurni da želite da zatvorite?")) {
-        return
-      }
+      setShowUnsavedDialog(true)
+      return
     }
     onOpenChange(newOpen)
   }
@@ -240,8 +249,12 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
 
   async function onDelete() {
     if (!ticket) return
-    if (!window.confirm("Da li ste sigurni da želite da obrišete ovu varijantu karte? Prodate karte će ostati sačuvane u sistemu, ali više neće biti dostupne za novu kupovinu.")) return
+    setShowDeleteDialog(true)
+  }
 
+  async function confirmDelete() {
+    if (!ticket) return
+    setShowDeleteDialog(false)
     setIsSubmitting(true)
     const result = await deleteTicketAction(ticket.id, facilityId)
     if (result.success) {
@@ -712,6 +725,37 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
           </form>
         </Form>
       </SheetContent>
+      {/* Unsaved Changes Dialog */}
+      <Dialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Unsaved Changes</DialogTitle>
+            <DialogDescription>
+              You have unsaved changes. Are you sure you want to close?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowUnsavedDialog(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => { setShowUnsavedDialog(false); onOpenChange(false) }}>Discard Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Ticket</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this ticket? Sold tickets will remain in the system, but this variant will no longer be available for purchase.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Sheet>
   )
 }

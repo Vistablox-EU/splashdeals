@@ -5,7 +5,6 @@ import * as React from "react";
 import { Drawer } from "vaul";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
-import { motion, AnimatePresence } from "framer-motion";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
@@ -59,13 +58,8 @@ export const CartDrawer = () => {
 
           {/* Items List */}
           <div className="flex-1 overflow-y-auto p-8 space-y-6 scrollbar-hide">
-            <AnimatePresence mode="popLayout" initial={false}>
-              {items.length === 0 ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="h-full flex flex-col items-center justify-center text-center space-y-4"
-                >
+            {items.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
                   <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center">
                     <Icon name="shopping_bag" className="text-[32px] text-white/20" />
                   </div>
@@ -73,15 +67,11 @@ export const CartDrawer = () => {
                     <p className="text-white font-black italic uppercase">Korpa je prazna</p>
                     <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Započnite putovanje</p>
                   </div>
-                </motion.div>
+                </div>
               ) : (
                 items.map((item) => (
-                  <motion.div
+                  <div
                     key={item.id}
-                    layout
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
                     className="group relative glass-frost p-5 rounded-[2rem] border border-white/5 hover:border-white/10 transition-all"
                   >
                     <div className="flex items-center gap-4">
@@ -139,10 +129,9 @@ export const CartDrawer = () => {
                         </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))
               )}
-            </AnimatePresence>
           </div>
 
           {/* Footer Checkout */}

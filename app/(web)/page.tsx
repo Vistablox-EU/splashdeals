@@ -3,7 +3,6 @@ import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import Link from "next/link";
-import * as motion from "framer-motion/client";
 import React, { Suspense } from "react";
 import { StatsGrid } from "@/components/ui/StatsGrid";
 import { LiquidButton } from "@/components/ui/LiquidButton";
@@ -113,31 +112,23 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
         <section className="relative pt-28 pb-8 px-6 sm:px-12 max-w-7xl mx-auto">
           <div className="flex flex-col items-center text-center">
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+            <div
+              className="transition-all duration-300"
             >
               <h1 className="text-[clamp(3.5rem,12vw,10rem)] font-black tracking-tighter mb-12 leading-[0.85] bg-gradient-to-b from-white via-white/90 to-white/60 bg-clip-text text-transparent">
                 {dict.home.title_digital} <br className="hidden sm:block" />
                 <span className="text-cyan-400 italic">{dict.home.title_splash}</span>
               </h1>
-            </motion.div>
+            </div>
             
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
-              className="text-[clamp(1.125rem,3vw,1.5rem)] text-slate-400 max-w-3xl mx-auto mb-16 font-medium leading-relaxed"
+            <p 
+              className="text-[clamp(1.125rem,3vw,1.5rem)] text-slate-400 max-w-3xl mx-auto mb-16 font-medium leading-relaxed transition-opacity duration-1000"
             >
               {dict.home.subtitle}
-            </motion.p>
+            </p>
   
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="flex flex-col sm:flex-row gap-6 items-center cursor-pointer"
+            <div
+              className="flex flex-col sm:flex-row gap-6 items-center cursor-pointer transition-all duration-800"
             >
               <LiquidButton className="px-12 py-6 min-w-[240px]">
                 <Link href="#inventory" className="flex items-center justify-center gap-2 w-full h-full">
@@ -152,7 +143,7 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
               >
                 {dict.home.how_it_works}
               </Link>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -248,14 +239,11 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
       {/* 🚀 SOCIAL PROOF & CONVENIENCE */}
       <section className="px-6 md:px-12 max-w-7xl mx-auto py-32 border-t border-white/5">
         <div className="text-center mb-20">
-          <motion.h2 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="text-[clamp(2.25rem,8vw,4.5rem)] font-black italic uppercase tracking-tighter mb-6 leading-[0.9]"
+          <h2 
+            className="text-[clamp(2.25rem,8vw,4.5rem)] font-black italic uppercase tracking-tighter mb-6 leading-[0.9] transition-all duration-700"
           >
             {dict.home.experience_title_base}<span className="text-cyan-400">{dict.home.experience_title_highlight}</span>
-          </motion.h2>
+          </h2>
           <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
             {dict.home.experience_desc}
           </p>

@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@/components/ui/Icon";
 
 interface BreadcrumbItem {
@@ -18,15 +17,10 @@ interface BreadcrumbProps {
 
 export function Breadcrumb({ breadcrumbItems, backHref, hasBreadcrumbs }: BreadcrumbProps) {
   return (
-    <AnimatePresence>
+    <>
       {hasBreadcrumbs && (
-        <motion.div
-          key="breadcrumb-row"
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
-          className="overflow-hidden md:hidden w-full border-t border-white/5"
+        <div
+          className="overflow-hidden md:hidden w-full border-t border-white/5 transition-all duration-200"
         >
           <div className="max-w-7xl mx-auto w-full flex items-center gap-0 px-0 py-0 h-9">
             {/* Back button */}
@@ -84,8 +78,8 @@ export function Breadcrumb({ breadcrumbItems, backHref, hasBreadcrumbs }: Breadc
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 }

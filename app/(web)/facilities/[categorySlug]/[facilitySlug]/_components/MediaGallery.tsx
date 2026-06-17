@@ -3,7 +3,6 @@ import { Icon } from "@/components/ui/Icon";
 
 import { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, Variants } from "framer-motion";
 import type { FacilityMedia } from "@prisma/client";
 import { cn } from "@/lib/utils";
 
@@ -21,15 +20,6 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
 
   const galleryMedia = media.filter(m => (m as any).isGalleryVisible !== false);
-
-  const fadeInUp: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.05, duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-    })
-  }
 
   if (!galleryMedia.length) return null;
 
@@ -60,15 +50,11 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[250px]">
           {galleryMedia.map((m: FacilityMedia, i: number) => (
-            <motion.div
+            <div
               key={m.id}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              custom={i}
-              variants={fadeInUp}
               onClick={() => setSelectedIdx(i)}
-              className="relative group rounded-[2.5rem] overflow-hidden bg-white/[0.02] border border-white/5 cursor-pointer"
+              className="relative group rounded-[2.5rem] overflow-hidden bg-white/[0.02] border border-white/5 cursor-pointer animate-fade-in-up"
+              style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
             >
               {m.type === "VIDEO" ? (
                 <div className="w-full h-full relative">
@@ -104,36 +90,27 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                     <Icon name="favorite" className="text-[20px] text-white hover:text-red-500 cursor-pointer transition-colors" />
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* 🎭 LIGHTBOX */}
-        <AnimatePresence>
-          {selectedIdx !== null && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[2000] flex items-center justify-center bg-navy-deep/95 backdrop-blur-2xl p-4 md:p-20"
+        {selectedIdx !== null && (
+          <div
+            className="fixed inset-0 z-[2000] flex items-center justify-center bg-navy-deep/95 backdrop-blur-2xl p-4 md:p-20 animate-fade-in"
+            onClick={() => setSelectedIdx(null)}
+          >
+            <button
+              className="absolute top-8 right-8 z-[2010] p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10"
               onClick={() => setSelectedIdx(null)}
             >
-              <motion.button
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute top-8 right-8 z-[2010] p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10"
-                onClick={() => setSelectedIdx(null)}
-              >
-                <Icon name="open_in_full" className="text-[24px] rotate-45" />
-              </motion.button>
+              <Icon name="close" className="text-[24px]" />
+            </button>
 
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="relative max-w-6xl w-full aspect-video rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 bg-black"
-                onClick={(e) => e.stopPropagation()}
-              >
+            <div
+              className="relative max-w-6xl w-full aspect-video rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 bg-black animate-scale-in"
+              onClick={(e) => e.stopPropagation()}
+            >
                 {galleryMedia[selectedIdx].type === "VIDEO" ? (
                   <video
                     src={galleryMedia[selectedIdx].url}
@@ -157,10 +134,9 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                     </p>
                   </div>
                 )}
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        )}
       </section>
   );
 }

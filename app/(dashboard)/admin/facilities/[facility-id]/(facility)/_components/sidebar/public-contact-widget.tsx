@@ -31,6 +31,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
       if (result.success) {
         setSaveStatus(prev => ({ ...prev, [field]: true }))
         setTimeout(() => setSaveStatus(prev => ({ ...prev, [field]: false })), 2000)
+        toast.success("Sačuvano")
       } else {
         toast.error("Failed to save " + field)
       }

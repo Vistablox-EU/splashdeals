@@ -9,5 +9,5 @@ export default function AmenitiesError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return <SlotError error={error} reset={reset} title="Amenities Error" />
+  return <SlotError error={error} reset={reset} title="Nije moguće učitati sadržaje" />
 }

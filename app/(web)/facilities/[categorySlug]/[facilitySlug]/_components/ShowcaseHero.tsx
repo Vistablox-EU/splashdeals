@@ -1,7 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { m, useScroll, useTransform } from "framer-motion";
 import type { FacilityMedia } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -20,10 +19,6 @@ interface ShowcaseHeroProps {
  * and auto-suppress HD loops on constrained Save-Data networks.
  */
 export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
-  const { scrollYProgress } = useScroll({
-     offset: ["start start", "end end"]
-  });
-
   const videoRef = useRef<HTMLVideoElement>(null);
   const [allowHDMedia, setAllowHDMedia] = useState(true);
 
@@ -90,7 +85,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
       );
     }
 
-    // PHOTO type — render the photo URL directly (no layoutId, no framer-motion layout animation)
+    // PHOTO type — render the photo URL directly
     if (heroMedia.type === "PHOTO") {
       return (
         <div className="relative w-full h-full">
@@ -131,14 +126,13 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   };
 
   return (
-    <m.div 
-      style={{ scale: useTransform(scrollYProgress, [0, 0.5], [1, 1.2]) }}
+    <div
       className="absolute inset-0 z-0 bg-navy-deep"
     >
       {renderMedia()}
       <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent shadow-[inset_0_-100px_100px_rgba(2,6,23,0.8)]" />
       <div className="absolute inset-x-0 bottom-0 h-[20%] splash-gradient opacity-20 blur-3xl pointer-events-none" />
-    </m.div>
+    </div>
   )
 }
 
@@ -163,9 +157,7 @@ export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
   }
 
   return (
-    <m.div 
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
+    <div
       className="flex items-center gap-3 glass-frost px-4 py-2 rounded-full border-white/10 shadow-xl"
     >
       {getWeatherIcon(weather.weathercode)}
@@ -176,6 +168,6 @@ export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
       <span className="hidden md:inline text-xs uppercase font-bold text-slate-400 tracking-widest">
          Idealno za kupanje
       </span>
-    </m.div>
+    </div>
   )
 }

@@ -17,6 +17,14 @@ import {
   bulkUpdateMediaCaptionAction
 } from "@/server/actions/media-actions"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { toast } from "sonner"
 import { 
   DndContext, 
@@ -70,10 +78,12 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
   const [isUploading, startUpload] = useTransition()
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [isSelectionMode, setIsSelectionMode] = useState(false)
+  const [hasUnsavedEdits, setHasUnsavedEdits] = useState(false)
 
   // Curation state — declared before filteredMedia memo
   const [searchQuery, setSearchQuery] = useState("")
   const [activeFilter, setActiveFilter] = useState<"ALL" | "PHOTOS" | "VIDEOS" | "HERO" | "CARDBG" | "PUBLIC" | "HIDDEN" | "MISSING_ALT">("ALL")
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
   const [croppingMedia, setCroppingMedia] = useState<{ id: string; url: string } | null>(null)
   const [focalPointMediaId, setFocalPointMediaId] = useState<string | null>(null)
   const [bulkCaptionText, setBulkCaptionText] = useState("")
@@ -143,8 +153,11 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
   }
 
   const handleBulkDelete = async () => {
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} assets?`)) return
-    
+    setShowBulkDeleteDialog(true)
+  }
+
+  const confirmBulkDelete = async () => {
+    setShowBulkDeleteDialog(false)
     const idsToDelete = Array.from(selectedIds)
     setMedia(prev => prev.filter(m => !selectedIds.has(m.id)))
     setSelectedIds(new Set())
@@ -207,13 +220,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
             const result = await uploadMediaAction(formData)
             if (result.success && "media" in result) {
               setMedia(prev => [...prev, ...(result.media as FacilityMedia[])])
-              if (savedPercent > 0) {
-                toast.success(
-                  `Photo optimized: ${file.name} (-${savedPercent}% size, saved ${savedKb} KB)`
-                )
-              } else {
-                toast.success(`Photo uploaded: ${file.name}`)
-              }
+              toast.success(`Photo uploaded: ${file.name}`)
             } else {
               toast.error(("error" in result ? result.error : null) || `Failed to optimize ${file.name}`)
             }
@@ -431,6 +438,16 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
     })
   }
 
+  useEffect(() => {
+    if (hasUnsavedEdits) {
+      const handler = (e: BeforeUnloadEvent) => {
+        e.preventDefault()
+      }
+      window.addEventListener('beforeunload', handler)
+      return () => window.removeEventListener('beforeunload', handler)
+    }
+  }, [hasUnsavedEdits])
+
   return (
     <div className="space-y-8">
       {/* 🌌 High-fidelity Glassmorphic Full-Screen Drag Overlay */}
@@ -509,6 +526,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                           <input
                             type="text"
                             placeholder="Bulk Alt tag..."
+                            aria-label="Bulk caption"
                             value={bulkCaptionText}
                             onChange={(e) => setBulkCaptionText(e.target.value)}
                             className="bg-transparent text-[10px] text-foreground focus:outline-none placeholder:text-muted-foreground/80 w-32 px-1"
@@ -630,6 +648,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest leading-relaxed">
                   The facility gallery is currently void of visual intelligence. Drop assets here to initiate curation.
                 </p>
+                <p className="text-[10px] text-muted-foreground/60 mt-2">Click or drag to upload files</p>
               </div>
             </div>
           ) : (
@@ -695,6 +714,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                 onToggleFocalPoint={() => setFocalPointMediaId(focalPointMediaId === item.id ? null : item.id)}
                 onCrop={() => setCroppingMedia({ id: item.id, url: item.url })}
                 onFocalPointSaved={(id, coords) => setMedia(prev => prev.map(m => m.id === id ? { ...m, originalUrl: coords } as FacilityMedia : m))}
+                onUnsavedEdit={setHasUnsavedEdits}
               />
             ))}
 
@@ -727,6 +747,22 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
         </DragOverlay>
       </DndContext>
 
+      {/* Bulk Delete Confirmation Dialog */}
+      <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Assets</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete {selectedIds.size} assets? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowBulkDeleteDialog(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmBulkDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* ✂️ High-Fidelity Canvas Image Cropper Modal */}
       {croppingMedia && (
         <CropModal 
@@ -757,7 +793,8 @@ function MediaItemCard({
   focalPointMediaId,
   onToggleFocalPoint,
   onCrop,
-  onFocalPointSaved
+  onFocalPointSaved,
+  onUnsavedEdit
 }: { 
   item: FacilityMedia, 
   onDelete?: () => void,
@@ -775,7 +812,8 @@ function MediaItemCard({
   focalPointMediaId?: string | null,
   onToggleFocalPoint?: () => void,
   onCrop?: () => void,
-  onFocalPointSaved?: (id: string, coords: string) => void
+  onFocalPointSaved?: (id: string, coords: string) => void,
+  onUnsavedEdit?: (value: boolean) => void
 }) {
   const [isPortrait, setIsPortrait] = useState(false)
   const extension = item.url.substring(item.url.lastIndexOf(".") + 1).split("?")[0].toUpperCase();
@@ -855,7 +893,7 @@ function MediaItemCard({
           <>
             <Image 
               src={item.url} 
-              alt="Facility media" 
+              alt={item.caption || "Facility media photo"} 
               fill
               className={cn(
                 "object-cover transition-transform duration-500 group-hover:scale-110",
@@ -948,7 +986,7 @@ function MediaItemCard({
             variant="destructive"
             size="icon"
             onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
-            className="absolute bottom-3 right-3 size-8 rounded-xl opacity-0 group-hover:opacity-100 transition-all z-30"
+            className="absolute bottom-3 right-3 size-8 rounded-xl opacity-60 group-hover:opacity-100 focus-visible:opacity-100 transition-all z-30"
           >
             <Icon name="delete" className="size-4" />
           </Button>
@@ -1005,15 +1043,18 @@ function MediaItemCard({
           <input
             type="text"
             placeholder="Add descriptive SEO ALT tag..."
+            aria-label="Image caption"
             key={item.caption || ""}
             defaultValue={item.caption || ""}
+            onFocus={() => onUnsavedEdit?.(true)}
             onBlur={async (e) => {
               const val = e.target.value.trim() || null;
-              if (val === item.caption) return;
+              if (val === item.caption) { onUnsavedEdit?.(false); return; }
               try {
                 const res = await updateMediaCaptionAction(item.id, item.facilityId, val);
                 if (res.success) {
                   toast.success("SEO Caption updated successfully");
+                  onUnsavedEdit?.(false);
                 } else {
                   toast.error("Failed to save caption");
                 }
@@ -1067,7 +1108,8 @@ function SortableMediaItem({
   focalPointMediaId,
   onToggleFocalPoint,
   onCrop,
-  onFocalPointSaved
+  onFocalPointSaved,
+  onUnsavedEdit
 }: { 
   item: FacilityMedia, 
   isSelected: boolean,
@@ -1080,7 +1122,8 @@ function SortableMediaItem({
   focalPointMediaId?: string | null,
   onToggleFocalPoint?: () => void,
   onCrop?: () => void,
-  onFocalPointSaved?: (id: string, coords: string) => void
+  onFocalPointSaved?: (id: string, coords: string) => void,
+  onUnsavedEdit?: (value: boolean) => void
 }) {
   const {
     attributes,
@@ -1117,6 +1160,7 @@ function SortableMediaItem({
         onToggleFocalPoint={onToggleFocalPoint}
         onCrop={onCrop}
         onFocalPointSaved={onFocalPointSaved}
+        onUnsavedEdit={onUnsavedEdit}
       />
     </div>
   )

@@ -2,7 +2,6 @@ import { Icon } from "@/components/ui/Icon";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { connection } from "next/server";
-import * as motion from "framer-motion/client";
 import Link from "next/link";
 import { JsonLd } from "@/components/SEO/JsonLd";
 
@@ -81,9 +80,7 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
       />
       {/* 🏙️ HEADER */}
       <header className="mb-20 text-center sm:text-left">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div 
           className="space-y-6"
         >
           <div className="flex items-center justify-center sm:justify-start gap-3">
@@ -102,18 +99,15 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
           <p className="text-xl text-slate-400 max-w-2xl font-medium">
             {dict.how_it_works_page.intro}
           </p>
-        </motion.div>
+        </div>
       </header>
 
       {/* 📜 STEPS GRID */}
       <HowItWorksSteps steps={steps} />
 
       {/* 🚀 CTA SECTION */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        className="text-center"
+      <div
+        className="text-center transition-all duration-700"
       >
         <Link 
           href={`/facilities`}
@@ -122,7 +116,7 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
           {dict.how_it_works_page.cta}
           <Icon name="arrow_forward" className="text-[24px]" />
         </Link>
-      </motion.div>
+      </div>
     </div>
   );
 }
