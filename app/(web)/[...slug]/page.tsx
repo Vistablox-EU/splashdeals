@@ -246,7 +246,6 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
       permanentRedirect(`/${facility.slug}#deals`);
     }
   }
-  
-  redirect("/");
+
   notFound();
 }
