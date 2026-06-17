@@ -147,6 +147,10 @@ async function checkPage(path, label) {
   if (status === 404 || status >= 500) {
     return fail(SEVERE, "Status", path, `HTTP ${status}`);
   }
+  // Static routes that have their own page.tsx — never flag as soft-404
+  const KNOWN_STATIC_PAGES = ["/", "/how-it-works", "/terms", "/privacy", "/support", "/cookies", "/search", "/success", "/robots.txt"];
+  if (KNOWN_STATIC_PAGES.includes(path)) return;
+  
   // Soft-404 detection: 200 but content suggests 404
   if (status === 200 && (html.includes("Nije Pronađena") || html.includes("Page Not Found") || html.includes("Page Deleted") || html.includes("404"))) {
     // Check for noindex — if noindex is set, it's a managed soft-404
