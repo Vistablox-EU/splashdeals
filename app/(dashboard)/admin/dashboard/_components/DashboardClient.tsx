@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react"
-import { ChartAreaInteractive } from "@/components/admin/chart-area-interactive"
+import { ChartAreaInteractive } from "@/app/(dashboard)/admin/_common/chart-area-interactive"
 import { SectionCards } from "@/components/shared/section-cards"
 
 interface RecentActivity {

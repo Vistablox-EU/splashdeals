@@ -3,7 +3,7 @@ import { DataTable } from "./data-table"
 import { columns } from "./columns"
 import { Prisma } from "@prisma/client"
 import { Suspense } from "react"
-import { TableSkeleton } from "@/components/admin/TableSkeleton"
+import { TableSkeleton } from "@/app/(dashboard)/admin/_common/TableSkeleton"
 
 interface FacilitiesListProps {
   q?: string

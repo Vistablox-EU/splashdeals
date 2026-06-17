@@ -1,10 +1,10 @@
 "use client"
 
 import Image from "next/image"
-import { useBreadcrumbs } from "@/components/admin/breadcrumb-context"
+import { useBreadcrumbs } from "@/app/(dashboard)/admin/_common/breadcrumb-context"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
-import { Breadcrumbs } from "@/components/admin/breadcrumbs"
+import { Breadcrumbs } from "@/app/(dashboard)/admin/_common/breadcrumbs"
 import { Suspense } from "react"
 import { cn } from "@/lib/utils"
 

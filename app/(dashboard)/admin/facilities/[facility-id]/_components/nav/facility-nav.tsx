@@ -8,7 +8,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
-import { StatusToggle } from "@/components/admin/StatusToggle"
+import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle"
 import { FacilityGovernanceSheet } from "./facility-governance-sheet"
 import { FacilityStatus } from "@prisma/client"
 interface FacilityNavProps {

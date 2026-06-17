@@ -2,15 +2,15 @@ import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
 import * as React from "react";
 
-import { AdminSidebar } from "@/components/admin/sidebar/admin-sidebar"
+import { AdminSidebar } from "@/app/(dashboard)/admin/_common/sidebar/admin-sidebar"
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import { BreadcrumbProvider } from "@/components/admin/breadcrumb-context"
+import { BreadcrumbProvider } from "@/app/(dashboard)/admin/_common/breadcrumb-context"
 import { AdminLayoutShell } from "./_components/AdminLayoutShell"
-import { CommandPalette } from "@/components/admin/CommandPalette"
-import { AdminSkeleton } from "@/components/admin/AdminSkeleton"
+import { CommandPalette } from "@/app/(dashboard)/admin/_common/CommandPalette"
+import { AdminSkeleton } from "@/app/(dashboard)/admin/_common/AdminSkeleton"
 import { auth } from "@/server/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"

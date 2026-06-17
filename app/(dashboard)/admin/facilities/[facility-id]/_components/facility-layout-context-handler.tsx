@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useBreadcrumbs } from "@/components/admin/breadcrumb-context"
+import { useBreadcrumbs } from "@/app/(dashboard)/admin/_common/breadcrumb-context"
 
 export function FacilityLayoutContextHandler({ 
   facilityId, 
