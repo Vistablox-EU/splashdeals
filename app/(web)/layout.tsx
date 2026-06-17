@@ -3,7 +3,6 @@ import { Geist } from "next/font/google";
 import * as React from "react";
 import "./globals.css";
 import { headers } from "next/headers";
-import { connection } from "next/server";
 
 export const viewport: Viewport = {
   themeColor: "#06b6d4",
@@ -93,10 +92,6 @@ export default async function WebLayout({
   modal?: React.ReactNode; 
   params: Promise<Record<string, never>>;
 }) {
-  
-  const dict = await getDictionary();
-  const cities = await getActiveCities();
-  
   return (
     <html lang="sr" className="dark scroll-smooth">
       <head>
@@ -105,25 +100,45 @@ export default async function WebLayout({
       </head>
       <body className={`${geistSans.variable} antialiased selection:bg-cyan-500/20 bg-[#020617]`}>
         <WebVitals />
-          <div className="min-h-screen flex flex-col overflow-x-hidden font-sans">
-            <GlobalAmbient />
-            <Header dict={dict} cities={cities} />
-            
-            <main className="flex-grow pt-20">
-              <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-20 animate-pulse bg-slate-900" />}>
-                {children}
-              </React.Suspense>
-            </main>
-            
-            <React.Suspense fallback={null}>
-              {modal}
-            </React.Suspense>
-
-            <Footer />
-            <CartDrawer />
-          </div>
+        <React.Suspense fallback={<div className="min-h-screen bg-[#020617]" />}>
+          <WebLayoutContent>
+            {children}
+            {modal}
+          </WebLayoutContent>
+        </React.Suspense>
       </body>
     </html>
+  );
+}
+
+async function WebLayoutContent({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal?: React.ReactNode;
+}) {
+  const dict = await getDictionary();
+  const cities = await getActiveCities();
+
+  return (
+    <div className="min-h-screen flex flex-col overflow-x-hidden font-sans">
+      <GlobalAmbient />
+      <Header dict={dict} cities={cities} />
+      
+      <main className="flex-grow pt-20">
+        <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-20 animate-pulse bg-slate-900" />}>
+          {children}
+        </React.Suspense>
+      </main>
+      
+      <React.Suspense fallback={null}>
+        {modal}
+      </React.Suspense>
+
+      <Footer />
+      <CartDrawer />
+    </div>
   );
 }
 
