@@ -29,11 +29,52 @@ async function getTickets() {
   });
 
   // 🛡️ Data Boundary: Serialize Decimal for Edge/PPR compatibility
-  return data.map(ticket => ({
-    ...ticket,
+  return data.map(({ facility, ...ticket }) => ({
+    id: ticket.id,
+    title: ticket.title,
+    titleSr: ticket.titleSr,
+    type: ticket.type,
     price: Number(ticket.price),
     originalPrice: ticket.originalPrice ? Number(ticket.originalPrice) : null,
-    categorySlug: ticket.facility.category.toLowerCase().replace(/\s+/g, '-')
+    currency: ticket.currency,
+    validityType: ticket.validityType,
+    isActive: ticket.isActive,
+    isFeatured: ticket.isFeatured,
+    displayOrder: ticket.displayOrder,
+    description: ticket.description,
+    descriptionSr: ticket.descriptionSr,
+    slug: ticket.slug,
+    imageUrl: ticket.imageUrl,
+    finePrint: ticket.finePrint,
+    requiresIdentity: ticket.requiresIdentity,
+    requiresPhoto: ticket.requiresPhoto,
+    dayType: ticket.dayType,
+    timeSlot: ticket.timeSlot,
+    isSeasonPass: ticket.isSeasonPass,
+    minPeople: ticket.minPeople,
+    maxPeople: ticket.maxPeople,
+    saleStart: ticket.saleStart,
+    saleEnd: ticket.saleEnd,
+    createdAt: ticket.createdAt,
+    updatedAt: ticket.updatedAt,
+    facility: {
+      id: facility.id,
+      name: facility.name,
+      slug: facility.slug,
+      category: facility.category,
+      cityId: facility.cityId,
+      media: facility.media.map(m => ({
+        id: m.id,
+        url: m.url,
+        thumbnailUrl: m.thumbnailUrl,
+        type: m.type,
+        isHero: m.isHero,
+        isCardBackground: m.isCardBackground,
+        caption: m.caption,
+        order: m.order,
+      })),
+    },
+    categorySlug: facility.category.toLowerCase().replace(/\s+/g, '-'),
   }));
 }
 
