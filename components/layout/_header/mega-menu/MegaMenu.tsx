@@ -121,7 +121,7 @@ export function MegaMenu({ dict }: MegaMenuProps) {
             >
               <Icon
                 name={item.icon}
-                className="text-[18px] transition-colors text-cyan-500/60 group-data-[state=open]:text-cyan-400"
+                className="text-[18px] transition-colors text-primary/60 group-data-[state=open]:text-primary"
               />
               {item.label}
             </NavigationMenuTrigger>

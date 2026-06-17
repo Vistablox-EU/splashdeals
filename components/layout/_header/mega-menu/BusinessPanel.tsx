@@ -18,12 +18,12 @@ export function BusinessPanel({ dict, onClose }: BusinessPanelProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-10" />
 
           <div className="relative z-20 space-y-5 flex-1 flex flex-col justify-center text-center">
-            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/20 text-cyan-400 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(6,182,212,0.15)] animate-pulse">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-cyan-400/20 text-primary flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(6,182,212,0.15)] animate-pulse">
               <Icon name="qr_code_scanner" className="text-[32px]" />
             </div>
 
             <div className="space-y-2">
-              <span className="text-xs font-black text-cyan-500 uppercase tracking-widest block leading-none">
+              <span className="text-xs font-black text-primary uppercase tracking-widest block leading-none">
                 Splash Validator
               </span>
               <h4 className="text-sm font-black text-white italic uppercase">
@@ -34,8 +34,8 @@ export function BusinessPanel({ dict, onClose }: BusinessPanelProps) {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 bg-cyan-500/10 border border-cyan-400/20 px-3 py-1.5 rounded-lg w-max mx-auto">
-              <Icon name="check_circle" className="text-[16px] text-cyan-400" />
+            <div className="flex items-center gap-2 bg-primary/10 border border-cyan-400/20 px-3 py-1.5 rounded-lg w-max mx-auto">
+              <Icon name="check_circle" className="text-[16px] text-primary" />
               <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">
                 Validirano
               </span>
@@ -45,7 +45,7 @@ export function BusinessPanel({ dict, onClose }: BusinessPanelProps) {
           <Link
             href="/facilities"
             onClick={onClose}
-            className="relative z-20 w-full h-12 rounded-xl bg-cyan-500 text-slate-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg group-hover/partner:bg-white transition-all duration-300 mt-4"
+            className="relative z-20 w-full h-12 rounded-xl bg-primary text-slate-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg group-hover/partner:bg-white transition-all duration-300 mt-4"
           >
             Postani Partner <Icon name="login" className="text-[16px]" />
           </Link>
@@ -88,10 +88,10 @@ export function BusinessPanel({ dict, onClose }: BusinessPanelProps) {
                 onClick={onClose}
                 className="flex flex-col gap-1.5 group/sublink"
               >
-                <span className="text-sm font-black italic uppercase text-slate-200 group-hover/sublink:text-cyan-400 transition-colors flex items-center gap-3">
+                <span className="text-sm font-black italic uppercase text-slate-200 group-hover/sublink:text-primary transition-colors flex items-center gap-3">
                   <Icon
                     name={iconName}
-                    className="text-[20px] text-cyan-500 shrink-0"
+                    className="text-[20px] text-primary shrink-0"
                   />
                   {title}
                 </span>
@@ -105,7 +105,7 @@ export function BusinessPanel({ dict, onClose }: BusinessPanelProps) {
 
         <div className="pt-4 border-t border-white/5 mt-6">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-none flex items-center gap-2">
-            <Icon name="auto_awesome" className="text-[14px] text-cyan-400" />{" "}
+            <Icon name="auto_awesome" className="text-[14px] text-primary" />{" "}
             Provizija samo 5% po prodatoj karti
           </span>
         </div>

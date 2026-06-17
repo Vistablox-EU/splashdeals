@@ -36,7 +36,7 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
 
       <div className="relative w-full">
         {/* Right gradient fade overlay */}
-        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-navy-deep to-transparent pointer-events-none z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none z-10" />
 
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 scroll-smooth select-none cursor-grab active:cursor-grabbing w-full px-1">
           {sortedCities.map((city) => {
@@ -50,11 +50,11 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
                 className={cn(
                   "shrink-0 h-10 px-4 rounded-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest transition-all duration-300 active:scale-95 border",
                   isPopular
-                    ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.05)] hover:bg-cyan-500/20 hover:border-cyan-500/40"
+                    ? "bg-primary/10 border-primary/30 text-primary shadow-[0_0_12px_rgba(6,182,212,0.05)] hover:bg-primary/20 hover:border-primary/40"
                     : "bg-white/5 border-white/5 text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/10"
                 )}
               >
-                {isPopular && <Icon name="auto_awesome" className="text-[12px] mr-1.5 text-cyan-400" />}
+                {isPopular && <Icon name="auto_awesome" className="text-[12px] mr-1.5 text-primary" />}
                 {city.name}
               </Link>
             );
@@ -62,7 +62,7 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
           <Link
             href={`/`}
             onClick={onCitySelect}
-            className="shrink-0 h-10 px-5 rounded-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest bg-white/5 border border-dashed border-white/15 text-cyan-500/80 hover:text-cyan-400 hover:border-cyan-500/30 transition-all active:scale-95"
+            className="shrink-0 h-10 px-5 rounded-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest bg-white/5 border border-dashed border-white/15 text-primary/80 hover:text-primary hover:border-primary/30 transition-all active:scale-95"
           >
             {dict.nav.all_regions || "Sve Regije"}
           </Link>

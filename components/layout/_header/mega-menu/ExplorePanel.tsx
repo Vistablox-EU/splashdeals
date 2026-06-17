@@ -41,7 +41,7 @@ export function ExplorePanel({
           <Link
             href={featured.canonicalPath}
             onClick={onClose}
-            className="w-full flex flex-col justify-end p-6 rounded-[1.75rem] overflow-hidden relative group/promo border border-white/5 hover:border-cyan-500/30 transition-all duration-500 shadow-2xl"
+            className="w-full flex flex-col justify-end p-6 rounded-[1.75rem] overflow-hidden relative group/promo border border-white/5 hover:border-primary/30 transition-all duration-500 shadow-2xl"
           >
             <div className="absolute inset-0 z-0">
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-10 transition-all duration-500 group-hover/promo:via-slate-950/40" />
@@ -66,13 +66,13 @@ export function ExplorePanel({
 
             <div className="relative z-20 space-y-4">
               <div className="flex justify-between items-start gap-2">
-                <span className="px-3.5 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-400/30 backdrop-blur-md text-[9px] font-black uppercase tracking-widest text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.15)] leading-none">
+                <span className="px-3.5 py-1.5 rounded-full bg-primary/20 border border-cyan-400/30 backdrop-blur-md text-[9px] font-black uppercase tracking-widest text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.15)] leading-none">
                   Hit Ponuda
                 </span>
                 {featured.startingPrice && (
                   <span className="text-white text-sm font-black bg-slate-950/70 border border-white/5 px-3 py-1.5 rounded-lg backdrop-blur-md">
                     od{" "}
-                    <span className="text-cyan-400 text-base">
+                    <span className="text-primary text-base">
                       {featured.startingPrice} RSD
                     </span>
                   </span>
@@ -88,7 +88,7 @@ export function ExplorePanel({
                 </p>
               </div>
 
-              <div className="w-full h-11 rounded-xl bg-cyan-500 text-slate-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg group-hover/promo:bg-white transition-all duration-300">
+              <div className="w-full h-11 rounded-xl bg-primary text-slate-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg group-hover/promo:bg-white transition-all duration-300">
                 <Icon name="local_fire_department" className="text-[16px] animate-pulse" />{" "}
                 Kupi Karte
               </div>
@@ -146,9 +146,9 @@ export function ExplorePanel({
                 key={href}
                 href={href}
                 onClick={onClose}
-                className="flex items-center gap-3 py-3.5 text-sm font-black italic uppercase tracking-wide text-slate-300 hover:text-cyan-400 transition-colors group/link cursor-pointer"
+                className="flex items-center gap-3 py-3.5 text-sm font-black italic uppercase tracking-wide text-slate-300 hover:text-primary transition-colors group/link cursor-pointer"
               >
-                <Icon name={iconName} className={cn("text-[20px] text-cyan-500", cls)} />
+                <Icon name={iconName} className={cn("text-[20px] text-primary", cls)} />
                 <span>{label}</span>
               </Link>
             ))}
@@ -156,9 +156,9 @@ export function ExplorePanel({
             <Link
               href="/#deals"
               onClick={onClose}
-              className="flex items-center gap-3 py-3.5 text-sm font-black italic uppercase tracking-wide text-cyan-400 hover:text-white transition-colors group/link cursor-pointer"
+              className="flex items-center gap-3 py-3.5 text-sm font-black italic uppercase tracking-wide text-primary hover:text-white transition-colors group/link cursor-pointer"
             >
-              <Icon name="local_fire_department" className="text-[20px] text-cyan-400" />
+              <Icon name="local_fire_department" className="text-[20px] text-primary" />
               <span>Sve Akcije</span>
             </Link>
           </div>

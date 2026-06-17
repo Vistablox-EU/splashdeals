@@ -45,7 +45,7 @@ export function CartButton({ dict, isOnline, mounted, totalItems, openCart }: Ca
           <Icon name="shopping_bag" className="text-[16px]" />
           {(mounted && totalItems > 0) && (
             <span
-              className="absolute -top-3 -right-3 bg-white text-navy-deep text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-lg transition-all duration-300"
+              className="absolute -top-3 -right-3 bg-white text-background text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-lg transition-all duration-300"
             >
               {totalItems}
             </span>

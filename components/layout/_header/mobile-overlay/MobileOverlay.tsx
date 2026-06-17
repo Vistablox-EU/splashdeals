@@ -39,7 +39,7 @@ export function MobileOverlay({
     <>
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 z-[1000] bg-navy-deep/95 backdrop-blur-3xl md:hidden flex flex-col p-8 overflow-hidden animate-in slide-in-from-right duration-300"
+          className="fixed inset-0 z-[1000] bg-background/95 backdrop-blur-3xl md:hidden flex flex-col p-8 overflow-hidden animate-in slide-in-from-right duration-300"
         >
           <MobileOverlayHeader onClose={() => setIsMobileMenuOpen(false)} />
 
@@ -49,9 +49,9 @@ export function MobileOverlay({
               <Link
                 href={navLinks[0].href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-4xl font-black italic tracking-tighter text-white uppercase flex items-center gap-4 hover:text-cyan-400 transition-colors"
+                className="text-4xl font-black italic tracking-tighter text-white uppercase flex items-center gap-4 hover:text-primary transition-colors"
               >
-                <Icon name="search" className="text-[32px] text-cyan-500" />
+                <Icon name="search" className="text-[32px] text-primary" />
                 {navLinks[0].name}
               </Link>
             </div>
@@ -75,9 +75,9 @@ export function MobileOverlay({
                 <Link
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-4xl font-black italic tracking-tighter text-white uppercase flex items-center gap-4 hover:text-cyan-400 transition-colors"
+                  className="text-4xl font-black italic tracking-tighter text-white uppercase flex items-center gap-4 hover:text-primary transition-colors"
                 >
-                  <Icon name={link.icon} className="text-[32px] text-cyan-500" />
+                  <Icon name={link.icon} className="text-[32px] text-primary" />
                   {link.name}
                 </Link>
               </div>

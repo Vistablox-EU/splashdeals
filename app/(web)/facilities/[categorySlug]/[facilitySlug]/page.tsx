@@ -86,6 +86,24 @@ import {
   buildBreadcrumbSchema 
 } from "./_schemas";
 
+interface TicketData {
+  id: string;
+  title: string;
+  titleSr: string | null;
+  price: number | { toString: () => string };
+  originalPrice: number | null | { toString: () => string };
+  dayType: string | null;
+  timeSlot: string | null;
+  minPeople: number;
+  maxPeople: number | null;
+  isSeasonPass: boolean;
+  requiresIdentity: boolean;
+  requiresPhoto: boolean;
+  groupId: string | null;
+  isActive: boolean;
+  imageUrl?: string | null;
+}
+
 interface FacilityPageProps {
   params: Promise<{
     categorySlug: string
@@ -169,7 +187,7 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
   const currentYear = new Date().getFullYear();
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
-  const activeTickets = (facility.tickets || []).filter((t) => t.isActive);
+  const activeTickets = (facility.tickets || []).filter((t: TicketData) => t.isActive);
   const ticketCount = activeTickets.length;
   const ticketHint = ticketCount > 0 
     ? ` | ${ticketCount} vrsta ulaznica dostupno`
@@ -335,29 +353,51 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
   // Find all active tickets (used in either fallback or virtual group)
-  const activeTickets = (facility.tickets || []).filter((t) => t.isActive) as any[]
+  const activeTickets = (facility.tickets || []).filter((t: TicketData) => t.isActive)
   const ticketCount = activeTickets.length
 
-  let mappedGroups: any[] = []
+  let mappedGroups: Array<{
+    id: string;
+    title: string;
+    titleSr: string;
+    description: string | null;
+    descriptionSr: string | null;
+    slug: string;
+    tiers: Array<{
+      id: string;
+      label: string;
+      labelSr: string;
+      price: number;
+      originalPrice: number | null;
+      minPeople: number;
+      maxPeople: number | null;
+      dayType: string | null;
+      timeSlot: string | null;
+      isSeasonPass: boolean;
+      requiresIdentity: boolean;
+      requiresPhoto: boolean;
+      imageUrl: string | null;
+    }>;
+  }> = []
 
   if (facility.ticketGroups && facility.ticketGroups.length > 0) {
-    mappedGroups = facility.ticketGroups.map((g: { id: string; title: string; titleSr: string | null; description: string | null; descriptionSr: string | null; slug: string | null; tickets: Array<Record<string, unknown>> }) => ({
+    mappedGroups = facility.ticketGroups.map((g: { id: string; title: string; titleSr: string | null; description: string | null; descriptionSr: string | null; slug: string | null; tickets: TicketData[] }) => ({
       id: g.id,
       title: g.title,
       titleSr: g.titleSr || g.title,
       description: g.description,
       descriptionSr: g.descriptionSr || g.description,
       slug: g.slug || g.title.toLowerCase().replace(/\s+/g, "-"),
-      tiers: g.tickets.map((t: Record<string, unknown>) => ({
-        id: t.id as string,
-        label: t.title as string,
-        labelSr: (t.titleSr as string) || (t.title as string),
+      tiers: g.tickets.map((t: TicketData) => ({
+        id: t.id,
+        label: t.title,
+        labelSr: t.titleSr || t.title,
         price: Number(t.price),
         originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
-        minPeople: (t.minPeople as number) || 1,
-        maxPeople: (t.maxPeople as number) || null,
-        dayType: (t.dayType as string) || null,
-        timeSlot: (t.timeSlot as string) || null,
+        minPeople: t.minPeople || 1,
+        maxPeople: t.maxPeople || null,
+        dayType: t.dayType || null,
+        timeSlot: t.timeSlot || null,
         isSeasonPass: Boolean(t.isSeasonPass),
         requiresIdentity: Boolean(t.requiresIdentity),
         requiresPhoto: Boolean(t.requiresPhoto),

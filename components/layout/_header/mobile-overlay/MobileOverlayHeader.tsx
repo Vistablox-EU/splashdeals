@@ -22,16 +22,16 @@ export function MobileOverlayHeader({ onClose }: MobileOverlayHeaderProps) {
           deals
         </span>
         <div className="relative ml-1 mt-4">
-          <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
-          <div className="absolute inset-0 w-2 h-2 rounded-full bg-cyan-400 blur-[2px] animate-ping opacity-50" />
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <div className="absolute inset-0 w-2 h-2 rounded-full bg-primary blur-[2px] animate-ping opacity-50" />
         </div>
       </div>
       <button
         onClick={onClose}
-        className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.04] border border-white/10 text-white/80 active:scale-90 hover:bg-white/10 hover:border-cyan-500/20 active:bg-cyan-500/20 active:border-cyan-500/30 transition-all duration-300 shadow-md shadow-black/10"
+        className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.04] border border-white/10 text-white/80 active:scale-90 hover:bg-white/10 hover:border-primary/20 active:bg-primary/20 active:border-primary/30 transition-all duration-300 shadow-md shadow-black/10"
         aria-label="Zatvori meni"
       >
-        <Icon name="close" className="text-[20px] text-cyan-400" />
+        <Icon name="close" className="text-[20px] text-primary" />
       </button>
     </div>
   );

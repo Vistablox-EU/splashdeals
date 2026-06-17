@@ -19,10 +19,10 @@ export function UsersPanel({ dict, onClose }: UsersPanelProps) {
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
 
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
-              <span className="text-[9px] font-black text-cyan-400 uppercase tracking-wider">
+              <span className="text-[9px] font-black text-primary uppercase tracking-wider">
                 Splash Club
               </span>
-              <Icon name="waves" className="text-[12px] text-cyan-400" />
+              <Icon name="waves" className="text-[12px] text-primary" />
             </div>
 
             <div className="space-y-1.5 my-2">
@@ -45,7 +45,7 @@ export function UsersPanel({ dict, onClose }: UsersPanelProps) {
           <Link
             href="/support"
             onClick={onClose}
-            className="w-full h-12 rounded-xl bg-cyan-500 text-slate-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg group-hover/loyalty:bg-white transition-all duration-300 mt-4"
+            className="w-full h-12 rounded-xl bg-primary text-slate-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg group-hover/loyalty:bg-white transition-all duration-300 mt-4"
           >
             Splash Club <Icon name="auto_awesome" className="text-[16px]" />
           </Link>
@@ -88,10 +88,10 @@ export function UsersPanel({ dict, onClose }: UsersPanelProps) {
                 onClick={onClose}
                 className="flex flex-col gap-1.5 group/sublink"
               >
-                <span className="text-sm font-black italic uppercase text-slate-200 group-hover/sublink:text-cyan-400 transition-colors flex items-center gap-3">
+                <span className="text-sm font-black italic uppercase text-slate-200 group-hover/sublink:text-primary transition-colors flex items-center gap-3">
                   <Icon
                     name={iconName}
-                    className="text-[20px] text-cyan-500 shrink-0"
+                    className="text-[20px] text-primary shrink-0"
                   />
                   {title}
                 </span>
@@ -105,7 +105,7 @@ export function UsersPanel({ dict, onClose }: UsersPanelProps) {
 
         <div className="pt-4 border-t border-white/5 mt-6">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-none flex items-center gap-2">
-            <Icon name="waves" className="text-[14px] text-cyan-400 animate-pulse" />{" "}
+            <Icon name="waves" className="text-[14px] text-primary animate-pulse" />{" "}
             100% digitalne ulaznice na telefonu
           </span>
         </div>
