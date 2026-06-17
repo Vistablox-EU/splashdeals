@@ -18,10 +18,10 @@ import { connection } from "next/server"
 
 export const metadata: Metadata = {
   title: "Splashdeals.rs Admin",
-  description: "The premier digital ticketing portal for Serbian water parks and pools.",
+  description: "Vodeći digitalni portal za ulaznice za akva parkove i bazene u Srbiji.",
   openGraph: {
     title: "Splashdeals.rs Admin",
-    description: "The premier digital ticketing portal for Serbian water parks and pools.",
+    description: "Vodeći digitalni portal za ulaznice za akva parkove i bazene u Srbiji.",
     type: "website",
   },
   robots: {

@@ -3,6 +3,7 @@
  * 
  * Seeds 5+ major Serbian waterparks with REAL pricing, operating hours,
  * contact data, ticket groups, and rich descriptions.
+ * ALL TEXT IN SERBIAN LATIN SCRIPT (latinica).
  * 
  * Run: npx tsx prisma/seed-enhanced.ts
  * 
@@ -71,12 +72,8 @@ async function main() {
   console.log("🌊 Splashdeals Enhanced Seed — REAL Serbian Waterpark Data");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-  // Get existing cities and amenities from the primary seed
-  // This script assumes the primary seed has already been run
-
   const cities = await prisma.city.findMany();
   const cityBySlug = Object.fromEntries(cities.map((c) => [c.slug, c]));
-
   const amenities = await prisma.amenity.findMany();
   const amenityByName = Object.fromEntries(amenities.map((a) => [a.name, a]));
 
@@ -99,13 +96,10 @@ async function main() {
       status: "ACTIVE",
       publicPhone: "+381 60 83 02 218",
       publicEmail: "info@petroland.rs",
-      description:
-        "AquaPark Petroland is the largest water park in Serbia, featuring over 10 water slides, a massive wave pool, dedicated children's zones, sandy beaches, and a luxurious wellness & spa center. Located near Novi Sad, it is the ultimate summer destination for families and adrenaline seekers alike.",
-      descriptionSr:
-        "AquaPark PETROLAND je najveći akva park u Srbiji. Sa preko 10 tobogana, ogromnim bazenom sa talasima, specijalizovanim dečijim zonama, peščanim plažama i luksuznim wellness & spa centrom, pruža nezaboravno iskustvo za celu porodicu. Nalazi se nadomak Novog Sada, 120km od Beograda.",
+      description: "AquaPark PETROLAND je najveći akva park u Srbiji. Sa preko 10 tobogana, ogromnim bazenom sa talasima, specijalizovanim dečijim zonama, peščanim plažama i luksuznim wellness & spa centrom, pruža nezaboravno iskustvo za celu porodicu. Nalazi se nadomak Novog Sada, 120km od Beograda.",
+      descriptionSr: "AquaPark PETROLAND je najveći akva park u Srbiji. Sa preko 10 tobogana, ogromnim bazenom sa talasima, specijalizovanim dečijim zonama, peščanim plažama i luksuznim wellness & spa centrom, pruža nezaboravno iskustvo za celu porodicu. Nalazi se nadomak Novog Sada, 120km od Beograda.",
       metaTitle: "AquaPark Petroland | Najveći Akva Park u Srbiji | Splashdeals",
-      metaDescription:
-        "AquaPark Petroland — najveći akva park u Srbiji. Preko 10 tobogana, talasi, dečije zone i wellness. Kupite online karte uz popust i preskočite redove!",
+      metaDescription: "AquaPark Petroland — najveći akva park u Srbiji. Preko 10 tobogana, talasi, dečije zone i wellness. Kupite online karte uz popust i preskočite redove!",
       socialLinks: {
         facebook: "https://www.facebook.com/petrolandaquapark/",
         instagram: "https://www.instagram.com/petroland_aquapark/",
@@ -118,197 +112,139 @@ async function main() {
       ],
       regions: ["backi-petrovac", "novi-sad", "vojvodina"],
       hours: [
-        { dayOfWeek: 0, openTime: "10:00", closeTime: "19:00", isClosed: false }, // Ned
-        { dayOfWeek: 1, openTime: "10:00", closeTime: "19:00", isClosed: false }, // Pon
-        { dayOfWeek: 2, openTime: "10:00", closeTime: "19:00", isClosed: false }, // Uto
-        { dayOfWeek: 3, openTime: "10:00", closeTime: "19:00", isClosed: false }, // Sre
-        { dayOfWeek: 4, openTime: "10:00", closeTime: "19:00", isClosed: false }, // Čet
-        { dayOfWeek: 5, openTime: "10:00", closeTime: "19:00", isClosed: false }, // Pet
-        { dayOfWeek: 6, openTime: "10:00", closeTime: "19:00", isClosed: false }, // Sub
+        { dayOfWeek: 0, openTime: "10:00", closeTime: "19:00", isClosed: false },
+        { dayOfWeek: 1, openTime: "10:00", closeTime: "19:00", isClosed: false },
+        { dayOfWeek: 2, openTime: "10:00", closeTime: "19:00", isClosed: false },
+        { dayOfWeek: 3, openTime: "10:00", closeTime: "19:00", isClosed: false },
+        { dayOfWeek: 4, openTime: "10:00", closeTime: "19:00", isClosed: false },
+        { dayOfWeek: 5, openTime: "10:00", closeTime: "19:00", isClosed: false },
+        { dayOfWeek: 6, openTime: "10:00", closeTime: "19:00", isClosed: false },
       ],
       ticketGroups: [
         {
           title: "Season Pass Pro",
           titleSr: "Season Pass Pro",
-          description: "Unlimited access for the entire summer season",
+          description: "Neograničen pristup tokom cele letnje sezone",
           descriptionSr: "Neograničen pristup tokom cele letnje sezone",
         },
         {
-          title: "Daily Tickets",
+          title: "Dnevne karte",
           titleSr: "Dnevne karte",
-          description: "Full day access to all attractions",
+          description: "Celodnevni pristup svim atrakcijama",
           descriptionSr: "Celodnevni pristup svim atrakcijama",
         },
       ],
       tickets: [
-        // Season Passes (SUMMER_SEASON validity)
         {
-          title: "SeasonPass Pro - Children (110-140cm)",
+          title: "SeasonPass Pro - Deca (110-140cm)",
           titleSr: "SeasonPass Pro - Deca (110-140cm)",
-          type: "CHILD",
-          price: 10490,
-          originalPrice: 12990,
-          dayType: "ALL",
-          timeSlot: "FULL_DAY",
-          validityType: "SUMMER_SEASON",
-          isSeasonPass: true,
-          isFeatured: false,
-          description: "Unlimited summer access for children 110-140cm height",
+          type: "CHILD", price: 10490, originalPrice: 12990,
+          dayType: "ALL", timeSlot: "FULL_DAY", validityType: "SUMMER_SEASON",
+          isSeasonPass: true, isFeatured: false,
+          description: "Neograničen letnji ulaz za decu visine 110-140cm",
           descriptionSr: "Neograničen letnji ulaz za decu visine 110-140cm",
         },
         {
-          title: "SeasonPass Pro - Students/Seniors",
+          title: "SeasonPass Pro - Đaci/Studenti/Penzioneri",
           titleSr: "SeasonPass Pro - Đaci/Studenti/Penzioneri",
-          type: "STUDENT",
-          price: 12990,
-          originalPrice: 14990,
-          dayType: "ALL",
-          timeSlot: "FULL_DAY",
-          validityType: "SUMMER_SEASON",
-          isSeasonPass: true,
-          isFeatured: false,
-          description: "Unlimited summer access for students and seniors",
+          type: "STUDENT", price: 12990, originalPrice: 14990,
+          dayType: "ALL", timeSlot: "FULL_DAY", validityType: "SUMMER_SEASON",
+          isSeasonPass: true, isFeatured: false,
+          description: "Neograničen letnji ulaz za đake, studente i penzionere",
           descriptionSr: "Neograničen letnji ulaz za đake, studente i penzionere",
         },
         {
-          title: "SeasonPass Pro - Adults",
+          title: "SeasonPass Pro - Odrasli",
           titleSr: "SeasonPass Pro - Odrasli",
-          type: "ADULT",
-          price: 14990,
-          originalPrice: 17990,
-          dayType: "ALL",
-          timeSlot: "FULL_DAY",
-          validityType: "SUMMER_SEASON",
-          isSeasonPass: true,
-          isFeatured: true,
-          description: "Unlimited summer access for adults",
+          type: "ADULT", price: 14990, originalPrice: 17990,
+          dayType: "ALL", timeSlot: "FULL_DAY", validityType: "SUMMER_SEASON",
+          isSeasonPass: true, isFeatured: true,
+          description: "Neograničen letnji ulaz za odrasle",
           descriptionSr: "Neograničen letnji ulaz za odrasle",
         },
-        // Daily tickets — Weekday
         {
-          title: "Daily Ticket - Children (110-140cm) Weekday After 4PM",
+          title: "Dnevna Karta - Deca (110-140cm) Radni dan posle 16h",
           titleSr: "Dnevna Karta - Deca (110-140cm) Radni dan posle 16h",
-          type: "CHILD",
-          price: 890,
-          originalPrice: 1190,
-          dayType: "WEEKDAY",
-          timeSlot: "AFTER_16H",
-          validityType: "FIXED_DATE",
-          description: "Afternoon entry for children 110-140cm on weekdays",
+          type: "CHILD", price: 890, originalPrice: 1190,
+          dayType: "WEEKDAY", timeSlot: "AFTER_16H", validityType: "FIXED_DATE",
+          description: "Popodnevni ulaz za decu 110-140cm radnim danom",
           descriptionSr: "Popodnevni ulaz za decu 110-140cm radnim danom",
         },
         {
-          title: "Daily Ticket - Children (110-140cm) Weekday",
+          title: "Dnevna Karta - Deca (110-140cm) Radni dan",
           titleSr: "Dnevna Karta - Deca (110-140cm) Radni dan",
-          type: "CHILD",
-          price: 1050,
-          originalPrice: 1190,
-          dayType: "WEEKDAY",
-          timeSlot: "FULL_DAY",
-          validityType: "FIXED_DATE",
-          description: "Full day entry for children 110-140cm on weekdays",
+          type: "CHILD", price: 1050, originalPrice: 1190,
+          dayType: "WEEKDAY", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
+          description: "Celodnevni ulaz za decu 110-140cm radnim danom",
           descriptionSr: "Celodnevni ulaz za decu 110-140cm radnim danom",
         },
         {
-          title: "Daily Ticket - Students/Seniors Weekday After 4PM",
+          title: "Dnevna Karta - Studenti/Penzioneri Radni dan posle 16h",
           titleSr: "Dnevna Karta - Studenti/Penzioneri Radni dan posle 16h",
-          type: "STUDENT",
-          price: 1390,
-          originalPrice: 1690,
-          dayType: "WEEKDAY",
-          timeSlot: "AFTER_16H",
-          validityType: "FIXED_DATE",
+          type: "STUDENT", price: 1390, originalPrice: 1690,
+          dayType: "WEEKDAY", timeSlot: "AFTER_16H", validityType: "FIXED_DATE",
           requiresIdentity: true,
-          description: "Afternoon entry for students/seniors on weekdays",
+          description: "Popodnevni ulaz za studente i penzionere radnim danom",
           descriptionSr: "Popodnevni ulaz za studente i penzionere radnim danom",
         },
         {
-          title: "Daily Ticket - Students/Seniors Weekday",
+          title: "Dnevna Karta - Studenti/Penzioneri Radni dan",
           titleSr: "Dnevna Karta - Studenti/Penzioneri Radni dan",
-          type: "STUDENT",
-          price: 1490,
-          originalPrice: 1690,
-          dayType: "WEEKDAY",
-          timeSlot: "FULL_DAY",
-          validityType: "FIXED_DATE",
+          type: "STUDENT", price: 1490, originalPrice: 1690,
+          dayType: "WEEKDAY", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           requiresIdentity: true,
-          description: "Full day entry for students/seniors on weekdays",
+          description: "Celodnevni ulaz za studente i penzionere radnim danom",
           descriptionSr: "Celodnevni ulaz za studente i penzionere radnim danom",
         },
         {
-          title: "Daily Ticket - Adults Weekday After 4PM",
+          title: "Dnevna Karta - Odrasli Radni dan posle 16h",
           titleSr: "Dnevna Karta - Odrasli Radni dan posle 16h",
-          type: "ADULT",
-          price: 1590,
-          originalPrice: 1790,
-          dayType: "WEEKDAY",
-          timeSlot: "AFTER_16H",
-          validityType: "FIXED_DATE",
-          description: "Afternoon entry for adults on weekdays",
+          type: "ADULT", price: 1590, originalPrice: 1790,
+          dayType: "WEEKDAY", timeSlot: "AFTER_16H", validityType: "FIXED_DATE",
+          description: "Popodnevni ulaz za odrasle radnim danom",
           descriptionSr: "Popodnevni ulaz za odrasle radnim danom",
         },
         {
-          title: "Daily Ticket - Adults Weekday",
+          title: "Dnevna Karta - Odrasli Radni dan",
           titleSr: "Dnevna Karta - Odrasli Radni dan",
-          type: "ADULT",
-          price: 1790,
-          originalPrice: 1990,
-          dayType: "WEEKDAY",
-          timeSlot: "FULL_DAY",
-          validityType: "FIXED_DATE",
+          type: "ADULT", price: 1790, originalPrice: 1990,
+          dayType: "WEEKDAY", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           isFeatured: true,
-          description: "Full day entry for adults on weekdays — best value!",
+          description: "Celodnevni ulaz za odrasle radnim danom — najbolja vrednost!",
           descriptionSr: "Celodnevni ulaz za odrasle radnim danom — najbolja vrednost!",
         },
-        // Daily tickets — Weekend
         {
-          title: "Daily Ticket - Children (110-140cm) Weekend",
+          title: "Dnevna Karta - Deca (110-140cm) Vikend",
           titleSr: "Dnevna Karta - Deca (110-140cm) Vikend",
-          type: "CHILD",
-          price: 1390,
-          originalPrice: 1490,
-          dayType: "WEEKEND",
-          timeSlot: "FULL_DAY",
-          validityType: "FIXED_DATE",
-          description: "Full day entry for children 110-140cm on weekends/holidays",
+          type: "CHILD", price: 1390, originalPrice: 1490,
+          dayType: "WEEKEND", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
+          description: "Celodnevni ulaz za decu 110-140cm vikendom i praznikom",
           descriptionSr: "Celodnevni ulaz za decu 110-140cm vikendom i praznikom",
         },
         {
-          title: "Daily Ticket - Students/Seniors Weekend",
+          title: "Dnevna Karta - Studenti/Penzioneri Vikend",
           titleSr: "Dnevna Karta - Studenti/Penzioneri Vikend",
-          type: "STUDENT",
-          price: 1790,
-          originalPrice: 1990,
-          dayType: "WEEKEND",
-          timeSlot: "FULL_DAY",
-          validityType: "FIXED_DATE",
+          type: "STUDENT", price: 1790, originalPrice: 1990,
+          dayType: "WEEKEND", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           requiresIdentity: true,
-          description: "Full day entry for students/seniors on weekends/holidays",
+          description: "Celodnevni ulaz za studente i penzionere vikendom",
           descriptionSr: "Celodnevni ulaz za studente i penzionere vikendom",
         },
         {
-          title: "Daily Ticket - Adults Weekend",
+          title: "Dnevna Karta - Odrasli Vikend",
           titleSr: "Dnevna Karta - Odrasli Vikend",
-          type: "ADULT",
-          price: 2190,
-          originalPrice: 2490,
-          dayType: "WEEKEND",
-          timeSlot: "FULL_DAY",
-          validityType: "FIXED_DATE",
-          description: "Full day entry for adults on weekends/holidays",
+          type: "ADULT", price: 2190, originalPrice: 2490,
+          dayType: "WEEKEND", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
+          description: "Celodnevni ulaz za odrasle vikendom i praznikom",
           descriptionSr: "Celodnevni ulaz za odrasle vikendom i praznikom",
         },
         {
-          title: "Family Package 2+1 Weekend",
+          title: "Family Package 2+1 Vikend",
           titleSr: "Family Package 2+1 Vikend",
-          type: "FAMILY_BUNDLE",
-          price: 4090,
-          originalPrice: 4590,
-          dayType: "WEEKEND",
-          timeSlot: "FULL_DAY",
-          validityType: "FIXED_DATE",
+          type: "FAMILY_BUNDLE", price: 4090, originalPrice: 4590,
+          dayType: "WEEKEND", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           maxPeople: 3,
-          description: "Weekend family package: 2 adults + 1 child (110-140cm)",
+          description: "Vikend porodični paket: 2 odrasla + 1 dete (110-140cm)",
           descriptionSr: "Vikend porodični paket: 2 odrasla + 1 dete (110-140cm)",
         },
       ],
@@ -330,13 +266,10 @@ async function main() {
       status: "ACTIVE",
       publicPhone: "+381 34 711 000",
       publicEmail: "office@izvor.rs",
-      description:
-        "Hotel Izvor's Aqua Park in Aranđelovac is a premium water park integrated with a luxury wellness & spa complex. Features 12 slides, thermal pools fed by natural springs, and professional spa facilities.",
-      descriptionSr:
-        "Aqua Park Izvor u Aranđelovcu je vrhunski akva park i luksuzni wellness centar. Sadrži 12 tobogana, termalne bazene sa prirodnom lekovitom vodom i profesionalne SPA sadržaje. Deo je hotelskog kompleksa Izvor.",
+      description: "Aqua Park Izvor u Aranđelovcu je vrhunski akva park i luksuzni wellness centar. Sadrži 12 tobogana, termalne bazene sa prirodnom lekovitom vodom i profesionalne SPA sadržaje. Deo je hotelskog kompleksa Izvor.",
+      descriptionSr: "Aqua Park Izvor u Aranđelovcu je vrhunski akva park i luksuzni wellness centar. Sadrži 12 tobogana, termalne bazene sa prirodnom lekovitom vodom i profesionalne SPA sadržaje. Deo je hotelskog kompleksa Izvor.",
       metaTitle: "Aqua Park Izvor Aranđelovac | Wellness & Akva Park | Splashdeals",
-      metaDescription:
-        "Akva park Izvor u Aranđelovcu — 12 tobogana, termalni bazeni i luksuzni wellness. Rezervišite online karte i uživajte u termalnom raju!",
+      metaDescription: "Akva park Izvor u Aranđelovcu — 12 tobogana, termalni bazeni i luksuzni wellness. Rezervišite online karte i uživajte u termalnom raju!",
       socialLinks: {
         facebook: "https://www.facebook.com/HotelIzvor/",
         instagram: "https://www.instagram.com/hotel_izvor/",
@@ -358,42 +291,42 @@ async function main() {
       ],
       ticketGroups: [
         {
-          title: "SPA Day Pass",
+          title: "SPA Dnevni ulaz",
           titleSr: "SPA Dnevni ulaz",
-          description: "Full access to SPA & wellness facilities",
+          description: "Pristup svim SPA i wellness sadržajima",
           descriptionSr: "Pristup svim SPA i wellness sadržajima",
         },
         {
-          title: "Aqua Park Tickets",
+          title: "Ulaznice za Akva Park",
           titleSr: "Ulaznice za Akva Park",
-          description: "Seasonal water park access",
+          description: "Sezonski pristup akva parku",
           descriptionSr: "Sezonski pristup akva parku",
         },
       ],
       tickets: [
         {
-          title: "SPA Day Pass - Adults Weekday",
+          title: "SPA Dnevni ulaz - Odrasli Radni dan",
           titleSr: "SPA Dnevni ulaz - Odrasli Radni dan",
           type: "ADULT", price: 6000, originalPrice: 7000,
           dayType: "WEEKDAY", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           isFeatured: true,
-          description: "Full day SPA & wellness access on weekdays",
+          description: "Celodnevni SPA i wellness pristup radnim danom",
           descriptionSr: "Celodnevni SPA i wellness pristup radnim danom",
         },
         {
-          title: "SPA Day Pass - Adults Weekend",
+          title: "SPA Dnevni ulaz - Odrasli Vikend",
           titleSr: "SPA Dnevni ulaz - Odrasli Vikend",
           type: "ADULT", price: 7000, originalPrice: 8000,
           dayType: "WEEKEND", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
-          description: "Full day SPA & wellness access on weekends",
+          description: "Celodnevni SPA i wellness pristup vikendom",
           descriptionSr: "Celodnevni SPA i wellness pristup vikendom",
         },
         {
-          title: "Aqua Park Seasonal Ticket - Adults",
+          title: "Sezonska karta za Akva Park - Odrasli",
           titleSr: "Sezonska karta za Akva Park - Odrasli",
           type: "ADULT", price: 1500, originalPrice: 1800,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "SUMMER_SEASON",
-          description: "Seasonal water park day pass",
+          description: "Sezonska dnevna karta za akva park",
           descriptionSr: "Sezonska dnevna karta za akva park",
         },
       ],
@@ -415,13 +348,10 @@ async function main() {
       status: "ACTIVE",
       publicPhone: "+381 35 822 222",
       publicEmail: "office@aquaparkjagodina.rs",
-      description:
-        "The first aqua park built in Serbia, featuring 7 pools and 9 slides including the famous 'Kamikaze' slide. A perfect family destination with attractions for all ages.",
-      descriptionSr:
-        "Prvi akva park izgrađen u Srbiji, sa 7 bazena i 9 tobogana uključujući čuveni 'Kamikaze' tobogan. Idealna porodična destinacija sa atrakcijama za sve uzraste.",
+      description: "Prvi akva park izgrađen u Srbiji, sa 7 bazena i 9 tobogana uključujući čuveni 'Kamikaze' tobogan. Idealna porodična destinacija sa atrakcijama za sve uzraste.",
+      descriptionSr: "Prvi akva park izgrađen u Srbiji, sa 7 bazena i 9 tobogana uključujući čuveni 'Kamikaze' tobogan. Idealna porodična destinacija sa atrakcijama za sve uzraste.",
       metaTitle: "Aqua Park Jagodina | Prvi Akva Park u Srbiji | Splashdeals",
-      metaDescription:
-        "Aqua Park Jagodina — 7 bazena, 9 tobogana i čuveni Kamikaze! Kupite karte online i zabavite se sa porodicom.",
+      metaDescription: "Aqua Park Jagodina — 7 bazena, 9 tobogana i čuveni Kamikaze! Kupite karte online i zabavite se sa porodicom.",
       socialLinks: {
         facebook: "https://www.facebook.com/AquaParkJagodina/",
         website: "https://www.aquaparkjagodina.rs",
@@ -442,28 +372,28 @@ async function main() {
       ],
       ticketGroups: [
         {
-          title: "Daily Tickets",
+          title: "Dnevne karte",
           titleSr: "Dnevne karte",
-          description: "Full day access tickets",
+          description: "Celodnevne ulaznice",
           descriptionSr: "Celodnevne ulaznice",
         },
       ],
       tickets: [
         {
-          title: "Daily Ticket - Adults",
+          title: "Dnevna Karta - Odrasli",
           titleSr: "Dnevna Karta - Odrasli",
           type: "ADULT", price: 1200, originalPrice: 1500,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           isFeatured: true,
-          description: "Full day access for adults to all facilities",
+          description: "Celodnevni pristup svim sadržajima za odrasle",
           descriptionSr: "Celodnevni pristup svim sadržajima za odrasle",
         },
         {
-          title: "Daily Ticket - Children (up to 12)",
+          title: "Dnevna Karta - Deca (do 12 god)",
           titleSr: "Dnevna Karta - Deca (do 12 god)",
           type: "CHILD", price: 700, originalPrice: 1000,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
-          description: "Full day access for children up to 12 years",
+          description: "Celodnevni pristup za decu do 12 godina",
           descriptionSr: "Celodnevni pristup za decu do 12 godina",
         },
       ],
@@ -485,13 +415,10 @@ async function main() {
       status: "ACTIVE",
       publicPhone: "+381 63 456 789",
       publicEmail: "info@sunnyhill.rs",
-      description:
-        "Luxury aqua resort with panoramic views of Vrnjačka Banja. Combines water park fun with premium accommodation and spa services.",
-      descriptionSr:
-        "Luksuzni akva rizort sa panoramskim pogledom na Vrnjačku Banju. Kombinuje zabavu akva parka sa premium smeštajem i SPA uslugama.",
+      description: "Luksuzni akva rizort sa panoramskim pogledom na Vrnjačku Banju. Kombinuje zabavu akva parka sa premium smeštajem i SPA uslugama.",
+      descriptionSr: "Luksuzni akva rizort sa panoramskim pogledom na Vrnjačku Banju. Kombinuje zabavu akva parka sa premium smeštajem i SPA uslugama.",
       metaTitle: "Aqua Park Sunny Hill Vrnjačka Banja | Luksuzni Akva Rizort | Splashdeals",
-      metaDescription:
-        "Sunny Hill aqua resort u Vrnjačkoj Banji — tobogani, wellness i panoramski pogled. Rezervišite vaš dan na vodi!",
+      metaDescription: "Sunny Hill aqua resort u Vrnjačkoj Banji — tobogani, wellness i panoramski pogled. Rezervišite vaš dan na vodi!",
       socialLinks: {
         instagram: "https://www.instagram.com/sunnyhillvrnjackabanja/",
         website: "https://www.sunnyhill.rs",
@@ -512,28 +439,28 @@ async function main() {
       ],
       ticketGroups: [
         {
-          title: "Daily Pass",
+          title: "Dnevni pass",
           titleSr: "Dnevni pass",
-          description: "Full day access to all facilities",
+          description: "Celodnevni pristup svim sadržajima",
           descriptionSr: "Celodnevni pristup svim sadržajima",
         },
       ],
       tickets: [
         {
-          title: "Daily Pass - Adults",
+          title: "Dnevni pass - Odrasli",
           titleSr: "Dnevni pass - Odrasli",
           type: "ADULT", price: 1200, originalPrice: 1500,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           isFeatured: true,
-          description: "Full day access for adults",
+          description: "Celodnevni pristup za odrasle",
           descriptionSr: "Celodnevni pristup za odrasle",
         },
         {
-          title: "Daily Pass - Children",
+          title: "Dnevni pass - Deca",
           titleSr: "Dnevni pass - Deca",
           type: "CHILD", price: 800, originalPrice: 1000,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
-          description: "Full day access for children",
+          description: "Celodnevni pristup za decu",
           descriptionSr: "Celodnevni pristup za decu",
         },
       ],
@@ -555,13 +482,10 @@ async function main() {
       status: "ACTIVE",
       publicPhone: "+381 18 320 321",
       publicEmail: "info@sokobanja.rs",
-      description:
-        "A modern water park in the heart of Soko Banja mountain spa. Perfect for families seeking fresh mountain air combined with water fun.",
-      descriptionSr:
-        "Moderan akva park u Soko Banji, idealan za porodice koje traže planinski vazduh i zabavu na vodi. Nudi tobogane, dečije bazene i sunčane terase sa pogledom na planinu Ozren.",
+      description: "Moderan akva park u Soko Banji, idealan za porodice koje traže planinski vazduh i zabavu na vodi. Nudi tobogane, dečije bazene i sunčane terase sa pogledom na planinu Ozren.",
+      descriptionSr: "Moderan akva park u Soko Banji, idealan za porodice koje traže planinski vazduh i zabavu na vodi. Nudi tobogane, dečije bazene i sunčane terase sa pogledom na planinu Ozren.",
       metaTitle: "Aqua Park Podina Soko Banja | Porodični Akva Park | Splashdeals",
-      metaDescription:
-        "Aqua Park Podina u Soko Banji — tobogani, dečiji bazeni i planinski vazduh. Savršeno mesto za porodični izlet!",
+      metaDescription: "Aqua Park Podina u Soko Banji — tobogani, dečiji bazeni i planinski vazduh. Savršeno mesto za porodični izlet!",
       socialLinks: {
         website: "https://www.sokobanja.rs",
       },
@@ -581,28 +505,28 @@ async function main() {
       ],
       ticketGroups: [
         {
-          title: "Daily Tickets",
+          title: "Dnevne karte",
           titleSr: "Dnevne karte",
-          description: "Full day access tickets",
+          description: "Celodnevne ulaznice",
           descriptionSr: "Celodnevne ulaznice",
         },
       ],
       tickets: [
         {
-          title: "Daily Ticket - Adults",
+          title: "Dnevna Karta - Odrasli",
           titleSr: "Dnevna Karta - Odrasli",
           type: "ADULT", price: 600, originalPrice: 800,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           isFeatured: true,
-          description: "Full day access for adults",
+          description: "Celodnevni pristup za odrasle",
           descriptionSr: "Celodnevni pristup za odrasle",
         },
         {
-          title: "Daily Ticket - Children (up to 12)",
+          title: "Dnevna Karta - Deca (do 12 god)",
           titleSr: "Dnevna Karta - Deca (do 12 god)",
           type: "CHILD", price: 400, originalPrice: 600,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
-          description: "Full day access for children up to 12 years",
+          description: "Celodnevni pristup za decu do 12 godina",
           descriptionSr: "Celodnevni pristup za decu do 12 godina",
         },
       ],
@@ -624,13 +548,10 @@ async function main() {
       status: "ACTIVE",
       publicPhone: "+381 14 357 100",
       publicEmail: "office@banjavrujci.rs",
-      description:
-        "Banja Vrujci is a modern thermal spa complex with a water park fed by healing thermal-mineral waters. Features indoor and outdoor pools, slides, and complete wellness facilities.",
-      descriptionSr:
-        "Banja Vrujci je moderni termalni kompleks sa akva parkom koji koristi lekovite termalno-mineralne vode. Sadrži zatvorene i otvorene bazene, tobogane i potpune wellness sadržaje. Idealna destinacija za opuštanje i porodičnu zabavu.",
+      description: "Banja Vrujci je moderni termalni kompleks sa akva parkom koji koristi lekovite termalno-mineralne vode. Sadrži zatvorene i otvorene bazene, tobogane i potpune wellness sadržaje. Idealna destinacija za opuštanje i porodičnu zabavu.",
+      descriptionSr: "Banja Vrujci je moderni termalni kompleks sa akva parkom koji koristi lekovite termalno-mineralne vode. Sadrži zatvorene i otvorene bazene, tobogane i potpune wellness sadržaje. Idealna destinacija za opuštanje i porodičnu zabavu.",
       metaTitle: "Banja Vrujci Terme | Akva Park i Wellness Mionica | Splashdeals",
-      metaDescription:
-        "Terme Vrujci — lekovite termalne vode, akva park i wellness. Rezervišite karte za Banju Vrujci online!",
+      metaDescription: "Terme Vrujci — lekovite termalne vode, akva park i wellness. Rezervišite karte za Banju Vrujci online!",
       socialLinks: {
         facebook: "https://www.facebook.com/banjavrujci/",
         instagram: "https://www.instagram.com/banjavrujci/",
@@ -652,50 +573,50 @@ async function main() {
       ],
       ticketGroups: [
         {
-          title: "Pool Access",
+          title: "Ulaz na bazene",
           titleSr: "Ulaz na bazene",
-          description: "Access to all pool facilities",
+          description: "Pristup svim bazenima",
           descriptionSr: "Pristup svim bazenima",
         },
         {
-          title: "Aqua Park Supplement",
+          title: "Doplata za Akva Park",
           titleSr: "Doplata za Akva Park",
-          description: "Additional charge for water park slides",
+          description: "Dodatna naplata za korišćenje tobogana",
           descriptionSr: "Dodatna naplata za korišćenje tobogana",
         },
       ],
       tickets: [
         {
-          title: "Pool - Adults Weekday",
+          title: "Bazen - Odrasli Radni dan",
           titleSr: "Bazen - Odrasli Radni dan",
           type: "ADULT", price: 800, originalPrice: 950,
           dayType: "WEEKDAY", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           isFeatured: true,
-          description: "Full day pool access on weekdays",
+          description: "Celodnevni pristup bazenima radnim danom",
           descriptionSr: "Celodnevni pristup bazenima radnim danom",
         },
         {
-          title: "Pool - Adults Weekend",
+          title: "Bazen - Odrasli Vikend",
           titleSr: "Bazen - Odrasli Vikend",
           type: "ADULT", price: 950, originalPrice: 1100,
           dayType: "WEEKEND", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
-          description: "Full day pool access on weekends",
+          description: "Celodnevni pristup bazenima vikendom",
           descriptionSr: "Celodnevni pristup bazenima vikendom",
         },
         {
-          title: "Pool - Children (5-10)",
+          title: "Bazen - Deca (5-10 god)",
           titleSr: "Bazen - Deca (5-10 god)",
           type: "CHILD", price: 600, originalPrice: 750,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
-          description: "Full day pool access for children 5-10 years",
+          description: "Celodnevni pristup bazenima za decu 5-10 godina",
           descriptionSr: "Celodnevni pristup bazenima za decu 5-10 godina",
         },
         {
-          title: "Aqua Park Supplement",
+          title: "Doplata za Akva-park",
           titleSr: "Doplata za Akva-park",
           type: "ADULT", price: 500, originalPrice: 600,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
-          description: "Supplement to access water slides and aqua park",
+          description: "Doplata za korišćenje tobogana i akva parka",
           descriptionSr: "Doplata za korišćenje tobogana i akva parka",
         },
       ],
@@ -717,13 +638,10 @@ async function main() {
       status: "ACTIVE",
       publicPhone: "+381 25 773 222",
       publicEmail: "office@banjajunakovic.rs",
-      description:
-        "Famous thermal health resort in Bačka with multiple pools and slides. Known for its healing thermal waters and family-friendly atmosphere.",
-      descriptionSr:
-        "Čuveno termalno lečilište u Bačkoj sa više bazena i tobogana. Poznato po lekovitim termalnim vodama i porodičnoj atmosferi. Nudi smeštaj, restoran i wellness sadržaje.",
+      description: "Čuveno termalno lečilište u Bačkoj sa više bazena i tobogana. Poznato po lekovitim termalnim vodama i porodičnoj atmosferi. Nudi smeštaj, restoran i wellness sadržaje.",
+      descriptionSr: "Čuveno termalno lečilište u Bačkoj sa više bazena i tobogana. Poznato po lekovitim termalnim vodama i porodičnoj atmosferi. Nudi smeštaj, restoran i wellness sadržaje.",
       metaTitle: "Banja Junaković Apatin | Termalni Raj u Bačkoj | Splashdeals",
-      metaDescription:
-        "Banja Junaković — termalni bazeni, tobogani i wellness u Apatinu. Kupite karte online!",
+      metaDescription: "Banja Junaković — termalni bazeni, tobogani i wellness u Apatinu. Kupite karte online!",
       socialLinks: {
         facebook: "https://www.facebook.com/banjajunakovic/",
         website: "https://www.banjajunakovic.rs",
@@ -744,28 +662,28 @@ async function main() {
       ],
       ticketGroups: [
         {
-          title: "Daily Tickets",
+          title: "Dnevne karte",
           titleSr: "Dnevne karte",
-          description: "Full day access",
+          description: "Celodnevni pristup",
           descriptionSr: "Celodnevni pristup",
         },
       ],
       tickets: [
         {
-          title: "Daily Ticket - Adults",
+          title: "Dnevna Karta - Odrasli",
           titleSr: "Dnevna Karta - Odrasli",
           type: "ADULT", price: 700, originalPrice: 900,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
           isFeatured: true,
-          description: "Full day thermal bath access for adults",
+          description: "Celodnevni pristup termalnim bazenima za odrasle",
           descriptionSr: "Celodnevni pristup termalnim bazenima za odrasle",
         },
         {
-          title: "Daily Ticket - Children",
+          title: "Dnevna Karta - Deca",
           titleSr: "Dnevna Karta - Deca",
           type: "CHILD", price: 400, originalPrice: 600,
           dayType: "ALL", timeSlot: "FULL_DAY", validityType: "FIXED_DATE",
-          description: "Full day thermal bath access for children",
+          description: "Celodnevni pristup termalnim bazenima za decu",
           descriptionSr: "Celodnevni pristup termalnim bazenima za decu",
         },
       ],
@@ -776,8 +694,6 @@ async function main() {
 
   for (const f of facilities) {
     console.log(`  → ${f.name} (${f.city})...`);
-
-    // Check if facility already exists
     const existing = await prisma.facility.findUnique({ where: { slug: f.slug } });
     if (existing) {
       console.log(`    ⚠️  Already exists (ID: ${existing.id}), updating...`);
@@ -822,11 +738,9 @@ async function main() {
           },
         });
 
-        // Create tickets in this group
         const groupTickets = f.tickets.filter((_, ti) => {
-          // Group tickets logically: first group = season passes, second = daily
-          if (gi === 0) return ti < 3; // first 3 tickets are season passes
-          return ti >= 3; // rest are daily
+          if (gi === 0) return ti < 3;
+          return ti >= 3;
         });
 
         for (const [ti, t] of groupTickets.entries()) {
@@ -865,8 +779,8 @@ async function main() {
     }
   }
 
-  console.log(`\n🏁 Enhanced seed complete! ${facilities.length} facilities updated with REAL data.`);
-  console.log("📊 Data includes: real ticket prices, operating hours, phone/email, social links, SEO metadata.");
+  console.log(`\n🏁 Enhanced seed complete! ${facilities.length} facilities updated.`);
+  console.log("📊 All text in Serbian Latin script.");
 }
 
 main()

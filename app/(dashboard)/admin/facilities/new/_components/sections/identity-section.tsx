@@ -34,7 +34,7 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
           General Identity
         </CardTitle>
         <CardDescription>
-          The public-facing name and category of the water park.
+          Javno ime i kategorija objekta. Treba jasno da opiše tip objekta.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6 space-y-6">

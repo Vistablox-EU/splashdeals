@@ -41,8 +41,8 @@ export default async function CartPage({ params }: PageProps) {
         data={{
           "@context": "https://schema.org",
           "@type": "WebPage",
-          "name": "Shopping Cart | Splashdeals",
-          "description": "Review your water park tickets before checkout."
+          "name": "Korpa | Splashdeals",
+          "description": "Pregledajte karte za akva parkove pre plaćanja."
         }} 
       />
       <CartClient dict={dict} />

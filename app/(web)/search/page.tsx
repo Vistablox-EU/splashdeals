@@ -51,7 +51,7 @@ export default async function SearchPage({
           "@context": "https://schema.org",
           "@type": "SearchResultsPage",
           "name": "Pretraga Akva Parkova",
-          "description": "Find water parks, pools, and spas in Serbia."
+          "description": "Pronađite akva parkove, bazene i spa centre u Srbiji."
         }} 
       />
       <Suspense fallback={<div className="min-h-screen bg-[#020617]" />}>

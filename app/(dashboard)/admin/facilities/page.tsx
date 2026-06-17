@@ -11,7 +11,7 @@ import { getFacilityCounts } from "@/lib/data/admin"
 
 export const metadata: Metadata = {
   title: "Objekti | Splashdeals Admin",
-  description: "Global directory of water park facilities and operational configurations.",
+  description: "Globalni direktorijum akva parkova i operativnih konfiguracija.",
 }
 
 export default async function FacilitiesDirectoryPage({
