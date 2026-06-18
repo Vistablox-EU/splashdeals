@@ -4,7 +4,11 @@ import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate, getFacilityMetadata } from "@/app/(web)/facilities/[categorySlug]/[facilitySlug]/page";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 
-
+const KNOWN_CATEGORIES: Record<string, string> = {
+  "akva-parkovi": "Akva parkovi",
+  "bazeni": "Bazeni",
+  "wellness-i-spa": "Wellness i spa",
+};
 
 interface PageProps {
   params: Promise<{ categorySlug: string }>;
@@ -13,14 +17,8 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { categorySlug } = await params;
 
-  // 1. Try as category
-  const catLabels: Record<string, string> = {
-    "akva-parkovi": "Akva Parkovi",
-    "bazeni": "Bazeni",
-    "wellness-i-spa": "Wellness i Spa",
-  };
-
-  if (catLabels[categorySlug.toLowerCase()]) {
+  // 1. Try as known category
+  if (KNOWN_CATEGORIES[categorySlug.toLowerCase()]) {
     return await getDiscoveryMetadata(categorySlug);
   }
 
