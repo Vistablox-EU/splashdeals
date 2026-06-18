@@ -119,7 +119,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
                   />
                 ) : (
-                  <div className="w-full h-full bg-slate-900 flex items-center justify-center">
+                  <div className="w-full h-full bg-muted flex items-center justify-center">
                      <Icon name="auto_awesome" className="text-[40px] text-slate-800" />
                   </div>
                 )}
@@ -151,7 +151,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                   {ticket.descriptionSr || ticket.description || dict.home.default_ticket_desc}
                 </p>
 
-                <div className="mt-auto pt-6 flex justify-between items-end border-t border-border group-hover:border-white/10 transition-colors relative z-20">
+                <div className="mt-auto pt-6 flex justify-between items-end border-t border-border group-hover:border-border transition-colors relative z-20">
                   <div className="flex flex-col">
                     <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-0.5">{ticket.currency}</span>
                     <data value={ticket.price} className="text-3xl font-black text-white italic tracking-tighter">
@@ -186,8 +186,8 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
           key={`filler-${i}`}
           className="h-full pointer-events-none grayscale select-none transition-opacity duration-500 opacity-40"
         >
-           <Card className="h-full flex flex-col border-dashed border-white/10 opacity-50">
-              <div className="h-52 w-full bg-slate-900/50 flex items-center justify-center">
+           <Card className="h-full flex flex-col border-dashed border-border opacity-50">
+              <div className="h-52 w-full bg-muted/50 flex items-center justify-center">
                 <Icon name="auto_awesome" className="text-[40px] text-slate-800" />
               </div>
               <div className="p-6 flex flex-col flex-grow">

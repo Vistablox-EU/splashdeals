@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
  */
 export function CategoryOrbSkeleton() {
   return (
-    <Card className="p-6 text-center border-white/5 relative overflow-hidden">
+    <Card className="p-6 text-center border-border relative overflow-hidden">
       <div className="flex flex-col items-center">
         {/* Unit count placeholder */}
         <div className="h-2 w-16 bg-slate-800 rounded animate-pulse mb-3" />
@@ -28,9 +28,9 @@ export function CategoryOrbSkeleton() {
  */
 export function FacilityCardSkeleton() {
   return (
-    <Card className="h-[400px] flex flex-col border-white/5 relative group overflow-hidden">
+    <Card className="h-[400px] flex flex-col border-border relative group overflow-hidden">
       {/* Ghost Background Image */}
-      <div className="absolute inset-0 bg-slate-900 group-hover:scale-110 transition-transform duration-1000" />
+      <div className="absolute inset-0 bg-muted group-hover:scale-110 transition-transform duration-1000" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
 
       {/* Content Skeleton */}

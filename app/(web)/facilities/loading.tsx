@@ -27,7 +27,7 @@ export default function FacilitiesRootLoading() {
       </header>
 
       {/* 🎛️ Filter Bar Skeleton */}
-      <div className="flex flex-wrap gap-4 items-center bg-slate-900/20 p-4 rounded-2xl border border-border mb-12">
+      <div className="flex flex-wrap gap-4 items-center bg-muted/20 p-4 rounded-2xl border border-border mb-12">
         <Skeleton className="h-10 w-36 bg-muted rounded-xl" />
         <Skeleton className="h-10 w-36 bg-muted rounded-xl" />
         <Skeleton className="h-10 w-28 bg-muted rounded-xl ml-auto" />

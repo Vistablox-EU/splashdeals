@@ -40,7 +40,7 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
         className="h-[400px] group overflow-hidden border-border hover:border-cyan-400/30 transition-all duration-500 relative flex flex-col justify-end"
       >
         {facility.logoUrl && (
-          <div className="absolute top-6 right-6 z-20 h-14 w-14 rounded-2xl overflow-hidden border border-white/10 bg-background/60 p-2 backdrop-blur-md flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500">
+          <div className="absolute top-6 right-6 z-20 h-14 w-14 rounded-2xl overflow-hidden border border-border bg-background/60 p-2 backdrop-blur-md flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500">
             <div className="relative w-full h-full">
               <Image 
                 src={facility.logoUrl} 
@@ -64,7 +64,7 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
               priority={isPriority}
             />
           ) : (
-            <div className="w-full h-full bg-slate-900 flex items-center justify-center">
+            <div className="w-full h-full bg-muted flex items-center justify-center">
               <Icon name="auto_awesome" className="text-[48px] text-slate-800" />
             </div>
           )}

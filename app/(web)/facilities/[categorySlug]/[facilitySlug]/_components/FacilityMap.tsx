@@ -164,7 +164,7 @@ export function FacilityMap({
 
         <button
           onClick={openDirections}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 active:scale-95 transition-all text-xs font-black uppercase tracking-wider self-start md:self-auto cursor-pointer"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 active:scale-95 transition-all text-xs font-black uppercase tracking-wider self-start md:self-auto cursor-pointer"
         >
           <Icon name="navigation" className="text-[14px] fill-current" />
           <span>Navigacija</span>

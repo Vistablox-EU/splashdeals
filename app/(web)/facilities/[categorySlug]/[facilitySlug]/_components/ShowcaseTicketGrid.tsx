@@ -175,7 +175,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                 >
                   <Card className={cn(
                     "h-full p-8 border-border relative overflow-hidden flex flex-col justify-between transition-all duration-500",
-                    t.isFeatured ? "border-cyan-500/30 bg-primary/5 shadow-[0_0_40px_rgba(6,182,212,0.1)]" : "hover:bg-muted/50",
+                    t.isFeatured ? "border-primary/30 bg-primary/5 shadow-[0_0_40px_rgba(6,182,212,0.1)]" : "hover:bg-muted/50",
                     "hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] group-hover:scale-[1.03]"
                   )}>
                     {/* Energy Splash Background */}
@@ -218,7 +218,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                                 </div>
 
                                 {/* Online Price Capsule */}
-                                <div className="bg-primary/10 border border-cyan-500/30 px-2 py-0.5 rounded-lg flex flex-col items-center justify-center min-w-[75px] shadow-[0_0_8px_rgba(6,182,212,0.06)]">
+                                <div className="bg-primary/10 border border-primary/30 px-2 py-0.5 rounded-lg flex flex-col items-center justify-center min-w-[75px] shadow-[0_0_8px_rgba(6,182,212,0.06)]">
                                   <span className="text-[6px] font-black text-primary uppercase tracking-widest leading-none mb-0.5">Online</span>
                                   <span className="text-xs font-black text-foreground leading-none">{t.price} {t.currency}</span>
                                 </div>

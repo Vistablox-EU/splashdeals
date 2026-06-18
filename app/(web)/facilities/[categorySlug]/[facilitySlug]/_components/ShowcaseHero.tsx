@@ -153,7 +153,7 @@ export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
   const getWeatherIcon = (code: number) => {
     if (code === 0) return <Icon name="light_mode" className="text-[20px] text-amber-400" />
     if (code < 4) return <Icon name="cloud" className="text-[20px] text-slate-300" />
-    return <Icon name="rainy" className="text-[20px] text-cyan-400" />
+    return <Icon name="rainy" className="text-[20px] text-primary" />
   }
 
   return (

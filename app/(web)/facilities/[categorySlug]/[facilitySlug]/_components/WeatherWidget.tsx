@@ -14,13 +14,13 @@ export function SidebarWeatherWidget({ weather }: { weather: DetailedWeather | n
   const getWeatherDetails = (code: number) => {
     if (code === 0 || code === 1) return { icon: <Icon name="light_mode" className="w-16 h-16 text-amber-400" />, text: "Sunčano", desc: "Savršeno vreme za vodene atrakcije! Obavezno ponesite kremu za sunčanje." };
     if (code === 2 || code === 3) return { icon: <Icon name="cloud" className="w-16 h-16 text-slate-300" />, text: "Promenljivo", desc: "Toplo, idealno za one koji vole povremenu hladovinu." };
-    return { icon: <Icon name="rainy" className="w-16 h-16 text-cyan-400" />, text: "Kišovito", desc: "Mogući pljuskovi. Proverite radno vreme za zatvorene bazene." };
+    return { icon: <Icon name="rainy" className="w-16 h-16 text-primary" />, text: "Kišovito", desc: "Mogući pljuskovi. Proverite radno vreme za zatvorene bazene." };
   };
 
   const details = getWeatherDetails(weather.weathercode);
 
   return (
-    <div className="glass-frost p-8 rounded-[2.5rem] border border-cyan-500/10 bg-cyan-500/5 relative overflow-hidden group">
+    <div className="glass-frost p-8 rounded-[2.5rem] border border-primary/10 bg-primary/5 relative overflow-hidden group">
       <div className="absolute -top-4 -right-4 opacity-10 group-hover:opacity-20 transition-opacity blur-sm scale-150">
         {details.icon}
       </div>
@@ -33,7 +33,7 @@ export function SidebarWeatherWidget({ weather }: { weather: DetailedWeather | n
          {details.icon}
          <div>
             <div className="text-4xl font-black text-foreground tracking-tighter">{Math.round(weather.temperature)}°C</div>
-            <p className="text-[10px] uppercase font-black text-cyan-400 tracking-widest">{details.text}</p>
+            <p className="text-[10px] uppercase font-black text-primary tracking-widest">{details.text}</p>
          </div>
       </div>
       
@@ -42,14 +42,14 @@ export function SidebarWeatherWidget({ weather }: { weather: DetailedWeather | n
       </p>
 
       <div className="grid grid-cols-2 gap-3 relative z-10">
-         <div className="bg-black/20 rounded-2xl p-3 flex items-center gap-3 border border-white/5">
+         <div className="bg-black/20 rounded-2xl p-3 flex items-center gap-3 border border-border">
             <Icon name="air" className="text-[20px] text-slate-400" />
             <div className="flex flex-col">
                <span className="text-[9px] uppercase font-bold tracking-widest text-slate-500">Vetar</span>
                <span className="text-xs font-black text-slate-300">{Math.round(weather.windspeed)} km/h</span>
             </div>
          </div>
-         <div className="bg-black/20 rounded-2xl p-3 flex items-center gap-3 border border-white/5">
+         <div className="bg-black/20 rounded-2xl p-3 flex items-center gap-3 border border-border">
             <Icon name="light_mode" className="text-[20px] text-amber-400/70" />
             <div className="flex flex-col">
                <span className="text-[9px] uppercase font-bold tracking-widest text-slate-500">UV Indeks</span>

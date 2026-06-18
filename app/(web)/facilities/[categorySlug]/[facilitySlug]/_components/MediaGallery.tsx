@@ -64,7 +64,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                     className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <Icon name="play_arrow" className="text-[48px] text-white/80 fill-white/20 backdrop-blur-sm p-3 rounded-full border border-white/20" />
+                    <Icon name="play_arrow" className="text-[48px] text-white/80 fill-white/20 backdrop-blur-sm p-3 rounded-full border border-border/20" />
                   </div>
                 </div>
               ) : (
@@ -161,7 +161,7 @@ export function HeroThumbnails({ media }: { media: FacilityMedia[] }) {
           )}
         >
           {m.type === 'VIDEO' ? (
-            <div className="w-full h-full bg-slate-900 flex items-center justify-center">
+            <div className="w-full h-full bg-muted flex items-center justify-center">
               {m.thumbnailUrl ? (
                 <Image 
                   src={m.thumbnailUrl} 

@@ -344,7 +344,7 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
               </div>
 
               {/* Online Price Capsule */}
-              <div className="bg-primary/10 border border-cyan-500/30 px-3 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+              <div className="bg-primary/10 border border-primary/30 px-3 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
                 <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none mb-1">Kupi online</span>
                 <span className="text-base font-black text-foreground leading-none">{tier.price} RSD</span>
               </div>
@@ -522,7 +522,7 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                   </div>
 
                   {/* Online Price Capsule */}
-                  <div className="bg-primary/10 border border-cyan-500/30 px-3.5 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_12px_rgba(6,182,212,0.08)]">
+                  <div className="bg-primary/10 border border-primary/30 px-3.5 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_12px_rgba(6,182,212,0.08)]">
                     <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none mb-1">Kupi online</span>
                     <span className="text-sm font-black text-foreground leading-none">{tier.price} RSD</span>
                   </div>
@@ -616,7 +616,7 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                       </div>
 
                       {/* Online Price Capsule */}
-                      <div className="bg-primary/10 border border-cyan-500/30 px-2 py-0.5 rounded-lg flex flex-col items-center justify-center min-w-[65px]">
+                      <div className="bg-primary/10 border border-primary/30 px-2 py-0.5 rounded-lg flex flex-col items-center justify-center min-w-[65px]">
                         <span className="text-[6px] font-black text-primary uppercase tracking-widest leading-none mb-0.5">Online</span>
                         <span className="text-[11px] font-black text-foreground leading-none">{tier.price} RSD</span>
                       </div>

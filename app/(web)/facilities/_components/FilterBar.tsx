@@ -86,7 +86,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
           value={searchParams.get("city") || "all"} 
           onValueChange={(val) => updateParams({ city: val === "all" ? null : val })}
         >
-          <SelectTrigger id="city-filter" className="w-full sm:w-[180px] bg-slate-900/50 border-white/10 text-foreground font-bold uppercase text-[10px] tracking-widest h-12 sm:h-10">
+          <SelectTrigger id="city-filter" className="w-full sm:w-[180px] bg-muted/50 border-border text-foreground font-bold uppercase text-[10px] tracking-widest h-12 sm:h-10">
             <div className="flex items-center gap-2">
               <Icon name="location_on" className="text-[12px] text-primary" />
               <SelectValue placeholder={dict.filters.all_cities} />
@@ -115,7 +115,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
             onBlur={() => updateParams({ minPrice })}
-            className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-slate-900/50 border-white/10 text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-slate-600"
+            className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-muted/50 border-border text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-muted-foreground/60"
           />
         </div>
         <span className="text-slate-700 font-bold">-</span>
@@ -129,7 +129,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
             onBlur={() => updateParams({ maxPrice })}
-            className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-slate-900/50 border-white/10 text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-slate-600"
+            className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-muted/50 border-border text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-muted-foreground/60"
           />
         </div>
       </div>
@@ -143,7 +143,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
           value={searchParams.get("sort") || "newest"} 
           onValueChange={(val) => updateParams({ sort: val })}
         >
-          <SelectTrigger id="sort-filter" className="w-full sm:w-[200px] bg-slate-900/50 border-white/10 text-foreground font-bold uppercase text-[10px] tracking-widest h-12 sm:h-10">
+          <SelectTrigger id="sort-filter" className="w-full sm:w-[200px] bg-muted/50 border-border text-foreground font-bold uppercase text-[10px] tracking-widest h-12 sm:h-10">
             <div className="flex items-center gap-2">
               <Icon name="swap_vert" className="text-[12px] text-primary" />
               <SelectValue placeholder={dict.filters.sort_by} />

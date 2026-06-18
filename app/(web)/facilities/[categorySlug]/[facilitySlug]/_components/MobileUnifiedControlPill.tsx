@@ -86,7 +86,7 @@ export function MobileUnifiedControlPill({
   const getWeatherIcon = (code: number) => {
     if (code === 0) return <Icon name="light_mode" className="text-[24px] text-amber-400" />;
     if (code < 4) return <Icon name="cloud" className="text-[24px] text-slate-300" />;
-    return <Icon name="rainy" className="text-[24px] text-cyan-400" />;
+    return <Icon name="rainy" className="text-[24px] text-primary" />;
   };
 
   return (
@@ -112,7 +112,7 @@ export function MobileUnifiedControlPill({
 
       {/* ⏰ Segment 2: Operating Hours */}
       <div className="flex items-center gap-2.5 px-3 flex-1 justify-center">
-        <Icon name="schedule" className="text-[24px] text-cyan-400 flex-shrink-0" />
+        <Icon name="schedule" className="text-[24px] text-primary flex-shrink-0" />
         <span className="text-base font-black text-foreground tracking-tight font-mono">
           {todayHours ? (
             todayHours.isClosed ? (
@@ -134,15 +134,15 @@ export function MobileUnifiedControlPill({
       {/* 🧭 Segment 3: Navigation Trigger */}
       <button
         onClick={handleNavigation}
-        className="flex items-center gap-2 px-3 flex-1 justify-center h-full text-cyan-400 hover:text-cyan-300 transition-colors active:scale-95 active:opacity-80 group cursor-pointer"
+        className="flex items-center gap-2 px-3 flex-1 justify-center h-full text-primary hover:text-cyan-300 transition-colors active:scale-95 active:opacity-80 group cursor-pointer"
       >
-        <Icon name="navigation" className="text-[24px] fill-current animate-pulse text-cyan-400 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
+        <Icon name="navigation" className="text-[24px] fill-current animate-pulse text-primary flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
         {distance !== null ? (
           <span className="text-sm font-black tracking-tight text-foreground font-mono">
             {distance.toFixed(0)} km
           </span>
         ) : (
-          <span className="text-xs uppercase font-extrabold tracking-wider text-cyan-400/80 group-hover:text-cyan-400">
+          <span className="text-xs uppercase font-extrabold tracking-wider text-primary/80 group-hover:text-primary">
             Ruta
           </span>
         )}

@@ -263,7 +263,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
             ref={modalRef}
             className="relative w-full max-w-lg md:max-w-xl z-10 overflow-visible animate-fade-in-up"
           >
-            <Card className="p-8 md:p-10 overflow-visible border-white/10 relative z-10 flex flex-col gap-6 bg-gradient-to-br from-slate-900/95 via-slate-950/90 to-cyan-950/20 shadow-[0_30px_70px_rgba(0,0,0,0.85),_0_0_50px_rgba(6,182,212,0.05)] rounded-[2.2rem]">
+            <Card className="p-8 md:p-10 overflow-visible border-border relative z-10 flex flex-col gap-6 bg-gradient-to-br from-slate-900/95 via-slate-950/90 to-cyan-950/20 shadow-[0_30px_70px_rgba(0,0,0,0.85),_0_0_50px_rgba(6,182,212,0.05)] rounded-[2.2rem]">
               
               {/* Decorative Top Glow (No Purple!) */}
               <div className="absolute -top-12 left-1/4 right-1/4 h-24 bg-cyan-500/10 rounded-full blur-[50px] pointer-events-none z-0" />
@@ -271,7 +271,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
               {/* Close Button */}
               <button
                 onClick={onClose}
-                className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-foreground hover:bg-white/10 active:scale-90 transition-all z-30 shadow-sm"
+                className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 border border-border flex items-center justify-center text-slate-400 hover:text-foreground hover:bg-white/10 active:scale-90 transition-all z-30 shadow-sm"
                 aria-label="Zatvori"
               >
                 <Icon name="close" className="text-[18px]" />
@@ -298,7 +298,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                   {ticket.labelSr || ticket.label || ticket.titleSr || ticket.title}
                 </h2>
 
-                <div className="flex items-center gap-2 text-slate-400 text-xs font-bold bg-white/[0.02] border border-white/5 px-3 py-1.5 rounded-xl w-fit">
+                <div className="flex items-center gap-2 text-slate-400 text-xs font-bold bg-white/[0.02] border border-border px-3 py-1.5 rounded-xl w-fit">
                   <Icon name="location_on" className="text-[14px] text-cyan-500/80" />
                   <span>{facility.streetName} {facility.streetNumber}, {facility.city}</span>
                 </div>
@@ -306,10 +306,10 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
 
               {/* Fine Print Details Grid */}
               <div className="grid grid-cols-2 gap-4 z-10">
-                <div className="group/detail bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-cyan-500/30 rounded-2xl p-4 flex flex-col gap-2 transition-all duration-300 shadow-sm">
+                <div className="group/detail bg-white/[0.03] hover:bg-white/[0.06] border border-border hover:border-cyan-500/30 rounded-2xl p-4 flex flex-col gap-2 transition-all duration-300 shadow-sm">
                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Dani Korišćenja</span>
                   <div className="flex items-center gap-2 text-slate-100 font-bold text-xs">
-                    <div className="p-1 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover/detail:bg-cyan-500/20 group-hover/detail:scale-110 transition-all duration-300">
+                    <div className="p-1 rounded-lg bg-primary/10 text-primary group-hover/detail:bg-primary/20 group-hover/detail:scale-110 transition-all duration-300">
                       <Icon name="calendar_month" className="text-[14px]" />
                     </div>
                     <span>
@@ -318,10 +318,10 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                   </div>
                 </div>
 
-                <div className="group/detail bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 hover:border-cyan-500/30 rounded-2xl p-4 flex flex-col gap-2 transition-all duration-300 shadow-sm">
+                <div className="group/detail bg-white/[0.03] hover:bg-white/[0.06] border border-border hover:border-cyan-500/30 rounded-2xl p-4 flex flex-col gap-2 transition-all duration-300 shadow-sm">
                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Termin Ulaska</span>
                   <div className="flex items-center gap-2 text-slate-100 font-bold text-xs">
-                    <div className="p-1 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover/detail:bg-cyan-500/20 group-hover/detail:scale-110 transition-all duration-300">
+                    <div className="p-1 rounded-lg bg-primary/10 text-primary group-hover/detail:bg-primary/20 group-hover/detail:scale-110 transition-all duration-300">
                       <Icon name="schedule" className="text-[14px]" />
                     </div>
                     <span>
@@ -344,8 +344,8 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                           onClick={() => handleDateSelect(d.dateStr)}
                           className={`flex-shrink-0 w-16 h-20 rounded-xl border flex flex-col items-center justify-center gap-1 snap-start transition-all duration-300 ${
                             isSelected
-                              ? "bg-cyan-500/10 border-cyan-500/40 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)] scale-102"
-                              : "bg-white/[0.02] border-white/5 text-slate-400 hover:text-slate-200 hover:border-white/10 hover:bg-white/[0.04]"
+                              ? "bg-primary/10 border-primary/40 text-primary shadow-lg scale-102"
+                              : "bg-muted/20 border-border text-muted-foreground hover:text-foreground/80 hover:border-border hover:bg-muted/40"
                           }`}
                         >
                           <span className="text-[8px] font-black uppercase tracking-wider">{d.dayName}</span>
@@ -361,13 +361,13 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
               {/* Perforated Separator Row */}
               <div className="relative -mx-8 md:-mx-10 flex items-center justify-center my-2 select-none pointer-events-none">
                 {/* Left Notch cutout (semi-circle bulging in) */}
-                <div className="absolute left-0 w-3.5 h-7 bg-[#020617] rounded-r-full border-y border-r border-white/10 -translate-x-px z-20 shadow-[inset_-3px_0_5px_rgba(0,0,0,0.8)]" />
+                <div className="absolute left-0 w-3.5 h-7 bg-[#020617] rounded-r-full border-y border-r border-border -translate-x-px z-20 shadow-[inset_-3px_0_5px_rgba(0,0,0,0.8)]" />
                 
                 {/* Dashed Line */}
                 <div className="w-full border-t border-dashed border-white/15" />
                 
                 {/* Right Notch cutout (semi-circle bulging in) */}
-                <div className="absolute right-0 w-3.5 h-7 bg-[#020617] rounded-l-full border-y border-l border-white/10 translate-x-px z-20 shadow-[inset_3px_0_5px_rgba(0,0,0,0.8)]" />
+                <div className="absolute right-0 w-3.5 h-7 bg-[#020617] rounded-l-full border-y border-l border-border translate-x-px z-20 shadow-[inset_3px_0_5px_rgba(0,0,0,0.8)]" />
               </div>
 
               {/* Price & Quantity Panel */}
@@ -390,7 +390,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                 </div>
 
                 {/* Quantity control */}
-                <div className="flex items-center bg-slate-900/60 rounded-2xl p-1 border border-white/10 shadow-inner shrink-0">
+                <div className="flex items-center bg-muted/60 rounded-2xl p-1 border border-border shadow-inner shrink-0">
                   <button 
                     onClick={() => handleQuantityChange(quantity - 1)} 
                     className="w-9 h-9 flex items-center justify-center hover:bg-white/5 active:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-foreground active:scale-90"
@@ -445,7 +445,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                       ? "border-emerald-500/30 bg-emerald-950/20 text-emerald-400"
                       : isAdding
                         ? "border-cyan-500/10 bg-cyan-950/5 text-cyan-400 cursor-not-allowed"
-                        : "border-cyan-500/20 bg-cyan-950/15 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400/40 hover:text-cyan-300 active:scale-98"
+                        : "border-primary/20 bg-primary/15 text-primary hover:bg-primary/10 hover:border-primary/40 hover:text-primary/80 active:scale-98"
                   }`}
                 >
                   {isAdded ? (

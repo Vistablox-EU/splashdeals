@@ -139,8 +139,8 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
               {/* 🧿 Icon Container (Neon Glassmorphism) */}
-              <div className="relative z-10 flex items-center justify-center shrink-0 w-10 h-10 rounded-xl bg-white/[0.03] text-cyan-400 border border-border shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:w-14 sm:h-14 sm:rounded-2xl sm:mb-4">
-                <Icon name={iconName} className="text-[20px] text-cyan-400 sm:text-[24px]" />
+              <div className="relative z-10 flex items-center justify-center shrink-0 w-10 h-10 rounded-xl bg-white/[0.03] text-primary border border-border shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:w-14 sm:h-14 sm:rounded-2xl sm:mb-4">
+                <Icon name={iconName} className="text-[20px] text-primary sm:text-[24px]" />
               </div>
 
               {/* 🏷️ Info Container */}
@@ -154,7 +154,7 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
                     "text-[9px] xs:text-[10px] uppercase tracking-widest line-clamp-1",
                     fa.amenity.type === "TEXT" && fa.value.length > 20 
                       ? "text-slate-400 font-medium normal-case tracking-normal leading-relaxed text-[11px] mt-1 text-left sm:text-center" 
-                      : "text-cyan-400 font-bold"
+                      : "text-primary font-bold"
                   )}>
                     {fa.value}
                   </div>
@@ -162,7 +162,7 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
 
                 {/* Glowing availability badge */}
                 <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity mt-0.5 sm:mt-2 sm:justify-center">
-                  <div className="h-1.5 w-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.6)] animate-pulse" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.6)] animate-pulse" />
                   <span className="text-[8px] xs:text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-400">
                     {dict?.amenities?.available || "Dostupno"}
                   </span>

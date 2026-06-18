@@ -85,8 +85,8 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
                 className={cn(
                   "p-6 text-center transition-all duration-300 border-border group relative overflow-hidden h-full",
                   isActive 
-                    ? "bg-cyan-500/20 border-cyan-500/40 ring-1 ring-cyan-500/20" 
-                    : "hover:bg-cyan-500/10"
+                    ? "bg-primary/20 border-primary/40 ring-1 ring-primary/20" 
+                    : "hover:bg-primary/10"
                 )}
               >
                 <div className={cn(
@@ -110,7 +110,7 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
                 
                 {isActive && (
                   <div
-                    className="absolute bottom-0 left-0 right-0 h-1 bg-cyan-500"
+                    className="absolute bottom-0 left-0 right-0 h-1 bg-primary"
                   />
                 )}
               </Card>

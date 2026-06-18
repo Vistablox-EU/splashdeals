@@ -776,7 +776,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               </Card>
 
               {facility.transitGuide && (
-                <Card className="p-8 mt-8 border-l-4 border-l-cyan-500 bg-slate-900/50">
+                <Card className="p-8 mt-8 border-l-4 border-l-primary bg-muted/50">
                    <div className="flex items-center gap-3 mb-4 text-cyan-400 font-black uppercase tracking-widest text-xs">
                       <Icon name="location_on" className="text-[16px]" /> Kako stići
                    </div>
