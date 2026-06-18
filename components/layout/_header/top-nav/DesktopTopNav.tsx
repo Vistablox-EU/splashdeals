@@ -3,7 +3,7 @@
 import React from "react";
 import { MegaMenu } from "../mega-menu/MegaMenu";
 import { Logo } from "./Logo";
-import { AccountButton } from "./AccountButton";
+
 import { CartButton } from "./CartButton";
 import { MobileTopNav } from "./MobileTopNav";
 
@@ -51,7 +51,6 @@ export function DesktopTopNav({
         </React.Suspense>
 
         <div className="flex items-center gap-1.5 md:gap-3">
-          <AccountButton dict={dict} />
           <CartButton
             dict={dict}
             isOnline={isOnline}
