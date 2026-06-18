@@ -33,9 +33,15 @@ const catLabels: Record<string, string> = {
 export async function getDiscoveryMetadata(categorySlug: string): Promise<Metadata> {
   const dict = await getDictionary();
 
-  const hasCategory = await prisma.facility.findFirst({
-    where: { category: { equals: categorySlug, mode: "insensitive" } },
-  });
+  let hasCategory = false;
+  try {
+    const result = await prisma.facility.findFirst({
+      where: { category: { equals: categorySlug, mode: "insensitive" } },
+    });
+    hasCategory = !!result;
+  } catch {
+    // DB not available (CI, empty state) — still render for known categories
+  }
 
   // If no facilities in DB but category slug is known, still render (eg. CI/empty state)
   if (!hasCategory && !catLabels[categorySlug.toLowerCase()]) {
@@ -83,9 +89,15 @@ export async function DiscoveryTemplate({ params }: PageProps) {
   const { categorySlug } = await params;
   const dict = await getDictionary();
 
-  const hasCategory = await prisma.facility.findFirst({
-    where: { category: { equals: categorySlug, mode: "insensitive" } },
-  });
+  let hasCategory = false;
+  try {
+    const result = await prisma.facility.findFirst({
+      where: { category: { equals: categorySlug, mode: "insensitive" } },
+    });
+    hasCategory = !!result;
+  } catch {
+    // DB not available (CI, empty state) — still render for known categories
+  }
 
   // If no facilities in DB but category slug is known, still render (eg. CI/empty state)
   if (!hasCategory && !catLabels[categorySlug.toLowerCase()]) {
