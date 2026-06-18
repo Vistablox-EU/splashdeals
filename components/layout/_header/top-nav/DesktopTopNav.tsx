@@ -71,5 +71,5 @@ export function DesktopTopNav({
 }
 
 const DesktopNavSkeleton = () => (
-  <div className="hidden md:flex items-center bg-white/[0.03] border border-white/10 rounded-full h-12 w-32 animate-pulse" />
+  <div className="hidden md:flex items-center bg-muted/30 border border-border/50 rounded-full h-12 w-32 animate-pulse" />
 );

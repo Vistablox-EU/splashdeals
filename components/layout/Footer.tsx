@@ -24,10 +24,10 @@ export function Footer() {
   }, [])
 
   return (
-    <footer className="relative mt-auto pt-24 pb-12 overflow-hidden bg-[#020617] border-t border-white/5">
+    <footer className="relative mt-auto pt-24 pb-12 overflow-hidden bg-background border-t border-border">
       {/* Background Ambience */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-teal-500/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="container px-6 mx-auto relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-20">
@@ -72,7 +72,7 @@ export function Footer() {
                 />
               </div>
 
-              <span className="text-3xl font-black italic uppercase text-white group-hover:text-cyan-50 transition-colors -ml-1">
+              <span className="text-3xl font-black italic uppercase text-foreground group-hover:text-primary transition-colors -ml-1">
 
                 deals
               </span>
@@ -81,7 +81,7 @@ export function Footer() {
                 <div className="absolute inset-0 w-1.5 h-1.5 rounded-full bg-cyan-400 blur-[2px] animate-ping opacity-50" />
               </div>
             </Link>
-            <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-xs">
+            <p className="text-muted-foreground text-sm font-medium leading-relaxed max-w-xs">
               {dict?.footer?.desc || "Vodeća destinacija u Srbiji za digitalne ulaznice za akva parkove i sezonske propusnice. Preskočite čekanje i uživajte u letu."}
             </p>
             <div className="flex items-center gap-3">
@@ -120,7 +120,7 @@ export function Footer() {
                   href={href} 
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:bg-white/10 hover:border-cyan-400/30 transition-all duration-300"
+                  className="w-11 h-11 rounded-lg bg-muted/50 border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-muted hover:border-primary/30 transition-all duration-300"
                   aria-label={label}
                 >
                   <IconComponent className="h-5 w-5" />
@@ -130,7 +130,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-black uppercase text-xs tracking-[0.3em] mb-8">
+            <h4 className="text-foreground font-black uppercase text-xs tracking-[0.3em] mb-8">
               {dict?.footer?.quick_access || "Brzi Pristup"}
             </h4>
             <ul className="space-y-1">
@@ -141,7 +141,7 @@ export function Footer() {
                 { name: dict?.footer?.support_center || "Centar za Podršku", href: `/support` }
               ].map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-slate-400 hover:text-cyan-400 text-sm font-bold transition-colors flex items-center group py-3">
+                  <Link href={item.href} className="text-muted-foreground hover:text-primary text-sm font-bold transition-colors flex items-center group py-3">
                     <Icon name="arrow_forward" className="text-[12px] mr-2 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                     {item.name}
                   </Link>
@@ -151,7 +151,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-black uppercase text-xs tracking-[0.3em] mb-8">
+            <h4 className="text-foreground font-black uppercase text-xs tracking-[0.3em] mb-8">
               {dict?.footer?.support_legal || "Podrška i Pravne Informacije"}
             </h4>
             <ul className="space-y-1">
@@ -162,7 +162,7 @@ export function Footer() {
                 { name: dict?.footer?.help_center || "Centar za Pomoć", href: `/support` }
               ].map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-slate-400 hover:text-cyan-400 text-sm font-bold transition-colors flex items-center group py-3">
+                  <Link href={item.href} className="text-muted-foreground hover:text-primary text-sm font-bold transition-colors flex items-center group py-3">
                     <Icon name="arrow_forward" className="text-[12px] mr-2 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                     {item.name}
                   </Link>
@@ -173,20 +173,20 @@ export function Footer() {
 
           {/* Priority Updates */}
           <div className="space-y-8">
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none" />
-              <h4 className="text-white font-black uppercase text-xs tracking-widest mb-4">
+            <div className="p-6 rounded-2xl bg-muted/50 border border-border backdrop-blur-md relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none" />
+              <h4 className="text-foreground font-black uppercase text-xs tracking-widest mb-4">
                 {dict?.footer?.summer_alerts || "Letnja Obaveštenja"}
               </h4>
-              <p className="text-slate-400 text-xs mb-4 font-medium leading-relaxed">
+              <p className="text-muted-foreground text-xs mb-4 font-medium leading-relaxed">
                 {dict?.footer?.summer_alerts_desc || "Prijavite se za najnovije akcije i ekskluzivne letnje ponude akva parkova."}
               </p>
               <NewsletterForm dict={dict} />
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center gap-3 text-slate-400 group cursor-default">
-                <div className="p-2 rounded-lg bg-white/5 group-hover:bg-primary/10 transition-colors">
+              <div className="flex items-center gap-3 text-muted-foreground group cursor-default">
+                <div className="p-2 rounded-lg bg-muted/50 group-hover:bg-primary/10 transition-colors">
                   <Icon name="mail" className="text-[16px] group-hover:text-primary" />
                 </div>
                 <span 
@@ -194,8 +194,8 @@ export function Footer() {
                   dangerouslySetInnerHTML={{ __html: "<!--email_off-->hq@splashdeals.rs<!--/email_off-->" }}
                 />
               </div>
-              <div className="flex items-center gap-3 text-slate-400 group cursor-default">
-                <div className="p-2 rounded-lg bg-white/5 group-hover:bg-primary/10 transition-colors">
+              <div className="flex items-center gap-3 text-muted-foreground group cursor-default">
+                <div className="p-2 rounded-lg bg-muted/50 group-hover:bg-primary/10 transition-colors">
                   <Icon name="location_on" className="text-[16px] group-hover:text-primary" />
                 </div>
                 <span className="text-xs font-bold transition-colors group-hover:text-primary">Belgrade Technology Park, SRB</span>
@@ -206,25 +206,25 @@ export function Footer() {
         </div>
 
         {/* Footer Base */}
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 opacity-80 backdrop-blur-sm px-2">
+        <div className="pt-12 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6 opacity-80 backdrop-blur-sm px-2">
           <div className="flex flex-col items-center md:items-start gap-1">
-            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
+            <p className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em]">
               {dict?.footer?.copyright || "© 2026 Splashdeals Marketplace. Sva prava zadržana."}
             </p>
-            <p className="text-slate-600 text-[9px] font-bold uppercase tracking-widest flex items-center gap-2">
+            <p className="text-muted-foreground/60 text-[9px] font-bold uppercase tracking-widest flex items-center gap-2">
               {dict?.footer?.built_for || "Napravljeno za brzu i laku rezervaciju"} 
-              <span className="w-1 h-1 rounded-full bg-cyan-500" /> 
+              <span className="w-1 h-1 rounded-full bg-primary" /> 
               v2.4.0-letnji
             </p>
           </div>
           
           <div className="flex items-center gap-8">
-            <div className="text-center text-slate-500 text-xs font-bold uppercase tracking-widest">
+            <div className="text-center text-muted-foreground text-xs font-bold uppercase tracking-widest">
               Najbolji Akva Parkovi u Srbiji
             </div>
-            <div className="flex items-center gap-4 text-slate-500 text-[10px] font-black uppercase tracking-widest">
+            <div className="flex items-center gap-4 text-muted-foreground text-[10px] font-black uppercase tracking-widest">
               <span>{dict?.footer?.security_first || "Sigurnost na Prvom Mestu"}</span>
-              <span className="w-1 h-1 rounded-full bg-slate-700" />
+              <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
               <span>{dict?.footer?.instant_delivery || "Trenutna Isporuka"}</span>
             </div>
             <div className="hidden sm:flex items-center gap-2">
@@ -284,7 +284,7 @@ function NewsletterForm({ dict }: { dict: any | null }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={dict?.footer?.email_placeholder || "Vaša E-mail adresa"}
-            className="bg-slate-900/50 border-white/5 focus-visible:ring-cyan-500/50 text-xs h-10"
+            className="bg-muted border-border focus-visible:ring-primary/50 text-xs h-10"
           />
           {/* Hidden field for source tracking */}
           <input type="hidden" name="source" value="footer" />
@@ -293,7 +293,7 @@ function NewsletterForm({ dict }: { dict: any | null }) {
           type="submit"
           size="sm"
           disabled={isPending}
-          className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-tighter h-11 px-6 min-w-[80px] disabled:opacity-50 transition-all flex items-center justify-center"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground font-black text-xs uppercase tracking-tighter h-11 px-6 min-w-[80px] disabled:opacity-50 transition-all flex items-center justify-center"
           aria-label="Pretplatite se na obaveštenja"
         >
           {isPending ? (

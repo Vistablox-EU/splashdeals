@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card"
 
 export function TicketCardSkeleton() {
   return (
-    <Card className="h-full flex flex-col border-white/5 overflow-hidden">
+    <Card className="h-full flex flex-col border-border overflow-hidden">
       {/* Image Block Skeleton */}
       <div className="relative h-52 w-full overflow-hidden rounded-t-[1.5rem]">
         <Skeleton className="w-full h-full rounded-none" />
@@ -27,7 +27,7 @@ export function TicketCardSkeleton() {
         </div>
 
         {/* Footer Actions Skeleton */}
-        <div className="mt-auto pt-6 flex justify-between items-end border-t border-white/5">
+        <div className="mt-auto pt-6 flex justify-between items-end border-t border-border">
           <div className="flex flex-col gap-2">
             <Skeleton className="h-2 w-8 rounded-sm" />
             <Skeleton className="h-8 w-20 rounded-lg" />

@@ -59,7 +59,7 @@ async function WebLayoutContent({
       <main className="flex-grow pt-[6.5rem]">
         <React.Suspense
           fallback={
-            <div className="flex-1 flex items-center justify-center p-20 animate-pulse bg-slate-900" />
+            <div className="flex-1 flex items-center justify-center p-20 animate-pulse bg-muted" />
           }
         >
           {children}

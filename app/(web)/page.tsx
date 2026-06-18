@@ -103,7 +103,7 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
   };
 
   return (
-    <div className="relative min-h-screen text-slate-100 selection:bg-cyan-500/30 overflow-x-hidden">
+    <div className="relative min-h-screen text-foreground selection:bg-primary/30 overflow-x-hidden">
       <JsonLd id="website-schema" data={websiteSchema} />
       <JsonLd id="organization-schema" data={organizationSchema} />
       
@@ -115,14 +115,14 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
             <div
               className="transition-all duration-300"
             >
-              <h1 className="text-[clamp(3.5rem,12vw,10rem)] font-black tracking-tighter mb-12 leading-[0.85] bg-gradient-to-b from-white via-white/90 to-white/60 bg-clip-text text-transparent">
+              <h1 className="text-[clamp(3.5rem,12vw,10rem)] font-black tracking-tighter mb-12 leading-[0.85] bg-gradient-to-b from-foreground via-foreground/90 to-foreground/60 bg-clip-text text-transparent">
                 {dict.home.title_digital} <br className="hidden sm:block" />
-                <span className="text-cyan-400 italic">{dict.home.title_splash}</span>
+                <span className="text-primary italic">{dict.home.title_splash}</span>
               </h1>
             </div>
             
             <p 
-              className="text-[clamp(1.125rem,3vw,1.5rem)] text-slate-400 max-w-3xl mx-auto mb-16 font-medium leading-relaxed transition-opacity duration-1000"
+              className="text-[clamp(1.125rem,3vw,1.5rem)] text-muted-foreground max-w-3xl mx-auto mb-16 font-medium leading-relaxed transition-opacity duration-1000"
             >
               {dict.home.subtitle}
             </p>
@@ -130,7 +130,7 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
             <div
               className="flex flex-col sm:flex-row gap-6 items-center cursor-pointer transition-all duration-800"
             >
-              <Button className="px-12 py-6 min-w-[240px] bg-primary text-black hover:bg-primary/90 rounded-full">
+              <Button className="px-12 py-6 min-w-[240px] bg-primary text-primary-foreground hover:bg-primary/90 rounded-full">
                 <Link href="#inventory" className="flex items-center justify-center gap-2 w-full h-full">
                   {dict.home.facilities_btn}
                   <Icon name="arrow_forward" className="text-[20px] transition-transform group-hover:translate-x-1" />
@@ -139,7 +139,7 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
               
               <Link 
                 href={`/how-it-works`}
-                className="text-xs font-black uppercase tracking-[.25em] text-slate-500 hover:text-white transition-colors py-4 px-8"
+                className="text-xs font-black uppercase tracking-[.25em] text-muted-foreground hover:text-foreground transition-colors py-4 px-8"
               >
                 {dict.home.how_it_works}
               </Link>
@@ -184,12 +184,12 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
 
       {/* 🌊 INVENTORY GRID (NOW HIGHER) */}
       <section id="inventory" className="px-6 md:px-12 max-w-7xl mx-auto pb-40 scroll-mt-32">
-        <div className="flex items-end justify-between mb-16 border-b border-white/5 pb-8">
+        <div className="flex items-end justify-between mb-16 border-b border-border pb-8">
             <div>
               <h2 className="text-4xl font-black tracking-tighter uppercase mb-2 italic">{dict.home.offers_title}</h2>
-              <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">{dict.home.offers_subtitle}</p>
+              <p className="text-muted-foreground text-xs font-bold uppercase tracking-[0.2em]">{dict.home.offers_subtitle}</p>
            </div>
-           <div className="hidden sm:block text-[10px] font-black text-cyan-500/50 uppercase tracking-[0.4em]">
+           <div className="hidden sm:block text-[10px] font-black text-primary/50 uppercase tracking-[0.4em]">
               {dict.home.rights_reserved}
            </div>
         </div>
@@ -206,12 +206,12 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
       </section>
 
       {/* 🏄 HOW IT WORKS (SIMPLE & FAST) */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto py-32 border-t border-white/5">
+      <section className="px-6 md:px-12 max-w-7xl mx-auto py-32 border-t border-border">
         <div className="text-center mb-20">
           <h2 className="text-[clamp(2.25rem,8vw,4.5rem)] font-black italic uppercase tracking-tighter mb-4 leading-[0.9]">
-            {dict.home.steps_title_base}<span className="text-cyan-400">{dict.home.steps_title_highlight}</span>
+            {dict.home.steps_title_base}<span className="text-primary">{dict.home.steps_title_highlight}</span>
           </h2>
-          <p className="text-slate-500 font-medium">{dict.home.steps_subtitle}</p>
+          <p className="text-muted-foreground font-medium">{dict.home.steps_subtitle}</p>
         </div>
 
         <ol className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -221,15 +221,15 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
             { step: "03", title: dict.home.step3_title, desc: dict.home.step3_desc, icon: "bolt" }
           ].map((item, idx) => (
             <li key={idx} className="relative group text-center md:text-left">
-              <div className="text-8xl font-black text-white/5 absolute -top-12 -left-4 group-hover:text-cyan-500/10 transition-colors pointer-events-none select-none">
+              <div className="text-8xl font-black text-foreground/5 absolute -top-12 -left-4 group-hover:text-primary/10 transition-colors pointer-events-none select-none">
                 {item.step}
               </div>
               <div className="relative z-10">
-                <div className="h-16 w-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-8 mx-auto md:mx-0 group-hover:bg-cyan-500/20 transition-colors">
-                  <Icon name={item.icon} className="text-[32px] text-cyan-400" />
+                <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 mx-auto md:mx-0 group-hover:bg-primary/20 transition-colors">
+                  <Icon name={item.icon} className="text-[32px] text-primary" />
                 </div>
                 <h3 className="text-2xl font-black uppercase italic mb-4 tracking-tight">{item.title}</h3>
-                <p className="text-slate-400 font-medium leading-relaxed max-w-xs mx-auto md:mx-0">{item.desc}</p>
+                <p className="text-muted-foreground font-medium leading-relaxed max-w-xs mx-auto md:mx-0">{item.desc}</p>
               </div>
             </li>
           ))}
@@ -237,14 +237,14 @@ export default async function LandingPage({ params }: { params: Promise<Record<s
       </section>
 
       {/* 🚀 SOCIAL PROOF & CONVENIENCE */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto py-32 border-t border-white/5">
+      <section className="px-6 md:px-12 max-w-7xl mx-auto py-32 border-t border-border">
         <div className="text-center mb-20">
           <h2 
             className="text-[clamp(2.25rem,8vw,4.5rem)] font-black italic uppercase tracking-tighter mb-6 leading-[0.9] transition-all duration-700"
           >
-            {dict.home.experience_title_base}<span className="text-cyan-400">{dict.home.experience_title_highlight}</span>
+            {dict.home.experience_title_base}<span className="text-primary">{dict.home.experience_title_highlight}</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
             {dict.home.experience_desc}
           </p>
         </div>

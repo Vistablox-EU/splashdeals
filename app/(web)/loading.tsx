@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function WebLoading() {
   return (
-    <div className="min-h-screen bg-navy-deep flex flex-col items-center justify-start overflow-hidden selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start overflow-hidden selection:bg-primary/30">
       {/* 🔮 BACKGROUND: Glassmorphism & Depth */}
       <div className="fixed inset-0 pointer-events-none">
         {/* Animated Glows */}
@@ -27,7 +27,7 @@ export default function WebLoading() {
       {/* 🌊 CENTRAL LOADER: Pulsing Branded Icon */}
       <div className="relative mt-32 mb-20 flex flex-col items-center">
         <div className="absolute inset-0 bg-primary/20 blur-[60px] animate-pulse rounded-full" />
-        <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl relative z-10 animate-float">
+        <div className="p-5 rounded-3xl bg-muted/50 border border-border backdrop-blur-xl shadow-2xl relative z-10 animate-float">
           <Icon name="waves" className="text-[48px] text-primary animate-pulse" />
         </div>
         <div className="mt-6 flex flex-col items-center gap-2">
@@ -47,15 +47,15 @@ export default function WebLoading() {
         
         {/* Hero Area Skeleton */}
         <div className="flex flex-col items-center text-center space-y-10">
-          <Skeleton className="h-10 w-56 rounded-full bg-white/5 border border-white/5 shadow-inner" />
+          <Skeleton className="h-10 w-56 rounded-full bg-muted border border-border shadow-inner" />
           <div className="space-y-6">
-            <Skeleton className="h-20 sm:h-28 w-[320px] sm:w-[900px] rounded-[2rem] bg-white/5" />
-            <Skeleton className="h-20 sm:h-28 w-[280px] sm:w-[700px] mx-auto rounded-[2rem] bg-white/5" />
+            <Skeleton className="h-20 sm:h-28 w-[320px] sm:w-[900px] rounded-[2rem] bg-muted" />
+            <Skeleton className="h-20 sm:h-28 w-[280px] sm:w-[700px] mx-auto rounded-[2rem] bg-muted" />
           </div>
-          <Skeleton className="h-6 w-[220px] sm:w-[450px] rounded-xl bg-white/5" />
+          <Skeleton className="h-6 w-[220px] sm:w-[450px] rounded-xl bg-muted" />
           <div className="flex flex-wrap justify-center gap-5 pt-4">
-            <Skeleton className="h-16 w-48 rounded-2xl bg-white/5 shadow-lg" />
-            <Skeleton className="h-16 w-48 rounded-2xl bg-white/5 shadow-lg" />
+            <Skeleton className="h-16 w-48 rounded-2xl bg-muted shadow-lg" />
+            <Skeleton className="h-16 w-48 rounded-2xl bg-muted shadow-lg" />
           </div>
         </div>
 
@@ -63,14 +63,14 @@ export default function WebLoading() {
         <div className="space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-4">
-              <Skeleton className="h-12 w-80 bg-white/5 rounded-2xl" />
-              <Skeleton className="h-4 w-56 bg-white/5 rounded-lg" />
+              <Skeleton className="h-12 w-80 bg-muted rounded-2xl" />
+              <Skeleton className="h-4 w-56 bg-muted rounded-lg" />
             </div>
-            <Skeleton className="h-12 w-40 bg-white/5 rounded-xl" />
+            <Skeleton className="h-12 w-40 bg-muted rounded-xl" />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton key={i} className="h-36 rounded-3xl bg-white/5 border border-white/10 hover:border-primary/20 transition-colors" />
+              <Skeleton key={i} className="h-36 rounded-3xl bg-muted border border-border hover:border-primary/20 transition-colors" />
             ))}
           </div>
         </div>
@@ -78,25 +78,25 @@ export default function WebLoading() {
         {/* Main Facility Grid Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[3rem] bg-white/[0.02] border border-white/10 p-8 space-y-8 overflow-hidden relative group">
-              <Skeleton className="h-72 w-full rounded-[2rem] bg-white/5 shadow-2xl" />
+            <div key={i} className="rounded-[3rem] bg-muted/10 border border-border p-8 space-y-8 overflow-hidden relative group">
+              <Skeleton className="h-72 w-full rounded-[2rem] bg-muted shadow-2xl" />
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
-                   <Skeleton className="h-10 w-3/4 bg-white/5 rounded-xl" />
-                   <Skeleton className="h-6 w-16 bg-white/5 rounded-full" />
+                   <Skeleton className="h-10 w-3/4 bg-muted rounded-xl" />
+                   <Skeleton className="h-6 w-16 bg-muted rounded-full" />
                 </div>
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-full bg-white/5 rounded-lg" />
-                  <Skeleton className="h-4 w-5/6 bg-white/5 rounded-lg" />
-                  <Skeleton className="h-4 w-4/6 bg-white/5 rounded-lg" />
+                  <Skeleton className="h-4 w-full bg-muted rounded-lg" />
+                  <Skeleton className="h-4 w-5/6 bg-muted rounded-lg" />
+                  <Skeleton className="h-4 w-4/6 bg-muted rounded-lg" />
                 </div>
               </div>
-              <div className="flex justify-between items-center pt-6 border-t border-white/5">
+              <div className="flex justify-between items-center pt-6 border-t border-border">
                 <div className="space-y-2">
-                  <Skeleton className="h-3 w-16 bg-white/5 rounded-full" />
-                  <Skeleton className="h-8 w-28 bg-white/5 rounded-xl" />
+                  <Skeleton className="h-3 w-16 bg-muted rounded-full" />
+                  <Skeleton className="h-8 w-28 bg-muted rounded-xl" />
                 </div>
-                <Skeleton className="h-14 w-14 bg-white/5 rounded-3xl shadow-xl" />
+                <Skeleton className="h-14 w-14 bg-muted rounded-3xl shadow-xl" />
               </div>
             </div>
           ))}

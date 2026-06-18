@@ -22,7 +22,7 @@ export default function FacilitiesRootError({
       {/* Immersive ambient blur */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-rose-500/10 blur-[120px] rounded-full pointer-events-none" />
 
-      <Card className="max-w-md w-full p-8 md:p-10 border-rose-500/20 bg-slate-900/40 backdrop-blur-xl relative z-10 text-center space-y-6">
+      <Card className="max-w-md w-full p-8 md:p-10 border-rose-500/20 bg-card/40 backdrop-blur-xl relative z-10 text-center space-y-6">
         <div className="mx-auto w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@ export default function FacilitiesRootError({
           <h2 className="text-2xl font-black uppercase tracking-tight text-white italic">
             Marketplace Offline
           </h2>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest leading-relaxed">
             Došlo je do greške pri učitavanju kataloga ponuda. Pokušajte ponovo.
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function FacilitiesRootError({
           <Button
             asChild
             variant="outline"
-            className="h-11 border-white/5 bg-white/5 hover:bg-white/10 text-slate-300 font-black uppercase tracking-widest text-[9px] rounded-xl flex items-center justify-center gap-1.5"
+            className="h-11 border-border bg-muted/50 hover:bg-muted text-muted-foreground font-black uppercase tracking-widest text-[9px] rounded-xl flex items-center justify-center gap-1.5"
           >
             <Link href="/">
               <Icon name="home" className="text-[14px]" />

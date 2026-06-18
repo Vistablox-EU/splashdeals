@@ -50,9 +50,9 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: 
         </span>
         <span
           className={cn(
-            "text-[9px] font-black uppercase tracking-[0.35em] text-slate-500",
+            "text-[9px] font-black uppercase tracking-[0.35em] text-muted-foreground",
             "transition-colors duration-300",
-            isHovered && "text-cyan-400/70",
+            isHovered && "text-primary/70",
             isReducedMotion && "transition-none"
           )}
         >

@@ -90,24 +90,24 @@ export function StatsGrid({ stats }: StatsGridProps) {
           className="animate-fade-in-up"
           style={{ animationDelay: `${index * 0.1}s` }}
         >
-          <Card className="p-8 h-full flex flex-col justify-center items-center text-center group hover:border-cyan-500/50 transition-colors duration-500 overflow-hidden">
-            <div className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent group-hover:from-cyan-400 group-hover:to-blue-500 transition-all flex items-baseline">
+          <Card className="p-8 h-full flex flex-col justify-center items-center text-center group hover:border-primary/50 transition-colors duration-500 overflow-hidden">
+            <div className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all flex items-baseline">
               <Counter value={stat.value} suffix={stat.suffix} />
             </div>
-            <div className="text-sm font-bold text-cyan-400/80 uppercase tracking-widest mb-1">
+            <div className="text-sm font-bold text-primary/80 uppercase tracking-widest mb-1">
               {stat.label}
             </div>
             {stat.sublabel && (
-              <div className="text-xs text-slate-400 leading-relaxed max-w-[200px]">
+              <div className="text-xs text-muted-foreground leading-relaxed max-w-[200px]">
                 {stat.sublabel}
               </div>
             )}
             
             {/* 🧪 Decorative accent */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             
             {/* 💎 Glass shine effect */}
-            <div className="absolute -inset-x-full top-0 h-full w-1/2 z-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-25deg] group-hover:animate-shimmer transition-all" />
+            <div className="absolute -inset-x-full top-0 h-full w-1/2 z-0 bg-gradient-to-r from-transparent via-foreground/5 to-transparent skew-x-[-25deg] group-hover:animate-shimmer transition-all" />
           </Card>
         </div>
       ))}
