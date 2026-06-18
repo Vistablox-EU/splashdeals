@@ -31,8 +31,6 @@ const nextConfig: NextConfig = {
   },
 
   // Ensure Turbopack remains fast
-  cacheComponents: true, // Enabled for Next.js 16 cache directives support
-
   // 🏎️ ETag generation for conditional GET (304 Not Modified) support
   // Reduces crawl budget waste by allowing bots to revalidate instead of re-downloading full payloads.
   generateEtags: true,

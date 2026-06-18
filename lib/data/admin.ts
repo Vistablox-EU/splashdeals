@@ -1,9 +1,6 @@
-import { cacheLife } from "next/cache"
 import { prisma } from "@/server/lib/prisma"
 
 export async function getAdminDashboardStats() {
-  "use cache"
-  cacheLife("minutes")
 
   const [revenueRaw, facilityCount, userCount, ticketCount] = await Promise.all([
     prisma.transaction.aggregate({
@@ -32,8 +29,6 @@ export interface RecentActivityItem {
 }
 
 export async function getRecentActivity(): Promise<RecentActivityItem[]> {
-  "use cache"
-  cacheLife("minutes")
 
   const transactions = await prisma.transaction.findMany({
     take: 5,
@@ -53,8 +48,6 @@ export async function getRecentActivity(): Promise<RecentActivityItem[]> {
 }
 
 export async function getFacilityCounts() {
-  "use cache"
-  cacheLife("minutes")
 
   const [total, active, draft, closed, emergency] = await Promise.all([
     prisma.facility.count(),
@@ -68,8 +61,6 @@ export async function getFacilityCounts() {
 }
 
 export async function getUserCounts() {
-  "use cache"
-  cacheLife("minutes")
 
   const [total, superAdmins, staff] = await Promise.all([
     prisma.user.count({ where: { role: { in: ["SUPER_ADMIN", "FACILITY_STAFF"] } } }),

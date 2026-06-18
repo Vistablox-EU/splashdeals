@@ -5,7 +5,6 @@ import Image from "next/image"
 import { prisma } from "@/server/lib/prisma"
 import Link from "next/link"
 import { connection } from "next/server"
-import { cacheLife, cacheTag } from "next/cache"
 import { Suspense } from "react"
 import { getDictionary } from "@/lib/dictionaries"
 
@@ -133,9 +132,6 @@ async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
     marketplaceCities: { include: { city: true } }
   }
 }> | null> {
-  "use cache";
-  cacheLife("minutes");
-
   const result = await prisma.facility.findUnique({
     where: { slug },
     include: {
@@ -171,7 +167,6 @@ async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
   });
 
   if (result) {
-    cacheTag(result.id);
     return serialize(result);
   }
   return null;

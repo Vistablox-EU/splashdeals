@@ -5,6 +5,5 @@ const dictionaries = {
 };
 
 export const getDictionary = async () => {
-  'use cache'
   return dictionaries.rs();
 };

@@ -1,14 +1,11 @@
 import "server-only";
 import { prisma } from "@/server/lib/prisma"
-import { cacheLife } from "next/cache"
 
 /**
- * 🏙️ Cached Active Cities
- * Returns regions with live inventory. Optimized for high-traffic discovery.
+ * 🏙️ Active Cities
+ * Returns regions with live inventory.
  */
 export async function getActiveCities(): Promise<{ id: string; name: string; slug: string; _count: { facilities: number } }[]> {
-  'use cache'
-  cacheLife('hours') // Cities change infrequently
   
   return prisma.city.findMany({
     where: {
@@ -33,12 +30,10 @@ export async function getActiveCities(): Promise<{ id: string; name: string; slu
 }
 
 /**
- * 🏷️ Cached Categories
+ * 🏷️ Categories
  * Aggregates categories from all facilities.
  */
 export async function getDiscoveryCategories() {
-  'use cache'
-  cacheLife('hours')
   
   return prisma.facility.groupBy({
     by: ['category'],

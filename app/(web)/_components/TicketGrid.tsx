@@ -2,7 +2,6 @@ import { Icon } from "@/components/ui/Icon";
 import Image from "next/image";
 import { prisma } from "@/server/lib/prisma";
 import Link from "next/link";
-import { cacheLife } from 'next/cache';
 import { Card } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { Badge } from "@/components/ui/badge";
@@ -10,8 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { connection } from "next/server";
 
 async function getTickets() {
-  "use cache";
-  cacheLife("minutes");
   const data = await prisma.ticket.findMany({
     where: { isActive: true },
     include: { 
