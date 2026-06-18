@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -68,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sr" className="dark scroll-smooth" data-scroll-behavior="smooth">
+    <html lang="sr" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://grainy-gradients.vercel.app" />
         <link
@@ -78,9 +79,9 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} antialiased selection:bg-cyan-500/20 bg-[#020617]`}
+        className={`${geistSans.variable} antialiased selection:bg-primary/20 bg-background scroll-smooth`}
       >
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

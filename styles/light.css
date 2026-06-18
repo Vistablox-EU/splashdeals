@@ -44,6 +44,14 @@
   --chart-5: oklch(0.50 0.10 200); /* Deep Azure */
 
   --radius: 0.75rem;
+
+  /* 🌞 Light glass & utilities */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --navy-deep: #f8fafc;
+  --navy-muted: #f1f5f9;
+  --splash-gradient-end: #0284c7;
+  --text-splash-mid: #22d3ee;
 }
 
 .dark {
@@ -82,4 +90,12 @@
   --chart-3: oklch(0.55 0.12 230);
   --chart-4: oklch(0.60 0.18 190);
   --chart-5: oklch(0.50 0.10 200);
+
+  /* 🌙 Dark glass & utilities */
+  --glass-bg: rgba(15, 23, 42, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --navy-deep: #020617;
+  --navy-muted: #0f172a;
+  --splash-gradient-end: #1d4ed8;
+  --text-splash-mid: #a5f3fc;
 }

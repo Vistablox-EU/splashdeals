@@ -4,21 +4,11 @@
 @import "../styles/light.css";
 
 :root {
-  --background: #020617;
-  --foreground: #f8fafc;
-
   /* AquastreamUI Theme Tokens */
   --color-primary: #06b6d4;
   --color-primary-dark: #0891b2;
   --color-secondary: #f59e0b;
   --color-accent: #22d3ee;
-
-  --navy-deep: #020617;
-  --navy-muted: #0f172a;
-  --navy-glass: rgba(15, 23, 42, 0.85);
-
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --glass-reflection: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 @theme inline {
@@ -90,7 +80,7 @@ body {
 
 /* Glass UI Utilities */
 .glass-frost {
-  background: var(--navy-glass);
+  background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
@@ -98,12 +88,12 @@ body {
 }
 
 .splash-gradient {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #3b82f6 50%, #1d4ed8 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 50%, var(--splash-gradient-end) 100%);
 }
 
 .text-splash {
   color: var(--color-primary);
-  background: linear-gradient(135deg, var(--color-primary) 0%, #a5f3fc 50%, var(--color-primary) 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--text-splash-mid) 50%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

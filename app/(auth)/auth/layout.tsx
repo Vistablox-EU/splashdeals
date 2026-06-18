@@ -39,7 +39,7 @@ export default async function AuthLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="sr" className={cn("dark font-sans", geist.variable)}>
+    <html lang="sr" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className="min-h-screen antialiased">
         <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
           <div className="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] bg-cyan-500/5 rounded-full blur-[120px]" />

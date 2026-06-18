@@ -15,7 +15,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sr" className={cn("dark font-sans", firaSans.variable)}>
+    <html lang="sr" suppressHydrationWarning className={cn("font-sans", firaSans.variable)}>
       <body className="min-h-screen antialiased bg-background text-foreground selection:bg-cyan-500/20 font-sans">
         {children}
       </body>
