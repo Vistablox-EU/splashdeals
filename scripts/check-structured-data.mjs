@@ -190,6 +190,8 @@ async function main() {
     process.exit(2);
   }
 
+  let allPaths = [];
+
   try {
     // 2. Fetch sitemap
     log("📄 Fetching sitemap...");
@@ -198,7 +200,7 @@ async function main() {
     const sitemapUrls = [...sitemapText.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => m[1]);
     log(`  Found ${sitemapUrls.length} URLs\n`);
 
-    const allPaths = [...new Set(["/", ...sitemapUrls.map(u => {
+    allPaths = [...new Set(["/", ...sitemapUrls.map(u => {
       try { return new URL(u).pathname; } catch { return null; }
     }).filter(Boolean)])];
     log(`─── Validating ${allPaths.length} pages ──────────────────\n`);
