@@ -9,14 +9,25 @@ import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery
  * 🏝️ Dynamic Short-URL Resolver Helper
  * Checks the nature of the first path segment against the database.
  */
+const KNOWN_CATEGORIES = new Set([
+  "akva-parkovi",
+  "bazeni",
+  "wellness-i-spa",
+]);
+
 async function resolveSlug(firstSlug: string) {
-  // 1. Check if category
+  // 1. Check if category (DB has facilities with this category)
   const hasCategory = await prisma.facility.findFirst({
     where: { category: { equals: firstSlug, mode: "insensitive" } },
     select: { category: true }
   });
   if (hasCategory) {
     return { type: "category", category: hasCategory.category.toLowerCase().replace(/\s+/g, '-') };
+  }
+
+  // 1b. Check known category labels (works even when DB is empty, e.g. CI)
+  if (KNOWN_CATEGORIES.has(firstSlug.toLowerCase())) {
+    return { type: "category", category: firstSlug.toLowerCase() };
   }
 
   // 2. Check if facility
