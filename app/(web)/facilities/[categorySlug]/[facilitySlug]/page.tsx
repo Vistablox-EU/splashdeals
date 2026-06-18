@@ -50,11 +50,11 @@ const ShowcaseAmenities = dynamic(() => import("./_components/ShowcaseAmenities"
 });
 
 const DistanceCalculator = dynamic(() => import("./_components/DistanceCalculator").then((mod) => mod.DistanceCalculator), {
-  loading: () => <div className="h-10 w-36 rounded-2xl bg-white/5 border border-white/5" />,
+  loading: () => <div className="h-10 w-36 rounded-2xl bg-muted border border-border" />,
 });
 
 const MobileUnifiedControlPill = dynamic(() => import("./_components/MobileUnifiedControlPill").then((mod) => mod.MobileUnifiedControlPill), {
-  loading: () => <div className="h-16 w-full max-w-md mx-auto rounded-full bg-white/5 border border-white/10" />,
+  loading: () => <div className="h-16 w-full max-w-md mx-auto rounded-full bg-muted border border-border" />,
 });
 
 import { Card } from "@/components/ui/card"
@@ -687,7 +687,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
               {/* 🧭 DESKTOP ACTIONS */}
               <div className="hidden md:flex flex-wrap gap-2 items-center">
-                <Link href={`/${categorySlug}`} className="px-4 py-2 rounded-full backdrop-blur-xl bg-white/5 text-xs font-black flex items-center gap-2 hover:bg-white/10 transition-all border border-white/5 uppercase tracking-widest text-slate-300">
+                <Link href={`/${categorySlug}`} className="px-4 py-2 rounded-full backdrop-blur-xl bg-white/5 text-xs font-black flex items-center gap-2 hover:bg-white/10 transition-all border border-border uppercase tracking-widest text-muted-foreground">
                    <Icon name="arrow_back" className="text-[12px]" /> Nazad
                 </Link>
                 <ShareButton 
@@ -710,7 +710,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
              </h1>
 
              <div className="flex flex-wrap items-center gap-6 text-slate-300 font-bold pb-4 w-full">
-                <div className="hidden md:flex items-center gap-2 bg-white/5 px-5 py-2.5 rounded-2xl backdrop-blur-md border border-white/5">
+                <div className="hidden md:flex items-center gap-2 bg-muted/50 px-5 py-2.5 rounded-2xl backdrop-blur-md border border-border">
                    <Icon name="location_on" className="text-[16px] text-cyan-400" />
                    <span className="text-sm tracking-tight font-medium opacity-80">{facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}</span>
                 </div>
@@ -826,7 +826,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <MediaGallery media={facility.media} dict={dict} />
 
         {facility.seoArticle && (
-           <article className="max-w-5xl mx-auto px-6 py-12 text-slate-500 text-xs text-center border-t border-white/5 mt-24">
+           <article className="max-w-5xl mx-auto px-6 py-12 text-muted-foreground text-xs text-center border-t border-border mt-24">
               <div className="whitespace-pre-line leading-relaxed">
                  {facility.seoArticle}
               </div>

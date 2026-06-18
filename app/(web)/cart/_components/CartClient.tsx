@@ -124,7 +124,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                  <div
                    key={item.id}
                  >
-                   <Card className="p-6 border-border bg-gradient-to-r from-white/5 to-transparent hover:border-white/10 transition-all group">
+                   <Card className="p-6 border-border bg-gradient-to-r from-white/5 to-transparent hover:border-border transition-all group">
                      <div className="flex flex-col md:flex-row items-center gap-8">
                        {/* Icon/Image Placeholder */}
                        <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform relative overflow-hidden">

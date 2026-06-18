@@ -55,7 +55,7 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
     <button
       onClick={handleShare}
       className={cn(
-        "relative p-2.5 rounded-full backdrop-blur-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group overflow-hidden flex items-center justify-center min-w-[36px] min-h-[36px] hover:scale-105 active:scale-95",
+        "relative p-2.5 rounded-full backdrop-blur-xl bg-muted/50 border border-border hover:bg-muted transition-all group overflow-hidden flex items-center justify-center min-w-[36px] min-h-[36px] hover:scale-105 active:scale-95",
         copied ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : "",
         className
       )}

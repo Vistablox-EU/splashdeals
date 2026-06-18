@@ -158,7 +158,7 @@ export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
 
   return (
     <div
-      className="flex items-center gap-3 glass-frost px-4 py-2 rounded-full border-white/10 shadow-xl"
+      className="flex items-center gap-3 glass-frost px-4 py-2 rounded-full border-border shadow-xl"
     >
       {getWeatherIcon(weather.weathercode)}
       <span className="text-sm font-black whitespace-nowrap text-white">

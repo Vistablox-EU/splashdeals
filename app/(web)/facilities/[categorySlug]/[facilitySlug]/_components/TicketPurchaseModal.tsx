@@ -266,7 +266,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
             <Card className="p-8 md:p-10 overflow-visible border-border relative z-10 flex flex-col gap-6 bg-gradient-to-br from-slate-900/95 via-slate-950/90 to-cyan-950/20 shadow-[0_30px_70px_rgba(0,0,0,0.85),_0_0_50px_rgba(6,182,212,0.05)] rounded-[2.2rem]">
               
               {/* Decorative Top Glow (No Purple!) */}
-              <div className="absolute -top-12 left-1/4 right-1/4 h-24 bg-cyan-500/10 rounded-full blur-[50px] pointer-events-none z-0" />
+              <div className="absolute -top-12 left-1/4 right-1/4 h-24 bg-primary/10 rounded-full blur-[50px] pointer-events-none z-0" />
 
               {/* Close Button */}
               <button
