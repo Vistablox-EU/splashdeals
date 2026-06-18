@@ -13,8 +13,8 @@ export function PartnerBranding({ logoUrl, name }: PartnerBrandingProps) {
   if (!logoUrl) return null;
 
   return (
-     <div className="glass-frost p-6 rounded-[2rem] border border-border bg-white/[0.02] flex items-center gap-5 transition-all hover:border-cyan-500/20 hover:bg-white/[0.04] duration-500 group">
-        <div className="relative h-24 w-24 rounded-3xl overflow-hidden border border-white/10 bg-background/50 p-2.5 backdrop-blur-md flex items-center justify-center flex-shrink-0 shadow-2xl group-hover:scale-105 transition-transform duration-500">
+     <div className="glass-frost p-6 rounded-[2rem] border border-border bg-muted/20 flex items-center gap-5 transition-all hover:border-primary/20 hover:bg-muted/40 duration-500 group">
+        <div className="relative h-24 w-24 rounded-3xl overflow-hidden border border-border bg-background/50 p-2.5 backdrop-blur-md flex items-center justify-center flex-shrink-0 shadow-2xl group-hover:scale-105 transition-transform duration-500">
           <Image 
              src={logoUrl} 
              alt={`${name} Logo`}
