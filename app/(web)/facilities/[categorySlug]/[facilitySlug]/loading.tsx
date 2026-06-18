@@ -11,31 +11,31 @@ import { Card } from "@/components/ui/card"
  */
 export default function FacilityLoading() {
   return (
-    <div className="relative bg-[#020617] min-h-screen text-slate-100 selection:bg-cyan-500/30 font-sans overflow-x-hidden">
+    <div className="relative bg-background min-h-screen text-foreground selection:bg-primary/30 font-sans overflow-x-hidden">
       {/* 🏙️ HERO SKELETON */}
-      <section className="relative h-[90vh] md:h-screen w-full flex flex-col justify-end p-6 md:p-12 overflow-hidden bg-slate-900/40">
+      <section className="relative h-[90vh] md:h-screen w-full flex flex-col justify-end p-6 md:p-12 overflow-hidden bg-muted/40">
         <div className="absolute inset-0 flex items-center justify-center opacity-10">
-           <Icon name="waves" className="w-48 h-48 text-cyan-500 animate-pulse" />
+           <Icon name="waves" className="w-48 h-48 text-primary animate-pulse" />
         </div>
         
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12">
            <div className="md:col-span-8 space-y-6">
              <div className="flex gap-2">
-                <Skeleton className="h-8 w-24 rounded-full bg-white/5" />
-                <Skeleton className="h-8 w-24 rounded-full bg-white/5" />
+                <Skeleton className="h-8 w-24 rounded-full bg-muted" />
+                <Skeleton className="h-8 w-24 rounded-full bg-muted" />
              </div>
-             <Skeleton className="h-24 w-[80%] bg-white/5 rounded-3xl" />
+             <Skeleton className="h-24 w-[80%] bg-muted rounded-3xl" />
              <div className="flex gap-4">
-                <Skeleton className="h-10 w-40 bg-white/5 rounded-2xl" />
-                <Skeleton className="h-10 w-40 bg-white/5 rounded-2xl" />
+                <Skeleton className="h-10 w-40 bg-muted rounded-2xl" />
+                <Skeleton className="h-10 w-40 bg-muted rounded-2xl" />
              </div>
            </div>
            <div className="md:col-span-4">
-              <Card className="p-4 border-white/5 bg-white/5">
+              <Card className="p-4 border-border bg-muted">
                  <div className="flex gap-2">
-                    <Skeleton className="h-20 w-32 rounded-xl bg-white/5" />
-                    <Skeleton className="h-20 w-32 rounded-xl bg-white/5" />
-                    <Skeleton className="h-20 w-32 rounded-xl bg-white/5" />
+                    <Skeleton className="h-20 w-32 rounded-xl bg-muted" />
+                    <Skeleton className="h-20 w-32 rounded-xl bg-muted" />
+                    <Skeleton className="h-20 w-32 rounded-xl bg-muted" />
                  </div>
               </Card>
            </div>
@@ -47,12 +47,12 @@ export default function FacilityLoading() {
            <div className="lg:col-span-8 space-y-12">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                  {[1,2,3,4].map(i => (
-                   <Skeleton key={i} className="h-32 bg-white/5 rounded-[2rem]" />
+                   <Skeleton key={i} className="h-32 bg-muted rounded-[2rem]" />
                  ))}
               </div>
            </div>
            <aside className="lg:col-span-4">
-              <Skeleton className="h-[400px] w-full bg-white/5 rounded-[2rem]" />
+              <Skeleton className="h-[400px] w-full bg-muted rounded-[2rem]" />
            </aside>
         </div>
       </main>

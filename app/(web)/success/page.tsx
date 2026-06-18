@@ -61,8 +61,8 @@ export default async function SuccessPage(props: {
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
           </div>
           <div className="space-y-2">
-              <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase italic">{successDict.access_denied.title}</h1>
-              <p className="text-slate-400 max-w-xs mx-auto">{successDict.access_denied.description}</p>
+              <h1 className="text-3xl font-black text-foreground italic tracking-tighter uppercase italic">{successDict.access_denied.title}</h1>
+              <p className="text-muted-foreground max-w-xs mx-auto">{successDict.access_denied.description}</p>
           </div>
         </div>
       ) : (

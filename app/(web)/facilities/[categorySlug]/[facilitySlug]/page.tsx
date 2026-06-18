@@ -654,7 +654,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   };
 
   return (
-    <div className="relative min-h-screen text-slate-100 selection:bg-cyan-500/30 font-sans">
+    <div className="relative min-h-screen text-foreground selection:bg-primary/30 font-sans">
       
       {/* ✅ Scroll Anchor Manager */}
       <ScrollManager />

@@ -46,17 +46,17 @@ export default function GlobalWebError({
          </div>
       </div>
 
-      <Card className="max-w-xl w-full p-8 md:p-16 border-cyan-500/10 bg-white/5 relative z-10 text-center space-y-8">
-        <div className="relative inline-flex items-center justify-center h-24 w-24 rounded-full bg-primary/10 border border-cyan-500/20 text-cyan-400">
+      <Card className="max-w-xl w-full p-8 md:p-16 border-cyan-500/10 bg-muted/50 relative z-10 text-center space-y-8">
+        <div className="relative inline-flex items-center justify-center h-24 w-24 rounded-full bg-primary/10 border border-cyan-500/20 text-primary">
           <Icon name="error" className="text-[48px] stroke-[1.5]" />
         </div>
 
         <div className="space-y-4">
            <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase leading-none text-slate-100">
              {dict.errors.title} <br />
-             <span className="text-cyan-400">{dict.errors.highlight}</span>
+             <span className="text-primary">{dict.errors.highlight}</span>
            </h1>
-           <p className="text-slate-400 text-lg leading-relaxed max-w-sm mx-auto">
+           <p className="text-muted-foreground text-lg leading-relaxed max-w-sm mx-auto">
              {dict.errors.subtitle}
            </p>
         </div>
@@ -64,7 +64,7 @@ export default function GlobalWebError({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
            <button 
              onClick={reset}
-             className="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/5 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all group"
+             className="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-border font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all group"
            >
              <Icon name="refresh" className="text-[16px]" />
              {dict.errors.try_again}

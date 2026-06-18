@@ -75,7 +75,7 @@ export default async function PrivacyPage({ params: _params }: PageProps) {
             </span>
           </div>
 
-          <h1 className="text-5xl sm:text-7xl font-black tracking-tighter uppercase italic leading-[0.9] text-white">
+          <h1 className="text-5xl sm:text-7xl font-black tracking-tighter uppercase italic leading-[0.9] text-foreground">
             {dict.privacy.title}
           </h1>
           

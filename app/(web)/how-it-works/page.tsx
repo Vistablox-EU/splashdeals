@@ -149,11 +149,11 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
             </span>
           </div>
 
-          <h1 className="text-5xl sm:text-8xl font-black tracking-tighter uppercase italic leading-[0.8] text-white">
+          <h1 className="text-5xl sm:text-8xl font-black tracking-tighter uppercase italic leading-[0.8] text-foreground">
             {dict.how_it_works_page.title}
           </h1>
           
-          <p className="text-xl text-slate-400 max-w-2xl font-medium">
+          <p className="text-xl text-muted-foreground max-w-2xl font-medium">
             {dict.how_it_works_page.intro}
           </p>
         </div>

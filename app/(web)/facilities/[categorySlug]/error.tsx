@@ -18,7 +18,7 @@ export default function DiscoveryError({
   }, [error])
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-24 relative overflow-hidden bg-slate-950">
+    <div className="min-h-screen flex items-center justify-center px-6 py-24 relative overflow-hidden bg-background">
       {/* Immersive ambient blur */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-rose-500/10 blur-[120px] rounded-full pointer-events-none" />
 
@@ -41,7 +41,7 @@ export default function DiscoveryError({
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl font-black uppercase tracking-tight text-white italic">
+          <h2 className="text-2xl font-black uppercase tracking-tight text-foreground italic">
             Discovery Hub Offline
           </h2>
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest leading-relaxed">
@@ -52,7 +52,7 @@ export default function DiscoveryError({
         <div className="pt-4 flex flex-col gap-3">
           <Button
             onClick={() => reset()}
-            className="w-full h-12 bg-rose-500 hover:bg-rose-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl flex items-center justify-center gap-2"
+            className="w-full h-12 bg-rose-500 hover:bg-rose-600 text-foreground font-black uppercase tracking-widest text-[11px] rounded-xl flex items-center justify-center gap-2"
           >
             <Icon name="undo" className="text-[16px]" />
             Pokušaj ponovo
