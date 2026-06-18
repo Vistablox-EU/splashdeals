@@ -5,9 +5,9 @@ import Image from "next/image"
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { upload } from "@vercel/blob/client"
 import { cn } from "@/lib/utils"
 import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer"
+import { uploadTicketImageAction } from "@/server/actions/tickets"
 
 interface TicketImageUploadProps {
   value?: string | null
@@ -19,6 +19,7 @@ interface TicketImageUploadProps {
  * 📸 TicketImageUpload Component
  * Specialized uploader for SEO/OG images for specific ticket types.
  * Standardizes on 1200x630 (1.91:1) aspect ratio.
+ * Uploads via server action to avoid CORS/hang issues with client-side blob SDK.
  */
 export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUploadProps) {
   const [isUploading, setIsUploading] = React.useState(false)
@@ -31,45 +32,59 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
     setIsUploading(true)
 
     const uploadPromise = (async () => {
-      // Step 1: Optimize and resize directly on client (Canvas 1.91:1 WebP)
-      // Timeout after 30s to prevent hanging on large/corrupted files
-      const optimizePromise = optimizeImageOnClient(file, { mode: "exact", width: 1200, height: 630, quality: 0.85 })
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Optimizacija je predugo trajala — probajte sa manjom slikom")), 30000)
-      )
-      const optimizedBlob = await Promise.race([optimizePromise, timeoutPromise])
-      const optimizedFile = new File(
-        [optimizedBlob],
-        `${file.name.split(".")[0] || "ticket"}-${Date.now()}.webp`,
-        { type: "image/webp" }
-      )
+      // Total timeout: 45s for the whole operation
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 45000)
 
-      // Step 2: Stream optimized WebP directly from browser to Vercel Blob
-      const filename = `facilities/${facilityId}/tickets/${optimizedFile.name}`
-      const blob = await upload(filename, optimizedFile, {
-        access: "public",
-        handleUploadUrl: "/api/upload",
-        clientPayload: JSON.stringify({ facilityId, uploadType: "TICKET" }),
-      })
+      try {
+        // Step 1: Optimize and resize directly on client (Canvas 1.91:1 WebP)
+        const optimizeTimeout = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Optimizacija je predugo trajala — probajte sa manjom slikom")), 25000)
+        )
+        const optimizedBlob = await Promise.race([
+          optimizeImageOnClient(file, { mode: "exact", width: 1200, height: 630, quality: 0.85 }),
+          optimizeTimeout,
+        ])
 
-      if (!blob.url) {
-        throw new Error("Direct client upload returned empty URL")
+        const optimizedFile = new File(
+          [optimizedBlob],
+          `${file.name.split(".")[0] || "ticket"}-${Date.now()}.webp`,
+          { type: "image/webp" }
+        )
+
+        // Step 2: Upload via server action (avoids CORS / client blob SDK hangs)
+        const formData = new FormData()
+        formData.append("facilityId", facilityId)
+        formData.append("file", optimizedFile)
+
+        const result = await uploadTicketImageAction(formData) as { success: boolean; url?: string; error?: string }
+
+        if (!result.success || !result.url) {
+          throw new Error(result.error || "Upload failed — server returned no URL")
+        }
+
+        onChange(result.url)
+        return result.url
+      } finally {
+        clearTimeout(timeoutId)
       }
-
-      onChange(blob.url)
-      return blob.url
     })()
 
     toast.promise(uploadPromise, {
       loading: "Optimizacija i slanje slike...",
       success: "Slika je uspešno sačuvana!",
-      error: (err) => err.message || "Greška pri slanju slike",
+      error: (err) => {
+        if ((err as Error)?.name === "AbortError") {
+          return "Upload je predugo trajao — probajte ponovo"
+        }
+        return (err as Error)?.message || "Greška pri slanju slike"
+      },
     })
 
     try {
       await uploadPromise
     } catch (err) {
-      console.error("Direct client-side upload failed:", err)
+      console.error("Ticket image upload failed:", err)
     } finally {
       setIsUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ""
