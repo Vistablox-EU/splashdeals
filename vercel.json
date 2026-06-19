@@ -3,6 +3,7 @@
   "framework": "nextjs",
   "cleanUrls": true,
   "trailingSlash": false,
+  "installCommand": "npm ci --include=optional",
   "redirects": [
     {
       "source": "/explore/:path*",
