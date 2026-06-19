@@ -27,6 +27,14 @@ export const ticketSchema = z.object({
   requiresPhoto: z.boolean().default(false),
   groupId: z.string().optional().nullable(),
   slug: z.string().trim().optional().nullable(),
+}).refine((data) => {
+  if (data.saleStart && data.saleEnd) {
+    return new Date(data.saleEnd) > new Date(data.saleStart)
+  }
+  return true
+}, {
+  message: "Kraj prodaje mora biti posle početka",
+  path: ["saleEnd"],
 })
 
 export type TicketFormValues = z.input<typeof ticketSchema>

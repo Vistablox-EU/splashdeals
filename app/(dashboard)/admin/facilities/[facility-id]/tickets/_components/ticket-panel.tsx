@@ -14,16 +14,11 @@ import {
 import {
   DndContext,
   closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core"
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable"
@@ -44,6 +39,9 @@ import { createColumns, SerializedAdminTicket, SerializedTicketGroup } from "./c
 import { cn } from "@/lib/utils"
 import { reorderTicketsAction } from "@/server/actions/tickets"
 import { toast } from "sonner"
+import { useDeepLink } from "../_hooks/use-deep-link"
+import { useDnDSensors } from "../_hooks/use-dnd-sensors"
+import { EmptyState } from "./empty-state"
 
 const TicketSheet = dynamic(
   () => import("./ticket-sheet").then((mod) => mod.TicketSheet),
@@ -120,37 +118,17 @@ export function TicketPanel({
   activeGroup,
 }: TicketPanelProps) {
   const [tickets, setTickets] = React.useState(initialTickets)
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false)
-  const [selectedTicket, setSelectedTicket] = React.useState<SerializedAdminTicket | null>(null)
   const [globalFilter, setGlobalFilter] = React.useState("")
+  const sensors = useDnDSensors()
+
+  // Deep link: ?editTicketId=
+  const { selectedItem: selectedTicket, setSelectedItem: setSelectedTicket, isOpen: isSheetOpen, setIsOpen: setIsSheetOpen } =
+    useDeepLink(initialTickets, "editTicketId")
 
   // Sync with server refreshes
   React.useEffect(() => {
     setTickets(initialTickets)
   }, [initialTickets])
-
-  // Deep link: ?editTicketId=
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const targetId = params.get("editTicketId")
-    if (targetId) {
-      const target = initialTickets.find((t) => t.id === targetId)
-      if (target) {
-        setSelectedTicket(target)
-        setIsSheetOpen(true)
-      }
-    }
-  }, [initialTickets])
-
-  React.useEffect(() => {
-    const currentUrl = new URL(window.location.href)
-    if (isSheetOpen && selectedTicket?.id) {
-      currentUrl.searchParams.set("editTicketId", selectedTicket.id)
-    } else if (!isSheetOpen) {
-      currentUrl.searchParams.delete("editTicketId")
-    }
-    window.history.replaceState({ ...window.history.state }, "", currentUrl.toString())
-  }, [isSheetOpen, selectedTicket])
 
   // ── Group filter: client-side ───────────────────────────────────────────────
   const displayedTickets = React.useMemo(() => {
@@ -178,11 +156,6 @@ export function TicketPanel({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   })
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  )
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -212,6 +185,9 @@ export function TicketPanel({
 
   // Pre-fill groupId in new ticket sheet when a group is selected
   const defaultGroupId = activeGroupId !== "ALL" ? activeGroupId : undefined
+
+  const isEmpty = displayedTickets.length === 0
+  const isFiltered = globalFilter.length > 0
 
   return (
     <section className="flex flex-col h-full min-h-0" aria-label="Katalog Ulaznica">
@@ -274,100 +250,87 @@ export function TicketPanel({
       {/* Table */}
       <div className="flex-1 overflow-auto">
         <div className="rounded-none border-0 bg-transparent overflow-hidden overflow-x-auto">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-            modifiers={[restrictToVerticalAxis]}
-          >
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow
-                    key={headerGroup.id}
-                    className="bg-muted/20 hover:bg-muted/20 border-border/50"
-                  >
-                    {headerGroup.headers.map((header) => (
-                      <TableHead
-                        key={header.id}
-                        className="font-bold text-muted-foreground uppercase text-[10px] tracking-[0.15em] py-3"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                <SortableContext
-                  items={displayedTickets.map((t) => t.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => (
-                      <SortableRow key={row.id} row={row} />
-                    ))
-                  ) : (
-                    <TableRow className="hover:bg-transparent border-none">
-                      <TableCell colSpan={columns.length} className="h-[360px] text-center">
-                        {globalFilter ? (
-                          <div className="flex flex-col items-center justify-center space-y-4 animate-in zoom-in-95 duration-500">
-                            <div className="p-5 rounded-2xl bg-muted/10 border border-border/50 mb-2">
-                              <Icon name="search" className="text-[40px] text-muted-foreground/60" />
-                            </div>
-                            <div className="space-y-2">
-                              <p className="text-base font-black text-foreground uppercase tracking-tighter italic">
-                                Nema rezultata za &quot;{globalFilter}&quot;
-                              </p>
-                              <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-6">
-                                Pokušajte sa drugačijim terminom.
-                              </p>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setGlobalFilter("")}
-                                className="h-9 px-6 rounded-xl border-border hover:bg-muted/30 text-xs font-bold uppercase tracking-widest"
-                              >
-                                Obriši pretragu
-                              </Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col items-center justify-center space-y-4 animate-in zoom-in-95 duration-500">
-                            <div className="p-6 rounded-full bg-primary/5 border border-primary/10 mb-4 animate-pulse">
-                              <Icon name="confirmation_number" className="text-[48px] text-primary/60" />
-                            </div>
-                            <div className="space-y-2">
-                              <p className="text-xl font-black text-foreground uppercase tracking-tighter italic">
-                                {activeGroupId === "ALL" ? "Katalog je Prazan" : "Ova Grupa je Prazna"}
-                              </p>
-                              <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
-                                {activeGroupId === "ALL"
-                                  ? "Kreirajte prvu ulaznicu za pokretanje prodaje."
-                                  : `Dodajte ulaznicu u grupu "${activeGroup?.title}".`}
-                              </p>
-                              <Button
-                                onClick={handleCreateNew}
-                                className="mt-4 h-10 px-6 bg-primary text-primary-foreground font-black uppercase tracking-widest text-xs rounded-xl hover:bg-primary/90"
-                              >
-                                <Icon name="add" className="mr-2 text-[14px]" />
-                                Nova Ulaznica
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </TableCell>
+          {isEmpty ? (
+            isFiltered ? (
+              <EmptyState
+                icon="search"
+                title={`Nema rezultata za "${globalFilter}"`}
+                description="Pokušajte sa drugačijim terminom."
+                action={{
+                  label: "Obriši pretragu",
+                  onClick: () => setGlobalFilter(""),
+                }}
+              />
+            ) : (
+              <EmptyState
+                icon="confirmation_number"
+                title={activeGroupId === "ALL" ? "Katalog je Prazan" : "Ova Grupa je Prazna"}
+                description={activeGroupId === "ALL"
+                  ? "Kreirajte prvu ulaznicu za pokretanje prodaje."
+                  : `Dodajte ulaznicu u grupu "${activeGroup?.title}".`
+                }
+                action={{ label: "Nova Ulaznica", onClick: handleCreateNew }}
+              />
+            )
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              modifiers={[restrictToVerticalAxis]}
+            >
+              <Table>
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow
+                      key={headerGroup.id}
+                      className="bg-muted/20 hover:bg-muted/20 border-border/50"
+                    >
+                      {headerGroup.headers.map((header) => (
+                        <TableHead
+                          key={header.id}
+                          className="font-bold text-muted-foreground uppercase text-[10px] tracking-[0.15em] py-3"
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      ))}
                     </TableRow>
-                  )}
-                </SortableContext>
-              </TableBody>
-            </Table>
-          </DndContext>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  <SortableContext
+                    items={displayedTickets.map((t) => t.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {table.getRowModel().rows?.length ? (
+                      table.getRowModel().rows.map((row) => (
+                        <SortableRow key={row.id} row={row} />
+                      ))
+                    ) : (
+                      <TableRow className="hover:bg-transparent border-none">
+                        <TableCell colSpan={columns.length} className="h-[360px] text-center">
+                          <EmptyState
+                            icon="confirmation_number"
+                            title={activeGroupId === "ALL" ? "Katalog je Prazan" : "Ova Grupa je Prazna"}
+                            description={activeGroupId === "ALL"
+                              ? "Kreirajte prvu ulaznicu za pokretanje prodaje."
+                              : `Dodajte ulaznicu u grupu "${activeGroup?.title}".`
+                            }
+                            action={{ label: "Nova Ulaznica", onClick: handleCreateNew }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </SortableContext>
+                </TableBody>
+              </Table>
+            </DndContext>
+          )}
         </div>
       </div>
 

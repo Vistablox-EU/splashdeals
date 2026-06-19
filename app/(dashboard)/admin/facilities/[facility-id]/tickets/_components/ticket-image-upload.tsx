@@ -2,8 +2,7 @@
 
 import { Icon } from "@/components/ui/Icon";
 import Image from "next/image"
-import * as React from "react"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,6 +18,7 @@ import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer"
 import { uploadTicketImageAction, renameTicketImageAction } from "@/server/actions/tickets"
+import { imageFileNameSchema } from "@/server/lib/validations/image"
 
 interface TicketImageUploadProps {
   value?: string | null
@@ -34,7 +34,6 @@ function filenameFromBlobUrl(url: string): string {
   try {
     const segments = new URL(url).pathname.split("/")
     const last = segments[segments.length - 1] ?? "slika"
-    // Remove timestamp prefix (e.g. "1781886299523-") and extension
     return last
       .replace(/^\d+-/, "")
       .replace(/\.[^.]+$/, "")
@@ -44,16 +43,56 @@ function filenameFromBlobUrl(url: string): string {
 }
 
 /**
+ * Uploads an image: client-side optimization (Canvas 1.91:1 WebP) then server action.
+ * Returns the blob URL or throws on failure.
+ */
+async function uploadImage(
+  file: File,
+  facilityId: string,
+  onUrl: (url: string) => void,
+): Promise<void> {
+  // Step 1: Optimize and resize on client (25s timeout)
+  const optimizeTimeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error("Optimizacija je predugo trajala — probajte sa manjom slikom")), 25000),
+  )
+  const optimizedBlob = await Promise.race([
+    optimizeImageOnClient(file, { mode: "exact", width: 1200, height: 630, quality: 0.85 }),
+    optimizeTimeout,
+  ])
+
+  const optimizedFile = new File(
+    [optimizedBlob],
+    `${file.name.split(".")[0] || "ticket"}-${Date.now()}.webp`,
+    { type: "image/webp" },
+  )
+
+  // Step 2: Upload via server action (avoids CORS / client blob SDK hangs)
+  const formData = new FormData()
+  formData.append("facilityId", facilityId)
+  formData.append("file", optimizedFile)
+
+  const result = await uploadTicketImageAction(formData) as { success: boolean; url?: string; error?: string }
+
+  if (!result.success || !result.url) {
+    throw new Error(result.error || "Upload failed — server returned no URL")
+  }
+
+  onUrl(result.url)
+}
+
+/**
  * 📸 TicketImageUpload Component
  * Specialized uploader for SEO/OG images for specific ticket types.
  * Standardizes on 1200x630 (1.91:1) aspect ratio.
  * Uploads via server action to avoid CORS/hang issues with client-side blob SDK.
  */
 export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUploadProps) {
-  const [isUploading, setIsUploading] = React.useState(false)
-  const fileInputRef = React.useRef<HTMLInputElement>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [isImageError, setIsImageError] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [renameOpen, setRenameOpen] = useState(false)
   const [renameValue, setRenameValue] = useState("")
+  const [renameError, setRenameError] = useState<string | null>(null)
   const [isRenaming, setIsRenaming] = useState(false)
 
   const currentFilename = value ? filenameFromBlobUrl(value) : ""
@@ -64,60 +103,19 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
 
     setIsUploading(true)
 
-    const uploadPromise = (async () => {
-      // Total timeout: 45s for the whole operation
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 45000)
+    const promise = uploadImage(file, facilityId, onChange)
 
-      try {
-        // Step 1: Optimize and resize directly on client (Canvas 1.91:1 WebP)
-        const optimizeTimeout = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Optimizacija je predugo trajala — probajte sa manjom slikom")), 25000)
-        )
-        const optimizedBlob = await Promise.race([
-          optimizeImageOnClient(file, { mode: "exact", width: 1200, height: 630, quality: 0.85 }),
-          optimizeTimeout,
-        ])
-
-        const optimizedFile = new File(
-          [optimizedBlob],
-          `${file.name.split(".")[0] || "ticket"}-${Date.now()}.webp`,
-          { type: "image/webp" }
-        )
-
-        // Step 2: Upload via server action (avoids CORS / client blob SDK hangs)
-        const formData = new FormData()
-        formData.append("facilityId", facilityId)
-        formData.append("file", optimizedFile)
-
-        const result = await uploadTicketImageAction(formData) as { success: boolean; url?: string; error?: string }
-
-        if (!result.success || !result.url) {
-          throw new Error(result.error || "Upload failed — server returned no URL")
-        }
-
-        onChange(result.url)
-        return result.url
-      } finally {
-        clearTimeout(timeoutId)
-      }
-    })()
-
-    toast.promise(uploadPromise, {
+    toast.promise(promise, {
       loading: "Optimizacija i slanje slike...",
       success: "Slika je uspešno sačuvana!",
-      error: (err) => {
-        if ((err as Error)?.name === "AbortError") {
-          return "Upload je predugo trajao — probajte ponovo"
-        }
-        return (err as Error)?.message || "Greška pri slanju slike"
-      },
+      error: (err) =>
+        (err instanceof Error ? err.message : "Greška pri slanju slike"),
     })
 
     try {
-      await uploadPromise
-    } catch (err) {
-      console.error("Ticket image upload failed:", err)
+      await promise
+    } catch {
+      // Toast already handled above
     } finally {
       setIsUploading(false)
       if (fileInputRef.current) fileInputRef.current.value = ""
@@ -131,11 +129,28 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
   const openRename = useCallback(() => {
     if (!value) return
     setRenameValue(currentFilename)
+    setRenameError(null)
     setRenameOpen(true)
-  }, [value, currentFilename])
+  }, [value])
+
+  const validateRename = useCallback((name: string) => {
+    const result = imageFileNameSchema.safeParse(name)
+    if (!result.success) {
+      setRenameError(result.error.issues[0]?.message || "Neispravan naziv")
+    } else {
+      setRenameError(null)
+    }
+  }, [])
 
   const handleRename = useCallback(async () => {
     if (!value || !renameValue.trim()) return
+    // Validate before sending
+    const validation = imageFileNameSchema.safeParse(renameValue.trim())
+    if (!validation.success) {
+      setRenameError(validation.error.issues[0]?.message || "Neispravan naziv")
+      return
+    }
+    setRenameError(null)
     setIsRenaming(true)
     try {
       const result = await renameTicketImageAction(facilityId, value, renameValue.trim()) as { success: boolean; url?: string; error?: string }
@@ -164,40 +179,58 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
 
       {value ? (
         <div className="space-y-3">
-          <div className="relative aspect-[1.91/1] w-full rounded-xl overflow-hidden border border-border bg-muted/50 group">
-            <Image
-              src={value}
-              alt="Ticket Visual"
-              fill
-              sizes="(max-width: 768px) 100vw, 800px"
-              className="object-cover"
-            />
-            {!isUploading && (
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="rounded-full h-10 w-10"
-                  onClick={removeImage}
-                >
-                  <Icon name="close" className="text-[20px]" />
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="icon"
-                  className="rounded-full h-10 w-10 bg-background/80 hover:bg-background"
-                  onClick={openRename}
-                >
-                  <Icon name="edit" className="text-[20px]" />
-                </Button>
-              </div>
-            )}
-            <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-[10px] text-foreground px-2 py-0.5 rounded font-black uppercase tracking-widest">
-              1.91:1 Razmera
+          {isImageError ? (
+            <div className="relative aspect-[1.91/1] w-full rounded-xl overflow-hidden border border-dashed border-red-500/30 bg-red-500/5 flex flex-col items-center justify-center gap-2">
+              <Icon name="broken_image" className="text-[32px] text-muted-foreground/60" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Slika nije dostupna</p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => { setIsImageError(false); fileInputRef.current?.click() }}
+                className="h-8 px-3 text-[10px] font-bold uppercase tracking-wider rounded-lg mt-1"
+              >
+                <Icon name="upload" className="size-3 mr-1.5" />
+                Postavi novu
+              </Button>
             </div>
-          </div>
+          ) : (
+            <div className="relative aspect-[1.91/1] w-full rounded-xl overflow-hidden border border-border bg-muted/50 group">
+              <Image
+                src={value}
+                alt="Ticket Visual"
+                fill
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="object-cover"
+                onError={() => setIsImageError(true)}
+              />
+              {!isUploading && (
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="rounded-full h-10 w-10"
+                    onClick={removeImage}
+                  >
+                    <Icon name="close" className="text-[20px]" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="icon"
+                    className="rounded-full h-10 w-10 bg-background/80 hover:bg-background"
+                    onClick={openRename}
+                  >
+                    <Icon name="edit" className="text-[20px]" />
+                  </Button>
+                </div>
+              )}
+              <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-[10px] text-foreground px-2 py-0.5 rounded font-black uppercase tracking-widest">
+                1.91:1 Razmera
+              </div>
+            </div>
+          )}
 
           {/* Filename display with rename trigger */}
           <div className="flex items-center gap-2">
@@ -262,9 +295,15 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
               <Input
                 id="rename-input"
                 value={renameValue}
-                onChange={(e) => setRenameValue(e.target.value)}
+                onChange={(e) => {
+                  setRenameValue(e.target.value)
+                  validateRename(e.target.value)
+                }}
                 placeholder="unesite naziv"
-                className="rounded-r-none font-mono text-sm focus-visible:z-10"
+                className={cn(
+                  "rounded-r-none font-mono text-sm focus-visible:z-10",
+                  renameError && "border-red-500 focus-visible:ring-red-500/30"
+                )}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault()
@@ -277,6 +316,13 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
                 .webp
               </div>
             </div>
+            {renameError ? (
+              <p className="text-[10px] font-medium text-red-400 mt-1">{renameError}</p>
+            ) : (
+              <p className="text-[10px] text-muted-foreground/60 font-mono mt-1">
+                Slova, brojevi, crtice (-) i donje crte (_) — bez razmaka
+              </p>
+            )}
           </div>
 
           <DialogFooter>

@@ -6,34 +6,25 @@ import dynamic from "next/dynamic"
 import {
   DndContext,
   closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core"
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
-import { reorderTicketGroupsAction } from "@/server/actions/tickets"
+import { reorderTicketGroupsAction, deleteTicketGroupAction } from "@/server/actions/tickets"
 import { SerializedTicketGroup } from "./columns"
 import { toast } from "sonner"
+import { useDeepLink } from "../_hooks/use-deep-link"
+import { useDnDSensors } from "../_hooks/use-dnd-sensors"
+import { EmptyState } from "./empty-state"
+import { ConfirmDialog } from "./confirm-dialog"
 
 const TicketGroupSheet = dynamic(
   () => import("./ticket-group-sheet").then((mod) => mod.TicketGroupSheet),
@@ -172,44 +163,17 @@ export function GroupPanel({
   onGroupSelect,
 }: GroupPanelProps) {
   const [groups, setGroups] = React.useState(initialGroups)
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false)
-  const [selectedGroup, setSelectedGroup] = React.useState<SerializedTicketGroup | null>(null)
   const [groupToDelete, setGroupToDelete] = React.useState<string | null>(null)
+  const sensors = useDnDSensors()
+
+  // Deep link: ?editGroupId=
+  const { selectedItem: selectedGroup, setSelectedItem: setSelectedGroup, isOpen: isSheetOpen, setIsOpen: setIsSheetOpen } =
+    useDeepLink(initialGroups, "editGroupId")
 
   // Sync when server refreshes data
   React.useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setGroups(initialGroups)
   }, [initialGroups])
-
-  // Deep link: ?editGroupId=
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const targetGroupId = params.get("editGroupId")
-    if (targetGroupId) {
-      const target = initialGroups.find((g) => g.id === targetGroupId)
-      if (target) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setSelectedGroup(target)
-        setIsSheetOpen(true)
-      }
-    }
-  }, [initialGroups])
-
-  React.useEffect(() => {
-    const currentUrl = new URL(window.location.href)
-    if (isSheetOpen && selectedGroup?.id) {
-      currentUrl.searchParams.set("editGroupId", selectedGroup.id)
-    } else if (!isSheetOpen) {
-      currentUrl.searchParams.delete("editGroupId")
-    }
-    window.history.replaceState({ ...window.history.state }, "", currentUrl.toString())
-  }, [isSheetOpen, selectedGroup])
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  )
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
@@ -245,10 +209,29 @@ export function GroupPanel({
     setGroupToDelete(id)
   }
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!groupToDelete) return
-    setGroups((prev) => prev.filter((g) => g.id !== groupToDelete))
+    const deletedId = groupToDelete
+
+    try {
+      const result = await deleteTicketGroupAction(deletedId, facilityId)
+      if (!result.success) {
+        toast.error(result.error || "Greška pri brisanju grupe")
+        return
+      }
+    } catch {
+      toast.error("Greška pri brisanju grupe")
+      return
+    }
+
+    setGroups((prev) => prev.filter((g) => g.id !== deletedId))
     toast.success("Grupa obrisana")
+
+    // Reset active group if the deleted one was selected
+    if (activeGroupId === deletedId) {
+      onGroupSelect("ALL")
+    }
+
     setGroupToDelete(null)
   }
 
@@ -333,17 +316,12 @@ export function GroupPanel({
             </SortableContext>
           </DndContext>
         ) : (
-          <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-            <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 mb-4">
-              <Icon name="dashboard" className="text-[32px] text-primary/60" />
-            </div>
-            <p className="text-xs font-black text-muted-foreground uppercase tracking-tight italic mb-1">
-              Nema Grupa
-            </p>
-            <p className="text-[10px] text-muted-foreground/80 font-medium leading-relaxed">
-              Kreirajte grupu za organizovanje cenovnih nivoa.
-            </p>
-          </div>
+          <EmptyState
+            icon="dashboard"
+            title="Nema Grupa"
+            description="Kreirajte grupu za organizovanje cenovnih nivoa."
+            compact
+          />
         )}
       </div>
 
@@ -358,20 +336,15 @@ export function GroupPanel({
       )}
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={groupToDelete !== null} onOpenChange={() => setGroupToDelete(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Group</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this group? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setGroupToDelete(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={groupToDelete !== null}
+        onOpenChange={() => setGroupToDelete(null)}
+        title="Obriši grupu"
+        description="Da li ste sigurni da želite da obrišete ovu grupu? Ova radnja se ne može poništiti."
+        confirmLabel="Obriši"
+        variant="destructive"
+        onConfirm={confirmDelete}
+      />
     </aside>
   )
 }

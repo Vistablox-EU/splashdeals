@@ -1,11 +1,11 @@
 "use client"
+
 import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { useForm, ControllerRenderProps, SubmitHandler, type Resolver, useWatch, type FieldErrors } from "react-hook-form"
+import { useForm, useWatch, type SubmitHandler, type FieldErrors } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { TicketType, ValidityType, DayType, TimeSlot } from "@prisma/client"
 import {
   Sheet,
   SheetContent,
@@ -16,54 +16,23 @@ import {
 } from "@/components/ui/sheet"
 import {
   Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Switch } from "@/components/ui/switch"
 import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
-import { upsertTicketAction, deleteTicketAction } from "@/server/actions/tickets"
-import { TicketImageUpload } from "./ticket-image-upload"
 import { toast } from "sonner"
 
+import { upsertTicketAction, deleteTicketAction } from "@/server/actions/tickets"
 import { ticketSchema, type TicketFormValues } from "@/server/lib/validations/ticket"
+import type { SerializedAdminTicket } from "./columns"
 
-import { SerializedAdminTicket } from "./columns"
-
-const TICKET_TYPE_LABELS: Record<TicketType, string> = {
-  ADULT: "Odrasli",
-  CHILD: "Deca",
-  SENIOR: "Penzioneri",
-  STUDENT: "Studenti",
-  FAMILY_BUNDLE: "Porodični Paket",
-  SUMMER_PASS: "Sezonska Propusnica",
-}
+import { TicketBasicInfoFields } from "./ticket-basic-fields"
+import { TicketStatusSection } from "./ticket-status-section"
+import { TicketDescriptionSection } from "./ticket-description-section"
+import { TicketMediaSection } from "./ticket-media-section"
+import { ConfirmDialog } from "./confirm-dialog"
+import { useUnsavedChangesGuard } from "../_hooks/use-unsaved-changes-guard"
 
 interface TicketSheetProps {
   facilityId: string
@@ -77,12 +46,11 @@ interface TicketSheetProps {
 
 export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGroups, defaultGroupId }: TicketSheetProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
-  const [showUnsavedDialog, setShowUnsavedDialog] = React.useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
   const router = useRouter()
 
   const form = useForm<TicketFormValues>({
-    resolver: zodResolver(ticketSchema) as Resolver<TicketFormValues>,
+    resolver: zodResolver(ticketSchema) as any,
     defaultValues: {
       title: ticket?.titleSr || ticket?.title || "",
       type: ticket?.type || "ADULT",
@@ -103,8 +71,8 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
       requiresIdentity: ticket?.requiresIdentity ?? false,
       requiresPhoto: ticket?.requiresPhoto ?? false,
       groupId: ticket?.groupId || defaultGroupId || "none",
-      dayType: ticket?.dayType || DayType.ALL,
-      timeSlot: ticket?.timeSlot || TimeSlot.FULL_DAY,
+      dayType: ticket?.dayType || undefined,
+      timeSlot: ticket?.timeSlot || undefined,
       minPeople: ticket?.minPeople || 1,
       maxPeople: ticket?.maxPeople || null,
       slug: ticket?.slug || "",
@@ -112,24 +80,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
     },
   })
 
-  
-  const currency = useWatch({
-    control: form.control,
-    name: "currency",
-  })
-  
-  const validityType = useWatch({
-    control: form.control,
-    name: "validityType",
-  })
-
-  const imageUrl = useWatch({
-    control: form.control,
-    name: "imageUrl",
-  })
-
   // Sync form internal state when the "ticket" prop changes for editing
   React.useEffect(() => {
+    if (form.formState.isDirty) return // 🛡️ Preserve unsaved changes
     if (ticket) {
       form.reset({
         title: ticket.titleSr || ticket.title || "",
@@ -151,8 +104,8 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
         requiresIdentity: ticket.requiresIdentity,
         requiresPhoto: ticket.requiresPhoto,
         groupId: ticket.groupId || "none",
-        dayType: ticket.dayType || DayType.ALL,
-        timeSlot: ticket.timeSlot || TimeSlot.FULL_DAY,
+        dayType: ticket.dayType || undefined,
+        timeSlot: ticket.timeSlot || undefined,
         minPeople: ticket.minPeople || 1,
         maxPeople: ticket.maxPeople || null,
         slug: ticket.slug || "",
@@ -179,37 +132,31 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
         requiresIdentity: false,
         requiresPhoto: false,
         groupId: defaultGroupId || "none",
-        dayType: DayType.ALL,
-        timeSlot: TimeSlot.FULL_DAY,
+        dayType: undefined,
+        timeSlot: undefined,
         minPeople: 1,
         maxPeople: null,
         slug: "",
         isSeasonPass: false,
       })
     }
-  }, [ticket, form])
+  }, [ticket, form, defaultGroupId])
 
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!newOpen && form.formState.isDirty) {
-      setShowUnsavedDialog(true)
-      return
-    }
-    onOpenChange(newOpen)
-  }
- 
-  // 🛡️ Loss Prevention: Native HTML5 BeforeUnload Safeguard
+  // ── Auto-sync isSeasonPass → validityType ──────────────────────────────
+  const isSeasonPass = useWatch({ control: form.control, name: "isSeasonPass" })
+
   React.useEffect(() => {
-    const handlePreventLoss = (e: BeforeUnloadEvent) => {
-      if (form.formState.isDirty) {
-        e.preventDefault()
-        e.returnValue = "" // Native OS confirmation trigger
-        return ""
-      }
+    if (isSeasonPass) {
+      form.setValue("validityType", "SUMMER_SEASON")
+    } else if (form.getValues("validityType") === "SUMMER_SEASON") {
+      form.setValue("validityType", "FIXED_DATE")
     }
-    
-    window.addEventListener("beforeunload", handlePreventLoss)
-    return () => window.removeEventListener("beforeunload", handlePreventLoss)
-  }, [form.formState.isDirty])
+  }, [isSeasonPass, form])
+
+  const { showUnsavedDialog, setShowUnsavedDialog, handleOpenChange, confirmDiscard } = useUnsavedChangesGuard(
+    form.formState.isDirty,
+    onOpenChange,
+  )
 
   const onSubmit: SubmitHandler<TicketFormValues> = async (values) => {
     setIsSubmitting(true)
@@ -228,7 +175,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
 
       if (result.success) {
         toast.success(ticket ? "Varijanta karte je uspešno ažurirana" : "Varijanta karte je uspešno kreirana")
-        form.reset(values) // 🧼 Reset dirty bit immediately to free native lock
+        form.reset(values)
         router.refresh()
         onOpenChange(false)
       } else {
@@ -247,12 +194,12 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
     toast.error("Molimo ispravite greške u formi pre čuvanja.")
   }
 
-  async function onDelete() {
+  const onDelete = () => {
     if (!ticket) return
     setShowDeleteDialog(true)
   }
 
-  async function confirmDelete() {
+  const confirmDelete = async () => {
     if (!ticket) return
     setShowDeleteDialog(false)
     setIsSubmitting(true)
@@ -280,419 +227,15 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="flex flex-col flex-1 overflow-hidden">
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
-              <div className="space-y-5">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Naziv Ulaznice</FormLabel>
-                      <FormControl>
-                        <Input placeholder="npr. Dnevna karta - Odrasli" {...field} className="h-11 bg-muted/30 border-border rounded-xl font-bold text-foreground placeholder-slate-600 focus:border-primary/50 transition-all" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <TicketBasicInfoFields control={form.control} />
 
-                <FormField
-                  control={form.control}
-                  name="slug"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Slug (URL Putanja)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="npr. odrasli-radni-dan" {...field} value={field.value || ""} className="h-10 bg-muted/30 border-border rounded-xl font-mono text-xs text-foreground/80 focus:border-primary/50 transition-all" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }: { field: ControllerRenderProps<TicketFormValues, "price"> }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cena</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input type="number" {...field} value={field.value as string} className="h-11 pr-12 bg-muted/30 border-border rounded-xl text-sm font-mono font-bold text-primary focus:border-primary/50 transition-all" />
-                            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-muted-foreground pointer-events-none uppercase tracking-widest">
-                              {currency}
-                            </span>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="originalPrice"
-                    render={({ field }: { field: ControllerRenderProps<TicketFormValues, "originalPrice"> }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Gate Cena</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input type="number" {...field} value={String(field.value ?? "")} onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))} className="h-11 pr-12 bg-muted/30 border-border rounded-xl text-sm font-mono text-muted-foreground focus:border-primary/50 transition-all opacity-85" />
-                            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-muted-foreground pointer-events-none uppercase tracking-widest">
-                              {currency}
-                            </span>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="type"
-                    render={({ field }: { field: ControllerRenderProps<TicketFormValues, "type"> }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tip Karte</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90 focus:border-primary/50 transition-all">
-                              <SelectValue placeholder="Tip" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-muted border-border text-foreground/90">
-                            {Object.values(TicketType).map((t) => (
-                              <SelectItem key={t} value={t} className="text-xs focus:bg-primary/20 focus:text-foreground">
-                                {TICKET_TYPE_LABELS[t] || t.replace("_", " ")}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="validityType"
-                    render={({ field }: { field: ControllerRenderProps<TicketFormValues, "validityType"> }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Važenje</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90 focus:border-primary/50 transition-all">
-                              <SelectValue placeholder="Važenje" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-muted border-border text-foreground/90">
-                            <SelectItem value="FIXED_DATE" className="text-xs focus:bg-primary/20 focus:text-foreground">Fiksni Datum</SelectItem>
-                            <SelectItem value="FLEXIBLE_30_DAY" className="text-xs focus:bg-primary/20 focus:text-foreground">30 Dana Flex</SelectItem>
-                            <SelectItem value="SUMMER_SEASON" className="text-xs focus:bg-primary/20 focus:text-foreground">Letnja Sezona</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="dayType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Dan</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || undefined}>
-                          <FormControl>
-                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90">
-                              <SelectValue placeholder="Izaberi" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-muted border-border text-foreground/90">
-                            {Object.values(DayType).map(v => (
-                              <SelectItem key={v} value={v} className="text-xs focus:bg-primary/20">{v.replace('_', ' ')}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="timeSlot"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Termin</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || undefined}>
-                          <FormControl>
-                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90">
-                              <SelectValue placeholder="Izaberi" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-muted border-border text-foreground/90">
-                            {Object.values(TimeSlot).map(v => (
-                              <SelectItem key={v} value={v} className="text-xs focus:bg-primary/20">{v.replace('_', ' ')}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="minPeople"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Min. Osoba</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} value={field.value as string} className="h-11 bg-muted/30 border-border rounded-xl text-sm font-bold text-foreground/90" onChange={e => field.onChange(Number(e.target.value))} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="maxPeople"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Max. Osoba</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} value={String(field.value ?? "")} className="h-11 bg-muted/30 border-border rounded-xl text-sm font-bold text-foreground/90" onChange={e => field.onChange(e.target.value === "" ? null : Number(e.target.value))} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
               <Accordion type="multiple" defaultValue={["governance"]} className="w-full space-y-4 border-none">
-                {/* Section 1: Status i Podešavanja */}
-                <AccordionItem value="governance" className="border border-border/50 bg-muted/10 rounded-2xl px-4 overflow-hidden transition-all hover:bg-muted/20">
-                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
-                    <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                      Status i Podešavanja
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-5 space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
-                      <FormField
-                        control={form.control}
-                        name="isActive"
-                        render={({ field }: { field: ControllerRenderProps<TicketFormValues, "isActive"> }) => (
-                          <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-xs font-bold text-foreground/80">Aktivna</FormLabel>
-                              <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Na sajtu</span>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                className="scale-90"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="isFeatured"
-                        render={({ field }: { field: ControllerRenderProps<TicketFormValues, "isFeatured"> }) => (
-                          <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-xs font-bold text-foreground/80">Izdvojena</FormLabel>
-                              <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Vrh liste</span>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                className="scale-90"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <FormField
-                      control={form.control}
-                      name="groupId"
-                      render={({ field }: { field: ControllerRenderProps<TicketFormValues, "groupId"> }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-xs font-semibold text-muted-foreground">Grupa Ulaznica</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || "none"}>
-                            <FormControl>
-                              <SelectTrigger className="h-10 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90">
-                                <SelectValue placeholder="Izaberite grupu" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-muted border-border text-foreground/90">
-                              <SelectItem value="none" className="text-xs focus:bg-primary/20">Nema grupe (Pojedinačna karta)</SelectItem>
-                              {ticketGroups?.map((g) => (
-                                <SelectItem key={g.id} value={g.id} className="text-xs focus:bg-primary/20">
-                                  {g.title}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <FormField
-                        control={form.control}
-                        name="saleStart"
-                        render={({ field }: { field: ControllerRenderProps<TicketFormValues, "saleStart"> }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Početak Prodaje</FormLabel>
-                            <FormControl>
-                              <Input type="datetime-local" {...field} value={field.value || ""} className="h-10 bg-background/60 border-border rounded-xl text-xs text-foreground/80 px-3" />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="saleEnd"
-                        render={({ field }: { field: ControllerRenderProps<TicketFormValues, "saleEnd"> }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Kraj Prodaje</FormLabel>
-                            <FormControl>
-                              <Input type="datetime-local" {...field} value={field.value || ""} className="h-10 bg-background/60 border-border rounded-xl text-xs text-foreground/80 px-3" />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                {/* Section 2: Opis i Sitna Slova */}
-                <AccordionItem value="description_section" className="border border-border/50 bg-muted/10 rounded-2xl px-4 overflow-hidden transition-all hover:bg-muted/20">
-                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
-                    <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                      Opis i Sitna Slova
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-5 space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="descriptionSr"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-xs font-semibold text-muted-foreground">Opis Ponude</FormLabel>
-                          <FormControl>
-                            <Textarea placeholder="Šta je uključeno u ovu kartu?" className="min-h-[90px] bg-background/60 border-border rounded-xl leading-relaxed text-sm text-foreground/90 placeholder-slate-600 focus:border-primary/50" {...field} value={field.value || ""} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="finePrint"
-                      render={({ field }: { field: ControllerRenderProps<TicketFormValues, "finePrint"> }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-xs font-semibold text-muted-foreground">Važne Napomene (Sitna slova)</FormLabel>
-                          <FormControl>
-                            <Textarea placeholder="Npr. Nema povraćaja novca, samo radnim danima..." className="min-h-[70px] bg-background/60 border-border rounded-xl leading-relaxed text-xs text-foreground/80 placeholder-slate-600 focus:border-primary/50" {...field} value={field.value || ""} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-
-                {/* Section 3: Vizuelni Identitet & Sigurnost */}
-                <AccordionItem value="visuals" className="border border-border/50 bg-muted/10 rounded-2xl px-4 overflow-hidden transition-all hover:bg-muted/20">
-                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
-                    <div className="flex items-center justify-between w-full pr-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-2 w-2 rounded-full bg-primary shadow-primary/50" />
-                        Mediji i Sigurnost
-                      </div>
-                      {imageUrl && (
-                        <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-[9px] font-black uppercase text-primary tracking-widest">
-                          Slika je dodata
-                        </div>
-                      )}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-5 space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="imageUrl"
-                      render={({ field }: { field: ControllerRenderProps<TicketFormValues, "imageUrl"> }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-xs font-semibold text-muted-foreground">Glavna Slika Kartice</FormLabel>
-                          <FormControl>
-                            <TicketImageUpload 
-                              value={field.value} 
-                              onChange={field.onChange} 
-                              facilityId={facilityId} 
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="grid grid-cols-2 gap-3 pt-2">
-                      <FormField
-                        control={form.control}
-                        name="requiresIdentity"
-                        render={({ field }: { field: ControllerRenderProps<TicketFormValues, "requiresIdentity"> }) => (
-                          <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-xs font-bold text-foreground/80">Ime i Prezime</FormLabel>
-                              <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Za pretplate</span>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={(checked) => {
-                                  field.onChange(checked);
-                                  if (checked) form.setValue("requiresPhoto", true);
-                                }}
-                                className="scale-90"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="requiresPhoto"
-                        render={({ field }: { field: ControllerRenderProps<TicketFormValues, "requiresPhoto"> }) => (
-                          <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
-                            <div className="space-y-0.5">
-                              <FormLabel className="text-xs font-bold text-foreground/80">Fotografija</FormLabel>
-                              <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Vizuelna provera</span>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                className="scale-90"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                <TicketStatusSection
+                  control={form.control}
+                  ticketGroups={ticketGroups}
+                />
+                <TicketDescriptionSection control={form.control} />
+                <TicketMediaSection control={form.control} facilityId={facilityId} />
               </Accordion>
             </div>
 
@@ -709,9 +252,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                 </Button>
 
                 {ticket && (
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
+                  <Button
+                    type="button"
+                    variant="ghost"
                     className="w-full h-10 text-muted-foreground hover:text-rose-500 hover:bg-rose-500/5 transition-all text-xs font-bold uppercase tracking-widest"
                     onClick={onDelete}
                     disabled={isSubmitting}
@@ -725,38 +268,30 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
           </form>
         </Form>
       </SheetContent>
+
       {/* Unsaved Changes Dialog */}
-      <Dialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Unsaved Changes</DialogTitle>
-            <DialogDescription>
-              You have unsaved changes. Are you sure you want to close?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowUnsavedDialog(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => { setShowUnsavedDialog(false); onOpenChange(false) }}>Discard Changes</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={showUnsavedDialog}
+        onOpenChange={(open) => { if (!open) setShowUnsavedDialog(false) }}
+        title="Nesačuvane izmene"
+        description="Imate nesačuvane izmene. Da li ste sigurni da želite da zatvorite?"
+        confirmLabel="Odbaci izmene"
+        cancelLabel="Nastavi uređivanje"
+        variant="destructive"
+        onConfirm={confirmDiscard}
+      />
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Ticket</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this ticket? Sold tickets will remain in the system, but this variant will no longer be available for purchase.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Obriši kartu"
+        description="Prodate karte ostaju u sistemu, ali ova varijanta više neće biti dostupna za kupovinu."
+        confirmLabel="Obriši"
+        variant="destructive"
+        onConfirm={confirmDelete}
+        disabled={isSubmitting}
+      />
     </Sheet>
   )
 }
-

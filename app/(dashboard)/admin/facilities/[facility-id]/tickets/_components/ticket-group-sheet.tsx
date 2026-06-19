@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react"
-import { useForm, useFieldArray } from "react-hook-form"
+import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { 
   Sheet, 
@@ -40,7 +40,7 @@ import {
 } from "@/server/actions/tickets"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { DayType, TimeSlot } from "@prisma/client"
+import { TicketType, ValidityType, DayType, TimeSlot } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import type { SerializedAdminTicket, SerializedTicketGroup } from "./columns"
 import { cn } from "@/lib/utils"
@@ -83,18 +83,22 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
         isSeasonPass: t.isSeasonPass || false,
         requiresIdentity: t.requiresIdentity || false,
         requiresPhoto: t.requiresPhoto || false,
+        isFeatured: t.isFeatured ?? false,
         isActive: t.isActive ?? true,
         displayOrder: t.displayOrder ?? 0,
+        slug: t.slug || "",
       })) || [{
         title: "Standard",
         label: "Standard",
         type: "ADULT",
         validityType: "FIXED_DATE",
-        price: 0,
+        price: 1200,
         dayType: DayType.ALL,
         timeSlot: TimeSlot.FULL_DAY,
         minPeople: 1,
         isSeasonPass: false,
+        isFeatured: false,
+        requiresPhoto: false,
         isActive: true,
         displayOrder: 0,
       }]
@@ -105,6 +109,18 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
     control: form.control,
     name: "tickets"
   })
+
+  // ── Auto-sync isSeasonPass → validityType for each tier ─────────────────
+  const watchedTickets = useWatch({ control: form.control, name: "tickets" })
+
+  React.useEffect(() => {
+    if (!watchedTickets) return
+    watchedTickets.forEach((ticket: any, index: number) => {
+      if (ticket?.isSeasonPass && ticket?.validityType !== "SUMMER_SEASON") {
+        form.setValue(`tickets.${index}.validityType`, "SUMMER_SEASON")
+      }
+    })
+  }, [watchedTickets, form])
 
   async function onSubmit(data: TicketGroupValues) {
     startTransition(async () => {
@@ -220,18 +236,20 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                     type="button" 
                     variant="outline" 
                     size="sm"
-                    onClick={() => append({ 
+                    onClick={() => append({
                       title: "",
-                      label: "", 
+                      label: "",
                       type: "ADULT",
                       validityType: "FIXED_DATE",
-                      price: 0, 
-                      dayType: DayType.ALL, 
-                      timeSlot: TimeSlot.FULL_DAY, 
-                      minPeople: 1, 
-                      isSeasonPass: false, 
+                      price: 1200,
+                      dayType: DayType.ALL,
+                      timeSlot: TimeSlot.FULL_DAY,
+                      minPeople: 1,
+                      isSeasonPass: false,
+                      isFeatured: false,
+                      requiresPhoto: false,
                       isActive: true,
-                      displayOrder: fields.length 
+                      displayOrder: fields.length
                     })}
                     className="border-primary/30 text-primary hover:bg-primary/10 h-9 px-4 rounded-xl font-black uppercase text-[10px] tracking-widest"
                   >
@@ -259,6 +277,17 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                   </FormItem>
                                 )}
                               />
+                              <FormField
+                                control={form.control}
+                                name={`tickets.${index}.slug`}
+                                render={({ field }) => (
+                                  <FormItem className="hidden sm:block w-32 space-y-0">
+                                    <FormControl>
+                                      <Input placeholder="slug" className="h-10 bg-transparent border-none focus-visible:ring-0 text-[10px] font-mono text-muted-foreground p-0" {...field} value={field.value || ""} />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
                            </div>
                            <Button 
                              type="button" 
@@ -271,7 +300,28 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                            </Button>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                           <FormField
+                              control={form.control}
+                              name={`tickets.${index}.type`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Tip</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value || "ADULT"}>
+                                    <FormControl>
+                                      <SelectTrigger className="h-10 bg-background/60 border-border text-[10px] font-bold uppercase rounded-lg">
+                                        <SelectValue placeholder="Tip" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent className="bg-background border-border">
+                                      {Object.values(TicketType).map(v => (
+                                        <SelectItem key={v} value={v} className="text-[10px] font-bold uppercase">{v.replace('_', ' ')}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </FormItem>
+                              )}
+                           />
                            <FormField
                               control={form.control}
                               name={`tickets.${index}.price`}
@@ -321,7 +371,28 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                            />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-1">
+                           <FormField
+                              control={form.control}
+                              name={`tickets.${index}.validityType`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Važenje</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value || "FIXED_DATE"}>
+                                    <FormControl>
+                                      <SelectTrigger className="h-10 bg-background/60 border-border text-[10px] font-bold uppercase rounded-lg">
+                                        <SelectValue placeholder="Važenje" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent className="bg-background border-border">
+                                      {Object.values(ValidityType).map(v => (
+                                        <SelectItem key={v} value={v} className="text-[10px] font-bold uppercase">{v.replace('_', ' ')}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </FormItem>
+                              )}
+                           />
                            <FormField
                               control={form.control}
                               name={`tickets.${index}.timeSlot`}
@@ -393,6 +464,30 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
                                   </FormControl>
                                   <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">ID Obavezan</FormLabel>
+                                </FormItem>
+                              )}
+                           />
+                           <FormField
+                              control={form.control}
+                              name={`tickets.${index}.requiresPhoto`}
+                              render={({ field }) => (
+                                <FormItem className="flex items-center gap-3 space-y-0">
+                                  <FormControl>
+                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                  </FormControl>
+                                  <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Foto</FormLabel>
+                                </FormItem>
+                              )}
+                           />
+                           <FormField
+                              control={form.control}
+                              name={`tickets.${index}.isFeatured`}
+                              render={({ field }) => (
+                                <FormItem className="flex items-center gap-3 space-y-0">
+                                  <FormControl>
+                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                  </FormControl>
+                                  <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Izdvojeno</FormLabel>
                                 </FormItem>
                               )}
                            />

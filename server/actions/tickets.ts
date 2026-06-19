@@ -72,6 +72,11 @@ export async function renameTicketImageAction(
     const extIndex = oldFilename.lastIndexOf(".")
     const extension = extIndex !== -1 ? oldFilename.slice(extIndex) : ".webp"
 
+    // ⚠️ Security: verify the URL actually belongs to this facility
+    if (!urlObj.pathname.includes(`facilities/${fid}/`)) {
+      throw new Error("URL slike ne pripada ovom objektu")
+    }
+
     // Fetch the existing blob content
     const response = await fetch(url)
     if (!response.ok) {
