@@ -41,6 +41,17 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '25mb', // Bumps from 1MB to 25MB for images & metadata
     },
     proxyClientMaxBodySize: 26214400, // 25MB in bytes (Bumps from 10MB)
+
+    // ⚠️ Force Turbopack to include sharp native binaries in deployment
+    // lovell/sharp#4543: Turbopack doesn't discover @img/sharp-* packages
+    // via vercel/nft even with sharp@0.35.2's stub binaries.
+    // @ts-expect-error - exists at runtime despite missing types
+    outputFileTracingIncludes: {
+      '/admin/**': [
+        './node_modules/@img/sharp-linux-x64/**',
+        './node_modules/@img/sharp-libvips-linux-x64/**',
+      ],
+    },
   },
 
   async headers() {
