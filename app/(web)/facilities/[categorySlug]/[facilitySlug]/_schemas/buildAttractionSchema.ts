@@ -9,6 +9,8 @@ export function buildAttractionSchema(facility: FacilitySchemaInput, facilitySlu
     description: facility.description?.slice(0, 300),
     url: `https://www.splashdeals.rs/${facilitySlug}`,
     image: heroImage,
+    priceRange: "RSD",
+    ...(facility.publicPhone ? { telephone: facility.publicPhone } : {}),
     isAccessibleForFree: false,
     publicAccess: true,
     availableLanguage: ["sr"],

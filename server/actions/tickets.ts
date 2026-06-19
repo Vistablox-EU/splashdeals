@@ -18,6 +18,7 @@ import {
 import { validateFacilityAccess } from "@/server/lib/auth-guards"
 import { handleServerActionError } from "@/server/lib/server-action-error"
 import { withFacilityAccess } from "@/server/lib/with-facility-access"
+import { renameTicketImageSchema } from "@/server/lib/validations/image"
 
 /**
  * 🌊 High-Density Ticket Upload Action
@@ -43,6 +44,57 @@ export async function uploadTicketImageAction(formData: FormData) {
     });
 
     return { success: true, url: blob.url };
+  } catch (error) {
+    return handleServerActionError(error, "tickets")
+  }
+}
+
+/**
+ * ✏️ Renames an uploaded ticket image on blob storage.
+ * Fetches the existing blob, re-uploads under the new name, deletes the old one.
+ * Only the filename (minus extension) may change; the .webp extension is preserved.
+ */
+export async function renameTicketImageAction(
+  facilityId: string,
+  currentUrl: string,
+  newName: string,
+) {
+  try {
+    const validation = renameTicketImageSchema.parse({ facilityId, currentUrl, newName })
+    const { facilityId: fid, currentUrl: url, newName: name } = validation
+
+    await validateFacilityAccess(fid)
+
+    // Parse the old URL to get the path and extension
+    const urlObj = new URL(url)
+    const pathSegments = urlObj.pathname.split("/")
+    const oldFilename = pathSegments[pathSegments.length - 1] ?? ""
+    const extIndex = oldFilename.lastIndexOf(".")
+    const extension = extIndex !== -1 ? oldFilename.slice(extIndex) : ".webp"
+
+    // Fetch the existing blob content
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error("Neuspešno preuzimanje postojeće slike sa storage-a")
+    }
+    const arrayBuffer = await response.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    // Upload with new name (keep the extension from the original)
+    const newPath = `facilities/${fid}/tickets/${Date.now()}-${name}${extension}`
+    const blob = await put(newPath, buffer, {
+      access: "public",
+      contentType: response.headers.get("content-type") || "image/webp",
+    })
+
+    // Clean up old blob
+    const { del } = await import("@vercel/blob")
+    await del(url).catch(() => {
+      // Non-critical — old blob becomes orphaned if delete fails
+      console.warn("Failed to delete old ticket image blob:", url)
+    })
+
+    return { success: true, url: blob.url }
   } catch (error) {
     return handleServerActionError(error, "tickets")
   }

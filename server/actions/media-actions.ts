@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { handleServerActionError } from "@/server/lib/server-action-error"
 import { validateAction } from "@/server/lib/actions/validator"
 import { validateFacilityAccess } from "@/server/lib/auth-guards"
+import { renameMediaSchema } from "@/server/lib/validations/media"
 
 const updateMediaPurposeSchema = z.object({
   mediaId: z.string().uuid(),
@@ -125,6 +126,61 @@ export async function uploadMediaAction(formData: FormData) {
     revalidatePath(`/admin/facilities/${facilityId}/media`);
     revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: results };
+  } catch (error) {
+    return handleServerActionError(error, "media-actions")
+  }
+}
+
+/**
+ * ✏️ Renames a facility media file on blob storage.
+ * Fetches the existing blob, re-uploads under the new name, deletes the old one.
+ * Preserves the original file extension.
+ */
+export async function renameMediaAction(mediaId: string, facilityId: string, newName: string) {
+  try {
+    const validation = renameMediaSchema.parse({ mediaId, facilityId, newName })
+    const { mediaId: mid, facilityId: fid, newName: name } = validation
+
+    await validateFacilityAccess(fid)
+
+    // Get the current media record
+    const media = await prisma.facilityMedia.findUnique({ where: { id: mid } })
+    if (!media) throw new Error("Medij nije pronađen")
+    if (media.facilityId !== fid) throw new Error("Medij ne pripada ovom objektu")
+
+    // Parse URL to extract extension
+    const urlObj = new URL(media.url)
+    const pathSegments = urlObj.pathname.split("/")
+    const oldFilename = pathSegments[pathSegments.length - 1] ?? ""
+    const extIndex = oldFilename.lastIndexOf(".")
+    const extension = extIndex !== -1 ? oldFilename.slice(extIndex) : ""
+
+    // Fetch existing blob
+    const response = await fetch(media.url)
+    if (!response.ok) throw new Error("Neuspešno preuzimanje postojećeg fajla sa storage-a")
+    const buffer = Buffer.from(await response.arrayBuffer())
+
+    // Upload with new name (keep directory and extension)
+    const oldDir = pathSegments.slice(0, -1).join("/")
+    const newPath = `${oldDir}/${Date.now()}-${name}${extension}`
+    const blob = await put(newPath, buffer, {
+      access: "public",
+      contentType: response.headers.get("content-type") || "image/webp",
+    })
+
+    // Delete old blob
+    await del(media.url).catch(() => {
+      console.warn("Failed to delete old media blob:", media.url)
+    })
+
+    // Update database
+    const updated = await prisma.facilityMedia.update({
+      where: { id: mid },
+      data: { url: blob.url },
+    })
+
+    revalidatePath(`/admin/facilities/${fid}/media`)
+    return { success: true, media: updated }
   } catch (error) {
     return handleServerActionError(error, "media-actions")
   }

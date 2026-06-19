@@ -14,9 +14,12 @@ import {
   toggleMediaGalleryVisibilityAction,
   updateMediaCaptionAction,
   updateMediaFocalPointAction,
-  bulkUpdateMediaCaptionAction
+  bulkUpdateMediaCaptionAction,
+  renameMediaAction
 } from "@/server/actions/media-actions"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Dialog,
   DialogContent,
@@ -72,6 +75,21 @@ const dropAnimation: DropAnimation = {
  */
 import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer";
 
+/**
+ * Extracts the display filename (without extension) from a Vercel Blob URL.
+ */
+function filenameFromBlobUrl(url: string): string {
+  try {
+    const segments = new URL(url).pathname.split("/")
+    const last = segments[segments.length - 1] ?? "fajl"
+    return last
+      .replace(/^\d+-/, "")
+      .replace(/\.[^.]+$/, "")
+  } catch {
+    return "fajl"
+  }
+}
+
 export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
   const [media, setMedia] = useState(initialMedia)
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -85,6 +103,8 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
   const [activeFilter, setActiveFilter] = useState<"ALL" | "PHOTOS" | "VIDEOS" | "HERO" | "CARDBG" | "PUBLIC" | "HIDDEN" | "MISSING_ALT">("ALL")
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false)
   const [croppingMedia, setCroppingMedia] = useState<{ id: string; url: string } | null>(null)
+  const [renamingMedia, setRenamingMedia] = useState<{ id: string; url: string } | null>(null)
+  const [renameValue, setRenameValue] = useState("")
   const [focalPointMediaId, setFocalPointMediaId] = useState<string | null>(null)
   const [bulkCaptionText, setBulkCaptionText] = useState("")
   
@@ -358,6 +378,30 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
       toast.error(result.error || "Delete failed")
     }
   }
+
+  // ─── Rename handler ─────────────────────────────────────────────────────────
+  const handleOpenRename = useCallback((id: string, url: string) => {
+    const name = filenameFromBlobUrl(url)
+    setRenameValue(name)
+    setRenamingMedia({ id, url })
+  }, [])
+
+  const handleRename = useCallback(async () => {
+    if (!renamingMedia || !renameValue.trim()) return
+    try {
+      const result = await renameMediaAction(renamingMedia.id, facilityId, renameValue.trim()) as { success: boolean; media?: FacilityMedia; error?: string }
+      if (result.success && result.media) {
+        setMedia(prev => prev.map(m => m.id === renamingMedia.id ? result.media! : m))
+        toast.success("Ime fajla je uspešno promenjeno!")
+        setRenamingMedia(null)
+        setRenameValue("")
+      } else {
+        toast.error(result.error || "Greška pri promeni imena")
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Greška pri promeni imena")
+    }
+  }, [renamingMedia, renameValue, facilityId])
 
   const handleToggleHero = async (id: string) => {
     const item = media.find(m => m.id === id)
@@ -716,6 +760,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                 onCrop={() => setCroppingMedia({ id: item.id, url: item.url })}
                 onFocalPointSaved={(id, coords) => setMedia(prev => prev.map(m => m.id === id ? { ...m, originalUrl: coords } as FacilityMedia : m))}
                 onUnsavedEdit={setHasUnsavedEdits}
+                onRename={() => handleOpenRename(item.id, item.url)}
               />
             ))}
 
@@ -775,11 +820,65 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
           }}
         />
       )}
+
+      {/* ✏️ Rename File Dialog */}
+      <Dialog open={!!renamingMedia} onOpenChange={(open) => { if (!open) { setRenamingMedia(null); setRenameValue(""); } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Preimenuj fajl</DialogTitle>
+            <DialogDescription>
+              Promenite naziv fajla na blob storage-u. Ekstenzija ostaje nepromenjena.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 py-4">
+            <Label htmlFor="media-rename-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Naziv fajla
+            </Label>
+            <div className="flex items-center gap-0">
+              <Input
+                id="media-rename-input"
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                placeholder="unesite naziv"
+                className="rounded-r-none font-mono text-sm focus-visible:z-10"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && renameValue.trim()) {
+                    e.preventDefault()
+                    handleRename()
+                  }
+                }}
+                autoFocus
+              />
+              <div className="flex items-center h-10 px-3 rounded-r-md border border-l-0 border-input bg-muted/30 text-xs font-mono text-muted-foreground select-none">
+                .{renamingMedia ? renamingMedia.url.split("?")[0].split(".").pop()?.toLowerCase() || "webp" : "webp"}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => { setRenamingMedia(null); setRenameValue(""); }}
+            >
+              Otkaži
+            </Button>
+            <Button
+              type="button"
+              onClick={handleRename}
+              disabled={!renameValue.trim()}
+            >
+              Sačuvaj
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
 
-function MediaItemCard({ 
+function MediaItemCard({
   item, 
   onDelete, 
   isOverlay, 
@@ -795,7 +894,8 @@ function MediaItemCard({
   onToggleFocalPoint,
   onCrop,
   onFocalPointSaved,
-  onUnsavedEdit
+  onUnsavedEdit,
+  onRename
 }: { 
   item: FacilityMedia, 
   onDelete?: () => void,
@@ -814,7 +914,8 @@ function MediaItemCard({
   onToggleFocalPoint?: () => void,
   onCrop?: () => void,
   onFocalPointSaved?: (id: string, coords: string) => void,
-  onUnsavedEdit?: (value: boolean) => void
+  onUnsavedEdit?: (value: boolean) => void,
+  onRename?: () => void
 }) {
   const [isPortrait, setIsPortrait] = useState(false)
   const extension = item.url.substring(item.url.lastIndexOf(".") + 1).split("?")[0].toUpperCase();
@@ -1042,6 +1143,29 @@ function MediaItemCard({
 
       {/* ✍️ Inline Caption Editor */}
       {!isOverlay && !isSelectionMode && (
+        <div className="px-3 pb-1 bg-white/[0.01] flex items-center gap-2">
+          {/* Filename badge */}
+          <div className="flex flex-1 items-center gap-1.5 min-w-0">
+            <Icon name="insert_drive_file" className="size-3 shrink-0 text-muted-foreground/50" />
+            <span className="text-[10px] font-mono text-muted-foreground/70 truncate min-w-0">
+              {filenameFromBlobUrl(item.url)}.{extension.toLowerCase()}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onRename}
+              className="h-5 px-1.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50 hover:text-foreground shrink-0 rounded-md"
+            >
+              <Icon name="edit" className="size-2.5 mr-0.5" />
+              Preimenuj
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* ✍️ Inline Caption Editor */}
+      {!isOverlay && !isSelectionMode && (
         <div className="px-3 pb-3 pt-1 bg-white/[0.01] flex items-center gap-2">
           <input
             type="text"
@@ -1108,13 +1232,14 @@ function SortableMediaItem({
   onSelect, 
   onDelete, 
   onToggleHero, 
-  onToggleCardBG, 
+  onToggleCardBG,
   onToggleVisibility,
   focalPointMediaId,
   onToggleFocalPoint,
   onCrop,
   onFocalPointSaved,
-  onUnsavedEdit
+  onUnsavedEdit,
+  onRename
 }: { 
   item: FacilityMedia, 
   isSelected: boolean,
@@ -1128,7 +1253,8 @@ function SortableMediaItem({
   onToggleFocalPoint?: () => void,
   onCrop?: () => void,
   onFocalPointSaved?: (id: string, coords: string) => void,
-  onUnsavedEdit?: (value: boolean) => void
+  onUnsavedEdit?: (value: boolean) => void,
+  onRename?: () => void
 }) {
   const {
     attributes,
@@ -1166,6 +1292,7 @@ function SortableMediaItem({
         onCrop={onCrop}
         onFocalPointSaved={onFocalPointSaved}
         onUnsavedEdit={onUnsavedEdit}
+        onRename={onRename}
       />
     </div>
   )
