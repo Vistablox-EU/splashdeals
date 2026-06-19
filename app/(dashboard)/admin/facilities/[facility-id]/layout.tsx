@@ -51,8 +51,6 @@ export default async function FacilityManagementLayout({
       metaTitle: true,
       metaDescription: true,
       hours: true,
-      media: true,
-      tickets: true,
       _count: {
         select: {
           tickets: true,
