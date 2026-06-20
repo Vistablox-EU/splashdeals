@@ -1,5 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -8,18 +8,18 @@ datasource db {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  name          String?
-  email         String        @unique
-  emailVerified Boolean       @default(false)
-  image         String?
-  role          UserRole      @default(CUSTOMER)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  apiKeys       ApiKey[]
-  transactions  Transaction[]
+  id               String                    @id @default(cuid())
+  name             String?
+  email            String                    @unique
+  emailVerified    Boolean                   @default(false)
+  image            String?
+  role             UserRole                  @default(CUSTOMER)
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+  accounts         Account[]
+  sessions         Session[]
+  apiKeys          ApiKey[]
+  transactions     Transaction[]
   amenityAuditLogs AmenityAuditLog[]
   staffAssignments FacilityStaffAssignment[]
 
@@ -91,32 +91,32 @@ model Verification {
 }
 
 model Facility {
-  id                String            @id @default(uuid())
+  id                String                    @id @default(uuid())
   name              String
-  slug              String            @unique
+  slug              String                    @unique
   category          String
   city              String
   cityId            String?
-  primaryCity           City?             @relation(fields: [cityId], references: [id], name: "facilityCityRel")
+  primaryCity       City?                     @relation(fields: [cityId], references: [id], name: "facilityCityRel")
   streetName        String
   streetNumber      String
   postalCode        String
   lat               Float?
   lng               Float?
-  status            FacilityStatus    @default(DRAFT)
+  status            FacilityStatus            @default(DRAFT)
   metaTitle         String?
   metaDescription   String?
   logoUrl           String?
-  description       String?   @db.Text
+  description       String?                   @db.Text
   descriptionSr     String?
   publicPhone       String?
   publicEmail       String?
   socialLinks       Json?
   emergencyContact  String?
-  seoArticle        String?   @db.Text
-  transitGuide      String?   @db.Text
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  seoArticle        String?                   @db.Text
+  transitGuide      String?                   @db.Text
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
   amenities         FacilityAmenity[]
   marketplaceCities FacilityCity[]
   media             FacilityMedia[]
@@ -140,10 +140,10 @@ model FacilityStaffAssignment {
   userId     String
   facilityId String
   assignedAt DateTime @default(now())
-  assignedBy String   // userId of the SUPER_ADMIN who assigned this
+  assignedBy String // userId of the SUPER_ADMIN who assigned this
 
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  facility  Facility  @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
   @@unique([userId, facilityId])
   @@index([facilityId])
@@ -179,34 +179,34 @@ model Amenity {
 }
 
 model FacilityAmenity {
-  facilityId  String
-  amenityId   String
-  value       String?
-  imageUrl    String?
-  displayOrder Int      @default(0)
-  isActive    Boolean   @default(true)
-  isFeatured  Boolean   @default(false)
-  scheduledAt DateTime?
-  updatedAt   DateTime  @default(now()) @updatedAt
-  
-  amenity      Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
-  facility     Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  facilityId   String
+  amenityId    String
+  value        String?
+  imageUrl     String?
+  displayOrder Int       @default(0)
+  isActive     Boolean   @default(true)
+  isFeatured   Boolean   @default(false)
+  scheduledAt  DateTime?
+  updatedAt    DateTime  @default(now()) @updatedAt
+
+  amenity  Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
   @@id([facilityId, amenityId])
   @@schema("partners")
 }
 
 model AmenityAuditLog {
-  id              String   @id @default(uuid())
+  id               String   @id @default(uuid())
   targetFacilityId String
-  amenityId       String
-  action          String
-  oldValue        String?
-  newValue        String?
-  userId          String?
-  createdAt       DateTime @default(now())
+  amenityId        String
+  action           String
+  oldValue         String?
+  newValue         String?
+  userId           String?
+  createdAt        DateTime @default(now())
 
-  user       User?    @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 
   @@index([targetFacilityId])
   @@map("amenity_audit_logs")
@@ -214,21 +214,21 @@ model AmenityAuditLog {
 }
 
 model FacilityMedia {
-  id           String       @id @default(uuid())
-  facilityId   String
-  url          String
-  thumbnailUrl String?
-  originalUrl  String?
-  type         MediaType    @default(PHOTO)
-  purpose      MediaPurpose @default(GALLERY)
-  caption      String?
-  order        Int          @default(0)
-  focalPoint    String?
-  isHero            Boolean      @default(false)
-  isCardBackground  Boolean      @default(false)
-  isGalleryVisible  Boolean      @default(true)
-  createdAt    DateTime     @default(now())
-  facility     Facility     @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  id               String       @id @default(uuid())
+  facilityId       String
+  url              String
+  thumbnailUrl     String?
+  originalUrl      String?
+  type             MediaType    @default(PHOTO)
+  purpose          MediaPurpose @default(GALLERY)
+  caption          String?
+  order            Int          @default(0)
+  focalPoint       String?
+  isHero           Boolean      @default(false)
+  isCardBackground Boolean      @default(false)
+  isGalleryVisible Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  facility         Facility     @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
   @@schema("partners")
 }
@@ -269,11 +269,11 @@ model PayoutProfile {
 }
 
 model City {
-  id         String         @id @default(uuid())
-  name       String
-  slug       String         @unique
-  facilities FacilityCity[]
-  facilityPrimary Facility[] @relation(name: "facilityCityRel")
+  id              String         @id @default(uuid())
+  name            String
+  slug            String         @unique
+  facilities      FacilityCity[]
+  facilityPrimary Facility[]     @relation(name: "facilityCityRel")
 
   @@schema("partners")
 }
@@ -329,17 +329,17 @@ model Ticket {
 }
 
 model TicketGroup {
-  id            String         @id @default(uuid())
+  id            String   @id @default(uuid())
   facilityId    String
   title         String
   titleSr       String?
   description   String?
   descriptionSr String?
-  displayOrder  Int            @default(0)
-  isActive      Boolean        @default(true)
-  slug          String?        @unique
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  displayOrder  Int      @default(0)
+  isActive      Boolean  @default(true)
+  slug          String?  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   facility      Facility       @relation(fields: [facilityId], references: [id], onDelete: Cascade)
   tickets       Ticket[]
@@ -369,20 +369,20 @@ model Transaction {
 }
 
 model Product {
-  id          String   @id @default(uuid())
-  facilityId  String
-  name        String
-  nameSr      String?
-  description String?
+  id            String   @id @default(uuid())
+  facilityId    String
+  name          String
+  nameSr        String?
+  description   String?
   descriptionSr String?
-  price       Decimal  @db.Decimal(10, 2)
-  currency    String   @default("RSD")
-  inventory   Int?
-  imageUrl    String?
-  isActive    Boolean  @default(true)
-  displayOrder Int     @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  price         Decimal  @db.Decimal(10, 2)
+  currency      String   @default("RSD")
+  inventory     Int?
+  imageUrl      String?
+  isActive      Boolean  @default(true)
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
@@ -402,29 +402,29 @@ model IssuedTicket {
   expiryDate     DateTime
   holderName     String?
   holderPhotoUrl String?
-  
-  ticket         Ticket        @relation(fields: [ticketId], references: [id], onDelete: Restrict)
-  transaction    Transaction  @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  
-  ticketGroupId  String
-  ticketGroup    TicketGroup @relation(fields: [ticketGroupId], references: [id])
+
+  ticket      Ticket      @relation(fields: [ticketId], references: [id], onDelete: Restrict)
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  ticketGroupId String
+  ticketGroup   TicketGroup @relation(fields: [ticketGroupId], references: [id])
 
   @@schema("sales")
 }
 
 model Campaign {
-  id              String   @id @default(uuid())
-  name            String
-  code            String?  @unique
-  discountPercent Decimal  @db.Decimal(5, 2)
+  id                String   @id @default(uuid())
+  name              String
+  code              String?  @unique
+  discountPercent   Decimal  @db.Decimal(5, 2)
   minPurchaseAmount Decimal? @db.Decimal(10, 2)
-  validFrom       DateTime
-  validTo         DateTime
-  usageLimit      Int?
-  usedCount       Int      @default(0)
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  validFrom         DateTime
+  validTo           DateTime
+  usageLimit        Int?
+  usedCount         Int      @default(0)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   facilityRestrictions CampaignFacility[]
 
@@ -453,6 +453,138 @@ model Subscriber {
   source    String?
 
   @@map("subscriber")
+  @@schema("marketing")
+}
+
+// --- CMS Blog i Page modeli ---
+
+model BlogPost {
+  id            String    @id @default(uuid())
+  title         String
+  slug          String    @unique
+  excerpt       String?   @db.Text
+  content       String    @db.Text
+  coverImage    String?
+  featuredImage String?
+  authorId      String?
+  author        String?
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  /// SEO polja
+  metaTitle       String?
+  metaDescription String?
+  ogTitle         String?
+  ogDescription   String?
+  ogImage         String?
+  canonicalUrl    String?
+  robotsDirective String?
+  schemaMarkup    Json?
+
+  /// Status i organizacija
+  status      PostStatus    @default(DRAFT)
+  categoryId  String?
+  category    BlogCategory? @relation(fields: [categoryId], references: [id])
+  tags            BlogPostTag[]
+  revisions       BlogPostRevision[]
+  isFeatured      Boolean      @default(false)
+  readingTime Int?
+
+  @@index([status, publishedAt])
+  @@index([slug])
+  @@map("blog_posts")
+  @@schema("marketing")
+}
+
+model BlogCategory {
+  id           String     @id @default(uuid())
+  name         String
+  slug         String     @unique
+  description  String?
+  color        String?
+  displayOrder Int        @default(0)
+  posts        BlogPost[]
+
+  @@map("blog_categories")
+  @@schema("marketing")
+}
+
+model BlogTag {
+  id    String        @id @default(uuid())
+  name  String        @unique
+  slug  String        @unique
+  posts BlogPostTag[]
+
+  @@map("blog_tags")
+  @@schema("marketing")
+}
+
+model BlogPostTag {
+  postId String
+  tagId  String
+  post   BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    BlogTag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@schema("marketing")
+}
+
+/// 📝 Auto-saved content revisions on publish
+model BlogPostRevision {
+  id        String   @id @default(uuid())
+  postId    String
+  title     String
+  content   String   @db.Text
+  excerpt   String?  @db.Text
+  createdAt DateTime @default(now())
+  createdBy String?
+
+  post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+  @@map("blog_post_revisions")
+  @@schema("marketing")
+}
+
+model Page {
+  id         String  @id @default(uuid())
+  title      String
+  slug       String  @unique
+  content    String  @db.Text
+  excerpt    String? @db.Text
+  coverImage String?
+
+  /// SEO polja
+  metaTitle       String?
+  metaDescription String?
+  ogTitle         String?
+  ogDescription   String?
+  ogImage         String?
+  canonicalUrl    String?
+  robotsDirective String?
+
+  /// Layout opcije
+  template   String  @default("default")
+  showHeader Boolean @default(true)
+  showFooter Boolean @default(true)
+
+  /// Status
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([slug, status])
+  @@map("pages")
+  @@schema("marketing")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+
   @@schema("marketing")
 }
 

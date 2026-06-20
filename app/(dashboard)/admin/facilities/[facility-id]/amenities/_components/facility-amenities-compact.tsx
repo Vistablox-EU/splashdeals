@@ -180,25 +180,19 @@ export function CompactAmenitiesTable({
 
   // 🖱️ Event Handlers
   const handleToggleActive = (id: string, checked: boolean) => {
-    setItems(prev => prev.map(item => {
-      if (item.id === id) {
-        const updated = { ...item, checked }
-        saveAmenity(updated)
-        return updated
-      }
-      return item
-    }))
+    const target = items.find(i => i.id === id)
+    if (!target) return
+    const updated = { ...target, checked }
+    setItems(prev => prev.map(item => (item.id === id ? updated : item)))
+    saveAmenity(updated)
   }
 
   const handleToggleFeatured = (id: string) => {
-    setItems(prev => prev.map(item => {
-      if (item.id === id) {
-        const updated = { ...item, isFeatured: !item.isFeatured }
-        saveAmenity(updated)
-        return updated
-      }
-      return item
-    }))
+    const target = items.find(i => i.id === id)
+    if (!target) return
+    const updated = { ...target, isFeatured: !target.isFeatured }
+    setItems(prev => prev.map(item => (item.id === id ? updated : item)))
+    saveAmenity(updated)
   }
 
   const handleValueChange = (id: string, value: string) => {
@@ -477,9 +471,14 @@ export function CompactAmenitiesTable({
                     ) : (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="cursor-help inline-block">
+                          <button
+                            type="button"
+                            tabIndex={-1}
+                            className="cursor-help inline-block"
+                            aria-label="Core infrastructure, cannot delete"
+                          >
                             <Icon name="help" className="text-[14px] text-muted-foreground/40 ml-auto mr-2" />
-                          </span>
+                          </button>
                         </TooltipTrigger>
                         <TooltipContent className="bg-background border border-border text-foreground/90 text-[10px] font-medium tracking-wide">
                           Core Infrastructure (Cannot Delete)

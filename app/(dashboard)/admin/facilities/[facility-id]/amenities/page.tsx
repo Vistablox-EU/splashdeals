@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { connection } from "next/server"
 import { prisma } from "@/server/lib/prisma"
-import { CompactAmenitiesTable } from "./_components"
+import { CompactAmenitiesTableContainer } from "./_components"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Icon } from "@/components/ui/Icon"
@@ -71,7 +71,7 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
       </div>
 
       <div className="rounded-2xl border border-border/50 bg-muted/20 p-1">
-        <CompactAmenitiesTable 
+        <CompactAmenitiesTableContainer 
           facilityId={facility.id}
           allAmenities={allAmenities}
           initialFacilityAmenities={facility.amenities}

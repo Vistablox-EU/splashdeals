@@ -42,3 +42,44 @@ export function revalidateAdminMedia(facilityId: string, slug?: string) {
 export function revalidateAdminUsers() {
   revalidatePath(ADMIN_PATHS.users.list());
 }
+
+export const CMS_PATHS = {
+  posts: {
+    list: () => "/admin/cms/posts" as const,
+    detail: (id: string) => `/admin/cms/posts/${id}` as const,
+  },
+  pages: {
+    list: () => "/admin/cms/pages" as const,
+    detail: (id: string) => `/admin/cms/pages/${id}` as const,
+  },
+  categories: {
+    list: () => "/admin/cms/categories" as const,
+  },
+  tags: {
+    list: () => "/admin/cms/tags" as const,
+  },
+} as const;
+
+export function revalidateAdminPosts() {
+  revalidatePath(CMS_PATHS.posts.list());
+}
+
+export function revalidateAdminPost(postId: string) {
+  revalidatePath(CMS_PATHS.posts.detail(postId));
+}
+
+export function revalidateAdminPages() {
+  revalidatePath(CMS_PATHS.pages.list());
+}
+
+export function revalidateAdminPage(pageId: string) {
+  revalidatePath(CMS_PATHS.pages.detail(pageId));
+}
+
+export function revalidateAdminCategories() {
+  revalidatePath(CMS_PATHS.categories.list());
+}
+
+export function revalidateAdminTags() {
+  revalidatePath(CMS_PATHS.tags.list());
+}

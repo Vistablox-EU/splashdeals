@@ -94,5 +94,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Sitemap Error: Could not fetch facilities', error);
   }
 
+  // 5. Blog Posts
+  try {
+    const blogPosts = await prisma.blogPost.findMany({
+      where: { status: 'PUBLISHED' },
+      select: { slug: true, updatedAt: true, publishedAt: true, coverImage: true, title: true, excerpt: true },
+      orderBy: { publishedAt: 'desc' },
+    });
+
+    // Blog index page
+    sitemapEntries.push({
+      url: `${baseUrl}/blog`,
+      lastModified: blogPosts[0]?.updatedAt || staticLastMod,
+      changeFrequency: 'daily',
+      priority: 0.8,
+    });
+
+    for (const post of blogPosts) {
+      sitemapEntries.push({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: post.updatedAt,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+        images: post.coverImage ? [post.coverImage] : undefined,
+      });
+    }
+  } catch (error) {
+    console.error('Sitemap Error: Could not fetch blog posts', error);
+  }
+
   return sitemapEntries;
 }

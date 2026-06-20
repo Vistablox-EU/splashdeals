@@ -39,6 +39,34 @@ export const adminNavData = {
       ],
     },
     {
+      title: "CMS",
+      url: "/admin/cms",
+      icon: "article",
+      items: [
+        {
+          title: "Blog objave",
+          url: "/admin/cms/posts",
+          icon: "newspaper",
+        },
+        {
+          title: "Strane",
+          url: "/admin/cms/pages",
+          icon: "file_text",
+        },
+        {
+          title: "Kategorije",
+          url: "/admin/cms/categories",
+          icon: "folder",
+        },
+        {
+          title: "Tagovi",
+          url: "/admin/cms/tags",
+          icon: "tags",
+          requiredRole: "SUPER_ADMIN",
+        },
+      ],
+    },
+    {
       title: "Bezbednost i operacije",
       url: "/admin/support",
       icon: "security",

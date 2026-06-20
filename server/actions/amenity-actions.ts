@@ -92,13 +92,16 @@ export async function updateFacilityAmenitiesAction(
     const userId = validation.userId
 
     if (lastUpdatedAt) {
-      const facility = await prisma.facility.findUnique({
-        where: { id: facilityId },
-        select: { updatedAt: true }
+      const latest = await prisma.facilityAmenity.findMany({
+        where: { facilityId },
+        select: { updatedAt: true },
+        orderBy: { updatedAt: "desc" },
+        take: 1,
       })
       
-      if (facility && facility.updatedAt.toISOString() !== lastUpdatedAt) {
-        throw new Error("CONFLICT: This facility was modified by another admin while you were editing.")
+      const lastAmenityUpdate = latest[0]?.updatedAt?.toISOString()
+      if (lastAmenityUpdate && lastAmenityUpdate !== lastUpdatedAt) {
+        throw new Error("CONFLICT: Amenities were modified by another admin while you were editing. Please refresh and try again.")
       }
     }
 
