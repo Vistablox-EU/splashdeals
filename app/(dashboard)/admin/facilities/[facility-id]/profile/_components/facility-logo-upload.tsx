@@ -14,18 +14,21 @@ interface FacilityLogoUploadProps {
   value?: string | null
   onChange: (value: string) => void
   facilityId: string
+  facilityName: string
 }
 
 /**
  * 🎨 FacilityLogoUpload Component
  * Direct-to-storage client-side optimized logo uploader.
- * Now supports Smart-Scaling & Drag-and-Drop.
+ * Supports static images (→ WebP) and animated GIFs (raw passthrough).
  */
-export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogoUploadProps) {
+export function FacilityLogoUpload({ value, onChange, facilityId, facilityName }: FacilityLogoUploadProps) {
   const [isUploading, setIsUploading] = React.useState(false)
   const [isDragging, setIsDragging] = React.useState(false)
   const [previewBg, setPreviewBg] = React.useState<"dark" | "light">("dark")
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+
+  const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
 
   const processFile = async (file: File) => {
     if (!file || !file.type.startsWith("image/")) {
@@ -36,15 +39,25 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
     setIsUploading(true)
 
     const uploadPromise = (async () => {
-      const optimizedBlob = await optimizeImageOnClient(file, { mode: "smart-crop", size: 512, quality: 0.9 })
-      const optimizedFile = new File(
-        [optimizedBlob],
-        `logo-main.webp`,
-        { type: "image/webp" }
-      )
+      const isGif = file.type === "image/gif"
 
-      const filename = `facilities/${facilityId}/logos/${optimizedFile.name}`
-      const blob = await upload(filename, optimizedFile, {
+      let uploadFile: File
+      let filename: string
+
+      if (isGif) {
+        // 🎞️ Animated GIF — upload raw, preserve animation
+        const slug = slugify(facilityName)
+        filename = `facilities/${facilityId}/logos/logo-${slug}.gif`
+        uploadFile = file
+      } else {
+        // 🖼️ Static image — optimize to WebP via canvas
+        const optimizedBlob = await optimizeImageOnClient(file, { mode: "smart-crop", size: 512, quality: 0.9 })
+        const slug = slugify(facilityName)
+        filename = `facilities/${facilityId}/logos/logo-${slug}.webp`
+        uploadFile = new File([optimizedBlob], filename, { type: "image/webp" })
+      }
+
+      const blob = await upload(filename, uploadFile, {
         access: "public",
         handleUploadUrl: "/api/upload",
         clientPayload: JSON.stringify({ facilityId, uploadType: "LOGO" }),
@@ -55,7 +68,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
       }
 
       const finalUrl = `${blob.url}?t=${Date.now()}`
-      
+
       // 🔥 INSTANT PERSISTENCE: Write directly to Database immediately
       const dbResult = await updateFacilityLogoAction(facilityId, finalUrl)
       if (!dbResult.success) {
@@ -68,7 +81,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
     })()
 
     toast.promise(uploadPromise, {
-      loading: "Repacking branding & shipping WebP payload...",
+      loading: isGif ? "Uploading animated logo…" : "Optimizing & shipping WebP payload…",
       success: "Logo successfully cached & deployed!",
       error: (err) => err.message || "Direct stream failure",
     })
@@ -117,6 +130,8 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
     toast.success("Asset purged from visual identity.")
   }
 
+  const isGif = value?.endsWith(".gif")
+
   return (
     <div 
       className="space-y-4 relative group/logo"
@@ -152,6 +167,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
             fill
             sizes="128px"
             className="object-contain p-3 drop-shadow-md transition-transform group-hover:scale-105 duration-300"
+            unoptimized={isGif}
           />
           {!isUploading && (
             <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
@@ -218,7 +234,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
              {isDragging ? "Release File" : "Upload Logo"}
           </span>
           {!isDragging && (
-            <span className="text-[7px] font-bold uppercase tracking-tighter text-muted-foreground mt-1 opacity-60">Square WebP</span>
+            <span className="text-[7px] font-bold uppercase tracking-tighter text-muted-foreground mt-1 opacity-60">PNG / JPG / WebP / GIF</span>
           )}
         </div>
       )}
@@ -227,7 +243,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
         type="file" 
         ref={fileInputRef} 
         onChange={onInputChange} 
-        accept="image/*" 
+        accept="image/jpeg,image/png,image/webp,image/gif" 
         className="hidden" 
       />
     </div>

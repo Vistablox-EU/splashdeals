@@ -15,13 +15,14 @@ import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/fa
 
 interface BrandingLogoCardProps {
   facilityId: string
+  facilityName: string
 }
 
 /** 
  * 🎨 BrandingLogoCard
  * Dedicated card for Logo upload and management.
  */
-export function BrandingLogoCard({ facilityId }: BrandingLogoCardProps) {
+export function BrandingLogoCard({ facilityId, facilityName }: BrandingLogoCardProps) {
   const { control } = useFormContext<UpdateFacilityGovernanceValues>()
 
   return (
@@ -46,6 +47,7 @@ export function BrandingLogoCard({ facilityId }: BrandingLogoCardProps) {
                   value={field.value} 
                   onChange={field.onChange} 
                   facilityId={facilityId} 
+                  facilityName={facilityName}
                 />
               </FormControl>
               <FormMessage />

@@ -373,7 +373,7 @@ export function FacilityProfileForm({
 
         {/* Branding Logo Sidebar Portal */}
         {logoPortalTarget && createPortal(
-          <BrandingLogoCard facilityId={facility.id} />,
+          <BrandingLogoCard facilityId={facility.id} facilityName={facility.name} />,
           logoPortalTarget
         )}
       </form>
