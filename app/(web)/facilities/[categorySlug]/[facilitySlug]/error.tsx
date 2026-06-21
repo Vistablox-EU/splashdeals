@@ -23,7 +23,7 @@ export default function FacilityError({
     console.error("Facility Showcase Error:", error)
     let mounted = true
     getClientDictionary().then((d) => {
-      if (mounted) setDict(d)
+      if (mounted) setTimeout(() => setDict(d), 0)
     })
     return () => { mounted = false }
   }, [error])

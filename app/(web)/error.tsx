@@ -25,7 +25,7 @@ export default function GlobalWebError({
     console.error("Global Web Error:", error)
     let mounted = true
     getClientDictionary().then((d) => {
-      if (mounted) setDict(d)
+      if (mounted) setTimeout(() => setDict(d), 0)
     })
     return () => { mounted = false }
   }, [error])
