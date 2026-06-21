@@ -780,12 +780,14 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                  <OperationalPortal hours={facility.hours} />
               </Suspense>
               
-              {/* Sidebar Weather Widget */}
+              {/* Sidebar Weather Widget — hidden on mobile (already in MobileUnifiedControlPill) */}
+              <div className="hidden md:block">
               {facility.lat && facility.lng && (
                  <Suspense fallback={<Skeleton className="h-[250px] rounded-[2.5rem] bg-white/5" />}>
                     <SidebarWeatherIsland lat={Number(facility.lat)} lng={Number(facility.lng)} />
                  </Suspense>
               )}
+              </div>
            </aside>
         </div>
 
