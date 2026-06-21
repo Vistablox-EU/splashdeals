@@ -60,7 +60,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
             value={contact.publicPhone}
             onChange={(e) => setContact(prev => ({ ...prev, publicPhone: e.target.value }))}
             onBlur={() => handleBlur("publicPhone")}
-            className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-cyan-500/50"
+            className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-ring"
             placeholder="+381..."
           />
         </div>
@@ -74,7 +74,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
             value={contact.publicEmail}
             onChange={(e) => setContact(prev => ({ ...prev, publicEmail: e.target.value }))}
             onBlur={() => handleBlur("publicEmail")}
-            className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-cyan-500/50"
+            className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-ring"
             placeholder="info@park.rs"
           />
         </div>

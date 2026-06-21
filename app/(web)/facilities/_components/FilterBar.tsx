@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 
 interface FilterBarProps {
   cities: { id: string; name: string; slug: string }[];
@@ -35,13 +35,12 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "");
 
-  // Adjust state during render when URL changes (Prevents cascading effect renders)
-  const [prevParams, setPrevParams] = useState(searchParams.toString());
-  if (searchParams.toString() !== prevParams) {
-    setPrevParams(searchParams.toString());
+  // Sync local state when searchParams change (avoids render-phase setState)
+
+  useEffect(() => {
     setMinPrice(searchParams.get("minPrice") || "");
     setMaxPrice(searchParams.get("maxPrice") || "");
-  }
+  }, [searchParams]);
 
   const updateParams = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -118,7 +117,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-muted/50 border-border text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-muted-foreground/60"
           />
         </div>
-        <span className="text-slate-700 font-bold">-</span>
+        <span className="text-foreground font-bold">-</span>
         <div className="relative group flex-1 sm:flex-none">
           <Label htmlFor="max-price" className="sr-only">{dict.filters.max_price}</Label>
           <Icon name="payments" className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-muted-foreground group-focus-within:text-primary transition-colors" />
@@ -176,7 +175,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
 
       {isPending && (
         <div className="absolute inset-0 bg-background/20 backdrop-blur-[1px] flex items-center justify-center rounded-2xl" aria-live="polite">
-          <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>

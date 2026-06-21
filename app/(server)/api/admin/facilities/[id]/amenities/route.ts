@@ -48,12 +48,26 @@ export async function PUT(
 
       // Upsert checked amenities
       for (const amenity of targetAmenities) {
+        let finalAmenityId = amenity.amenityId;
+
+        if (amenity.isNew && amenity.name) {
+          const newAmenity = await tx.amenity.create({
+            data: {
+              name: amenity.name,
+              icon: amenity.icon || "Sparkles",
+              category: amenity.category || "General",
+              type: amenity.type || "BOOLEAN",
+            },
+          });
+          finalAmenityId = newAmenity.id;
+        }
+
         await tx.facilityAmenity.upsert({
           where: {
             facilityId_amenityId: {
               facilityId,
-              amenityId: amenity.amenityId
-            }
+              amenityId: finalAmenityId,
+            },
           },
           update: {
             value: amenity.value,
@@ -64,13 +78,13 @@ export async function PUT(
           },
           create: {
             facilityId,
-            amenityId: amenity.amenityId,
+            amenityId: finalAmenityId,
             value: amenity.value,
             isFeatured: amenity.isFeatured,
             displayOrder: amenity.displayOrder,
             imageUrl: amenity.imageUrl,
             isActive: true,
-          }
+          },
         })
       }
     })

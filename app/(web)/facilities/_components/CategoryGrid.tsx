@@ -41,7 +41,7 @@ export async function CategoryGrid({ facilitiesLabel }: CategoryGridProps) {
           key={cat.category}
           className="transition-all duration-300"
         >
-          <Link href={`/facilities/${cat.category.toLowerCase()}`}>
+          <Link href={`/facilities/${cat.category.toLowerCase()}`} aria-label={`${getCategoryLabel(cat.category)} - ${cat._count.id} ${facilitiesLabel}`}>
             <Card className="p-6 text-center hover:bg-primary/10 transition-colors border-border group relative overflow-hidden">
               <div className="absolute top-0 right-0 p-2 opacity-5">
                  <Icon name="filter_list" className="text-[48px]" />

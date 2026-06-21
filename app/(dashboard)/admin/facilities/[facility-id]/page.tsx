@@ -4,7 +4,7 @@ import { prisma } from "@/server/lib/prisma"
 import { connection } from "next/server"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { Metadata } from "next"
+import type { Metadata } from "next"
 
 interface OverviewPageProps {
   params: Promise<{

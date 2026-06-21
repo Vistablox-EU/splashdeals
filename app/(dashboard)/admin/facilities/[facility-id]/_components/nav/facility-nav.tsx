@@ -80,7 +80,7 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider truncate max-w-[160px] sm:max-w-[240px]">
             {facility.name}
           </span>
-          <div className="size-1.5 rounded-full bg-emerald-500 shrink-0" aria-label="Facility online" />
+          <div className="size-1.5 rounded-full bg-emerald-500 shrink-0" role="status" aria-label="Facility online" />
         </div>
 
         <Separator orientation="vertical" className="h-5 mr-2 hidden md:block" />

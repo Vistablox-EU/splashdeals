@@ -77,7 +77,7 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
               aria-pressed={isActive}
               disabled={isPending}
               className={cn(
-                "w-full text-left rounded-xl transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950",
+                "w-full text-left rounded-xl transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background",
                 isPending && "opacity-80 cursor-wait"
               )}
             >

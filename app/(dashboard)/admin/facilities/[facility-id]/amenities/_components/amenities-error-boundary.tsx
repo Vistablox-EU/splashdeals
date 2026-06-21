@@ -17,10 +17,10 @@ export function AmenitiesError({ error, resetErrorBoundary }: AmenitiesErrorProp
   }, [error])
 
   return (
-    <Card className="rounded-2xl border border-rose-500/20 bg-background/60 backdrop-blur-xl p-6 shadow-2xl relative overflow-hidden flex flex-col items-center justify-center text-center space-y-4 py-12">
+    <Card className="rounded-2xl border border-destructive/20 bg-background/60 backdrop-blur-xl p-6 shadow-2xl relative overflow-hidden flex flex-col items-center justify-center text-center space-y-4 py-12">
       <div className="relative">
-        <div className="absolute inset-0 bg-rose-500/10 blur-xl rounded-full scale-150 animate-pulse" />
-        <div className="relative size-12 rounded-full border border-rose-500/30 bg-rose-500/10 flex items-center justify-center text-rose-400">
+        <div className="absolute inset-0 bg-destructive/10 blur-xl rounded-full scale-150 animate-pulse" />
+        <div className="relative size-12 rounded-full border border-destructive/30 bg-destructive/10 flex items-center justify-center text-destructive">
           <Icon name="gpp_maybe" className="size-6 animate-in zoom-in" />
         </div>
       </div>

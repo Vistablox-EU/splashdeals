@@ -8,6 +8,7 @@ import { processImageToWebP } from "@/server/lib/media"
 import { validateAction } from "@/server/lib/actions/validator"
 import { validateFacilityAccess, requireSuperAdmin } from "@/server/lib/auth-guards"
 import { handleServerActionError } from "@/server/lib/server-action-error"
+import { updateFacilityAmenitiesSchema } from "@/server/lib/validations/facility"
 
 // ── Dead Code (removed) ──────────────────────────────────────
 // copyAmenitiesFromFacilityAction, getFacilityAmenitiesAction,
@@ -21,25 +22,6 @@ import { handleServerActionError } from "@/server/lib/server-action-error"
 const deleteGlobalAmenitySchema = z.object({
   amenityId: z.string(),
   facilityId: z.string(),
-})
-
-const updateFacilityAmenitiesSchema = z.object({
-  facilityId: z.string(),
-  data: z.array(z.object({
-    amenityId: z.string(),
-    checked: z.boolean(),
-    value: z.string().nullable().optional(),
-    displayOrder: z.number().optional(),
-    name: z.string().optional(),
-    category: z.string().nullable().optional(),
-    icon: z.string().optional(),
-    type: z.enum(["QUANTIFIABLE", "BOOLEAN", "TEXT"]).optional(),
-    isNew: z.boolean().optional(),
-    imageUrl: z.string().nullable().optional(),
-    scheduledAt: z.string().nullable().optional(),
-    isFeatured: z.boolean().optional(),
-  })),
-  lastUpdatedAt: z.string().nullable().optional(),
 })
 
 const uploadAmenityImageSchema = z.object({
@@ -81,24 +63,27 @@ export async function deleteGlobalAmenityAction(amenityId: string, facilityId: s
  */
 export async function updateFacilityAmenitiesAction(
   facilityId: string, 
-  data: z.infer<typeof updateFacilityAmenitiesSchema>["data"],
+  data: z.infer<typeof updateFacilityAmenitiesSchema>["amenities"],
   lastUpdatedAt?: string | null
 ) {
   try {
-    const validation = await validateAction(updateFacilityAmenitiesSchema, { facilityId, data, lastUpdatedAt })
+    const validation = await validateAction(updateFacilityAmenitiesSchema, { facilityId, amenities: data, lastUpdatedAt })
     if (!validation.success) throw new Error(validation.error)
     
     await validateFacilityAccess(facilityId)
     const userId = validation.userId
 
     if (lastUpdatedAt) {
-      const facility = await prisma.facility.findUnique({
-        where: { id: facilityId },
-        select: { updatedAt: true }
+      const latest = await prisma.facilityAmenity.findMany({
+        where: { facilityId },
+        select: { updatedAt: true },
+        orderBy: { updatedAt: "desc" },
+        take: 1,
       })
       
-      if (facility && facility.updatedAt.toISOString() !== lastUpdatedAt) {
-        throw new Error("CONFLICT: This facility was modified by another admin while you were editing.")
+      const lastAmenityUpdate = latest[0]?.updatedAt?.toISOString()
+      if (lastAmenityUpdate && lastAmenityUpdate !== lastUpdatedAt) {
+        throw new Error("CONFLICT: Amenities were modified by another admin while you were editing. Please refresh and try again.")
       }
     }
 
@@ -107,7 +92,7 @@ export async function updateFacilityAmenitiesAction(
     })
 
     await prisma.$transaction(async (tx) => {
-      for (const item of validation.data.data) {
+      for (const item of validation.data.amenities) {
         const existing = currentAmenities.find(a => a.amenityId === item.amenityId)
         let finalAmenityId = item.amenityId;
 

@@ -65,7 +65,7 @@ export default function FacilityError({
              {dict.errors.try_again}
            </button>
            <Link 
-             href={``}
+             href="/"
              className="px-8 py-4 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-2xl shadow-primary/20 transition-all"
            >
              <Icon name="home" className="text-[16px]" />

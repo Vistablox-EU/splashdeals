@@ -66,7 +66,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
              value={links.instagram}
              onChange={(e) => setLinks(prev => ({ ...prev, instagram: e.target.value }))}
              onBlur={() => handleBlur('instagram')}
-             className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-cyan-500/50" 
+             className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-ring" 
              placeholder="https://instagram.com/..." 
            />
          </div>
@@ -80,7 +80,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
              value={links.facebook}
              onChange={(e) => setLinks(prev => ({ ...prev, facebook: e.target.value }))}
              onBlur={() => handleBlur('facebook')}
-             className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-cyan-500/50" 
+             className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-ring" 
              placeholder="https://facebook.com/..." 
            />
          </div>
@@ -94,7 +94,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
              value={links.website}
              onChange={(e) => setLinks(prev => ({ ...prev, website: e.target.value }))}
              onBlur={() => handleBlur('website')}
-             className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-cyan-500/50" 
+             className="h-9 bg-background/40 border-border/50 text-xs focus-visible:ring-ring" 
              placeholder="https://..." 
            />
          </div>

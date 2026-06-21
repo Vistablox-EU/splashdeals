@@ -38,7 +38,7 @@ export async function LocationGrid({ facilitiesLabel }: LocationGridProps) {
           key={city.id}
           className="transition-all duration-300"
         >
-          <Link href={`/search?q=${encodeURIComponent(city.name)}`}>
+          <Link href={`/search?q=${encodeURIComponent(city.name)}`} aria-label={`${city.name} - ${city._count.facilities} ${facilitiesLabel}`}>
             <Card className="p-6 text-center hover:bg-primary/10 transition-colors border-border group relative overflow-hidden">
               <div className="absolute top-0 right-0 p-2 opacity-5">
                  <Icon name="location_on" className="text-[48px]" />

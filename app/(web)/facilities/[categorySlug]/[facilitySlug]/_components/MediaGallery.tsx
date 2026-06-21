@@ -97,7 +97,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
         {/* 🎭 LIGHTBOX */}
         {selectedIdx !== null && (
           <div
-            className="fixed inset-0 z-[2000] flex items-center justify-center bg-navy-deep/95 backdrop-blur-2xl p-4 md:p-20 animate-fade-in"
+            className="fixed inset-0 z-[2000] flex items-center justify-center bg-background/95 backdrop-blur-2xl p-4 md:p-20 animate-fade-in"
             onClick={() => setSelectedIdx(null)}
           >
             <button
@@ -128,7 +128,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                   />
                 )}
                 {galleryMedia[selectedIdx].caption && (
-                  <div className="absolute bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+                  <div className="absolute bottom-0 inset-x-0 p-8 bg-gradient-to-t from-background/80 to-transparent">
                     <p className="text-white font-black text-2xl uppercase italic tracking-tighter">
                       {galleryMedia[selectedIdx].caption}
                     </p>
@@ -157,7 +157,7 @@ export function HeroThumbnails({ media }: { media: FacilityMedia[] }) {
           onClick={() => setActiveIdx(idx)}
           className={cn(
             "relative h-20 w-32 rounded-xl overflow-hidden flex-shrink-0 transition-all duration-300",
-            activeIdx === idx ? "ring-2 ring-cyan-500 scale-105" : "opacity-60 grayscale hover:grayscale-0"
+            activeIdx === idx ? "ring-2 ring-primary scale-105" : "opacity-60 grayscale hover:grayscale-0"
           )}
         >
           {m.type === 'VIDEO' ? (

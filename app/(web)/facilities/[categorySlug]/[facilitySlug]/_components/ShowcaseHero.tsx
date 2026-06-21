@@ -48,8 +48,8 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   const renderMedia = () => {
     if (!heroMedia) {
       return (
-         <div className="w-full h-full bg-gradient-to-br from-navy-deep to-[#0f172a] flex items-center justify-center">
-           <Icon name="waves" className="w-48 h-48 text-cyan-900 animate-pulse" />
+         <div className="w-full h-full bg-gradient-to-br from-background to-background flex items-center justify-center">
+           <Icon name="waves" className="w-48 h-48 text-foreground animate-pulse" />
          </div>
       );
     }
@@ -105,8 +105,8 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
     const fallbackSrc = heroMedia.thumbnailUrl || null;
     if (!fallbackSrc) {
       return (
-        <div className="w-full h-full bg-gradient-to-br from-navy-deep to-[#0f172a] flex items-center justify-center">
-          <Icon name="waves" className="w-48 h-48 text-cyan-900 animate-pulse" />
+        <div className="w-full h-full bg-gradient-to-br from-background to-background flex items-center justify-center">
+          <Icon name="waves" className="w-48 h-48 text-foreground animate-pulse" />
         </div>
       );
     }
@@ -127,10 +127,10 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
 
   return (
     <div
-      className="absolute inset-0 z-0 bg-navy-deep"
+      className="absolute inset-0 z-0 bg-background"
     >
       {renderMedia()}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent shadow-[inset_0_-100px_100px_rgba(2,6,23,0.8)]" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent shadow-[inset_0_-100px_100px_rgba(2,6,23,0.8)]" />
       <div className="absolute inset-x-0 bottom-0 h-[20%] splash-gradient opacity-20 blur-3xl pointer-events-none" />
     </div>
   )
@@ -165,7 +165,7 @@ export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
          {Math.round(weather.temperature)}°C
       </span>
       <div className="hidden md:block h-4 w-px bg-white/10" />
-      <span className="hidden md:inline text-xs uppercase font-bold text-slate-400 tracking-widest">
+      <span className="hidden md:inline text-xs uppercase font-bold text-muted-foreground tracking-widest">
          Idealno za kupanje
       </span>
     </div>

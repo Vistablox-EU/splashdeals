@@ -716,6 +716,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                    </Suspense>
                 </div>
                 <div className="hidden md:block">
+                   <Suspense fallback={<div className="h-10 w-36 rounded-2xl bg-muted border border-border" />}>
                    {facility.lat && facility.lng && (
                       <DistanceCalculator 
                          destLat={Number(facility.lat)} 
@@ -723,6 +724,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                          facilityName={facility.name} 
                       />
                    )}
+                   </Suspense>
                 </div>
                 <div className="block md:hidden w-full pt-2">
                    <MobileUnifiedControlPill 

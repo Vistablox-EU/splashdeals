@@ -203,15 +203,15 @@ export function DataTable<TData, TValue>({
         </div>
 
         {selectedIds.length > 0 && (
-          <div className="flex items-center gap-2 p-1 px-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] mr-2">
+          <div className="flex items-center gap-2 p-1 px-3 bg-primary/10 border border-primary/20 rounded-lg">
+            <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mr-2">
               {selectedIds.length} Selected
             </span>
-            <div className="h-4 w-px bg-emerald-500/20 mx-1" />
+            <div className="h-4 w-px bg-primary/20 mx-1" />
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 text-[10px] font-bold uppercase tracking-tight hover:bg-emerald-500/20 hover:text-emerald-400"
+              className="h-7 text-[10px] font-bold uppercase tracking-tight hover:bg-primary/20 hover:text-primary"
               onClick={() => handleBulkStatusUpdate("ACTIVE")}
               disabled={isPending}
             >
@@ -221,7 +221,7 @@ export function DataTable<TData, TValue>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 text-[10px] font-bold uppercase tracking-tight hover:bg-amber-500/20 hover:text-amber-400"
+              className="h-7 text-[10px] font-bold uppercase tracking-tight hover:bg-destructive/20 hover:text-destructive"
               onClick={() => handleBulkStatusUpdate("CLOSED")}
               disabled={isPending}
             >

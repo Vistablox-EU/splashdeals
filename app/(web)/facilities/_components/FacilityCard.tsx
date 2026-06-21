@@ -35,9 +35,9 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
   const backgroundPhoto = explicitBG || aerialPhoto || facility.media?.find((m) => m.type === "PHOTO" || !m.url.endsWith(".mp4")) || facility.media?.[0];
 
   return (
-    <Link href={`/facilities/${facility.category.toLowerCase()}/${facility.slug}`} className="block">
+    <Link href={`/facilities/${facility.category.toLowerCase().replace(/_/g, '-')}/${facility.slug}`} className="block">
       <Card 
-        className="h-[400px] group overflow-hidden border-border hover:border-cyan-400/30 transition-all duration-500 relative flex flex-col justify-end"
+        className="h-[400px] group overflow-hidden border-border hover:border-primary/30 transition-all duration-500 relative flex flex-col justify-end"
       >
         {facility.logoUrl && (
           <div className="absolute top-6 right-6 z-20 h-14 w-14 rounded-2xl overflow-hidden border border-border bg-background/60 p-2 backdrop-blur-md flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500">
@@ -65,13 +65,13 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
             />
           ) : (
             <div className="w-full h-full bg-muted flex items-center justify-center">
-              <Icon name="auto_awesome" className="text-[48px] text-slate-800" />
+              <Icon name="auto_awesome" className="text-[48px] text-foreground" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
 
-        <div className="relative z-10 p-6 flex flex-col gap-1 w-full bg-gradient-to-t from-slate-950/80 via-slate-950/40 to-transparent">
+        <div className="relative z-10 p-6 flex flex-col gap-1 w-full bg-gradient-to-t from-background/80 via-background/40 to-transparent">
           <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
             <Icon name="navigation" className="text-[12px] text-primary rotate-45" />
             {dict?.categories?.[facility.category.toLowerCase()] || facility.category}
@@ -95,7 +95,7 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
                 <div />
               )}
               
-              <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-primary bg-cyan-400/10 border border-cyan-400/20 px-4 py-2.5 rounded-xl transition-all duration-300 group-hover:bg-cyan-400 group-hover:text-slate-950 group-hover:border-cyan-400 group-hover:translate-x-1 shadow-lg shadow-cyan-950/10">
+              <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-primary bg-primary/10 border border-primary/20 px-4 py-2.5 rounded-xl transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:translate-x-1 shadow-lg shadow-primary/10">
                 <span>Detaljnije</span>
                 <Icon name="navigation" className="text-[10px] rotate-90 transition-transform duration-300 group-hover:translate-x-0.5" />
               </div>

@@ -5,7 +5,7 @@ import { connection } from "next/server"
 
 import { FacilityNav, FacilityNavSkeleton } from "./_components/nav"
 import { FacilityActionSidebar, FacilityActionSidebarSkeleton } from "./_components/sidebar"
-import { Metadata } from "next"
+import type { Metadata } from "next"
 import { FacilityLayoutContextHandler } from "./_components/facility-layout-context-handler"
 import { FacilityProvider } from "./_components/facility-context"
 
@@ -73,8 +73,8 @@ export default async function FacilityManagementLayout({
       />
       
       {/* Immersive Ambient Glow */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full -mr-64 -mt-64 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full -ml-48 -mb-48 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -mr-64 -mt-64 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/5 blur-[100px] rounded-full -ml-48 -mb-48 pointer-events-none" />
 
       {/* 🧭 Unified Master Command Bar */}
       <Suspense fallback={<FacilityNavSkeleton />}>
@@ -99,7 +99,7 @@ export default async function FacilityManagementLayout({
 
           <aside className="xl:col-span-3 sticky top-8 hidden xl:block">
             <Suspense fallback={<FacilityActionSidebarSkeleton />}>
-              <FacilityActionSidebar facility={facility} />
+              <FacilityActionSidebar facility={facility as any} />
             </Suspense>
           </aside>
         </div>

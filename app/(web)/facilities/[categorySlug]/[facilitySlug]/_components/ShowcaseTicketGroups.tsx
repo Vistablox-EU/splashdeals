@@ -140,7 +140,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
   if (groups.length === 0) {
     return (
       <div className="w-full py-24 text-center space-y-4">
-        <Icon name="shopping_bag" className="text-[48px] text-slate-800 mx-auto" />
+        <Icon name="shopping_bag" className="text-[48px] text-foreground mx-auto" />
         <p className="text-muted-foreground italic">Trenutno nema dostupnih ponuda.</p>
       </div>
     );
@@ -153,7 +153,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
       {/* Scrollable glass pill tabs container */}
       <div className="relative w-full mb-8">
         {/* Right fade gradient overlay for mobile scroll indications */}
-        <div className="absolute right-[-24px] top-0 bottom-0 w-16 bg-gradient-to-l from-slate-950 via-slate-950/60 to-transparent pointer-events-none z-10 md:hidden" />
+        <div className="absolute right-[-24px] top-0 bottom-0 w-16 bg-gradient-to-l from-background via-background/60 to-transparent pointer-events-none z-10 md:hidden" />
         <div className="overflow-x-auto no-scrollbar scroll-smooth flex gap-2 pb-2 pt-1 px-6 -mx-6 md:mx-0 md:px-1 md:py-1 bg-transparent md:bg-muted/50 md:backdrop-blur-md rounded-none md:rounded-full border-none md:border md:border-border">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
@@ -164,13 +164,13 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                 className={cn(
                   "relative px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-300 shrink-0 select-none",
                   isActive 
-                    ? "text-slate-950" 
+                    ? "text-primary-foreground" 
                     : "text-muted-foreground hover:text-foreground bg-muted/50 md:bg-transparent border border-border md:border-none"
                 )}
               >
                 {isActive && (
                   <div
-                    className="absolute inset-0 bg-cyan-400 rounded-full"
+                    className="absolute inset-0 bg-primary rounded-full"
                   />
                 )}
                 <span className="relative z-10">{group.titleSr || group.title}</span>
@@ -265,7 +265,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
       {/* Dynamic Sticky Checkout Drawer on Mobile */}
       {totalItems > 0 && (
         <div className="fixed bottom-4 left-4 right-4 z-50 md:hidden animate-in slide-in-from-bottom duration-300">
-          <div className="backdrop-blur-xl bg-slate-950/80 border border-border rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
+          <div className="backdrop-blur-xl bg-background/80 border border-border rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Izabrano</span>
               <div className="flex items-baseline gap-2">
@@ -276,7 +276,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
             
             <Link 
               href="/cart"
-              className="px-6 h-12 bg-cyan-400 hover:bg-cyan-300 active:scale-95 transition-all text-slate-950 font-black text-xs uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)] shrink-0"
+              className="px-6 h-12 bg-primary hover:bg-primary/90 active:scale-95 transition-all text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)] shrink-0"
             >
               <span>Kupi Odmah</span>
               <Icon name="bolt" className="text-[16px] fill-current animate-pulse" />
@@ -675,7 +675,7 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
               <td className="py-4 text-right pr-6 rounded-r-3xl">
                 <button 
                   onClick={() => onAdd(tier)}
-                  className="bg-primary text-navy-deep p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg shadow-cyan-500/20"
+                  className="bg-primary text-primary-foreground p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg shadow-primary/20"
                 >
                   <Icon name="shopping_bag" className="text-[16px]" />
                 </button>
@@ -708,12 +708,12 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
       className={cn(
         "relative p-6 rounded-3xl transition-all duration-300 flex flex-col gap-5 border text-left",
         isHighlighted 
-          ? "bg-gradient-to-br from-cyan-950/20 to-slate-900/40 border-cyan-500/40 shadow-[0_0_25px_rgba(6,182,212,0.12)]" 
+          ? "bg-gradient-to-br from-primary/20 to-background/40 border-primary/40 shadow-[0_0_25px_rgba(6,182,212,0.12)]" 
           : "bg-muted/20 border-border hover:bg-muted/50"
       )}
     >
       {isHighlighted && (
-        <span className="absolute -top-3 right-6 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+        <span className="absolute -top-3 right-6 bg-gradient-to-r from-primary to-blue-500 text-primary-foreground font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.4)]">
           Najpopularnije
         </span>
       )}

@@ -65,7 +65,7 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
             Manage active features and amenities for {facility.name}
           </p>
         </div>
-        <div className="px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+        <div className="px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20">
            <span className="text-[10px] font-black text-primary uppercase tracking-widest">Live Editor</span>
         </div>
       </div>

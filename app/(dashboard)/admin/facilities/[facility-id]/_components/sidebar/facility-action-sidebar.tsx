@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 interface FacilityActionSidebarProps {
   facility: {
     id: string
-    socialLinks?: unknown
+    socialLinks?: Record<string, string | undefined>
     publicPhone?: string | null
     publicEmail?: string | null
   }

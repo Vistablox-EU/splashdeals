@@ -156,6 +156,9 @@ export function CompactAmenitiesTable({
           value: updatedItem.value,
           isFeatured: updatedItem.isFeatured,
           displayOrder: updatedItem.displayOrder,
+          name: updatedItem.name,
+          icon: updatedItem.icon,
+          type: updatedItem.type,
         }]
         
         const result = await updateFacilityAmenitiesAction(facilityId, payload)
@@ -371,6 +374,7 @@ export function CompactAmenitiesTable({
                       checked={item.checked}
                       onCheckedChange={(val) => handleToggleActive(item.id, val)}
                       className="data-[state=checked]:bg-primary cursor-pointer"
+                      aria-label="Toggle amenity active"
                     />
                   </TableCell>
                   
@@ -410,7 +414,7 @@ export function CompactAmenitiesTable({
                         aria-label={`${item.name} value`}
                       />
                     ) : item.checked ? (
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-primary">
                         <Icon name="check" className="text-[14px]" />
                         <span>Enabled</span>
                       </div>
@@ -434,7 +438,7 @@ export function CompactAmenitiesTable({
                           >
                             <Icon name="star" className={`text-[16px] transition-all duration-200 ${
                                 item.isFeatured 
-                                  ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)] scale-110" 
+                                  ? "text-primary fill-primary drop-shadow-[0_0_8px_rgba(245,158,11,0.5)] scale-110" 
                                   : "text-muted-foreground/60 hover:text-muted-foreground"
                               }`} />
                           </Button>
@@ -458,7 +462,7 @@ export function CompactAmenitiesTable({
                             size="icon"
                             type="button"
                             onClick={() => handleDeleteCustom(item.id, item.name)}
-                            className="text-muted-foreground/80 hover:text-rose-500 transition-colors p-1.5 rounded-lg hover:bg-rose-500/10 cursor-pointer animate-in fade-in zoom-in-95 duration-100"
+                            className="text-muted-foreground/80 hover:text-destructive transition-colors p-1.5 rounded-lg hover:bg-destructive/10 cursor-pointer animate-in fade-in zoom-in-95 duration-100"
                             aria-label="Delete custom amenity permanently"
                           >
                             <Icon name="delete" className="text-[14px]" />
@@ -471,14 +475,16 @@ export function CompactAmenitiesTable({
                     ) : (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button
+                          <Button
                             type="button"
                             tabIndex={-1}
-                            className="cursor-help inline-block"
+                            variant="ghost"
+                            size="icon"
+                            className="cursor-help"
                             aria-label="Core infrastructure, cannot delete"
                           >
                             <Icon name="help" className="text-[14px] text-muted-foreground/40 ml-auto mr-2" />
-                          </button>
+                          </Button>
                         </TooltipTrigger>
                         <TooltipContent className="bg-background border border-border text-foreground/90 text-[10px] font-medium tracking-wide">
                           Core Infrastructure (Cannot Delete)

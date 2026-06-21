@@ -76,7 +76,7 @@ export function MobileUnifiedControlPill({
       /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
     
     const url = isApple
-      ? `maps://maps.google.com/maps?daddr=${destLat},${destLng}&amp;ll=`
+      ? `maps://maps.google.com/maps?daddr=${destLat},${destLng}`
       : `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
 
     window.open(url, "_blank");
