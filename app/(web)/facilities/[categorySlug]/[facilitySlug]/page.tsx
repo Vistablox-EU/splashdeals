@@ -709,9 +709,9 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-12 md:mt-20 relative z-20 space-y-32 pb-48">
-        <div id="deals" className="space-y-12 scroll-mt-32">
-           <div className="flex flex-col items-center text-center space-y-4 mb-16">
+      <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-12 md:mt-20 relative z-20 space-y-16 sm:space-y-32 pb-24 sm:pb-48">
+        <div id="deals" className="space-y-8 sm:space-y-12 scroll-mt-32">
+           <div className="flex flex-col items-center text-center space-y-4 mb-8 sm:mb-16">
               <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase text-white leading-none">
                  Aktuelne <span className="text-splash">Ponude.</span>
               </h2>

@@ -62,7 +62,7 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
   ];
 
   return (
-    <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
+    <div className="min-h-screen pb-16 sm:pb-32 pt-24 sm:pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
       <JsonLd 
         id="how-it-works-schema"
         data={{
@@ -136,7 +136,7 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
         }} 
       />
       {/* 🏙️ HEADER */}
-      <header className="mb-20 text-center sm:text-left">
+      <header className="mb-12 sm:mb-20 text-center sm:text-left">
         <div 
           className="space-y-6"
         >

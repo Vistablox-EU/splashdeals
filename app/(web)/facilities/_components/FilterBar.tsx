@@ -57,10 +57,10 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
 
   return (
     <div
-      className="flex flex-wrap items-center gap-4 p-4 rounded-2xl bg-muted/50 border border-border backdrop-blur-md mb-8 relative"
+      className="flex flex-wrap items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-muted/50 border border-border backdrop-blur-md mb-6 sm:mb-8 relative"
       aria-busy={isPending}
     >
-      <div className="flex items-center gap-2 mr-2">
+      <div className="flex items-center gap-2 mr-1 sm:mr-2">
         <Icon name="tune" className="text-[16px] text-primary" />
         <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
           {dict.filters.filters_label || "Filteri"}

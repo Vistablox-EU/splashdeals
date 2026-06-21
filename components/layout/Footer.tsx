@@ -24,7 +24,7 @@ export function Footer() {
   }, [])
 
   return (
-    <footer className="relative mt-auto pt-24 pb-12 overflow-hidden bg-background border-t border-border">
+    <footer className="relative mt-auto pt-12 sm:pt-24 pb-8 sm:pb-12 overflow-hidden bg-background border-t border-border">
       {/* Background Ambience */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />

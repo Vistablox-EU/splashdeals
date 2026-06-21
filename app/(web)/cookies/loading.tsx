@@ -3,9 +3,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
 export default function CookiesLoading() {
   return (
-    <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
+    <div className="min-h-screen pb-16 sm:pb-32 pt-24 sm:pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
       {/* 🏙️ HEADER SKELETON */}
-      <header className="mb-20 space-y-6">
+      <header className="mb-12 sm:mb-20 space-y-6">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-muted border border-border text-muted-foreground/40">
             <Icon name="info" className="text-[20px]" />

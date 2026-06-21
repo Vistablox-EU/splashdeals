@@ -13,6 +13,7 @@ const Footer = dynamic(
 );
 
 import { WebVitals } from "./_components/WebVitals";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 export default async function WebLayout({
   children,
@@ -52,7 +53,7 @@ async function WebLayoutContent({
       {/* 🧭 Breadcrumb bar — always visible just below the top nav header */}
       <BreadcrumbBar />
 
-      <main className="flex-grow pt-[6.5rem]">
+      <main className="flex-grow pt-[6.5rem] pb-16 sm:pb-0">
         <React.Suspense
           fallback={
             <div className="flex-1 flex items-center justify-center p-20 animate-pulse bg-muted" />
@@ -66,6 +67,7 @@ async function WebLayoutContent({
 
       <Footer />
       <CartLoader />
+      <BottomNav />
     </div>
   );
 }

@@ -106,7 +106,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
             className="h-full transition-all duration-700"
           >
             <Card className="h-full flex flex-col group border-border hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
-              <div className="relative h-52 w-full overflow-hidden rounded-t-[1.5rem]">
+              <div className="relative h-40 sm:h-52 w-full overflow-hidden rounded-t-[1.5rem]">
                 <Link 
                   href={ticketUrl} 
                   className="absolute inset-0 z-20"
@@ -143,7 +143,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                 </div>
               </div>
 
-              <div className="p-6 flex flex-col flex-grow relative">
+              <div className="p-4 sm:p-6 flex flex-col flex-grow relative">
                 <Link 
                   href={ticketUrl} 
                   className="absolute inset-0 z-10 box-border"
@@ -160,7 +160,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                 <div className="mt-auto pt-6 flex justify-between items-end border-t border-border group-hover:border-border transition-colors relative z-20">
                   <div className="flex flex-col">
                     <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-0.5">{ticket.currency}</span>
-                    <data value={ticket.price} className="text-3xl font-black text-white italic tracking-tighter">
+                    <data value={ticket.price} className="text-2xl sm:text-3xl font-black text-white italic tracking-tighter">
                       {ticket.price}
                     </data>
                   </div>

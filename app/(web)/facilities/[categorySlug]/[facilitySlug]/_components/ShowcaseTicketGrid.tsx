@@ -166,7 +166,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
 
             <div 
               ref={scrollContainerRef}
-              className="flex flex-row gap-8 overflow-x-auto pb-12 pt-4 px-4 -mx-4 no-scrollbar snap-x snap-mandatory scroll-smooth w-full cursor-grab active:cursor-grabbing select-none"
+              className="flex flex-row gap-4 sm:gap-8 overflow-x-auto pb-8 sm:pb-12 pt-4 px-4 -mx-4 no-scrollbar snap-x snap-mandatory scroll-smooth w-full cursor-grab active:cursor-grabbing select-none"
             >
               {filteredTickets.map((t) => (
                 <div
@@ -174,7 +174,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                   className="group flex-shrink-0 w-[340px] md:w-[420px] snap-start"
                 >
                   <Card className={cn(
-                    "h-full p-8 border-border relative overflow-hidden flex flex-col justify-between transition-all duration-500",
+                    "h-full p-6 sm:p-8 border-border relative overflow-hidden flex flex-col justify-between transition-all duration-500",
                     t.isFeatured ? "border-primary/30 bg-primary/5 shadow-[0_0_40px_rgba(6,182,212,0.1)]" : "hover:bg-muted/50",
                     "hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] group-hover:scale-[1.03]"
                   )}>

@@ -88,7 +88,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
 
   if (items.length === 0) {
     return (
-      <div className="container max-w-4xl mx-auto py-32 px-6">
+      <div className="container max-w-4xl mx-auto py-16 sm:py-32 px-6">
         <div className="flex flex-col items-center justify-center space-y-8 text-center">
           <div className="p-8 rounded-full bg-muted/50 border border-border relative">
              <div className="absolute inset-0 bg-primary rounded-full blur-3xl opacity-10 animate-pulse" />
@@ -113,8 +113,8 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto py-24 px-6">
-      <div className="flex flex-col lg:flex-row gap-12">
+    <div className="container max-w-6xl mx-auto py-12 sm:py-24 px-6">
+      <div className="flex flex-col lg:flex-row gap-6 sm:gap-12">
         
         {/* 🛒 ITEM LIST */}
         <div className="flex-grow space-y-8">
@@ -131,8 +131,8 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                  <div
                    key={item.id}
                  >
-                   <Card className="p-6 border-border bg-gradient-to-r from-white/5 to-transparent hover:border-border transition-all group">
-                     <div className="flex flex-col md:flex-row items-center gap-8">
+                   <Card className="p-4 sm:p-6 border-border bg-gradient-to-r from-white/5 to-transparent hover:border-border transition-all group">
+                     <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-8">
                        {/* Icon/Image Placeholder */}
                        <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform relative overflow-hidden">
                           {item.imageUrl ? (
@@ -209,7 +209,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
 
         {/* 💳 SUMMARY SIDEBAR */}
         <div className="w-full lg:w-[400px] space-y-6">
-           <Card className="p-8 border-border bg-navy-deep/50 space-y-8 sticky top-24">
+           <Card className="p-4 sm:p-8 border-border bg-navy-deep/50 space-y-6 sm:space-y-8 sticky top-24">
               <div className="space-y-4">
                  <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">Pregled porudžbine</h2>
                  <div className="space-y-3 pt-4 border-t border-border">

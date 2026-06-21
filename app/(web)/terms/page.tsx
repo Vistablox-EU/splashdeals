@@ -59,9 +59,9 @@ export default async function TermsPage({ params: _params }: PageProps) {
   return (
     <>
       <JsonLd data={webpageSchema} id="webpage-schema" />
-      <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
+      <div className="min-h-screen pb-16 sm:pb-32 pt-24 sm:pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
       {/* 🏙️ HEADER */}
-      <header className="mb-20">
+      <header className="mb-12 sm:mb-20">
         <div 
           className="space-y-6"
         >

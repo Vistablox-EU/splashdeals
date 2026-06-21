@@ -133,3 +133,8 @@ a, button, [role="button"], select, summary, [type="checkbox"], [type="radio"], 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent);
 }
+
+/* Mobile Bottom Navigation: safe-area bottom inset */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

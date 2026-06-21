@@ -42,7 +42,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
   ];
 
   return (
-    <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
+    <div className="min-h-screen pb-16 sm:pb-32 pt-24 sm:pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
       <JsonLd 
         id="support-schema"
         data={{
@@ -70,7 +70,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
         }} 
       />
       {/* 🏙️ HEADER */}
-      <header className="mb-20">
+      <header className="mb-12 sm:mb-20">
         <div 
           className="space-y-6"
         >

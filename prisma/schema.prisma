@@ -108,7 +108,6 @@ model Facility {
   metaDescription   String?
   logoUrl           String?
   description       String?                   @db.Text
-  descriptionSr     String?
   publicPhone       String?
   publicEmail       String?
   socialLinks       Json?
@@ -292,10 +291,9 @@ model FacilityCity {
 model TicketCategory {
   id           String   @id @default(uuid())
   facilityId   String
-  title        String
-  titleSr      String?
-  slug         String?
-  displayOrder Int      @default(0)
+  title          String
+  slug           String?
+  displayOrder   Int      @default(0)
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -313,11 +311,8 @@ model TicketProduct {
   id               String       @id @default(uuid())
   categoryId       String
   title            String
-  titleSr          String?
   label            String?
-  labelSr          String?
   description      String?
-  descriptionSr    String?
   imageUrl         String?
   slug             String?
   displayOrder     Int          @default(0)
@@ -343,7 +338,6 @@ model TicketPrice {
   id            String       @id @default(uuid())
   ticketTypeId  String
   label         String?
-  labelSr       String?
   displayOrder  Int          @default(0)
   isActive      Boolean      @default(true)
   price         Decimal      @db.Decimal(10, 2)
@@ -388,9 +382,7 @@ model Product {
   id            String   @id @default(uuid())
   facilityId    String
   name          String
-  nameSr        String?
   description   String?
-  descriptionSr String?
   price         Decimal  @db.Decimal(10, 2)
   currency      String   @default("RSD")
   inventory     Int?

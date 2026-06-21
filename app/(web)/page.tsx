@@ -115,14 +115,14 @@ export default async function LandingPage({ params: _params }: { params: Promise
             <div
               className="transition-all duration-300"
             >
-              <h1 className="text-[clamp(3.5rem,12vw,10rem)] font-black tracking-tighter mb-12 leading-[0.85] bg-gradient-to-b from-foreground via-foreground/90 to-foreground/60 bg-clip-text text-transparent">
+              <h1 className="text-[clamp(3.5rem,12vw,10rem)] font-black tracking-tighter mb-8 sm:mb-12 leading-[0.85] bg-gradient-to-b from-foreground via-foreground/90 to-foreground/60 bg-clip-text text-transparent">
                 {dict.home.title_digital} <br className="hidden sm:block" />
                 <span className="text-primary italic">{dict.home.title_splash}</span>
               </h1>
             </div>
             
             <p 
-              className="text-[clamp(1.125rem,3vw,1.5rem)] text-muted-foreground max-w-3xl mx-auto mb-16 font-medium leading-relaxed transition-opacity duration-1000"
+              className="text-[clamp(1.125rem,3vw,1.5rem)] text-muted-foreground max-w-3xl mx-auto mb-10 sm:mb-16 font-medium leading-relaxed transition-opacity duration-1000"
             >
               {dict.home.subtitle}
             </p>
@@ -183,8 +183,8 @@ export default async function LandingPage({ params: _params }: { params: Promise
       </div>
 
       {/* 🌊 INVENTORY GRID (NOW HIGHER) */}
-      <section id="inventory" className="px-6 md:px-12 max-w-7xl mx-auto pb-40 scroll-mt-32">
-        <div className="flex items-end justify-between mb-16 border-b border-border pb-8">
+      <section id="inventory" className="px-6 md:px-12 max-w-7xl mx-auto pb-16 sm:pb-40 scroll-mt-32">
+        <div className="flex items-end justify-between mb-8 sm:mb-16 border-b border-border pb-8">
             <div>
               <h2 className="text-4xl font-black tracking-tighter uppercase mb-2 italic">{dict.home.offers_title}</h2>
               <p className="text-muted-foreground text-xs font-bold uppercase tracking-[0.2em]">{dict.home.offers_subtitle}</p>
@@ -206,15 +206,15 @@ export default async function LandingPage({ params: _params }: { params: Promise
       </section>
 
       {/* 🏄 HOW IT WORKS (SIMPLE & FAST) */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto py-32 border-t border-border">
-        <div className="text-center mb-20">
+      <section className="px-6 md:px-12 max-w-7xl mx-auto py-12 sm:py-32 border-t border-border">
+        <div className="text-center mb-10 sm:mb-20">
           <h2 className="text-[clamp(2.25rem,8vw,4.5rem)] font-black italic uppercase tracking-tighter mb-4 leading-[0.9]">
             {dict.home.steps_title_base}<span className="text-primary">{dict.home.steps_title_highlight}</span>
           </h2>
           <p className="text-muted-foreground font-medium">{dict.home.steps_subtitle}</p>
         </div>
 
-        <ol className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <ol className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
           {[
             { step: "01", title: dict.home.step1_title, desc: dict.home.step1_desc, icon: "location_on" },
             { step: "02", title: dict.home.step2_title, desc: dict.home.step2_desc, icon: "shopping_bag" },
@@ -237,8 +237,8 @@ export default async function LandingPage({ params: _params }: { params: Promise
       </section>
 
       {/* 🚀 SOCIAL PROOF & CONVENIENCE */}
-      <section className="px-6 md:px-12 max-w-7xl mx-auto py-32 border-t border-border">
-        <div className="text-center mb-20">
+      <section className="px-6 md:px-12 max-w-7xl mx-auto py-12 sm:py-32 border-t border-border">
+        <div className="text-center mb-10 sm:mb-20">
           <h2 
             className="text-[clamp(2.25rem,8vw,4.5rem)] font-black italic uppercase tracking-tighter mb-6 leading-[0.9] transition-all duration-700"
           >
