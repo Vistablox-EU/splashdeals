@@ -43,17 +43,18 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
 
   if (!facility) notFound()
 
-  const recentTickets = await prisma.ticket.findMany({
-    where: { facilityId },
+  const recentTickets = await prisma.ticketPrice.findMany({
+    where: { isActive: true, ticketType: { category: { facilityId } } },
     take: 5,
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { updatedAt: 'desc' },
+    include: { ticketType: true }
   })
 
   const stats = [
     { 
-      label: "Ulaznice", 
-      value: facility._count.tickets, 
-      icon: "confirmation_number", 
+      label: "Total Tickets",
+      value: await prisma.ticketPrice.count({ where: { ticketType: { category: { facilityId } } } }),
+      icon: "confirmation_number",
       color: "text-primary",
       href: `/admin/facilities/${facilityId}/tickets`
     },
@@ -140,9 +141,9 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
                 {recentTickets.map((ticket) => (
                   <div key={ticket.id} className="flex items-center justify-between p-4 hover:bg-muted/10 transition-colors">
                     <div className="flex flex-col gap-1">
-                      <span className="text-sm font-bold text-foreground/90">{ticket.title}</span>
+                      <span className="text-sm font-bold text-foreground/90">{ticket.ticketType?.title || "Ulaznica"}</span>
                       <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
-                        {ticket.type} • {Number(ticket.price)} RSD
+                        {Number(ticket.price)} RSD
                       </span>
                     </div>
                     <div className="text-[10px] font-mono text-muted-foreground/80">

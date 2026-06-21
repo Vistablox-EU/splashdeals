@@ -82,9 +82,17 @@ async function SuccessContent({ session_id, dict }: { session_id: string; dict: 
     include: {
       issuedTickets: {
         include: {
-          ticket: {
+          ticketPrice: {
             include: {
-              facility: true,
+              ticketType: {
+                include: {
+                  category: {
+                    include: {
+                      facility: true,
+                    }
+                  }
+                }
+              }
             }
           },
         },

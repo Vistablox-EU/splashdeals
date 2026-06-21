@@ -1,4 +1,4 @@
-import { DayType, TimeSlot, Ticket } from "@prisma/client"
+import { DayType, TimeSlot } from "@prisma/client"
 import { isWeekend } from "date-fns"
 
 /**
@@ -13,18 +13,27 @@ export function getDayType(date: Date): DayType {
   return DayType.WEEKDAY
 }
 
-export interface TicketWithPrice extends Omit<Ticket, 'price'> {
+export interface TicketPriceData {
+  id: string
   price: number
+  label: string | null
+  dayType: string | null
+  timeSlot: string | null
+  isActive: boolean
+  displayOrder: number
+  ticketTypeId: string
+  saleStart: Date | null
+  saleEnd: Date | null
 }
 
 /**
  * Filters a list of tickets to find the best match for a given date and time slot.
  */
 export function resolveTicketsForDate(
-  tickets: TicketWithPrice[],
+  tickets: TicketPriceData[],
   date: Date,
   timeSlot: TimeSlot = TimeSlot.FULL_DAY
-): TicketWithPrice[] {
+): TicketPriceData[] {
   const targetDayType = getDayType(date)
   
   return tickets.filter(ticket => {

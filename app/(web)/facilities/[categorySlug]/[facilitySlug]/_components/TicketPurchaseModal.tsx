@@ -1,7 +1,7 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
@@ -111,7 +111,6 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   // Fetch hierarchy on open
   useEffect(() => {
     if (!isOpen) return;
-    setLoading(true);
     fetch(`/api/facilities/${facilitySlug}/tickets`)
       .then((r) => r.json())
       .then((data: CategoryOption[]) => {
@@ -180,11 +179,6 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   const showCategoryPicker = categories.length > 1;
   const facilityName = facility?.name || activeProduct?.title || "";
   const facilityId = facility?.id || "";
-
-  // Reset quantity when product changes
-  useEffect(() => {
-    if (activeProduct) setQuantity(activeProduct.minPeople || 1);
-  }, [selectedProduct]);
 
   const handleAddToCart = async () => {
     if (!activePrice || !activeProduct || !facility) return;
@@ -303,7 +297,10 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
                   {activeCategory?.products.map((prod) => (
                     <button
                       key={prod.id}
-                      onClick={() => setSelectedProduct(prod.id)}
+                      onClick={() => {
+                        setSelectedProduct(prod.id);
+                        setQuantity(prod.minPeople || 1);
+                      }}
                       className={`w-full text-left rounded-xl border p-4 transition-all ${
                         selectedProduct === prod.id
                           ? "bg-primary/5 border-primary/30"

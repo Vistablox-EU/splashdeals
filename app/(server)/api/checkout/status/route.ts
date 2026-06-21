@@ -29,9 +29,17 @@ export async function GET(req: Request) {
       include: {
         issuedTickets: {
           include: {
-            ticket: {
+            ticketPrice: {
               include: {
-                facility: true,
+                ticketType: {
+                  include: {
+                    category: {
+                      include: {
+                        facility: true,
+                      }
+                    }
+                  }
+                }
               }
             },
           },
@@ -66,9 +74,17 @@ export async function GET(req: Request) {
             include: {
               issuedTickets: {
                 include: {
-                  ticket: {
+                  ticketPrice: {
                     include: {
-                      facility: true,
+                      ticketType: {
+                        include: {
+                          category: {
+                            include: {
+                              facility: true,
+                            }
+                          }
+                        }
+                      }
                     }
                   },
                 },

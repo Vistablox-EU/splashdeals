@@ -105,11 +105,19 @@ interface FacilityPageProps {
 async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
   include: {
     media: { orderBy: { order: "asc" } },
-    tickets: { where: { isActive: true }, orderBy: { displayOrder: "asc" } },
-    ticketGroups: {
+    ticketCategories: {
       where: { isActive: true },
       include: {
-        tickets: { where: { isActive: true }, orderBy: { displayOrder: "asc" } }
+        types: {
+          where: { isActive: true },
+          include: {
+            prices: {
+              where: { isActive: true },
+              orderBy: { displayOrder: "asc" }
+            }
+          },
+          orderBy: { displayOrder: "asc" }
+        }
       },
       orderBy: { displayOrder: "asc" }
     },
@@ -123,15 +131,17 @@ async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
     where: { slug },
     include: {
       media: { orderBy: { order: "asc" } },
-      tickets: { 
-        where: { isActive: true },
-        orderBy: { displayOrder: "asc" }
-      },
-      ticketGroups: {
+      ticketCategories: {
         where: { isActive: true },
         include: {
-          tickets: {
+          types: {
             where: { isActive: true },
+            include: {
+              prices: {
+                where: { isActive: true },
+                orderBy: { displayOrder: "asc" }
+              }
+            },
             orderBy: { displayOrder: "asc" }
           }
         },
@@ -139,17 +149,8 @@ async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
       },
       policy: true,
       hours: { orderBy: { dayOfWeek: "asc" } },
-      amenities: {
-        include: {
-          amenity: true
-        },
-        orderBy: { displayOrder: "asc" }
-      },
-      marketplaceCities: {
-        include: {
-          city: true
-        }
-      }
+      amenities: { include: { amenity: true }, orderBy: { displayOrder: "asc" } },
+      marketplaceCities: { include: { city: true } }
     }
   });
 
@@ -171,7 +172,13 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
   const currentYear = new Date().getFullYear();
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
-  const activeTickets = (facility.tickets || []).filter((t: TicketData) => t.isActive);
+  // Derive ticket data from new hierarchy (ticketCategories → types → prices)
+  const tickets = (facility.ticketCategories || []).flatMap((cat: any) =>
+    (cat.types || []).flatMap((prod: any) =>
+      (prod.prices || []).filter((p: any) => p.isActive)
+    )
+  );
+  const activeTickets = tickets;
   const ticketCount = activeTickets.length;
   const ticketHint = ticketCount > 0 
     ? ` | ${ticketCount} vrsta ulaznica dostupno`
@@ -187,7 +194,7 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
 
   // Prioritize metaTitle from database, fall back to dynamic formula
   const maxDiscount = calculateMaxDiscount(
-    (facility.tickets || []).map((t: { isActive: boolean; price: unknown; originalPrice: unknown | null }) => ({
+    tickets.map((t: { isActive: boolean; price: unknown; originalPrice: unknown | null }) => ({
       isActive: t.isActive,
       price: Number(t.price),
       originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
@@ -336,13 +343,31 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   validateDiscoverySlug(categorySlug, facility);
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
-  // Find all active tickets (used in either fallback or virtual group)
-  const activeTickets = (facility.tickets || []).filter((t: TicketData) => t.isActive)
-  const ticketCount = activeTickets.length
+  // Find all active prices across all categories/products
+  const allPrices = (facility.ticketCategories || []).flatMap((cat: any) =>
+    (cat.types || []).flatMap((prod: any) =>
+      (prod.prices || []).filter((p: any) => p.isActive).map((p: any) => ({
+        ...p,
+        catTitle: cat.title,
+        catTitleSr: cat.titleSr,
+        prodTitle: prod.title,
+        prodTitleSr: prod.titleSr,
+        prodDescription: prod.description,
+        prodDescriptionSr: prod.descriptionSr,
+        requiresIdentity: prod.requiresIdentity,
+        requiresPhoto: prod.requiresPhoto,
+        minPeople: prod.minPeople,
+        maxPeople: prod.maxPeople,
+        isSeasonPass: prod.isSeasonPass,
+        validityType: prod.validityType,
+      }))
+    )
+  );
+  const ticketCount = allPrices.length;
 
   let mappedGroups: Array<{
     id: string;
-    title: string;
+        title: string;
     titleSr: string;
     description: string | null;
     descriptionSr: string | null;
@@ -372,106 +397,73 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     }>;
   }> = []
 
-  if (facility.ticketGroups && facility.ticketGroups.length > 0) {
-    mappedGroups = facility.ticketGroups.map((g: { id: string; title: string; titleSr: string | null; description: string | null; descriptionSr: string | null; slug: string | null; tickets: TicketData[] }) => ({
-      id: g.id,
-      title: g.title,
-      titleSr: (g.titleSr || g.title) as string,
-      description: g.description,
-      descriptionSr: g.descriptionSr || g.description,
-      slug: g.slug || g.title.toLowerCase().replace(/\s+/g, "-"),
-      tiers: g.tickets.map((t: TicketData) => ({
-        ...t,
-        title: t.title,
-        titleSr: (t.titleSr || t.title) as string,
-        label: t.title,
-        labelSr: (t.titleSr || t.title) as string,
-        price: Number(t.price),
-        originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
-        minPeople: t.minPeople || 1,
-        maxPeople: t.maxPeople || null,
-        dayType: (t.dayType || null) as DayType | null,
-        timeSlot: (t.timeSlot || null) as TimeSlot | null,
-        isSeasonPass: Boolean(t.isSeasonPass),
-        requiresIdentity: Boolean(t.requiresIdentity),
-        requiresPhoto: Boolean(t.requiresPhoto),
-        imageUrl: (t.imageUrl as string) || facility.media?.[0]?.url || null,
+  // Build groups from the new hierarchy — each category becomes a group,
+  // each product becomes a tier (modal handles price selection)
+  if (facility.ticketCategories && facility.ticketCategories.length > 0) {
+    mappedGroups = facility.ticketCategories.map((cat: any) => ({
+      id: cat.id,
+      title: cat.title,
+      titleSr: cat.titleSr || cat.title,
+      description: null,
+      descriptionSr: null,
+      slug: cat.slug || cat.title.toLowerCase().replace(/\\s+/g, "-"),
+      tiers: (cat.types || []).filter((prod: any) => prod.isActive).map((prod: any) => ({
+        id: prod.id,
+        title: prod.title,
+        titleSr: prod.titleSr || prod.title,
+        label: prod.title,
+        labelSr: prod.titleSr || prod.title,
+        price: Math.min(...(prod.prices || []).filter((p: any) => p.isActive).map((p: any) => Number(p.price))),
+        originalPrice: null,
+        minPeople: prod.minPeople || 1,
+        maxPeople: prod.maxPeople || null,
+        dayType: null,
+        timeSlot: null,
+        isSeasonPass: prod.isSeasonPass,
+        requiresIdentity: prod.requiresIdentity,
+        requiresPhoto: prod.requiresPhoto,
+        imageUrl: facility.media?.[0]?.url || null,
         slug: null,
         description: null,
         descriptionSr: null,
         seasonStart: null,
         seasonEnd: null,
+        isActive: true,
       }))
     }))
-
-    // Fetch active tickets that have no group and bundle them into a virtual group
-    const ungroupedTickets = activeTickets.filter((t) => !t.groupId)
-    if (ungroupedTickets.length > 0) {
-      mappedGroups.push({
-        id: "default-group",
-        title: "Standardne Ponude",
-        titleSr: "Standardne Ponude",
-        description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
-        descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
-        slug: "standardne-ponude",
-        tiers: ungroupedTickets.map((t) => ({
-          ...t,
-          title: t.title,
-          titleSr: (t.titleSr || t.title) as string,
-          label: t.title,
-          labelSr: (t.titleSr || t.title) as string,
-          price: Number(t.price),
-          originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
-          minPeople: t.minPeople || 1,
-          maxPeople: t.maxPeople || null,
-          dayType: (t.dayType || null) as DayType | null,
-          timeSlot: (t.timeSlot || null) as TimeSlot | null,
-          isSeasonPass: t.isSeasonPass,
-          requiresIdentity: t.requiresIdentity,
-          requiresPhoto: t.requiresPhoto,
-          imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
-          slug: null,
-          description: null,
-          descriptionSr: null,
-          seasonStart: null,
-          seasonEnd: null,
-        }))
-      })
-    }
-  } else {
-    // If facility.ticketGroups is completely empty, default to standard fallback containing all active tickets under "Standardne Ponude"
-    if (activeTickets.length > 0) {
-      mappedGroups = [{
-        id: "default-group",
-        title: "Standardne Ponude",
-        titleSr: "Standardne Ponude",
-        description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
-        descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
-        slug: "standardne-ponude",
-        tiers: activeTickets.map((t) => ({
-          ...t,
-          title: t.title,
-          titleSr: (t.titleSr || t.title) as string,
-          label: t.title,
-          labelSr: (t.titleSr || t.title) as string,
-          price: Number(t.price),
-          originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
-          minPeople: t.minPeople || 1,
-          maxPeople: t.maxPeople || null,
-          imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
-          slug: null,
-          description: null,
-          descriptionSr: null,
-          seasonStart: null,
-          seasonEnd: null,
-          dayType: null,
-          timeSlot: null,
-          isSeasonPass: false,
-          requiresIdentity: false,
-          requiresPhoto: false,
-        }))
-      }]
-    }
+  } else if (allPrices.length > 0) {
+    // Fallback: all prices in a single "Standardne Ponude" group
+    mappedGroups = [{
+      id: "default-group",
+      title: "Standardne Ponude",
+      titleSr: "Standardne Ponude",
+      description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
+      descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
+      slug: "standardne-ponude",
+      tiers: allPrices.map((p: any) => ({
+        id: p.id,
+        title: p.prodTitle,
+        titleSr: p.prodTitleSr || p.prodTitle,
+        label: p.prodTitle,
+        labelSr: p.prodTitleSr || p.prodTitle,
+        price: Number(p.price),
+        originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
+        minPeople: p.minPeople || 1,
+        maxPeople: p.maxPeople || null,
+        dayType: p.dayType,
+        timeSlot: p.timeSlot,
+        isSeasonPass: p.isSeasonPass,
+        requiresIdentity: p.requiresIdentity,
+        requiresPhoto: p.requiresPhoto,
+        imageUrl: facility.media?.[0]?.url || null,
+        slug: null,
+        description: null,
+        descriptionSr: null,
+        seasonStart: null,
+        seasonEnd: null,
+        isActive: true,
+      }))
+    }]
   }
 
   // 🎥 Logic: Priority Hero Selection (Protocol)

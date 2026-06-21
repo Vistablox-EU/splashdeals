@@ -9,51 +9,61 @@ import { Badge } from "@/components/ui/badge";
 
 
 async function getTickets() {
-  const data = await prisma.ticket.findMany({
+  const data = await prisma.ticketPrice.findMany({
     where: { isActive: true },
     include: { 
-      facility: {
+      ticketType: {
         include: {
-          media: {
-            where: { type: "PHOTO" },
-            orderBy: { order: "asc" },
-            take: 1
+          category: {
+            include: {
+              facility: {
+                include: {
+                  media: {
+                    where: { type: "PHOTO" },
+                    orderBy: { order: "asc" },
+                    take: 1
+                  }
+                }
+              }
+            }
           }
         }
-      } 
+      }
     },
     orderBy: { displayOrder: 'asc' }
   });
 
-  // 🛡️ Data Boundary: Serialize Decimal for Edge/PPR compatibility
-  return data.map(({ facility, ...ticket }) => ({
-    id: ticket.id,
-    title: ticket.title,
-    titleSr: ticket.titleSr,
-    type: ticket.type,
-    price: Number(ticket.price),
-    originalPrice: ticket.originalPrice ? Number(ticket.originalPrice) : null,
-    currency: ticket.currency,
-    validityType: ticket.validityType,
-    isActive: ticket.isActive,
-    isFeatured: ticket.isFeatured,
-    displayOrder: ticket.displayOrder,
-    description: ticket.description,
-    descriptionSr: ticket.descriptionSr,
-    slug: ticket.slug,
-    imageUrl: ticket.imageUrl,
-    finePrint: ticket.finePrint,
-    requiresIdentity: ticket.requiresIdentity,
-    requiresPhoto: ticket.requiresPhoto,
-    dayType: ticket.dayType,
-    timeSlot: ticket.timeSlot,
-    isSeasonPass: ticket.isSeasonPass,
-    minPeople: ticket.minPeople,
-    maxPeople: ticket.maxPeople,
-    saleStart: ticket.saleStart,
-    saleEnd: ticket.saleEnd,
-    createdAt: ticket.createdAt,
-    updatedAt: ticket.updatedAt,
+  return data.map((ticketPrice) => {
+    const facility = ticketPrice.ticketType?.category?.facility || null;
+    const ticketType = ticketPrice.ticketType;
+    return {
+      id: ticketPrice.id,
+      title: ticketType?.title || "Ulaznica",
+      titleSr: ticketType?.titleSr || null,
+      type: null,
+      price: Number(ticketPrice.price),
+      originalPrice: ticketPrice.originalPrice ? Number(ticketPrice.originalPrice) : null,
+      currency: "RSD",
+      validityType: ticketType?.validityType || "FLEXIBLE_30_DAY",
+      isActive: ticketPrice.isActive,
+      isFeatured: false,
+      displayOrder: ticketPrice.displayOrder,
+      description: null,
+      descriptionSr: null,
+      slug: null,
+      imageUrl: null,
+      finePrint: null,
+      requiresIdentity: ticketType?.requiresIdentity || false,
+      requiresPhoto: ticketType?.requiresPhoto || false,
+      dayType: ticketPrice.dayType,
+      timeSlot: ticketPrice.timeSlot,
+      isSeasonPass: ticketType?.isSeasonPass || false,
+      minPeople: ticketType?.minPeople || 1,
+      maxPeople: ticketType?.maxPeople || null,
+      saleStart: null,
+      saleEnd: null,
+      createdAt: ticketPrice.createdAt,
+      updatedAt: ticketPrice.updatedAt,
     facility: {
       id: facility.id,
       name: facility.name,
@@ -72,7 +82,8 @@ async function getTickets() {
       })),
     },
     categorySlug: facility.category.toLowerCase().replace(/\s+/g, '-'),
-  }));
+  };
+});
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

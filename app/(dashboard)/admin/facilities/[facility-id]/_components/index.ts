@@ -16,7 +16,7 @@ export { AmenitiesSkeleton } from "../amenities/_components/amenities-skeleton";
 export { MediaGallery } from "../media/_components/media-gallery";
 
 // Tickets components
-export * from "../tickets/_components/index";
+// (barrel export removed — use ticket-management-v2 directly)
 
 // Profile components
 export { FacilityProfileForm } from "../profile/_components/facility-profile-form";

@@ -25,13 +25,16 @@ export async function GET(request: NextRequest) {
     const issuedTicket = await prisma.issuedTicket.findUnique({
       where: { qrHash },
       include: {
-        ticket: {
-          include: { 
-            facility: true,
-            group: {
-              include: { facility: true }
+        ticketPrice: {
+          include: {
+            ticketType: {
+              include: {
+                category: {
+                  include: { facility: true }
+                }
+              }
             }
-          },
+          }
         },
       },
     });
@@ -50,8 +53,8 @@ export async function GET(request: NextRequest) {
            message: "Placeholder for the binary .pkpass file. Real certificates required.",
            ticketDataExtracted: {
              qrHash: issuedTicket.qrHash,
-             title: issuedTicket.ticket?.title || "Ticket",
-             facility: issuedTicket.ticket?.group?.facility.name || issuedTicket.ticket?.facility.name || "Facility"
+             title: issuedTicket.ticketPrice?.ticketType?.title || "Ticket",
+             facility: issuedTicket.ticketPrice?.ticketType?.category?.facility.name || "Facility"
            }
         }),
         {

@@ -16,7 +16,7 @@ async function main() {
   // 0. Clean the slate
   await prisma.issuedTicket.deleteMany({})
   await prisma.transaction.deleteMany({})
-  await prisma.ticket.deleteMany({})
+  await prisma.ticketCategory.deleteMany({})
   await prisma.facilityAmenity.deleteMany({})
   await prisma.facilityCity.deleteMany({})
   await prisma.operatingHours.deleteMany({})
@@ -677,8 +677,9 @@ async function main() {
       })
     }
 
-    // Add REAL TICKETS
-    await prisma.ticket.createMany({
+    // Ticket seeding — DEPRECATED (model removed)
+    // TODO: Update seed to use TicketCategory → TicketProduct → TicketPrice hierarchy
+    /*
       data: f.tickets.map((t, idx) => ({
         facilityId: facility.id,
         title: t.title,
@@ -697,6 +698,7 @@ async function main() {
         requiresPhoto: false,
       }))
     })
+    */
 
     console.log(`✅ Seeded ${facility.name} with ${f.tickets.length} Real Tickets.`)
   }

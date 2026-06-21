@@ -720,8 +720,9 @@ async function main() {
         });
       }
 
-      // Update ticket groups
-      await prisma.ticket.deleteMany({ where: { facilityId } });
+      // Ticket/TicketGroup seeding — DEPRECATED (models removed)
+      // TODO: Update seed to use TicketCategory → TicketProduct → TicketPrice hierarchy
+      /*
       for (const [gi, g] of f.ticketGroups.entries()) {
         const group = await prisma.ticketGroup.create({
           data: {
@@ -770,8 +771,9 @@ async function main() {
           });
         }
       }
+      */
 
-      console.log(`    ✅ Updated with ${f.tickets.length} real tickets, ${f.hours.length} operating hours.`);
+      console.log(`    ✅ Updated facility data.`);
     } else {
       console.log(`    ⚠️  Facility not found in DB — run the primary seed first.`);
     }

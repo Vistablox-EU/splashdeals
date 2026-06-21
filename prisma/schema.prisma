@@ -123,8 +123,6 @@ model Facility {
   policy            FacilityPolicy?
   hours             OperatingHours[]
   payoutProfile     PayoutProfile?
-  tickets           Ticket[]
-  ticketGroups      TicketGroup[]
   ticketCategories  TicketCategory[]
   revenue           Transaction[]
   closures          FacilityClosure[]
@@ -290,66 +288,6 @@ model FacilityCity {
   @@schema("partners")
 }
 
-model Ticket {
-  id               String         @id @default(uuid())
-  facilityId       String
-  groupId          String?
-  title            String
-  type             TicketType
-  price            Decimal        @db.Decimal(10, 2)
-  originalPrice    Decimal?       @db.Decimal(10, 2)
-  currency         String         @default("RSD")
-  validityType     ValidityType
-  isActive         Boolean        @default(true)
-  isFeatured       Boolean        @default(false)
-  displayOrder     Int            @default(0)
-  saleStart        DateTime?
-  saleEnd          DateTime?
-  description      String?
-  descriptionSr    String?
-  titleSr          String?
-  imageUrl         String?
-  finePrint        String?
-  requiresIdentity Boolean        @default(false)
-  requiresPhoto    Boolean        @default(false)
-  dayType          DayType?       @default(ALL)
-  timeSlot         TimeSlot?      @default(FULL_DAY)
-  isSeasonPass     Boolean        @default(false)
-  minPeople        Int            @default(1)
-  maxPeople        Int?
-  slug             String?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  facility         Facility       @relation(fields: [facilityId], references: [id], onDelete: Cascade)
-  group            TicketGroup?   @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  issuedTickets    IssuedTicket[]
-
-  @@unique([facilityId, slug])
-  @@index([facilityId, isActive])
-  @@schema("partners")
-}
-
-model TicketGroup {
-  id            String   @id @default(uuid())
-  facilityId    String
-  title         String
-  titleSr       String?
-  description   String?
-  descriptionSr String?
-  displayOrder  Int      @default(0)
-  isActive      Boolean  @default(true)
-  slug          String?  @unique
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  facility      Facility       @relation(fields: [facilityId], references: [id], onDelete: Cascade)
-  tickets       Ticket[]
-  issuedTickets IssuedTicket[]
-
-  @@index([facilityId])
-  @@schema("partners")
-}
-
 /// Kategorija — "Ulaznice", "Sezonske Karte"
 model TicketCategory {
   id           String   @id @default(uuid())
@@ -472,8 +410,7 @@ model Product {
 model IssuedTicket {
   id             String       @id @default(uuid())
   qrHash         String       @unique
-  ticketId       String
-  ticketPriceId  String?
+  ticketPriceId  String
   transactionId  String
   status         TicketStatus @default(ACTIVE)
   usageCount     Int          @default(0)
@@ -482,12 +419,8 @@ model IssuedTicket {
   holderName     String?
   holderPhotoUrl String?
 
-  ticket      Ticket        @relation(fields: [ticketId], references: [id], onDelete: Restrict)
-  ticketPrice TicketPrice?  @relation(fields: [ticketPriceId], references: [id])
-  transaction Transaction  @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-
-  ticketGroupId String?
-  ticketGroup   TicketGroup? @relation(fields: [ticketGroupId], references: [id])
+  ticketPrice TicketPrice  @relation(fields: [ticketPriceId], references: [id], onDelete: Restrict)
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
   @@schema("sales")
 }

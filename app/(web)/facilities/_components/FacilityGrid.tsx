@@ -69,9 +69,9 @@ export async function FacilityGrid({ dict,
   
   if (sort === 'price_asc' || sort === 'price_desc') {
     processedFacilities.sort((a, b) => {
-      const priceA = a.tickets[0] ? Number(a.tickets[0].price) : Infinity;
-      const priceB = b.tickets[0] ? Number(b.tickets[0].price) : Infinity;
-      
+      const priceA = (a as any).minPrice ?? Infinity;
+      const priceB = (b as any).minPrice ?? Infinity;
+
       return sort === 'price_asc' ? priceA - priceB : priceB - priceA;
     });
   }
@@ -97,12 +97,10 @@ export async function FacilityGrid({ dict,
   }
 
   // 3. Serialize Prisma Decimal → number for client component props
-  const serializedFacilities = processedFacilities.map((f) => ({
+  const serializedFacilities = processedFacilities.map((f: any) => ({
     ...f,
-    tickets: f.tickets.map((t) => ({
-      ...t,
-      price: Number(t.price),
-    })),
+    tickets: [],
+    minPrice: f.minPrice ? Number(f.minPrice) : null,
   }));
 
   return (

@@ -6,17 +6,13 @@ import { generateIdempotencyKey, withStripeRetry } from "@/server/lib/stripe-uti
 
 const checkoutSchema = z.object({
   items: z.array(z.object({
-    ticketPriceId: z.string().uuid().optional(),
-    ticketTierId: z.string().uuid().optional(),
+    ticketPriceId: z.string().uuid(),
     quantity: z.number().int().positive().max(50),
   })).min(1),
   email: z.string().email().optional().nullable(),
   holderName: z.string().optional().nullable(),
   holderPhotoUrl: z.string().url().optional().nullable(),
-}).refine(
-  (data) => data.items.every((item) => item.ticketPriceId || item.ticketTierId),
-  { message: "Each item must have either ticketPriceId or ticketTierId" }
-);
+});
 
 export async function POST(request: Request) {
   try {
@@ -65,62 +61,31 @@ export async function POST(request: Request) {
 
     // 1. Verify and Process Each Item — supports both new (ticketPriceId) and legacy (ticketTierId)
     for (const item of items) {
-      let ticketPrice, ticketType, facility;
-
-      if (item.ticketPriceId) {
-        // New hierarchy
-        const tp = await prisma.ticketPrice.findUnique({
-          where: { id: item.ticketPriceId },
-          include: {
-            ticketType: {
-              include: {
-                category: {
-                  include: { facility: true }
-                }
+      const tp = await prisma.ticketPrice.findUnique({
+        where: { id: item.ticketPriceId },
+        include: {
+          ticketType: {
+            include: {
+              category: {
+                include: { facility: true }
               }
             }
           }
-        });
-        if (!tp || !tp.isActive) {
-          return NextResponse.json(
-            { error: `Karta nije dostupna.` },
-            { status: 404, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
-          );
         }
-        ticketPrice = tp;
-        ticketType = tp.ticketType;
-        facility = ticketType.category.facility;
-      } else if (item.ticketTierId) {
-        // Legacy: old Ticket model
-        const oldTicket = await prisma.ticket.findUnique({
-          where: { id: item.ticketTierId },
-          include: { facility: true }
-        });
-        if (!oldTicket || !oldTicket.isActive) {
-          return NextResponse.json(
-            { error: `Karta nije dostupna.` },
-            { status: 404, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
-          );
-        }
-        ticketPrice = { id: oldTicket.id, price: oldTicket.price, label: null, dayType: oldTicket.dayType, timeSlot: oldTicket.timeSlot };
-        ticketType = { title: oldTicket.title, requiresIdentity: oldTicket.requiresIdentity, requiresPhoto: oldTicket.requiresPhoto };
-        facility = oldTicket.facility;
-      } else {
+      });
+
+      if (!tp || !tp.isActive) {
         return NextResponse.json(
-          { error: `Nepoznata karta.` },
-          { status: 400, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
+          { error: `Karta nije dostupna.` },
+          { status: 404, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
         );
       }
 
-      // Validate required fields are present
-      if (!ticketType || !facility || !ticketPrice) {
-        return NextResponse.json(
-          { error: `Greška pri obradi karte.` },
-          { status: 500, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
-        );
-      }
+      const ticketPrice = tp;
+      const ticketType = tp.ticketType;
+      const facility = ticketType.category.facility;
 
-      // 2. Validate Identity for Personalized Passes
+      // Validate Identity for Personalized Passes
       if ((ticketType.requiresIdentity && !holderName) || (ticketType.requiresPhoto && !holderPhotoUrl)) {
         return NextResponse.json(
           { error: "Personalizovane karte zahtevaju identifikaciju nosioca." },
@@ -149,7 +114,7 @@ export async function POST(request: Request) {
       });
 
       ticketDetails.push({
-        ticketPriceId: (item.ticketPriceId || item.ticketTierId) as string,
+        ticketPriceId: item.ticketPriceId,
         quantity: item.quantity,
         facilityId: facility.id,
         ticketTypeTitle: ticketType.title,

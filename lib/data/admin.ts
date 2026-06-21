@@ -9,7 +9,7 @@ export async function getAdminDashboardStats() {
     }),
     prisma.facility.count(),
     prisma.user.count(),
-    prisma.ticket.count({ where: { isActive: true } }),
+    prisma.ticketPrice.count({ where: { isActive: true } }),
   ])
 
   return {

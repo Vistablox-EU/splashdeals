@@ -34,9 +34,19 @@ export async function GET() {
             isHero: true
           }
         },
-        tickets: {
+        ticketCategories: {
           some: {
-            isActive: true
+            isActive: true,
+            types: {
+              some: {
+                isActive: true,
+                prices: {
+                  some: {
+                    isActive: true
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -47,12 +57,20 @@ export async function GET() {
           },
           take: 1
         },
-        tickets: {
-          where: {
-            isActive: true
-          },
-          orderBy: {
-            price: "asc"
+        ticketCategories: {
+          where: { isActive: true },
+          include: {
+            types: {
+              where: { isActive: true },
+              include: {
+                prices: {
+                  where: { isActive: true },
+                  orderBy: { price: "asc" },
+                  take: 1
+                }
+              },
+              take: 1
+            }
           },
           take: 1
         },
@@ -68,7 +86,7 @@ export async function GET() {
     let featured = null;
     if (featuredFacility) {
       const canonicalCategory = featuredFacility.category.toLowerCase().replace(/\s+/g, '-');
-      const cheapestTicket = featuredFacility.tickets[0];
+      const cheapestPrice = featuredFacility.ticketCategories?.[0]?.types?.[0]?.prices?.[0];
       const heroImage = featuredFacility.media[0];
       
       // Attempt to resolve city slug, fallback to category
@@ -82,7 +100,7 @@ export async function GET() {
         city: featuredFacility.city,
         canonicalPath: `/facilities/${citySlug}/${featuredFacility.slug}`,
         imageUrl: heroImage?.url || "/og-image.png",
-        startingPrice: cheapestTicket ? Number(cheapestTicket.price) : null,
+        startingPrice: cheapestPrice ? Number(cheapestPrice.price) : null,
         description: featuredFacility.description?.slice(0, 100) || "Doživite nezaboravnu letnju avanturu na najboljim bazenima u Srbiji."
       };
     }
