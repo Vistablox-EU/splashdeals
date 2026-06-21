@@ -65,3 +65,7 @@ jobs:
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
           NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://www.splashdeals.rs' }}
+
+      - name: Deploy to Production (Vercel)
+        if: github.event_name == 'push' && success()
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
