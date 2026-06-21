@@ -4,13 +4,12 @@ import { Icon } from "@/components/ui/Icon";
 import * as React from "react"
 import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetDescription, 
-  SheetHeader, 
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
   SheetTitle,
-  SheetFooter
 } from "@/components/ui/sheet"
 import {
   Form,
@@ -112,7 +111,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
 
   React.useEffect(() => {
     if (!watchedTickets) return
-    watchedTickets.forEach((ticket: any, index: number) => {
+    watchedTickets.forEach((ticket: Record<string, unknown>, index: number) => {
       if (ticket?.isSeasonPass && ticket?.validityType !== "SUMMER_SEASON") {
         form.setValue(`tickets.${index}.validityType`, "SUMMER_SEASON")
       }
@@ -130,7 +129,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
         } else {
           toast.error(result.error || "Došlo je do greške")
         }
-      } catch (error) {
+      } catch {
         toast.error("Došlo je do greške pri čuvanju")
       }
     })

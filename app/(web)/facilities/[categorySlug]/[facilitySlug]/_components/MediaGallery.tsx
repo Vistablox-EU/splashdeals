@@ -8,8 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface MediaGalleryProps {
   media: FacilityMedia[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dict?: any;
+  dict?: Record<string, unknown>;
 }
 
 /**
@@ -19,7 +18,7 @@ interface MediaGalleryProps {
 export function MediaGallery({ media, dict }: MediaGalleryProps) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
 
-  const galleryMedia = media.filter(m => (m as any).isGalleryVisible !== false);
+  const galleryMedia = media.filter(m => m.isGalleryVisible !== false);
 
   if (!galleryMedia.length) return null;
 
@@ -147,7 +146,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
  */
 export function HeroThumbnails({ media }: { media: FacilityMedia[] }) {
   const [activeIdx, setActiveIdx] = useState(0)
-  const visibleMedia = media.filter(m => (m as any).isGalleryVisible !== false);
+  const visibleMedia = media.filter(m => m.isGalleryVisible !== false);
   
   return (
     <div className="flex p-2 gap-2 overflow-x-auto no-scrollbar">

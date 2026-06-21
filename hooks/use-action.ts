@@ -45,7 +45,7 @@ export function useAction<TArgs extends unknown[]>(
             toast.error(msg)
             onError?.(msg)
           }
-        } catch (_err) {
+        } catch {
           const msg = errorMessage || "Something went wrong"
           toast.error(msg)
           onError?.(msg)

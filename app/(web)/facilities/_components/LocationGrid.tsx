@@ -33,7 +33,7 @@ export async function LocationGrid({ facilitiesLabel }: LocationGridProps) {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-      {activeCities.map((city, i) => (
+      {activeCities.map((city) => (
         <div
           key={city.id}
           className="transition-all duration-300"

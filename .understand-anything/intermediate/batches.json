@@ -1,0 +1,5021 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "louvain",
+  "totalFiles": 447,
+  "totalBatches": 20,
+  "exportsByPath": {
+    ".node-version": [],
+    ".nvmrc": [],
+    "app/(auth)/auth/_components/ErrorBanner.tsx": [
+      "ErrorBanner"
+    ],
+    "app/(auth)/auth/_components/index.ts": [
+      "ErrorBanner",
+      "PasswordInput"
+    ],
+    "app/(auth)/auth/_components/PasswordInput.tsx": [
+      "PasswordInput"
+    ],
+    "app/(auth)/auth/error.tsx": [
+      "AuthError"
+    ],
+    "app/(auth)/auth/forgot-password/page.tsx": [
+      "ForgotPasswordPage"
+    ],
+    "app/(auth)/auth/layout.tsx": [
+      "metadata",
+      "AuthLayout"
+    ],
+    "app/(auth)/auth/loading.tsx": [
+      "AuthLoading"
+    ],
+    "app/(auth)/auth/login/page.tsx": [
+      "LoginPage"
+    ],
+    "app/(auth)/auth/reset-password/page.tsx": [
+      "ResetPasswordPage"
+    ],
+    "app/(dashboard)/admin/_common/AdminMetricCard.tsx": [
+      "AdminMetricCard"
+    ],
+    "app/(dashboard)/admin/_common/AdminSkeleton.tsx": [
+      "AdminSkeleton"
+    ],
+    "app/(dashboard)/admin/_common/breadcrumb-context.tsx": [
+      "BreadcrumbProvider",
+      "useBreadcrumbs"
+    ],
+    "app/(dashboard)/admin/_common/breadcrumbs.tsx": [
+      "Breadcrumbs"
+    ],
+    "app/(dashboard)/admin/_common/chart-area-interactive.tsx": [
+      "description",
+      "ChartAreaInteractive"
+    ],
+    "app/(dashboard)/admin/_common/CommandPalette.tsx": [
+      "CommandPalette"
+    ],
+    "app/(dashboard)/admin/_common/sidebar/admin-sidebar.tsx": [
+      "AdminSidebar"
+    ],
+    "app/(dashboard)/admin/_common/sidebar/search-form.tsx": [
+      "SearchForm"
+    ],
+    "app/(dashboard)/admin/_common/StatusToggle.tsx": [
+      "StatusToggle"
+    ],
+    "app/(dashboard)/admin/_common/TableSkeleton.tsx": [
+      "TableSkeleton"
+    ],
+    "app/(dashboard)/admin/_components/AdminLayoutShell.tsx": [
+      "AdminLayoutShell"
+    ],
+    "app/(dashboard)/admin/_components/index.ts": [
+      "AdminLayoutShell"
+    ],
+    "app/(dashboard)/admin/api-keys/api-keys-client.tsx": [
+      "ApiKeysClient"
+    ],
+    "app/(dashboard)/admin/api-keys/error.tsx": [
+      "ApiKeysError"
+    ],
+    "app/(dashboard)/admin/api-keys/loading.tsx": [
+      "ApiKeysLoading"
+    ],
+    "app/(dashboard)/admin/api-keys/page.tsx": [
+      "metadata",
+      "ApiKeysPage"
+    ],
+    "app/(dashboard)/admin/cms/_components/image-upload-plugin.ts": [
+      "createImageUploadPlugin",
+      "imageUploadKey"
+    ],
+    "app/(dashboard)/admin/cms/_components/rich-text-editor.tsx": [
+      "RichTextEditor"
+    ],
+    "app/(dashboard)/admin/cms/_components/seo-panel.tsx": [
+      "SEOPanel"
+    ],
+    "app/(dashboard)/admin/cms/categories/_components/categories-manager.tsx": [
+      "CategoriesManager"
+    ],
+    "app/(dashboard)/admin/cms/categories/page.tsx": [
+      "metadata",
+      "CategoriesPage"
+    ],
+    "app/(dashboard)/admin/cms/error.tsx": [
+      "CMSError"
+    ],
+    "app/(dashboard)/admin/cms/loading.tsx": [
+      "CMSLoading"
+    ],
+    "app/(dashboard)/admin/cms/page.tsx": [
+      "CMSPage"
+    ],
+    "app/(dashboard)/admin/cms/pages/_components/page-editor.tsx": [
+      "PageEditor"
+    ],
+    "app/(dashboard)/admin/cms/pages/_components/pages-list-client.tsx": [
+      "PagesListClient"
+    ],
+    "app/(dashboard)/admin/cms/pages/[page-id]/page.tsx": [
+      "metadata",
+      "EditPagePage"
+    ],
+    "app/(dashboard)/admin/cms/pages/new/page.tsx": [
+      "metadata",
+      "NewPagePage"
+    ],
+    "app/(dashboard)/admin/cms/pages/page.tsx": [
+      "metadata",
+      "PagesPage"
+    ],
+    "app/(dashboard)/admin/cms/posts/_components/post-editor.tsx": [
+      "PostEditor"
+    ],
+    "app/(dashboard)/admin/cms/posts/_components/posts-list-client.tsx": [
+      "PostsListClient"
+    ],
+    "app/(dashboard)/admin/cms/posts/[post-id]/page.tsx": [
+      "metadata",
+      "EditPostPage"
+    ],
+    "app/(dashboard)/admin/cms/posts/error.tsx": [
+      "PostsError"
+    ],
+    "app/(dashboard)/admin/cms/posts/loading.tsx": [
+      "Loading"
+    ],
+    "app/(dashboard)/admin/cms/posts/new/loading.tsx": [
+      "Loading"
+    ],
+    "app/(dashboard)/admin/cms/posts/new/page.tsx": [
+      "metadata",
+      "NewPostPage"
+    ],
+    "app/(dashboard)/admin/cms/posts/page.tsx": [
+      "metadata",
+      "PostsPage"
+    ],
+    "app/(dashboard)/admin/cms/tags/_components/tags-manager.tsx": [
+      "TagsManager"
+    ],
+    "app/(dashboard)/admin/cms/tags/page.tsx": [
+      "metadata",
+      "TagsPage"
+    ],
+    "app/(dashboard)/admin/dashboard/_components/DashboardClient.tsx": [
+      "DashboardClient"
+    ],
+    "app/(dashboard)/admin/dashboard/_components/index.ts": [
+      "DashboardClient"
+    ],
+    "app/(dashboard)/admin/dashboard/page.tsx": [
+      "metadata",
+      "DashboardPage"
+    ],
+    "app/(dashboard)/admin/error.tsx": [
+      "AdminError"
+    ],
+    "app/(dashboard)/admin/facilities/_components/columns.tsx": [
+      "columns"
+    ],
+    "app/(dashboard)/admin/facilities/_components/data-table.tsx": [
+      "DataTable"
+    ],
+    "app/(dashboard)/admin/facilities/_components/facilities-list.tsx": [
+      "FacilitiesList"
+    ],
+    "app/(dashboard)/admin/facilities/_components/index.ts": [
+      "facilityColumns",
+      "FacilitiesList",
+      "DataTable",
+      "StatusToggle"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/facility-context.tsx": [
+      "useFacility",
+      "FacilityProvider"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/facility-layout-context-handler.tsx": [
+      "FacilityLayoutContextHandler"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/index.ts": [
+      "useFacility",
+      "FacilityProvider",
+      "FacilityLayoutContextHandler",
+      "FacilityGovernanceSheet",
+      "FacilityNav",
+      "FacilityActionSidebar",
+      "PublicContactWidget",
+      "SocialLinksWidget",
+      "SlotError",
+      "CompactAmenitiesTable",
+      "AmenitiesSection",
+      "AmenitiesSkeleton",
+      "MediaGallery",
+      "FacilityProfileForm",
+      "DangerZone",
+      "DistributionLogic",
+      "LocationSection",
+      "ProfileAndSEO",
+      "FacilityLogoUpload",
+      "BrandingLogoCard",
+      "OperationsTable"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/facility-governance-sheet.tsx": [
+      "FacilityGovernanceSheet"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/facility-nav.tsx": [
+      "FacilityNav",
+      "FacilityNavSkeleton"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/index.ts": [],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/facility-action-sidebar.tsx": [
+      "FacilityActionSidebar",
+      "FacilityActionSidebarSkeleton"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/index.ts": [],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/public-contact-widget.tsx": [
+      "PublicContactWidget"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/social-links-widget.tsx": [
+      "SocialLinksWidget"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/_components/slot-error.tsx": [
+      "SlotError"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-container.tsx": [
+      "CompactAmenitiesTableContainer"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-error-boundary.tsx": [
+      "AmenitiesError"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-skeleton.tsx": [
+      "AmenitiesSkeleton"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/facility-amenities-compact.tsx": [
+      "CompactAmenitiesTable"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/index.tsx": [
+      "CompactAmenitiesTableContainer"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/amenities/error.tsx": [
+      "AmenitiesError"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/amenities/loading.tsx": [
+      "AmenitiesLoading"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/amenities/page.tsx": [
+      "generateMetadata",
+      "AmenitiesPage"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/error.tsx": [
+      "OverviewError"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/layout.tsx": [
+      "generateMetadata",
+      "FacilityManagementLayout"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/loading.tsx": [
+      "OverviewLoading"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/media/_components/media-gallery.tsx": [
+      "MediaGallery"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/media/error.tsx": [
+      "MediaError"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/media/loading.tsx": [
+      "MediaLoading"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/media/page.tsx": [
+      "generateMetadata",
+      "MediaPage"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/not-found.tsx": [
+      "metadata",
+      "FacilityNotFound"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/operations/_components/operations-control-manager.tsx": [
+      "OperationsTable"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/operations/error.tsx": [
+      "OperationsError"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/operations/loading.tsx": [
+      "OperationsLoading"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/operations/page.tsx": [
+      "generateMetadata",
+      "FacilityOperationsPage"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/page.tsx": [
+      "generateMetadata",
+      "FacilityOverviewPage"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/branding-logo-card.tsx": [
+      "BrandingLogoCard"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/danger-zone.tsx": [
+      "DangerZone"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/distribution-logic.tsx": [
+      "DistributionLogic"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/facility-logo-upload.tsx": [
+      "FacilityLogoUpload"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/facility-profile-form.tsx": [
+      "FacilityProfileForm"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/location-section.tsx": [
+      "LocationSection"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/profile-and-seo.tsx": [
+      "ProfileAndSEO"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/error.tsx": [
+      "ProfileError"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/loading.tsx": [
+      "ProfileLoading"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/profile/page.tsx": [
+      "generateMetadata",
+      "ProfilePage"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/columns.tsx": [
+      "createGroupColumns",
+      "createColumns"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/confirm-dialog.tsx": [
+      "ConfirmDialog"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/empty-state.tsx": [
+      "EmptyState"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/group-panel.tsx": [
+      "GroupPanel"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/index.ts": [
+      "createGroupColumns",
+      "TicketColumns",
+      "GroupPanel",
+      "TicketGroupSheet",
+      "TicketImageUpload",
+      "TicketManagement",
+      "TicketPanel",
+      "TicketSheet",
+      "TicketBasicInfoFields",
+      "TicketStatusSection",
+      "TicketDescriptionSection",
+      "TicketMediaSection",
+      "ConfirmDialog",
+      "EmptyState"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-basic-fields.tsx": [
+      "TicketBasicInfoFields"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-description-section.tsx": [
+      "TicketDescriptionSection"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-group-sheet.tsx": [
+      "TicketGroupSheet"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-image-upload.tsx": [
+      "TicketImageUpload"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-management.tsx": [
+      "TicketManagement"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-media-section.tsx": [
+      "TicketMediaSection"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-panel.tsx": [
+      "TicketPanel"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-sheet.tsx": [
+      "TicketSheet"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-status-section.tsx": [
+      "TicketStatusSection"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-deep-link.ts": [
+      "useDeepLink"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-dnd-sensors.ts": [
+      "useDnDSensors"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-unsaved-changes-guard.ts": [
+      "useUnsavedChangesGuard"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/error.tsx": [
+      "TicketsError"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/loading.tsx": [
+      "TicketManagementLoading"
+    ],
+    "app/(dashboard)/admin/facilities/[facility-id]/tickets/page.tsx": [
+      "generateMetadata",
+      "TicketsPage"
+    ],
+    "app/(dashboard)/admin/facilities/error.tsx": [
+      "FacilitiesError"
+    ],
+    "app/(dashboard)/admin/facilities/layout.tsx": [
+      "FacilitiesLayout"
+    ],
+    "app/(dashboard)/admin/facilities/loading.tsx": [
+      "FacilitiesLoading"
+    ],
+    "app/(dashboard)/admin/facilities/new/_components/onboard-facility-form.tsx": [
+      "OnboardFacilityForm"
+    ],
+    "app/(dashboard)/admin/facilities/new/_components/sections/configuration-section.tsx": [
+      "ConfigurationSection"
+    ],
+    "app/(dashboard)/admin/facilities/new/_components/sections/identity-section.tsx": [
+      "IdentitySection"
+    ],
+    "app/(dashboard)/admin/facilities/new/_components/sections/localization-section.tsx": [
+      "LocalizationSection"
+    ],
+    "app/(dashboard)/admin/facilities/new/error.tsx": [
+      "NewFacilityError"
+    ],
+    "app/(dashboard)/admin/facilities/new/loading.tsx": [
+      "NewFacilityLoading"
+    ],
+    "app/(dashboard)/admin/facilities/new/page.tsx": [
+      "metadata",
+      "NewFacilityPage"
+    ],
+    "app/(dashboard)/admin/facilities/page.tsx": [
+      "metadata",
+      "FacilitiesDirectoryPage"
+    ],
+    "app/(dashboard)/admin/forbidden/error.tsx": [
+      "ForbiddenError"
+    ],
+    "app/(dashboard)/admin/forbidden/loading.tsx": [
+      "ForbiddenLoading"
+    ],
+    "app/(dashboard)/admin/forbidden/page.tsx": [
+      "metadata",
+      "ForbiddenPage"
+    ],
+    "app/(dashboard)/admin/layout.tsx": [
+      "metadata",
+      "AdminRootLayout"
+    ],
+    "app/(dashboard)/admin/loading.tsx": [
+      "AdminDashboardLoading"
+    ],
+    "app/(dashboard)/admin/not-found.tsx": [
+      "metadata",
+      "AdminNotFound"
+    ],
+    "app/(dashboard)/admin/page.tsx": [
+      "AdminPage"
+    ],
+    "app/(dashboard)/admin/support/error.tsx": [
+      "SupportError"
+    ],
+    "app/(dashboard)/admin/support/loading.tsx": [
+      "SupportLoading"
+    ],
+    "app/(dashboard)/admin/support/page.tsx": [
+      "metadata",
+      "SupportPage"
+    ],
+    "app/(dashboard)/admin/users/_components/index.ts": [
+      "UsersList",
+      "UsersTable"
+    ],
+    "app/(dashboard)/admin/users/_components/users-list.tsx": [
+      "UsersList"
+    ],
+    "app/(dashboard)/admin/users/_components/users-table.tsx": [
+      "UsersTable"
+    ],
+    "app/(dashboard)/admin/users/error.tsx": [
+      "UsersError"
+    ],
+    "app/(dashboard)/admin/users/loading.tsx": [
+      "UsersLoading"
+    ],
+    "app/(dashboard)/admin/users/new/_components/create-user-form.tsx": [
+      "CreateUserForm"
+    ],
+    "app/(dashboard)/admin/users/new/error.tsx": [
+      "NewUserError"
+    ],
+    "app/(dashboard)/admin/users/new/loading.tsx": [
+      "NewUserLoading"
+    ],
+    "app/(dashboard)/admin/users/new/page.tsx": [
+      "metadata",
+      "CreateUserPage"
+    ],
+    "app/(dashboard)/admin/users/page.tsx": [
+      "metadata",
+      "UsersManagementPage"
+    ],
+    "app/(dashboard)/layout.tsx": [
+      "DashboardLayout"
+    ],
+    "app/(server)/actions/amenity-actions.ts": [
+      "deleteGlobalAmenityAction",
+      "updateFacilityAmenitiesAction",
+      "uploadAmenityImageAction",
+      "processScheduledAmenitiesAction"
+    ],
+    "app/(server)/actions/api-keys.ts": [
+      "getApiKeysAction",
+      "createApiKeyAction",
+      "deleteApiKeyAction"
+    ],
+    "app/(server)/actions/cities.ts": [
+      "manageCitiesAction"
+    ],
+    "app/(server)/actions/closures.ts": [
+      "addFacilityClosureAction",
+      "removeFacilityClosureAction"
+    ],
+    "app/(server)/actions/cms.ts": [
+      "blogPostSchema",
+      "pageSchema",
+      "categorySchema",
+      "tagSchema",
+      "createBlogPostAction",
+      "updateBlogPostAction",
+      "deleteBlogPostAction",
+      "getBlogPostAction",
+      "listBlogPostsAction",
+      "createPageAction",
+      "updatePageAction",
+      "deletePageAction",
+      "getPageAction",
+      "listPagesAction",
+      "createCategoryAction",
+      "updateCategoryAction",
+      "deleteCategoryAction",
+      "listCategoriesAction",
+      "createTagAction",
+      "updateTagAction",
+      "deleteTagAction",
+      "listTagsAction",
+      "bulkUpdateBlogPostsAction",
+      "bulkDeleteBlogPostsAction"
+    ],
+    "app/(server)/actions/facilities.ts": [
+      "bulkUpdateFacilityStatusAction",
+      "createFacilityAction",
+      "deleteFacilityAction"
+    ],
+    "app/(server)/actions/governance.ts": [
+      "updateFacilityStatusAction",
+      "updateFacilityGovernanceAction",
+      "updateFacilityOperationsAction",
+      "updateFacilitySocialLinksAction",
+      "updateFacilityContactAction",
+      "checkSlugAvailabilityAction",
+      "updateFacilityLogoAction"
+    ],
+    "app/(server)/actions/media-actions.ts": [
+      "uploadMediaAction",
+      "renameMediaAction",
+      "updateMediaPurposeAction",
+      "deleteMediaAction",
+      "updateMediaOrderAction",
+      "syncMediaAction",
+      "toggleMediaHeroAction",
+      "toggleMediaCardBackgroundAction",
+      "toggleMediaGalleryVisibilityAction",
+      "updateMediaCaptionAction",
+      "updateMediaFocalPointAction",
+      "bulkUpdateMediaCaptionAction"
+    ],
+    "app/(server)/actions/tickets.ts": [
+      "uploadTicketImageAction",
+      "renameTicketImageAction",
+      "upsertTicketAction",
+      "deleteTicketAction",
+      "getTicketGroupsAction",
+      "upsertTicketGroupAction",
+      "deleteTicketGroupAction",
+      "upsertTicketTierAction",
+      "deleteTicketTierAction",
+      "reorderTiersAction",
+      "reorderTicketGroupsAction",
+      "reorderTicketsAction"
+    ],
+    "app/(server)/actions/users.ts": [
+      "getAdminUsersAction",
+      "updateUserRoleAction",
+      "deleteUserAction",
+      "createAdminUserAction"
+    ],
+    "app/(server)/api/admin/api-keys/[id]/route.ts": [
+      "DELETE"
+    ],
+    "app/(server)/api/admin/api-keys/route.ts": [
+      "GET",
+      "POST"
+    ],
+    "app/(server)/api/admin/cities/[id]/route.ts": [
+      "PATCH",
+      "DELETE"
+    ],
+    "app/(server)/api/admin/cities/route.ts": [
+      "GET",
+      "POST"
+    ],
+    "app/(server)/api/admin/facilities/[id]/amenities/route.ts": [
+      "PUT"
+    ],
+    "app/(server)/api/admin/facilities/[id]/closures/[closureId]/route.ts": [
+      "DELETE"
+    ],
+    "app/(server)/api/admin/facilities/[id]/closures/route.ts": [
+      "GET",
+      "POST"
+    ],
+    "app/(server)/api/admin/facilities/[id]/geocode/route.ts": [
+      "PATCH"
+    ],
+    "app/(server)/api/admin/facilities/[id]/governance/route.ts": [
+      "PATCH"
+    ],
+    "app/(server)/api/admin/facilities/[id]/media/route.ts": [
+      "POST"
+    ],
+    "app/(server)/api/admin/facilities/[id]/operations/route.ts": [
+      "PATCH"
+    ],
+    "app/(server)/api/admin/facilities/[id]/route.ts": [
+      "GET",
+      "PATCH",
+      "DELETE"
+    ],
+    "app/(server)/api/admin/facilities/[id]/status/route.ts": [
+      "PATCH"
+    ],
+    "app/(server)/api/admin/facilities/route.ts": [
+      "GET",
+      "POST"
+    ],
+    "app/(server)/api/admin/search/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/admin/send-email/route.ts": [
+      "POST"
+    ],
+    "app/(server)/api/admin/stats/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/admin/ticket-groups/[id]/reorder/route.ts": [
+      "POST"
+    ],
+    "app/(server)/api/admin/ticket-groups/[id]/route.ts": [
+      "GET",
+      "PATCH",
+      "DELETE"
+    ],
+    "app/(server)/api/admin/ticket-groups/route.ts": [
+      "GET",
+      "POST"
+    ],
+    "app/(server)/api/admin/tickets/[id]/route.ts": [
+      "GET",
+      "PATCH",
+      "DELETE"
+    ],
+    "app/(server)/api/admin/tickets/route.ts": [
+      "GET",
+      "POST"
+    ],
+    "app/(server)/api/analytics/vitals/route.ts": [
+      "POST"
+    ],
+    "app/(server)/api/auth/[...all]/route.ts": [
+      "{ GET, POST }"
+    ],
+    "app/(server)/api/checkout/route.ts": [
+      "POST"
+    ],
+    "app/(server)/api/checkout/status/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/cities/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/cron/amenities/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/cron/cleanup-sessions/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/cron/publish-blog/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/menu/discovery/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/seo/redirect-ticket/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/upload/route.ts": [
+      "POST"
+    ],
+    "app/(server)/api/wallet/apple/route.ts": [
+      "GET"
+    ],
+    "app/(server)/api/webhooks/stripe/route.ts": [
+      "POST",
+      "fulfillOrder"
+    ],
+    "app/(web)/_components/NotFoundClient.tsx": [
+      "NotFoundClient"
+    ],
+    "app/(web)/_components/TicketGrid.tsx": [
+      "TicketGrid"
+    ],
+    "app/(web)/_components/WebVitals.tsx": [
+      "WebVitals"
+    ],
+    "app/(web)/[...slug]/error.tsx": [
+      "CatchAllError"
+    ],
+    "app/(web)/[...slug]/loading.tsx": [
+      "CatchAllLoading"
+    ],
+    "app/(web)/[...slug]/page.tsx": [
+      "generateMetadata",
+      "CatchAllPage"
+    ],
+    "app/(web)/[categorySlug]/page.tsx": [
+      "generateMetadata",
+      "CategoryPage"
+    ],
+    "app/(web)/@modal/(.)search/error.tsx": [
+      "InterceptedSearchError"
+    ],
+    "app/(web)/@modal/(.)search/loading.tsx": [
+      "InterceptedSearchLoading"
+    ],
+    "app/(web)/@modal/(.)search/page.tsx": [
+      "generateMetadata",
+      "InterceptedSearchPage"
+    ],
+    "app/(web)/@modal/default.tsx": [
+      "Default"
+    ],
+    "app/(web)/blog/[slug]/page.tsx": [
+      "generateMetadata",
+      "BlogPostPage"
+    ],
+    "app/(web)/blog/page.tsx": [
+      "metadata",
+      "BlogPage"
+    ],
+    "app/(web)/cart/_components/CartClient.tsx": [
+      "CartClient"
+    ],
+    "app/(web)/cart/error.tsx": [
+      "CartError"
+    ],
+    "app/(web)/cart/loading.tsx": [
+      "CartLoading"
+    ],
+    "app/(web)/cart/page.tsx": [
+      "generateMetadata",
+      "CartPage"
+    ],
+    "app/(web)/checkout/page.tsx": [
+      "metadata",
+      "CheckoutPage"
+    ],
+    "app/(web)/cookies/error.tsx": [
+      "CookiesError"
+    ],
+    "app/(web)/cookies/loading.tsx": [
+      "CookiesLoading"
+    ],
+    "app/(web)/cookies/page.tsx": [
+      "generateMetadata",
+      "CookiesPage"
+    ],
+    "app/(web)/error.tsx": [
+      "GlobalWebError"
+    ],
+    "app/(web)/facilities/_components/CategoryGrid.tsx": [
+      "CategoryGrid"
+    ],
+    "app/(web)/facilities/_components/CategoryPills.tsx": [
+      "CategoryPills"
+    ],
+    "app/(web)/facilities/_components/FacilityCard.tsx": [
+      "FacilityCard"
+    ],
+    "app/(web)/facilities/_components/FacilityGrid.tsx": [
+      "FacilityGrid"
+    ],
+    "app/(web)/facilities/_components/FacilitySkeletons.tsx": [
+      "CategoryOrbSkeleton",
+      "FacilityCardSkeleton",
+      "FacilityGridSkeleton",
+      "CategoryGridSkeleton"
+    ],
+    "app/(web)/facilities/_components/FilterBar.tsx": [
+      "FilterBar"
+    ],
+    "app/(web)/facilities/_components/LocationGrid.tsx": [
+      "LocationGrid"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/BreadcrumbInjector.tsx": [
+      "BreadcrumbInjector"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/DistanceCalculator.tsx": [
+      "DistanceCalculator"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/FacilityMap.tsx": [
+      "FacilityMap"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MapWrapper.tsx": [
+      "MapWrapper"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MediaGallery.tsx": [
+      "MediaGallery",
+      "HeroThumbnails"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MobileUnifiedControlPill.tsx": [
+      "MobileUnifiedControlPill"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/OperationalPortal.tsx": [
+      "OperationalPortal",
+      "CurrentOperationalStatus"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/PartnerBranding.tsx": [
+      "PartnerBranding"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ScrollManager.tsx": [
+      "ScrollManager"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShareButton.tsx": [
+      "ShareButton"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseAmenities.tsx": [
+      "ShowcaseAmenities"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseHero.tsx": [
+      "ShowcaseHero",
+      "WeatherBadge"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseSkeletons.tsx": [
+      "WeatherBadgeSkeleton",
+      "OperationalStatusSkeleton",
+      "TicketGridSkeleton"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseTicketGrid.tsx": [
+      "ShowcaseTicketGrid"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseTicketGroups.tsx": [
+      "ShowcaseTicketGroups"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/TicketPurchaseModal.tsx": [
+      "TicketPurchaseModal"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/WeatherWidget.tsx": [
+      "SidebarWeatherWidget"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildAttractionSchema.ts": [
+      "buildAttractionSchema"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildBreadcrumbSchema.ts": [
+      "buildBreadcrumbSchema"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildBusinessSchema.ts": [
+      "buildBusinessSchema"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildProductSchema.ts": [
+      "buildProductSchema"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildVideoSchema.ts": [
+      "buildVideoSchema"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/index.ts": [],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/types.ts": [
+      "catLabelMap"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/error.tsx": [
+      "FacilityError"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/layout.tsx": [
+      "FacilityLayout"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/loading.tsx": [
+      "FacilityLoading"
+    ],
+    "app/(web)/facilities/[categorySlug]/[facilitySlug]/page.tsx": [
+      "getFacilityMetadata",
+      "generateMetadata",
+      "FacilityShowcaseTemplate",
+      "FacilityShowcasePage"
+    ],
+    "app/(web)/facilities/[categorySlug]/error.tsx": [
+      "DiscoveryError"
+    ],
+    "app/(web)/facilities/[categorySlug]/loading.tsx": [
+      "DiscoveryLoading"
+    ],
+    "app/(web)/facilities/[categorySlug]/page.tsx": [
+      "getDiscoveryMetadata",
+      "DiscoveryTemplate",
+      "generateMetadata",
+      "DiscoveryPage"
+    ],
+    "app/(web)/facilities/error.tsx": [
+      "FacilitiesRootError"
+    ],
+    "app/(web)/facilities/loading.tsx": [
+      "FacilitiesRootLoading"
+    ],
+    "app/(web)/facilities/page.tsx": [
+      "LegacyFacilitiesPage",
+      "generateMetadata"
+    ],
+    "app/(web)/how-it-works/_components/HowItWorksSteps.tsx": [
+      "HowItWorksSteps"
+    ],
+    "app/(web)/how-it-works/error.tsx": [
+      "HowItWorksError"
+    ],
+    "app/(web)/how-it-works/loading.tsx": [
+      "HowItWorksLoading"
+    ],
+    "app/(web)/how-it-works/page.tsx": [
+      "generateMetadata",
+      "HowItWorksPage"
+    ],
+    "app/(web)/layout.tsx": [
+      "WebLayout"
+    ],
+    "app/(web)/loading.tsx": [
+      "WebLoading"
+    ],
+    "app/(web)/not-found.tsx": [
+      "metadata",
+      "NotFound"
+    ],
+    "app/(web)/page.tsx": [
+      "generateMetadata",
+      "LandingPage"
+    ],
+    "app/(web)/privacy/error.tsx": [
+      "PrivacyError"
+    ],
+    "app/(web)/privacy/loading.tsx": [
+      "PrivacyLoading"
+    ],
+    "app/(web)/privacy/page.tsx": [
+      "generateMetadata",
+      "PrivacyPage"
+    ],
+    "app/(web)/search/error.tsx": [
+      "SearchError"
+    ],
+    "app/(web)/search/loading.tsx": [
+      "SearchLoading"
+    ],
+    "app/(web)/search/page.tsx": [
+      "generateMetadata",
+      "SearchPage"
+    ],
+    "app/(web)/success/_components/SuccessClient.tsx": [
+      "SuccessClient"
+    ],
+    "app/(web)/success/_components/SuccessSkeleton.tsx": [
+      "SuccessSkeleton"
+    ],
+    "app/(web)/success/error.tsx": [
+      "SuccessError"
+    ],
+    "app/(web)/success/loading.tsx": [
+      "SuccessLoading"
+    ],
+    "app/(web)/success/page.tsx": [
+      "generateMetadata",
+      "SuccessPage"
+    ],
+    "app/(web)/support/error.tsx": [
+      "SupportError"
+    ],
+    "app/(web)/support/loading.tsx": [
+      "SupportLoading"
+    ],
+    "app/(web)/support/page.tsx": [
+      "generateMetadata",
+      "SupportPage"
+    ],
+    "app/(web)/terms/error.tsx": [
+      "TermsError"
+    ],
+    "app/(web)/terms/loading.tsx": [
+      "TermsLoading"
+    ],
+    "app/(web)/terms/page.tsx": [
+      "generateMetadata",
+      "TermsPage"
+    ],
+    "app/blog/feed.xml/route.ts": [
+      "revalidate",
+      "GET"
+    ],
+    "app/global-error.tsx": [
+      "GlobalError"
+    ],
+    "app/global-not-found.tsx": [
+      "GlobalNotFound"
+    ],
+    "app/layout.tsx": [
+      "viewport",
+      "generateMetadata",
+      "RootLayout"
+    ],
+    "app/not-found.tsx": [
+      "metadata",
+      "NotFound"
+    ],
+    "app/robots.ts": [
+      "robots"
+    ],
+    "app/sitemap.ts": [
+      "revalidate",
+      "sitemap"
+    ],
+    "components/cart/AddToCartButton.tsx": [
+      "AddToCartButton"
+    ],
+    "components/cart/CartDrawer.tsx": [
+      "CartDrawer"
+    ],
+    "components/cart/CartLoader.tsx": [
+      "CartLoader"
+    ],
+    "components/layout/_header/breadcrumb/Breadcrumb.tsx": [
+      "Breadcrumb"
+    ],
+    "components/layout/_header/hooks/useHeaderScroll.ts": [
+      "useHeaderScroll"
+    ],
+    "components/layout/_header/index.ts": [
+      "MegaMenu",
+      "Logo",
+      "AccountButton",
+      "CartButton",
+      "OfflineIndicator",
+      "MobileTopNav",
+      "DesktopTopNav",
+      "Breadcrumb",
+      "MobileOverlay",
+      "MobileOverlayHeader",
+      "MobileCityPicker",
+      "useHeaderScroll"
+    ],
+    "components/layout/_header/mega-menu/index.ts": [
+      "MegaMenu"
+    ],
+    "components/layout/_header/mega-menu/MegaMenu.tsx": [
+      "MegaMenu"
+    ],
+    "components/layout/_header/mobile-overlay/MobileCityPicker.tsx": [
+      "MobileCityPicker"
+    ],
+    "components/layout/_header/mobile-overlay/MobileOverlay.tsx": [
+      "MobileOverlay"
+    ],
+    "components/layout/_header/mobile-overlay/MobileOverlayHeader.tsx": [
+      "MobileOverlayHeader"
+    ],
+    "components/layout/_header/top-nav/AccountButton.tsx": [
+      "AccountButton"
+    ],
+    "components/layout/_header/top-nav/CartButton.tsx": [
+      "CartButton"
+    ],
+    "components/layout/_header/top-nav/DesktopTopNav.tsx": [
+      "DesktopTopNav"
+    ],
+    "components/layout/_header/top-nav/Logo.tsx": [
+      "Logo"
+    ],
+    "components/layout/_header/top-nav/MobileTopNav.tsx": [
+      "MobileTopNav"
+    ],
+    "components/layout/_header/top-nav/OfflineIndicator.tsx": [
+      "OfflineIndicator"
+    ],
+    "components/layout/_header/top-nav/ThemeToggle.tsx": [
+      "ThemeToggle"
+    ],
+    "components/layout/BreadcrumbBar.tsx": [
+      "BreadcrumbBar"
+    ],
+    "components/layout/Footer.tsx": [
+      "Footer"
+    ],
+    "components/layout/Header.tsx": [
+      "Header"
+    ],
+    "components/providers/ThemeProvider.tsx": [
+      "ThemeProvider"
+    ],
+    "components/search/GlobalSearch.tsx": [
+      "GlobalSearch"
+    ],
+    "components/SEO/JsonLd.tsx": [
+      "JsonLd"
+    ],
+    "components/shared/IdentitySetupDialog.tsx": [
+      "IdentitySetupDialog"
+    ],
+    "components/shared/section-cards.tsx": [
+      "SectionCards"
+    ],
+    "components/shared/ShareButton.tsx": [
+      "ShareButton"
+    ],
+    "components/ui/accordion.tsx": [
+      "Accordion",
+      "AccordionItem",
+      "AccordionTrigger",
+      "AccordionContent"
+    ],
+    "components/ui/avatar.tsx": [
+      "Avatar",
+      "AvatarImage",
+      "AvatarFallback",
+      "AvatarGroup",
+      "AvatarGroupCount",
+      "AvatarBadge"
+    ],
+    "components/ui/badge.tsx": [
+      "Badge",
+      "badgeVariants"
+    ],
+    "components/ui/breadcrumb.tsx": [
+      "Breadcrumb",
+      "BreadcrumbList",
+      "BreadcrumbItem",
+      "BreadcrumbLink",
+      "BreadcrumbPage",
+      "BreadcrumbSeparator",
+      "BreadcrumbEllipsis"
+    ],
+    "components/ui/button.tsx": [
+      "Button",
+      "buttonVariants"
+    ],
+    "components/ui/calendar.tsx": [
+      "Calendar",
+      "CalendarDayButton"
+    ],
+    "components/ui/card.tsx": [
+      "Card",
+      "CardHeader",
+      "CardFooter",
+      "CardTitle",
+      "CardAction",
+      "CardDescription",
+      "CardContent"
+    ],
+    "components/ui/chart.tsx": [
+      "ChartContainer",
+      "ChartTooltip",
+      "ChartTooltipContent",
+      "ChartLegend",
+      "ChartLegendContent",
+      "ChartStyle"
+    ],
+    "components/ui/checkbox.tsx": [
+      "Checkbox"
+    ],
+    "components/ui/collapsible.tsx": [
+      "Collapsible",
+      "CollapsibleTrigger",
+      "CollapsibleContent"
+    ],
+    "components/ui/command.tsx": [
+      "Command",
+      "CommandDialog",
+      "CommandInput",
+      "CommandList",
+      "CommandEmpty",
+      "CommandGroup",
+      "CommandItem",
+      "CommandShortcut",
+      "CommandSeparator"
+    ],
+    "components/ui/dialog.tsx": [
+      "Dialog",
+      "DialogClose",
+      "DialogContent",
+      "DialogDescription",
+      "DialogFooter",
+      "DialogHeader",
+      "DialogOverlay",
+      "DialogPortal",
+      "DialogTitle",
+      "DialogTrigger"
+    ],
+    "components/ui/dropdown-menu.tsx": [
+      "DropdownMenu",
+      "DropdownMenuPortal",
+      "DropdownMenuTrigger",
+      "DropdownMenuContent",
+      "DropdownMenuGroup",
+      "DropdownMenuLabel",
+      "DropdownMenuItem",
+      "DropdownMenuCheckboxItem",
+      "DropdownMenuRadioGroup",
+      "DropdownMenuRadioItem",
+      "DropdownMenuSeparator",
+      "DropdownMenuShortcut",
+      "DropdownMenuSub",
+      "DropdownMenuSubTrigger",
+      "DropdownMenuSubContent"
+    ],
+    "components/ui/form.tsx": [
+      "useFormField",
+      "Form",
+      "FormItem",
+      "FormLabel",
+      "FormControl",
+      "FormDescription",
+      "FormMessage",
+      "FormField"
+    ],
+    "components/ui/GlobalAmbient.tsx": [
+      "GlobalAmbient"
+    ],
+    "components/ui/Icon.tsx": [
+      "Icon"
+    ],
+    "components/ui/input.tsx": [
+      "Input"
+    ],
+    "components/ui/label.tsx": [
+      "Label"
+    ],
+    "components/ui/LiquidButton.tsx": [
+      "LiquidButton"
+    ],
+    "components/ui/navigation-menu.tsx": [
+      "NavigationMenu",
+      "NavigationMenuList",
+      "NavigationMenuItem",
+      "NavigationMenuContent",
+      "NavigationMenuTrigger",
+      "NavigationMenuLink",
+      "NavigationMenuIndicator",
+      "NavigationMenuViewport",
+      "navigationMenuTriggerStyle"
+    ],
+    "components/ui/popover.tsx": [
+      "Popover",
+      "PopoverAnchor",
+      "PopoverContent",
+      "PopoverDescription",
+      "PopoverHeader",
+      "PopoverTitle",
+      "PopoverTrigger"
+    ],
+    "components/ui/progress.tsx": [
+      "Progress"
+    ],
+    "components/ui/RouteErrorBoundary.tsx": [
+      "RouteErrorBoundary"
+    ],
+    "components/ui/scroll-area.tsx": [
+      "ScrollArea",
+      "ScrollBar"
+    ],
+    "components/ui/select.tsx": [
+      "Select",
+      "SelectContent",
+      "SelectGroup",
+      "SelectItem",
+      "SelectLabel",
+      "SelectScrollDownButton",
+      "SelectScrollUpButton",
+      "SelectSeparator",
+      "SelectTrigger",
+      "SelectValue"
+    ],
+    "components/ui/separator.tsx": [
+      "Separator"
+    ],
+    "components/ui/sheet.tsx": [
+      "Sheet",
+      "SheetTrigger",
+      "SheetClose",
+      "SheetContent",
+      "SheetHeader",
+      "SheetFooter",
+      "SheetTitle",
+      "SheetDescription"
+    ],
+    "components/ui/sidebar.tsx": [
+      "Sidebar",
+      "SidebarContent",
+      "SidebarFooter",
+      "SidebarGroup",
+      "SidebarGroupAction",
+      "SidebarGroupContent",
+      "SidebarGroupLabel",
+      "SidebarHeader",
+      "SidebarInput",
+      "SidebarInset",
+      "SidebarMenu",
+      "SidebarMenuAction",
+      "SidebarMenuBadge",
+      "SidebarMenuButton",
+      "SidebarMenuItem",
+      "SidebarMenuSkeleton",
+      "SidebarMenuSub",
+      "SidebarMenuSubButton",
+      "SidebarMenuSubItem",
+      "SidebarProvider",
+      "SidebarRail",
+      "SidebarSeparator",
+      "SidebarTrigger",
+      "useSidebar"
+    ],
+    "components/ui/skeleton.tsx": [
+      "Skeleton"
+    ],
+    "components/ui/sonner.tsx": [
+      "Toaster"
+    ],
+    "components/ui/StatsGrid.tsx": [
+      "StatsGrid"
+    ],
+    "components/ui/switch.tsx": [
+      "Switch"
+    ],
+    "components/ui/table.tsx": [
+      "Table",
+      "TableHeader",
+      "TableBody",
+      "TableFooter",
+      "TableHead",
+      "TableRow",
+      "TableCell",
+      "TableCaption"
+    ],
+    "components/ui/tabs.tsx": [
+      "Tabs",
+      "TabsList",
+      "TabsTrigger",
+      "TabsContent",
+      "tabsListVariants"
+    ],
+    "components/ui/textarea.tsx": [
+      "Textarea"
+    ],
+    "components/ui/TicketCardSkeleton.tsx": [
+      "TicketCardSkeleton"
+    ],
+    "components/ui/toggle-group.tsx": [
+      "ToggleGroup",
+      "ToggleGroupItem"
+    ],
+    "components/ui/toggle.tsx": [
+      "Toggle",
+      "toggleVariants"
+    ],
+    "components/ui/tooltip.tsx": [
+      "Tooltip",
+      "TooltipContent",
+      "TooltipProvider",
+      "TooltipTrigger"
+    ],
+    "config/admin-nav.ts": [
+      "adminNavData"
+    ],
+    "eslint.config.mjs": [],
+    "hooks/use-action.ts": [
+      "useAction"
+    ],
+    "hooks/use-breadcrumb.ts": [
+      "useBreadcrumb"
+    ],
+    "hooks/use-cart.ts": [
+      "MAX_QUANTITY_PER_ITEM",
+      "useCart",
+      "initCartSync"
+    ],
+    "hooks/use-mobile.ts": [
+      "useIsMobile"
+    ],
+    "hooks/use-ui-state.ts": [
+      "useUIState"
+    ],
+    "instrumentation.ts": [
+      "register"
+    ],
+    "lib/auth-client.ts": [
+      "authClient"
+    ],
+    "lib/client-dictionaries/index.ts": [
+      "getClientDictionary"
+    ],
+    "lib/constants.ts": [
+      "APP_VERSION",
+      "BUILD_YEAR"
+    ],
+    "lib/data/admin.ts": [
+      "getAdminDashboardStats",
+      "getRecentActivity",
+      "getFacilityCounts",
+      "getUserCounts",
+      "getFacilityName"
+    ],
+    "lib/dictionaries.ts": [
+      "getDictionary"
+    ],
+    "lib/media/client-image-optimizer.ts": [
+      "optimizeImageOnClient"
+    ],
+    "lib/routing/config.ts": [
+      "ROUTING_CONFIG"
+    ],
+    "lib/routing/discovery.tsx": [
+      "getDiscoveryMetadata",
+      "DiscoveryTemplate"
+    ],
+    "lib/serialize.ts": [
+      "serialize"
+    ],
+    "lib/types.ts": [],
+    "lib/utils.test.ts": [],
+    "lib/utils.ts": [
+      "cn"
+    ],
+    "lib/utils/date-time.ts": [
+      "DAYS_SR",
+      "DAYS_SR_OBJECTS",
+      "formatTime24h",
+      "calculateDuration"
+    ],
+    "lib/utils/pricing.test.ts": [],
+    "lib/utils/pricing.ts": [
+      "getDayType",
+      "resolveTicketsForDate",
+      "formatPrice",
+      "calculateMaxDiscount"
+    ],
+    "next.config.ts": [],
+    "packages/contracts/contracts/IdentityRegistry.sol": [],
+    "postcss.config.mjs": [],
+    "prisma.config.ts": [],
+    "prisma/seed-admin.ts": [],
+    "prisma/seed-cities.ts": [],
+    "prisma/seed-enhanced.ts": [],
+    "prisma/seed.ts": [],
+    "proxy.ts": [
+      "proxy",
+      "config"
+    ],
+    "public/site.webmanifest": [],
+    "scripts/check-seo.mjs": [],
+    "scripts/check-structured-data.mjs": [],
+    "server/actions/__tests__/facilities.test.ts": [],
+    "server/actions/api-keys.ts": [
+      "createApiKeyAction",
+      "deleteApiKeyAction"
+    ],
+    "server/actions/cities.ts": [
+      "manageCitiesAction"
+    ],
+    "server/actions/closures.ts": [
+      "addFacilityClosureAction",
+      "removeFacilityClosureAction"
+    ],
+    "server/actions/cms.ts": [
+      "blogPostSchema",
+      "pageSchema",
+      "categorySchema",
+      "tagSchema",
+      "createBlogPostAction",
+      "updateBlogPostAction",
+      "deleteBlogPostAction",
+      "getBlogPostAction",
+      "listBlogPostsAction",
+      "createPageAction",
+      "updatePageAction",
+      "deletePageAction",
+      "getPageAction",
+      "listPagesAction",
+      "createCategoryAction",
+      "updateCategoryAction",
+      "deleteCategoryAction",
+      "listCategoriesAction",
+      "createTagAction",
+      "updateTagAction",
+      "deleteTagAction",
+      "listTagsAction",
+      "bulkUpdateBlogPostsAction",
+      "bulkDeleteBlogPostsAction"
+    ],
+    "server/actions/facilities.ts": [
+      "bulkUpdateFacilityStatusAction",
+      "createFacilityAction",
+      "deleteFacilityAction"
+    ],
+    "server/actions/governance.ts": [
+      "updateFacilityStatusAction",
+      "updateFacilityGovernanceAction",
+      "updateFacilityOperationsAction",
+      "updateFacilitySocialLinksAction",
+      "updateFacilityContactAction",
+      "checkSlugAvailabilityAction",
+      "updateFacilityLogoAction"
+    ],
+    "server/actions/media-actions.ts": [
+      "uploadMediaAction",
+      "renameMediaAction",
+      "updateMediaPurposeAction",
+      "deleteMediaAction",
+      "updateMediaOrderAction",
+      "syncMediaAction",
+      "toggleMediaHeroAction",
+      "toggleMediaCardBackgroundAction",
+      "toggleMediaGalleryVisibilityAction",
+      "updateMediaCaptionAction",
+      "updateMediaFocalPointAction",
+      "bulkUpdateMediaCaptionAction"
+    ],
+    "server/actions/tickets.ts": [
+      "uploadTicketImageAction",
+      "renameTicketImageAction",
+      "upsertTicketAction",
+      "deleteTicketAction",
+      "getTicketGroupsAction",
+      "upsertTicketGroupAction",
+      "deleteTicketGroupAction",
+      "upsertTicketTierAction",
+      "deleteTicketTierAction",
+      "reorderTiersAction",
+      "reorderTicketGroupsAction",
+      "reorderTicketsAction"
+    ],
+    "server/actions/users.ts": [
+      "getAdminUsersAction",
+      "updateUserRoleAction",
+      "deleteUserAction",
+      "createAdminUserAction"
+    ],
+    "server/auth.ts": [
+      "authOptions",
+      "getSession"
+    ],
+    "server/lib/actions/newsletter.ts": [
+      "subscribeToNewsletter"
+    ],
+    "server/lib/actions/validator.ts": [
+      "validateAction"
+    ],
+    "server/lib/admin-bootstrap.ts": [
+      "bootstrapSuperAdmin"
+    ],
+    "server/lib/api-key-auth.ts": [
+      "hashApiKey",
+      "generateApiKey",
+      "authenticateRequest"
+    ],
+    "server/lib/auth-guards.ts": [
+      "requireAdmin",
+      "requireSuperAdmin",
+      "validateFacilityAccess"
+    ],
+    "server/lib/auth.ts": [
+      "auth"
+    ],
+    "server/lib/data/discovery.ts": [
+      "getActiveCities",
+      "getDiscoveryCategories",
+      "validateDiscoverySlug"
+    ],
+    "server/lib/email-templates/reset-password.ts": [
+      "buildResetPasswordHtml"
+    ],
+    "server/lib/email-templates/theme.ts": [
+      "EMAIL_THEME",
+      "EMAIL_COMMON_STYLES"
+    ],
+    "server/lib/email-templates/ticket-delivery.ts": [
+      "buildTicketDeliveryHtml",
+      "buildTicketDeliveryText"
+    ],
+    "server/lib/email.ts": [
+      "configureEmailReporter",
+      "sendEmail"
+    ],
+    "server/lib/error-messages.ts": [
+      "AUTH_ERROR"
+    ],
+    "server/lib/index.ts": [
+      "auth",
+      "prisma",
+      "AUTH_ERROR",
+      "requireAdmin",
+      "requireSuperAdmin",
+      "validateFacilityAccess",
+      "validateAction",
+      "subscribeToNewsletter",
+      "configureEmailReporter",
+      "sendEmail",
+      "generateIdempotencyKey",
+      "withStripeRetry",
+      "processImageToWebP",
+      "generateThumbnail",
+      "processTicketImage",
+      "handleServerActionError",
+      "ActionResult",
+      "withFacilityAccess",
+      "hashApiKey",
+      "generateApiKey",
+      "authenticateRequest",
+      "bootstrapSuperAdmin",
+      "getActiveCities",
+      "getDiscoveryCategories",
+      "validateDiscoverySlug",
+      "getSummerSeasonEnd",
+      "getSummerSeasonStart",
+      "getNextSubscriptionExpiry",
+      "revalidateAdmin",
+      "revalidateAdminFacilities",
+      "revalidateAdminFacility",
+      "revalidateAdminAmenities",
+      "revalidateAdminMedia",
+      "revalidateAdminUsers"
+    ],
+    "server/lib/media.ts": [
+      "processImageToWebP",
+      "generateThumbnail",
+      "processTicketImage"
+    ],
+    "server/lib/prisma.ts": [
+      "prisma"
+    ],
+    "server/lib/revalidation.ts": [
+      "ADMIN_PATHS",
+      "PUBLIC_PATHS",
+      "revalidateAdmin",
+      "revalidateAdminFacilities",
+      "revalidateAdminFacility",
+      "revalidateAdminAmenities",
+      "revalidateAdminMedia",
+      "revalidateAdminUsers",
+      "CMS_PATHS",
+      "revalidateAdminPosts",
+      "revalidateAdminPost",
+      "revalidateAdminPages",
+      "revalidateAdminPage",
+      "revalidateAdminCategories",
+      "revalidateAdminTags"
+    ],
+    "server/lib/server-action-error.ts": [
+      "handleServerActionError"
+    ],
+    "server/lib/stripe-utils.ts": [
+      "generateIdempotencyKey",
+      "withStripeRetry"
+    ],
+    "server/lib/utils/seasonal.ts": [
+      "getSummerSeasonEnd",
+      "getSummerSeasonStart",
+      "getNextSubscriptionExpiry"
+    ],
+    "server/lib/validations/facility.ts": [
+      "facilitySchema",
+      "updateFacilityGovernanceSchema",
+      "updateFacilityAmenitiesSchema",
+      "updateFacilityStatusSchema",
+      "updateFacilityOperationsSchema"
+    ],
+    "server/lib/validations/image.ts": [
+      "imageFileNameSchema",
+      "renameTicketImageSchema"
+    ],
+    "server/lib/validations/media.ts": [
+      "mediaUploadSchema",
+      "renameMediaSchema"
+    ],
+    "server/lib/validations/ticket.ts": [
+      "ticketSchema",
+      "upsertTicketSchema",
+      "groupTicketSchema",
+      "ticketGroupSchema",
+      "reorderSchema",
+      "slugSchema"
+    ],
+    "server/lib/with-facility-access.ts": [
+      "withFacilityAccess"
+    ],
+    "vitest.config.ts": []
+  },
+  "batches": [
+    {
+      "batchIndex": 1,
+      "files": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "language": "yaml",
+          "sizeLines": 70,
+          "fileCategory": "infra"
+        }
+      ],
+      "batchImportData": {
+        ".github/workflows/ci.yml": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 2,
+      "files": [
+        {
+          "path": ".env.example",
+          "language": "config",
+          "sizeLines": 34,
+          "fileCategory": "config"
+        },
+        {
+          "path": "README.md",
+          "language": "markdown",
+          "sizeLines": 86,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "SKILL.md",
+          "language": "markdown",
+          "sizeLines": 18,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "components.json",
+          "language": "json",
+          "sizeLines": 25,
+          "fileCategory": "config"
+        },
+        {
+          "path": "package.json",
+          "language": "json",
+          "sizeLines": 116,
+          "fileCategory": "config"
+        },
+        {
+          "path": "tsconfig.json",
+          "language": "json",
+          "sizeLines": 50,
+          "fileCategory": "config"
+        },
+        {
+          "path": "vercel.json",
+          "language": "json",
+          "sizeLines": 25,
+          "fileCategory": "config"
+        }
+      ],
+      "batchImportData": {
+        ".env.example": [],
+        "README.md": [],
+        "SKILL.md": [],
+        "components.json": [],
+        "package.json": [],
+        "tsconfig.json": [],
+        "vercel.json": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 3,
+      "files": [
+        {
+          "path": ".node-version",
+          "language": "unknown",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": ".nvmrc",
+          "language": "unknown",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/_components/ErrorBanner.tsx",
+          "language": "typescript",
+          "sizeLines": 10,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/_components/index.ts",
+          "language": "typescript",
+          "sizeLines": 2,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/_components/PasswordInput.tsx",
+          "language": "typescript",
+          "sizeLines": 53,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/error.tsx",
+          "language": "typescript",
+          "sizeLines": 48,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/forgot-password/page.tsx",
+          "language": "typescript",
+          "sizeLines": 130,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/globals.css",
+          "language": "css",
+          "sizeLines": 33,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "app/(auth)/auth/layout.tsx",
+          "language": "typescript",
+          "sizeLines": 77,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/login/page.tsx",
+          "language": "typescript",
+          "sizeLines": 148,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(auth)/auth/reset-password/page.tsx",
+          "language": "typescript",
+          "sizeLines": 192,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/AdminMetricCard.tsx",
+          "language": "typescript",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/AdminSkeleton.tsx",
+          "language": "typescript",
+          "sizeLines": 53,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/breadcrumb-context.tsx",
+          "language": "typescript",
+          "sizeLines": 52,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/breadcrumbs.tsx",
+          "language": "typescript",
+          "sizeLines": 95,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/chart-area-interactive.tsx",
+          "language": "typescript",
+          "sizeLines": 314,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/CommandPalette.tsx",
+          "language": "typescript",
+          "sizeLines": 180,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/sidebar/admin-sidebar.tsx",
+          "language": "typescript",
+          "sizeLines": 330,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/sidebar/search-form.tsx",
+          "language": "typescript",
+          "sizeLines": 45,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/StatusToggle.tsx",
+          "language": "typescript",
+          "sizeLines": 106,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_common/TableSkeleton.tsx",
+          "language": "typescript",
+          "sizeLines": 39,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_components/AdminLayoutShell.tsx",
+          "language": "typescript",
+          "sizeLines": 67,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/_components/index.ts",
+          "language": "typescript",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/api-keys/api-keys-client.tsx",
+          "language": "typescript",
+          "sizeLines": 256,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        ".node-version": [],
+        ".nvmrc": [],
+        "app/(auth)/auth/_components/ErrorBanner.tsx": [],
+        "app/(auth)/auth/_components/index.ts": [],
+        "app/(auth)/auth/_components/PasswordInput.tsx": [],
+        "app/(auth)/auth/error.tsx": [],
+        "app/(auth)/auth/forgot-password/page.tsx": [],
+        "app/(auth)/auth/globals.css": [],
+        "app/(auth)/auth/layout.tsx": [],
+        "app/(auth)/auth/loading.tsx": [],
+        "app/(auth)/auth/login/page.tsx": [],
+        "app/(auth)/auth/reset-password/page.tsx": [],
+        "app/(dashboard)/admin/_common/AdminMetricCard.tsx": [],
+        "app/(dashboard)/admin/_common/AdminSkeleton.tsx": [],
+        "app/(dashboard)/admin/_common/breadcrumb-context.tsx": [],
+        "app/(dashboard)/admin/_common/breadcrumbs.tsx": [],
+        "app/(dashboard)/admin/_common/chart-area-interactive.tsx": [],
+        "app/(dashboard)/admin/_common/CommandPalette.tsx": [],
+        "app/(dashboard)/admin/_common/sidebar/admin-sidebar.tsx": [],
+        "app/(dashboard)/admin/_common/sidebar/search-form.tsx": [],
+        "app/(dashboard)/admin/_common/StatusToggle.tsx": [],
+        "app/(dashboard)/admin/_common/TableSkeleton.tsx": [],
+        "app/(dashboard)/admin/_components/AdminLayoutShell.tsx": [],
+        "app/(dashboard)/admin/_components/index.ts": [],
+        "app/(dashboard)/admin/api-keys/api-keys-client.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 4,
+      "files": [
+        {
+          "path": "app/(dashboard)/admin/api-keys/error.tsx",
+          "language": "typescript",
+          "sizeLines": 50,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/api-keys/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/api-keys/page.tsx",
+          "language": "typescript",
+          "sizeLines": 36,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/_components/image-upload-plugin.ts",
+          "language": "typescript",
+          "sizeLines": 81,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/_components/rich-text-editor.tsx",
+          "language": "typescript",
+          "sizeLines": 292,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/_components/seo-panel.tsx",
+          "language": "typescript",
+          "sizeLines": 147,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/ARCHITECTURE.md",
+          "language": "markdown",
+          "sizeLines": 182,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/categories/_components/categories-manager.tsx",
+          "language": "typescript",
+          "sizeLines": 255,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/categories/page.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/error.tsx",
+          "language": "typescript",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 5,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/page.tsx",
+          "language": "typescript",
+          "sizeLines": 5,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/pages/_components/page-editor.tsx",
+          "language": "typescript",
+          "sizeLines": 200,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/pages/_components/pages-list-client.tsx",
+          "language": "typescript",
+          "sizeLines": 242,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/pages/[page-id]/page.tsx",
+          "language": "typescript",
+          "sizeLines": 48,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/pages/new/page.tsx",
+          "language": "typescript",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/pages/page.tsx",
+          "language": "typescript",
+          "sizeLines": 47,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/posts/_components/post-editor.tsx",
+          "language": "typescript",
+          "sizeLines": 248,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/posts/_components/posts-list-client.tsx",
+          "language": "typescript",
+          "sizeLines": 306,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/posts/[post-id]/page.tsx",
+          "language": "typescript",
+          "sizeLines": 71,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/posts/error.tsx",
+          "language": "typescript",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/posts/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 5,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/posts/new/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 5,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/posts/new/page.tsx",
+          "language": "typescript",
+          "sizeLines": 53,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/posts/page.tsx",
+          "language": "typescript",
+          "sizeLines": 53,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(dashboard)/admin/api-keys/error.tsx": [],
+        "app/(dashboard)/admin/api-keys/loading.tsx": [],
+        "app/(dashboard)/admin/api-keys/page.tsx": [],
+        "app/(dashboard)/admin/cms/_components/image-upload-plugin.ts": [],
+        "app/(dashboard)/admin/cms/_components/rich-text-editor.tsx": [],
+        "app/(dashboard)/admin/cms/_components/seo-panel.tsx": [],
+        "app/(dashboard)/admin/cms/ARCHITECTURE.md": [],
+        "app/(dashboard)/admin/cms/categories/_components/categories-manager.tsx": [],
+        "app/(dashboard)/admin/cms/categories/page.tsx": [],
+        "app/(dashboard)/admin/cms/error.tsx": [],
+        "app/(dashboard)/admin/cms/loading.tsx": [],
+        "app/(dashboard)/admin/cms/page.tsx": [],
+        "app/(dashboard)/admin/cms/pages/_components/page-editor.tsx": [],
+        "app/(dashboard)/admin/cms/pages/_components/pages-list-client.tsx": [],
+        "app/(dashboard)/admin/cms/pages/[page-id]/page.tsx": [],
+        "app/(dashboard)/admin/cms/pages/new/page.tsx": [],
+        "app/(dashboard)/admin/cms/pages/page.tsx": [],
+        "app/(dashboard)/admin/cms/posts/_components/post-editor.tsx": [],
+        "app/(dashboard)/admin/cms/posts/_components/posts-list-client.tsx": [],
+        "app/(dashboard)/admin/cms/posts/[post-id]/page.tsx": [],
+        "app/(dashboard)/admin/cms/posts/error.tsx": [],
+        "app/(dashboard)/admin/cms/posts/loading.tsx": [],
+        "app/(dashboard)/admin/cms/posts/new/loading.tsx": [],
+        "app/(dashboard)/admin/cms/posts/new/page.tsx": [],
+        "app/(dashboard)/admin/cms/posts/page.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 5,
+      "files": [
+        {
+          "path": "app/(dashboard)/admin/cms/tags/_components/tags-manager.tsx",
+          "language": "typescript",
+          "sizeLines": 208,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/cms/tags/page.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/dashboard/_components/DashboardClient.tsx",
+          "language": "typescript",
+          "sizeLines": 119,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/dashboard/_components/index.ts",
+          "language": "typescript",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/dashboard/page.tsx",
+          "language": "typescript",
+          "sizeLines": 22,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/error.tsx",
+          "language": "typescript",
+          "sizeLines": 66,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/_components/columns.tsx",
+          "language": "typescript",
+          "sizeLines": 217,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/_components/data-table.tsx",
+          "language": "typescript",
+          "sizeLines": 371,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/_components/facilities-list.tsx",
+          "language": "typescript",
+          "sizeLines": 50,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/_components/index.ts",
+          "language": "typescript",
+          "sizeLines": 5,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/facility-context.tsx",
+          "language": "typescript",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/facility-layout-context-handler.tsx",
+          "language": "typescript",
+          "sizeLines": 29,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/index.ts",
+          "language": "typescript",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/facility-governance-sheet.tsx",
+          "language": "typescript",
+          "sizeLines": 157,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/facility-nav.tsx",
+          "language": "typescript",
+          "sizeLines": 146,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/index.ts",
+          "language": "typescript",
+          "sizeLines": 2,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/facility-action-sidebar.tsx",
+          "language": "typescript",
+          "sizeLines": 71,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/index.ts",
+          "language": "typescript",
+          "sizeLines": 3,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/public-contact-widget.tsx",
+          "language": "typescript",
+          "sizeLines": 84,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/social-links-widget.tsx",
+          "language": "typescript",
+          "sizeLines": 104,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/_components/slot-error.tsx",
+          "language": "typescript",
+          "sizeLines": 50,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-container.tsx",
+          "language": "typescript",
+          "sizeLines": 79,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-error-boundary.tsx",
+          "language": "typescript",
+          "sizeLines": 46,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-skeleton.tsx",
+          "language": "typescript",
+          "sizeLines": 62,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/facility-amenities-compact.tsx",
+          "language": "typescript",
+          "sizeLines": 574,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(dashboard)/admin/cms/tags/_components/tags-manager.tsx": [],
+        "app/(dashboard)/admin/cms/tags/page.tsx": [],
+        "app/(dashboard)/admin/dashboard/_components/DashboardClient.tsx": [],
+        "app/(dashboard)/admin/dashboard/_components/index.ts": [],
+        "app/(dashboard)/admin/dashboard/page.tsx": [],
+        "app/(dashboard)/admin/error.tsx": [],
+        "app/(dashboard)/admin/facilities/_components/columns.tsx": [],
+        "app/(dashboard)/admin/facilities/_components/data-table.tsx": [],
+        "app/(dashboard)/admin/facilities/_components/facilities-list.tsx": [],
+        "app/(dashboard)/admin/facilities/_components/index.ts": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/facility-context.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/facility-layout-context-handler.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/index.ts": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/facility-governance-sheet.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/facility-nav.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/nav/index.ts": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/facility-action-sidebar.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/index.ts": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/public-contact-widget.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/sidebar/social-links-widget.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/_components/slot-error.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-container.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-error-boundary.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/amenities-skeleton.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/facility-amenities-compact.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 6,
+      "files": [
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/index.tsx",
+          "language": "typescript",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/error.tsx",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 34,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/page.tsx",
+          "language": "typescript",
+          "sizeLines": 82,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/error.tsx",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/layout.tsx",
+          "language": "typescript",
+          "sizeLines": 110,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 27,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/media/_components/media-gallery.tsx",
+          "language": "typescript",
+          "sizeLines": 1571,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/media/error.tsx",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/media/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/media/page.tsx",
+          "language": "typescript",
+          "sizeLines": 49,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/not-found.tsx",
+          "language": "typescript",
+          "sizeLines": 28,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/operations/_components/operations-control-manager.tsx",
+          "language": "typescript",
+          "sizeLines": 251,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/operations/error.tsx",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/operations/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 49,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/operations/page.tsx",
+          "language": "typescript",
+          "sizeLines": 77,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/page.tsx",
+          "language": "typescript",
+          "sizeLines": 210,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/branding-logo-card.tsx",
+          "language": "typescript",
+          "sizeLines": 63,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/danger-zone.tsx",
+          "language": "typescript",
+          "sizeLines": 202,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/distribution-logic.tsx",
+          "language": "typescript",
+          "sizeLines": 475,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/facility-logo-upload.tsx",
+          "language": "typescript",
+          "sizeLines": 250,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/facility-profile-form.tsx",
+          "language": "typescript",
+          "sizeLines": 382,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/location-section.tsx",
+          "language": "typescript",
+          "sizeLines": 101,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/profile-and-seo.tsx",
+          "language": "typescript",
+          "sizeLines": 223,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/error.tsx",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/index.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/amenities/error.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/amenities/loading.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/amenities/page.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/error.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/layout.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/loading.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/media/_components/media-gallery.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/media/error.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/media/loading.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/media/page.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/not-found.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/operations/_components/operations-control-manager.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/operations/error.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/operations/loading.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/operations/page.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/page.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/branding-logo-card.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/danger-zone.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/distribution-logic.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/facility-logo-upload.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/facility-profile-form.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/location-section.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/profile-and-seo.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/error.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 7,
+      "files": [
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 40,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/page.tsx",
+          "language": "typescript",
+          "sizeLines": 71,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/columns.tsx",
+          "language": "typescript",
+          "sizeLines": 279,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/confirm-dialog.tsx",
+          "language": "typescript",
+          "sizeLines": 57,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/empty-state.tsx",
+          "language": "typescript",
+          "sizeLines": 53,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/group-panel.tsx",
+          "language": "typescript",
+          "sizeLines": 350,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/index.ts",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-basic-fields.tsx",
+          "language": "typescript",
+          "sizeLines": 304,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-description-section.tsx",
+          "language": "typescript",
+          "sizeLines": 79,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-group-sheet.tsx",
+          "language": "typescript",
+          "sizeLines": 531,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-image-upload.tsx",
+          "language": "typescript",
+          "sizeLines": 356,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-management.tsx",
+          "language": "typescript",
+          "sizeLines": 121,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-media-section.tsx",
+          "language": "typescript",
+          "sizeLines": 117,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-panel.tsx",
+          "language": "typescript",
+          "sizeLines": 347,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-sheet.tsx",
+          "language": "typescript",
+          "sizeLines": 297,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-status-section.tsx",
+          "language": "typescript",
+          "sizeLines": 163,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-deep-link.ts",
+          "language": "typescript",
+          "sizeLines": 42,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-dnd-sensors.ts",
+          "language": "typescript",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-unsaved-changes-guard.ts",
+          "language": "typescript",
+          "sizeLines": 46,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/error.tsx",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 55,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/page.tsx",
+          "language": "typescript",
+          "sizeLines": 153,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/error.tsx",
+          "language": "typescript",
+          "sizeLines": 57,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/layout.tsx",
+          "language": "typescript",
+          "sizeLines": 11,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/loading.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/profile/page.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/columns.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/confirm-dialog.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/empty-state.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/group-panel.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/index.ts": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-basic-fields.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-description-section.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-group-sheet.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-image-upload.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-management.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-media-section.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-panel.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-sheet.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-status-section.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-deep-link.ts": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-dnd-sensors.ts": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-unsaved-changes-guard.ts": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/error.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/loading.tsx": [],
+        "app/(dashboard)/admin/facilities/[facility-id]/tickets/page.tsx": [],
+        "app/(dashboard)/admin/facilities/error.tsx": [],
+        "app/(dashboard)/admin/facilities/layout.tsx": [],
+        "app/(dashboard)/admin/facilities/loading.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 8,
+      "files": [
+        {
+          "path": "app/(dashboard)/admin/facilities/new/_components/onboard-facility-form.tsx",
+          "language": "typescript",
+          "sizeLines": 127,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/new/_components/sections/configuration-section.tsx",
+          "language": "typescript",
+          "sizeLines": 88,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/new/_components/sections/identity-section.tsx",
+          "language": "typescript",
+          "sizeLines": 103,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/new/_components/sections/localization-section.tsx",
+          "language": "typescript",
+          "sizeLines": 88,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/new/error.tsx",
+          "language": "typescript",
+          "sizeLines": 57,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/new/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/new/page.tsx",
+          "language": "typescript",
+          "sizeLines": 39,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/facilities/page.tsx",
+          "language": "typescript",
+          "sizeLines": 74,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/forbidden/error.tsx",
+          "language": "typescript",
+          "sizeLines": 57,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/forbidden/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/forbidden/page.tsx",
+          "language": "typescript",
+          "sizeLines": 38,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/globals.css",
+          "language": "css",
+          "sizeLines": 0,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "app/(dashboard)/admin/layout.tsx",
+          "language": "typescript",
+          "sizeLines": 89,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/not-found.tsx",
+          "language": "typescript",
+          "sizeLines": 38,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/page.tsx",
+          "language": "typescript",
+          "sizeLines": 5,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/support/error.tsx",
+          "language": "typescript",
+          "sizeLines": 50,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/support/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 16,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/support/page.tsx",
+          "language": "typescript",
+          "sizeLines": 40,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/_components/index.ts",
+          "language": "typescript",
+          "sizeLines": 2,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/_components/users-list.tsx",
+          "language": "typescript",
+          "sizeLines": 51,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/_components/users-table.tsx",
+          "language": "typescript",
+          "sizeLines": 225,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/error.tsx",
+          "language": "typescript",
+          "sizeLines": 52,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/new/_components/create-user-form.tsx",
+          "language": "typescript",
+          "sizeLines": 156,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(dashboard)/admin/facilities/new/_components/onboard-facility-form.tsx": [],
+        "app/(dashboard)/admin/facilities/new/_components/sections/configuration-section.tsx": [],
+        "app/(dashboard)/admin/facilities/new/_components/sections/identity-section.tsx": [],
+        "app/(dashboard)/admin/facilities/new/_components/sections/localization-section.tsx": [],
+        "app/(dashboard)/admin/facilities/new/error.tsx": [],
+        "app/(dashboard)/admin/facilities/new/loading.tsx": [],
+        "app/(dashboard)/admin/facilities/new/page.tsx": [],
+        "app/(dashboard)/admin/facilities/page.tsx": [],
+        "app/(dashboard)/admin/forbidden/error.tsx": [],
+        "app/(dashboard)/admin/forbidden/loading.tsx": [],
+        "app/(dashboard)/admin/forbidden/page.tsx": [],
+        "app/(dashboard)/admin/globals.css": [],
+        "app/(dashboard)/admin/layout.tsx": [],
+        "app/(dashboard)/admin/loading.tsx": [],
+        "app/(dashboard)/admin/not-found.tsx": [],
+        "app/(dashboard)/admin/page.tsx": [],
+        "app/(dashboard)/admin/support/error.tsx": [],
+        "app/(dashboard)/admin/support/loading.tsx": [],
+        "app/(dashboard)/admin/support/page.tsx": [],
+        "app/(dashboard)/admin/users/_components/index.ts": [],
+        "app/(dashboard)/admin/users/_components/users-list.tsx": [],
+        "app/(dashboard)/admin/users/_components/users-table.tsx": [],
+        "app/(dashboard)/admin/users/error.tsx": [],
+        "app/(dashboard)/admin/users/loading.tsx": [],
+        "app/(dashboard)/admin/users/new/_components/create-user-form.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 9,
+      "files": [
+        {
+          "path": "app/(dashboard)/admin/users/new/error.tsx",
+          "language": "typescript",
+          "sizeLines": 58,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/new/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/new/page.tsx",
+          "language": "typescript",
+          "sizeLines": 39,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/admin/users/page.tsx",
+          "language": "typescript",
+          "sizeLines": 75,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(dashboard)/layout.tsx",
+          "language": "typescript",
+          "sizeLines": 14,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/amenity-actions.ts",
+          "language": "typescript",
+          "sizeLines": 280,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/api-keys.ts",
+          "language": "typescript",
+          "sizeLines": 58,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/cities.ts",
+          "language": "typescript",
+          "sizeLines": 60,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/closures.ts",
+          "language": "typescript",
+          "sizeLines": 48,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/cms.ts",
+          "language": "typescript",
+          "sizeLines": 441,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/facilities.ts",
+          "language": "typescript",
+          "sizeLines": 81,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/governance.ts",
+          "language": "typescript",
+          "sizeLines": 247,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/media-actions.ts",
+          "language": "typescript",
+          "sizeLines": 508,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/tickets.ts",
+          "language": "typescript",
+          "sizeLines": 447,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/actions/users.ts",
+          "language": "typescript",
+          "sizeLines": 122,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/api-keys/[id]/route.ts",
+          "language": "typescript",
+          "sizeLines": 26,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/api-keys/route.ts",
+          "language": "typescript",
+          "sizeLines": 62,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/cities/[id]/route.ts",
+          "language": "typescript",
+          "sizeLines": 56,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/cities/route.ts",
+          "language": "typescript",
+          "sizeLines": 53,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/amenities/route.ts",
+          "language": "typescript",
+          "sizeLines": 96,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/closures/[closureId]/route.ts",
+          "language": "typescript",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/closures/route.ts",
+          "language": "typescript",
+          "sizeLines": 66,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/geocode/route.ts",
+          "language": "typescript",
+          "sizeLines": 45,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/governance/route.ts",
+          "language": "typescript",
+          "sizeLines": 91,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/media/route.ts",
+          "language": "typescript",
+          "sizeLines": 253,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(dashboard)/admin/users/new/error.tsx": [],
+        "app/(dashboard)/admin/users/new/loading.tsx": [],
+        "app/(dashboard)/admin/users/new/page.tsx": [],
+        "app/(dashboard)/admin/users/page.tsx": [],
+        "app/(dashboard)/layout.tsx": [],
+        "app/(server)/actions/amenity-actions.ts": [],
+        "app/(server)/actions/api-keys.ts": [],
+        "app/(server)/actions/cities.ts": [],
+        "app/(server)/actions/closures.ts": [],
+        "app/(server)/actions/cms.ts": [],
+        "app/(server)/actions/facilities.ts": [],
+        "app/(server)/actions/governance.ts": [],
+        "app/(server)/actions/media-actions.ts": [],
+        "app/(server)/actions/tickets.ts": [],
+        "app/(server)/actions/users.ts": [],
+        "app/(server)/api/admin/api-keys/[id]/route.ts": [],
+        "app/(server)/api/admin/api-keys/route.ts": [],
+        "app/(server)/api/admin/cities/[id]/route.ts": [],
+        "app/(server)/api/admin/cities/route.ts": [],
+        "app/(server)/api/admin/facilities/[id]/amenities/route.ts": [],
+        "app/(server)/api/admin/facilities/[id]/closures/[closureId]/route.ts": [],
+        "app/(server)/api/admin/facilities/[id]/closures/route.ts": [],
+        "app/(server)/api/admin/facilities/[id]/geocode/route.ts": [],
+        "app/(server)/api/admin/facilities/[id]/governance/route.ts": [],
+        "app/(server)/api/admin/facilities/[id]/media/route.ts": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 10,
+      "files": [
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/operations/route.ts",
+          "language": "typescript",
+          "sizeLines": 56,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/route.ts",
+          "language": "typescript",
+          "sizeLines": 97,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/[id]/status/route.ts",
+          "language": "typescript",
+          "sizeLines": 43,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/facilities/route.ts",
+          "language": "typescript",
+          "sizeLines": 47,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/search/route.ts",
+          "language": "typescript",
+          "sizeLines": 49,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/send-email/route.ts",
+          "language": "typescript",
+          "sizeLines": 58,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/stats/route.ts",
+          "language": "typescript",
+          "sizeLines": 47,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/ticket-groups/[id]/reorder/route.ts",
+          "language": "typescript",
+          "sizeLines": 52,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/ticket-groups/[id]/route.ts",
+          "language": "typescript",
+          "sizeLines": 104,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/ticket-groups/route.ts",
+          "language": "typescript",
+          "sizeLines": 66,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/tickets/[id]/route.ts",
+          "language": "typescript",
+          "sizeLines": 108,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/admin/tickets/route.ts",
+          "language": "typescript",
+          "sizeLines": 57,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/analytics/vitals/route.ts",
+          "language": "typescript",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/auth/[...all]/route.ts",
+          "language": "typescript",
+          "sizeLines": 4,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/checkout/route.ts",
+          "language": "typescript",
+          "sizeLines": 170,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/checkout/status/route.ts",
+          "language": "typescript",
+          "sizeLines": 100,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/cities/route.ts",
+          "language": "typescript",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/cron/amenities/route.ts",
+          "language": "typescript",
+          "sizeLines": 30,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/cron/cleanup-sessions/route.ts",
+          "language": "typescript",
+          "sizeLines": 66,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/cron/publish-blog/route.ts",
+          "language": "typescript",
+          "sizeLines": 42,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/menu/discovery/route.ts",
+          "language": "typescript",
+          "sizeLines": 98,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/seo/redirect-ticket/route.ts",
+          "language": "typescript",
+          "sizeLines": 117,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/upload/route.ts",
+          "language": "typescript",
+          "sizeLines": 95,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/wallet/apple/route.ts",
+          "language": "typescript",
+          "sizeLines": 68,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(server)/api/webhooks/stripe/route.ts",
+          "language": "typescript",
+          "sizeLines": 319,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(server)/api/admin/facilities/[id]/operations/route.ts": [],
+        "app/(server)/api/admin/facilities/[id]/route.ts": [],
+        "app/(server)/api/admin/facilities/[id]/status/route.ts": [],
+        "app/(server)/api/admin/facilities/route.ts": [],
+        "app/(server)/api/admin/search/route.ts": [],
+        "app/(server)/api/admin/send-email/route.ts": [],
+        "app/(server)/api/admin/stats/route.ts": [],
+        "app/(server)/api/admin/ticket-groups/[id]/reorder/route.ts": [],
+        "app/(server)/api/admin/ticket-groups/[id]/route.ts": [],
+        "app/(server)/api/admin/ticket-groups/route.ts": [],
+        "app/(server)/api/admin/tickets/[id]/route.ts": [],
+        "app/(server)/api/admin/tickets/route.ts": [],
+        "app/(server)/api/analytics/vitals/route.ts": [],
+        "app/(server)/api/auth/[...all]/route.ts": [],
+        "app/(server)/api/checkout/route.ts": [],
+        "app/(server)/api/checkout/status/route.ts": [],
+        "app/(server)/api/cities/route.ts": [],
+        "app/(server)/api/cron/amenities/route.ts": [],
+        "app/(server)/api/cron/cleanup-sessions/route.ts": [],
+        "app/(server)/api/cron/publish-blog/route.ts": [],
+        "app/(server)/api/menu/discovery/route.ts": [],
+        "app/(server)/api/seo/redirect-ticket/route.ts": [],
+        "app/(server)/api/upload/route.ts": [],
+        "app/(server)/api/wallet/apple/route.ts": [],
+        "app/(server)/api/webhooks/stripe/route.ts": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 11,
+      "files": [
+        {
+          "path": "app/(web)/_components/NotFoundClient.tsx",
+          "language": "typescript",
+          "sizeLines": 92,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/_components/TicketGrid.tsx",
+          "language": "typescript",
+          "sizeLines": 204,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/_components/WebVitals.tsx",
+          "language": "typescript",
+          "sizeLines": 50,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/[...slug]/error.tsx",
+          "language": "typescript",
+          "sizeLines": 40,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/[...slug]/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/[...slug]/page.tsx",
+          "language": "typescript",
+          "sizeLines": 262,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/[categorySlug]/page.tsx",
+          "language": "typescript",
+          "sizeLines": 91,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/@modal/(.)search/error.tsx",
+          "language": "typescript",
+          "sizeLines": 20,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/@modal/(.)search/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/@modal/(.)search/page.tsx",
+          "language": "typescript",
+          "sizeLines": 29,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/@modal/default.tsx",
+          "language": "typescript",
+          "sizeLines": 3,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/blog/[slug]/page.tsx",
+          "language": "typescript",
+          "sizeLines": 227,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/blog/page.tsx",
+          "language": "typescript",
+          "sizeLines": 189,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/cart/_components/CartClient.tsx",
+          "language": "typescript",
+          "sizeLines": 276,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/cart/error.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/cart/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 70,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/cart/page.tsx",
+          "language": "typescript",
+          "sizeLines": 47,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/checkout/page.tsx",
+          "language": "typescript",
+          "sizeLines": 41,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/cookies/error.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/cookies/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 44,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/cookies/page.tsx",
+          "language": "typescript",
+          "sizeLines": 137,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/error.tsx",
+          "language": "typescript",
+          "sizeLines": 97,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/_components/CategoryGrid.tsx",
+          "language": "typescript",
+          "sizeLines": 61,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/_components/CategoryPills.tsx",
+          "language": "typescript",
+          "sizeLines": 123,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/_components/FacilityCard.tsx",
+          "language": "typescript",
+          "sizeLines": 108,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(web)/_components/NotFoundClient.tsx": [],
+        "app/(web)/_components/TicketGrid.tsx": [],
+        "app/(web)/_components/WebVitals.tsx": [],
+        "app/(web)/[...slug]/error.tsx": [],
+        "app/(web)/[...slug]/loading.tsx": [],
+        "app/(web)/[...slug]/page.tsx": [],
+        "app/(web)/[categorySlug]/page.tsx": [],
+        "app/(web)/@modal/(.)search/error.tsx": [],
+        "app/(web)/@modal/(.)search/loading.tsx": [],
+        "app/(web)/@modal/(.)search/page.tsx": [],
+        "app/(web)/@modal/default.tsx": [],
+        "app/(web)/blog/[slug]/page.tsx": [],
+        "app/(web)/blog/page.tsx": [],
+        "app/(web)/cart/_components/CartClient.tsx": [],
+        "app/(web)/cart/error.tsx": [],
+        "app/(web)/cart/loading.tsx": [],
+        "app/(web)/cart/page.tsx": [],
+        "app/(web)/checkout/page.tsx": [],
+        "app/(web)/cookies/error.tsx": [],
+        "app/(web)/cookies/loading.tsx": [],
+        "app/(web)/cookies/page.tsx": [],
+        "app/(web)/error.tsx": [],
+        "app/(web)/facilities/_components/CategoryGrid.tsx": [],
+        "app/(web)/facilities/_components/CategoryPills.tsx": [],
+        "app/(web)/facilities/_components/FacilityCard.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 12,
+      "files": [
+        {
+          "path": "app/(web)/facilities/_components/FacilityGrid.tsx",
+          "language": "typescript",
+          "sizeLines": 125,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/_components/FacilitySkeletons.tsx",
+          "language": "typescript",
+          "sizeLines": 86,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/_components/FilterBar.tsx",
+          "language": "typescript",
+          "sizeLines": 172,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/_components/LocationGrid.tsx",
+          "language": "typescript",
+          "sizeLines": 58,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/BreadcrumbInjector.tsx",
+          "language": "typescript",
+          "sizeLines": 25,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/DistanceCalculator.tsx",
+          "language": "typescript",
+          "sizeLines": 114,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/FacilityMap.tsx",
+          "language": "typescript",
+          "sizeLines": 184,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MapWrapper.tsx",
+          "language": "typescript",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MediaGallery.tsx",
+          "language": "typescript",
+          "sizeLines": 190,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MobileUnifiedControlPill.tsx",
+          "language": "typescript",
+          "sizeLines": 152,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/OperationalPortal.tsx",
+          "language": "typescript",
+          "sizeLines": 91,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/PartnerBranding.tsx",
+          "language": "typescript",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ScrollManager.tsx",
+          "language": "typescript",
+          "sizeLines": 38,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShareButton.tsx",
+          "language": "typescript",
+          "sizeLines": 76,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseAmenities.tsx",
+          "language": "typescript",
+          "sizeLines": 177,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseHero.tsx",
+          "language": "typescript",
+          "sizeLines": 173,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseSkeletons.tsx",
+          "language": "typescript",
+          "sizeLines": 82,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseTicketGrid.tsx",
+          "language": "typescript",
+          "sizeLines": 385,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseTicketGroups.tsx",
+          "language": "typescript",
+          "sizeLines": 806,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/TicketPurchaseModal.tsx",
+          "language": "typescript",
+          "sizeLines": 479,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/WeatherWidget.tsx",
+          "language": "typescript",
+          "sizeLines": 62,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildAttractionSchema.ts",
+          "language": "typescript",
+          "sizeLines": 35,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildBreadcrumbSchema.ts",
+          "language": "typescript",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildBusinessSchema.ts",
+          "language": "typescript",
+          "sizeLines": 29,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildProductSchema.ts",
+          "language": "typescript",
+          "sizeLines": 32,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(web)/facilities/_components/FacilityGrid.tsx": [],
+        "app/(web)/facilities/_components/FacilitySkeletons.tsx": [],
+        "app/(web)/facilities/_components/FilterBar.tsx": [],
+        "app/(web)/facilities/_components/LocationGrid.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/BreadcrumbInjector.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/DistanceCalculator.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/FacilityMap.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MapWrapper.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MediaGallery.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/MobileUnifiedControlPill.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/OperationalPortal.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/PartnerBranding.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ScrollManager.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShareButton.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseAmenities.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseHero.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseSkeletons.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseTicketGrid.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/ShowcaseTicketGroups.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/TicketPurchaseModal.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_components/WeatherWidget.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildAttractionSchema.ts": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildBreadcrumbSchema.ts": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildBusinessSchema.ts": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildProductSchema.ts": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 13,
+      "files": [
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildVideoSchema.ts",
+          "language": "typescript",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/index.ts",
+          "language": "typescript",
+          "sizeLines": 6,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/types.ts",
+          "language": "typescript",
+          "sizeLines": 22,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/error.tsx",
+          "language": "typescript",
+          "sizeLines": 80,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/layout.tsx",
+          "language": "typescript",
+          "sizeLines": 9,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 62,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/[facilitySlug]/page.tsx",
+          "language": "typescript",
+          "sizeLines": 853,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/error.tsx",
+          "language": "typescript",
+          "sizeLines": 75,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 37,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/[categorySlug]/page.tsx",
+          "language": "typescript",
+          "sizeLines": 55,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/error.tsx",
+          "language": "typescript",
+          "sizeLines": 75,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 50,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/facilities/page.tsx",
+          "language": "typescript",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/how-it-works/_components/HowItWorksSteps.tsx",
+          "language": "typescript",
+          "sizeLines": 44,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/how-it-works/error.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/how-it-works/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 38,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/how-it-works/page.tsx",
+          "language": "typescript",
+          "sizeLines": 179,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/layout.tsx",
+          "language": "typescript",
+          "sizeLines": 71,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 108,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/not-found.tsx",
+          "language": "typescript",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/page.tsx",
+          "language": "typescript",
+          "sizeLines": 263,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/privacy/error.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/privacy/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 44,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/privacy/page.tsx",
+          "language": "typescript",
+          "sizeLines": 143,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/search/error.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/buildVideoSchema.ts": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/index.ts": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/_schemas/types.ts": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/error.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/layout.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/loading.tsx": [],
+        "app/(web)/facilities/[categorySlug]/[facilitySlug]/page.tsx": [],
+        "app/(web)/facilities/[categorySlug]/error.tsx": [],
+        "app/(web)/facilities/[categorySlug]/loading.tsx": [],
+        "app/(web)/facilities/[categorySlug]/page.tsx": [],
+        "app/(web)/facilities/error.tsx": [],
+        "app/(web)/facilities/loading.tsx": [],
+        "app/(web)/facilities/page.tsx": [],
+        "app/(web)/how-it-works/_components/HowItWorksSteps.tsx": [],
+        "app/(web)/how-it-works/error.tsx": [],
+        "app/(web)/how-it-works/loading.tsx": [],
+        "app/(web)/how-it-works/page.tsx": [],
+        "app/(web)/layout.tsx": [],
+        "app/(web)/loading.tsx": [],
+        "app/(web)/not-found.tsx": [],
+        "app/(web)/page.tsx": [],
+        "app/(web)/privacy/error.tsx": [],
+        "app/(web)/privacy/loading.tsx": [],
+        "app/(web)/privacy/page.tsx": [],
+        "app/(web)/search/error.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 14,
+      "files": [
+        {
+          "path": "app/(web)/search/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 16,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/search/page.tsx",
+          "language": "typescript",
+          "sizeLines": 54,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/success/_components/SuccessClient.tsx",
+          "language": "typescript",
+          "sizeLines": 322,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/success/_components/SuccessSkeleton.tsx",
+          "language": "typescript",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/success/error.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/success/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 11,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/success/page.tsx",
+          "language": "typescript",
+          "sizeLines": 107,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/support/error.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/support/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 56,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/support/page.tsx",
+          "language": "typescript",
+          "sizeLines": 156,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/terms/error.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/terms/loading.tsx",
+          "language": "typescript",
+          "sizeLines": 44,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/(web)/terms/page.tsx",
+          "language": "typescript",
+          "sizeLines": 141,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/blog/feed.xml/route.ts",
+          "language": "typescript",
+          "sizeLines": 60,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/global-error.tsx",
+          "language": "typescript",
+          "sizeLines": 66,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/global-not-found.tsx",
+          "language": "typescript",
+          "sizeLines": 36,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/globals.css",
+          "language": "css",
+          "sizeLines": 135,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "app/layout.tsx",
+          "language": "typescript",
+          "sizeLines": 97,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/not-found.tsx",
+          "language": "typescript",
+          "sizeLines": 56,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/robots.ts",
+          "language": "typescript",
+          "sizeLines": 103,
+          "fileCategory": "code"
+        },
+        {
+          "path": "app/sitemap.ts",
+          "language": "typescript",
+          "sizeLines": 127,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/cart/AddToCartButton.tsx",
+          "language": "typescript",
+          "sizeLines": 79,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/cart/CartDrawer.tsx",
+          "language": "typescript",
+          "sizeLines": 166,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/cart/CartLoader.tsx",
+          "language": "typescript",
+          "sizeLines": 30,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/breadcrumb/Breadcrumb.tsx",
+          "language": "typescript",
+          "sizeLines": 85,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "app/(web)/search/loading.tsx": [],
+        "app/(web)/search/page.tsx": [],
+        "app/(web)/success/_components/SuccessClient.tsx": [],
+        "app/(web)/success/_components/SuccessSkeleton.tsx": [],
+        "app/(web)/success/error.tsx": [],
+        "app/(web)/success/loading.tsx": [],
+        "app/(web)/success/page.tsx": [],
+        "app/(web)/support/error.tsx": [],
+        "app/(web)/support/loading.tsx": [],
+        "app/(web)/support/page.tsx": [],
+        "app/(web)/terms/error.tsx": [],
+        "app/(web)/terms/loading.tsx": [],
+        "app/(web)/terms/page.tsx": [],
+        "app/blog/feed.xml/route.ts": [],
+        "app/global-error.tsx": [],
+        "app/global-not-found.tsx": [],
+        "app/globals.css": [],
+        "app/layout.tsx": [],
+        "app/not-found.tsx": [],
+        "app/robots.ts": [],
+        "app/sitemap.ts": [],
+        "components/cart/AddToCartButton.tsx": [],
+        "components/cart/CartDrawer.tsx": [],
+        "components/cart/CartLoader.tsx": [],
+        "components/layout/_header/breadcrumb/Breadcrumb.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 15,
+      "files": [
+        {
+          "path": "components/layout/_header/hooks/useHeaderScroll.ts",
+          "language": "typescript",
+          "sizeLines": 77,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/index.ts",
+          "language": "typescript",
+          "sizeLines": 12,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/mega-menu/index.ts",
+          "language": "typescript",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/mega-menu/MegaMenu.tsx",
+          "language": "typescript",
+          "sizeLines": 567,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/mobile-overlay/MobileCityPicker.tsx",
+          "language": "typescript",
+          "sizeLines": 75,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/mobile-overlay/MobileOverlay.tsx",
+          "language": "typescript",
+          "sizeLines": 101,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/mobile-overlay/MobileOverlayHeader.tsx",
+          "language": "typescript",
+          "sizeLines": 38,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/top-nav/AccountButton.tsx",
+          "language": "typescript",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/top-nav/CartButton.tsx",
+          "language": "typescript",
+          "sizeLines": 62,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/top-nav/DesktopTopNav.tsx",
+          "language": "typescript",
+          "sizeLines": 76,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/top-nav/Logo.tsx",
+          "language": "typescript",
+          "sizeLines": 64,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/top-nav/MobileTopNav.tsx",
+          "language": "typescript",
+          "sizeLines": 25,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/top-nav/OfflineIndicator.tsx",
+          "language": "typescript",
+          "sizeLines": 25,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/_header/top-nav/ThemeToggle.tsx",
+          "language": "typescript",
+          "sizeLines": 41,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/BreadcrumbBar.tsx",
+          "language": "typescript",
+          "sizeLines": 76,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/Footer.tsx",
+          "language": "typescript",
+          "sizeLines": 320,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/layout/Header.tsx",
+          "language": "typescript",
+          "sizeLines": 94,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/providers/ThemeProvider.tsx",
+          "language": "typescript",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/search/GlobalSearch.tsx",
+          "language": "typescript",
+          "sizeLines": 177,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/SEO/JsonLd.tsx",
+          "language": "typescript",
+          "sizeLines": 21,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/shared/IdentitySetupDialog.tsx",
+          "language": "typescript",
+          "sizeLines": 262,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/shared/section-cards.tsx",
+          "language": "typescript",
+          "sizeLines": 92,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/shared/ShareButton.tsx",
+          "language": "typescript",
+          "sizeLines": 68,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/accordion.tsx",
+          "language": "typescript",
+          "sizeLines": 80,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/avatar.tsx",
+          "language": "typescript",
+          "sizeLines": 112,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "components/layout/_header/hooks/useHeaderScroll.ts": [],
+        "components/layout/_header/index.ts": [],
+        "components/layout/_header/mega-menu/index.ts": [],
+        "components/layout/_header/mega-menu/MegaMenu.tsx": [],
+        "components/layout/_header/mobile-overlay/MobileCityPicker.tsx": [],
+        "components/layout/_header/mobile-overlay/MobileOverlay.tsx": [],
+        "components/layout/_header/mobile-overlay/MobileOverlayHeader.tsx": [],
+        "components/layout/_header/top-nav/AccountButton.tsx": [],
+        "components/layout/_header/top-nav/CartButton.tsx": [],
+        "components/layout/_header/top-nav/DesktopTopNav.tsx": [],
+        "components/layout/_header/top-nav/Logo.tsx": [],
+        "components/layout/_header/top-nav/MobileTopNav.tsx": [],
+        "components/layout/_header/top-nav/OfflineIndicator.tsx": [],
+        "components/layout/_header/top-nav/ThemeToggle.tsx": [],
+        "components/layout/BreadcrumbBar.tsx": [],
+        "components/layout/Footer.tsx": [],
+        "components/layout/Header.tsx": [],
+        "components/providers/ThemeProvider.tsx": [],
+        "components/search/GlobalSearch.tsx": [],
+        "components/SEO/JsonLd.tsx": [],
+        "components/shared/IdentitySetupDialog.tsx": [],
+        "components/shared/section-cards.tsx": [],
+        "components/shared/ShareButton.tsx": [],
+        "components/ui/accordion.tsx": [],
+        "components/ui/avatar.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 16,
+      "files": [
+        {
+          "path": "components/ui/badge.tsx",
+          "language": "typescript",
+          "sizeLines": 49,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/breadcrumb.tsx",
+          "language": "typescript",
+          "sizeLines": 120,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/button.tsx",
+          "language": "typescript",
+          "sizeLines": 67,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/calendar.tsx",
+          "language": "typescript",
+          "sizeLines": 220,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/card.tsx",
+          "language": "typescript",
+          "sizeLines": 103,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/chart.tsx",
+          "language": "typescript",
+          "sizeLines": 361,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/checkbox.tsx",
+          "language": "typescript",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/collapsible.tsx",
+          "language": "typescript",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/command.tsx",
+          "language": "typescript",
+          "sizeLines": 158,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/dialog.tsx",
+          "language": "typescript",
+          "sizeLines": 166,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/dropdown-menu.tsx",
+          "language": "typescript",
+          "sizeLines": 266,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/form.tsx",
+          "language": "typescript",
+          "sizeLines": 168,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/GlobalAmbient.tsx",
+          "language": "typescript",
+          "sizeLines": 26,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/Icon.tsx",
+          "language": "typescript",
+          "sizeLines": 263,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/input.tsx",
+          "language": "typescript",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/label.tsx",
+          "language": "typescript",
+          "sizeLines": 24,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/LiquidButton.tsx",
+          "language": "typescript",
+          "sizeLines": 69,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/navigation-menu.tsx",
+          "language": "typescript",
+          "sizeLines": 164,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/popover.tsx",
+          "language": "typescript",
+          "sizeLines": 89,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/progress.tsx",
+          "language": "typescript",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/RouteErrorBoundary.tsx",
+          "language": "typescript",
+          "sizeLines": 136,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/scroll-area.tsx",
+          "language": "typescript",
+          "sizeLines": 55,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/select.tsx",
+          "language": "typescript",
+          "sizeLines": 189,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/separator.tsx",
+          "language": "typescript",
+          "sizeLines": 28,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/sheet.tsx",
+          "language": "typescript",
+          "sizeLines": 145,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "components/ui/badge.tsx": [],
+        "components/ui/breadcrumb.tsx": [],
+        "components/ui/button.tsx": [],
+        "components/ui/calendar.tsx": [],
+        "components/ui/card.tsx": [],
+        "components/ui/chart.tsx": [],
+        "components/ui/checkbox.tsx": [],
+        "components/ui/collapsible.tsx": [],
+        "components/ui/command.tsx": [],
+        "components/ui/dialog.tsx": [],
+        "components/ui/dropdown-menu.tsx": [],
+        "components/ui/form.tsx": [],
+        "components/ui/GlobalAmbient.tsx": [],
+        "components/ui/Icon.tsx": [],
+        "components/ui/input.tsx": [],
+        "components/ui/label.tsx": [],
+        "components/ui/LiquidButton.tsx": [],
+        "components/ui/navigation-menu.tsx": [],
+        "components/ui/popover.tsx": [],
+        "components/ui/progress.tsx": [],
+        "components/ui/RouteErrorBoundary.tsx": [],
+        "components/ui/scroll-area.tsx": [],
+        "components/ui/select.tsx": [],
+        "components/ui/separator.tsx": [],
+        "components/ui/sheet.tsx": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 17,
+      "files": [
+        {
+          "path": "components/ui/sidebar.tsx",
+          "language": "typescript",
+          "sizeLines": 699,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/skeleton.tsx",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/sonner.tsx",
+          "language": "typescript",
+          "sizeLines": 48,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/StatsGrid.tsx",
+          "language": "typescript",
+          "sizeLines": 129,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/switch.tsx",
+          "language": "typescript",
+          "sizeLines": 33,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/table.tsx",
+          "language": "typescript",
+          "sizeLines": 116,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/tabs.tsx",
+          "language": "typescript",
+          "sizeLines": 90,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/textarea.tsx",
+          "language": "typescript",
+          "sizeLines": 17,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/TicketCardSkeleton.tsx",
+          "language": "typescript",
+          "sizeLines": 41,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/toggle-group.tsx",
+          "language": "typescript",
+          "sizeLines": 89,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/toggle.tsx",
+          "language": "typescript",
+          "sizeLines": 46,
+          "fileCategory": "code"
+        },
+        {
+          "path": "components/ui/tooltip.tsx",
+          "language": "typescript",
+          "sizeLines": 57,
+          "fileCategory": "code"
+        },
+        {
+          "path": "config/admin-nav.ts",
+          "language": "typescript",
+          "sizeLines": 95,
+          "fileCategory": "code"
+        },
+        {
+          "path": "dictionaries/rs.json",
+          "language": "json",
+          "sizeLines": 329,
+          "fileCategory": "config"
+        },
+        {
+          "path": "eslint.config.mjs",
+          "language": "javascript",
+          "sizeLines": 29,
+          "fileCategory": "code"
+        },
+        {
+          "path": "hooks/use-action.ts",
+          "language": "typescript",
+          "sizeLines": 59,
+          "fileCategory": "code"
+        },
+        {
+          "path": "hooks/use-breadcrumb.ts",
+          "language": "typescript",
+          "sizeLines": 20,
+          "fileCategory": "code"
+        },
+        {
+          "path": "hooks/use-cart.ts",
+          "language": "typescript",
+          "sizeLines": 180,
+          "fileCategory": "code"
+        },
+        {
+          "path": "hooks/use-mobile.ts",
+          "language": "typescript",
+          "sizeLines": 20,
+          "fileCategory": "code"
+        },
+        {
+          "path": "hooks/use-ui-state.ts",
+          "language": "typescript",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": "instrumentation.ts",
+          "language": "typescript",
+          "sizeLines": 14,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/auth-client.ts",
+          "language": "typescript",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/client-dictionaries/index.ts",
+          "language": "typescript",
+          "sizeLines": 12,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/constants.ts",
+          "language": "typescript",
+          "sizeLines": 2,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/data/admin.ts",
+          "language": "typescript",
+          "sizeLines": 80,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "components/ui/sidebar.tsx": [],
+        "components/ui/skeleton.tsx": [],
+        "components/ui/sonner.tsx": [],
+        "components/ui/StatsGrid.tsx": [],
+        "components/ui/switch.tsx": [],
+        "components/ui/table.tsx": [],
+        "components/ui/tabs.tsx": [],
+        "components/ui/textarea.tsx": [],
+        "components/ui/TicketCardSkeleton.tsx": [],
+        "components/ui/toggle-group.tsx": [],
+        "components/ui/toggle.tsx": [],
+        "components/ui/tooltip.tsx": [],
+        "config/admin-nav.ts": [],
+        "dictionaries/rs.json": [],
+        "eslint.config.mjs": [],
+        "hooks/use-action.ts": [],
+        "hooks/use-breadcrumb.ts": [],
+        "hooks/use-cart.ts": [],
+        "hooks/use-mobile.ts": [],
+        "hooks/use-ui-state.ts": [],
+        "instrumentation.ts": [],
+        "lib/auth-client.ts": [],
+        "lib/client-dictionaries/index.ts": [],
+        "lib/constants.ts": [],
+        "lib/data/admin.ts": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 18,
+      "files": [
+        {
+          "path": "lib/dictionaries.ts",
+          "language": "typescript",
+          "sizeLines": 9,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/media/client-image-optimizer.ts",
+          "language": "typescript",
+          "sizeLines": 138,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/routing/config.ts",
+          "language": "typescript",
+          "sizeLines": 51,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/routing/discovery.tsx",
+          "language": "typescript",
+          "sizeLines": 181,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/serialize.ts",
+          "language": "typescript",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/types.ts",
+          "language": "typescript",
+          "sizeLines": 5,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/utils.test.ts",
+          "language": "typescript",
+          "sizeLines": 34,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/utils.ts",
+          "language": "typescript",
+          "sizeLines": 6,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/utils/date-time.ts",
+          "language": "typescript",
+          "sizeLines": 63,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/utils/pricing.test.ts",
+          "language": "typescript",
+          "sizeLines": 158,
+          "fileCategory": "code"
+        },
+        {
+          "path": "lib/utils/pricing.ts",
+          "language": "typescript",
+          "sizeLines": 80,
+          "fileCategory": "code"
+        },
+        {
+          "path": "next.config.ts",
+          "language": "typescript",
+          "sizeLines": 116,
+          "fileCategory": "code"
+        },
+        {
+          "path": "packages/contracts/contracts/IdentityRegistry.sol",
+          "language": "sol",
+          "sizeLines": 90,
+          "fileCategory": "code"
+        },
+        {
+          "path": "postcss.config.mjs",
+          "language": "javascript",
+          "sizeLines": 7,
+          "fileCategory": "code"
+        },
+        {
+          "path": "prisma.config.ts",
+          "language": "typescript",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": "prisma/migrations/20260515122537_init/migration.sql",
+          "language": "sql",
+          "sizeLines": 475,
+          "fileCategory": "data"
+        },
+        {
+          "path": "prisma/migrations/migration_lock.toml",
+          "language": "toml",
+          "sizeLines": 3,
+          "fileCategory": "config"
+        },
+        {
+          "path": "prisma/schema.prisma",
+          "language": "prisma",
+          "sizeLines": 678,
+          "fileCategory": "data"
+        },
+        {
+          "path": "prisma/seed-admin.ts",
+          "language": "typescript",
+          "sizeLines": 75,
+          "fileCategory": "code"
+        },
+        {
+          "path": "prisma/seed-cities.ts",
+          "language": "typescript",
+          "sizeLines": 50,
+          "fileCategory": "code"
+        },
+        {
+          "path": "prisma/seed-enhanced.ts",
+          "language": "typescript",
+          "sizeLines": 792,
+          "fileCategory": "code"
+        },
+        {
+          "path": "prisma/seed.ts",
+          "language": "typescript",
+          "sizeLines": 715,
+          "fileCategory": "code"
+        },
+        {
+          "path": "proxy.ts",
+          "language": "typescript",
+          "sizeLines": 236,
+          "fileCategory": "code"
+        },
+        {
+          "path": "public/robots.txt",
+          "language": "txt",
+          "sizeLines": 7,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "public/site.webmanifest",
+          "language": "webmanifest",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "lib/dictionaries.ts": [],
+        "lib/media/client-image-optimizer.ts": [],
+        "lib/routing/config.ts": [],
+        "lib/routing/discovery.tsx": [],
+        "lib/serialize.ts": [],
+        "lib/types.ts": [],
+        "lib/utils.test.ts": [],
+        "lib/utils.ts": [],
+        "lib/utils/date-time.ts": [],
+        "lib/utils/pricing.test.ts": [],
+        "lib/utils/pricing.ts": [],
+        "next.config.ts": [],
+        "packages/contracts/contracts/IdentityRegistry.sol": [],
+        "postcss.config.mjs": [],
+        "prisma.config.ts": [],
+        "prisma/migrations/20260515122537_init/migration.sql": [],
+        "prisma/migrations/migration_lock.toml": [],
+        "prisma/schema.prisma": [],
+        "prisma/seed-admin.ts": [],
+        "prisma/seed-cities.ts": [],
+        "prisma/seed-enhanced.ts": [],
+        "prisma/seed.ts": [],
+        "proxy.ts": [],
+        "public/robots.txt": [],
+        "public/site.webmanifest": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 19,
+      "files": [
+        {
+          "path": "scripts/check-seo.mjs",
+          "language": "javascript",
+          "sizeLines": 351,
+          "fileCategory": "code"
+        },
+        {
+          "path": "scripts/check-structured-data.mjs",
+          "language": "javascript",
+          "sizeLines": 258,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/__tests__/facilities.test.ts",
+          "language": "typescript",
+          "sizeLines": 35,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/api-keys.ts",
+          "language": "typescript",
+          "sizeLines": 48,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/cities.ts",
+          "language": "typescript",
+          "sizeLines": 60,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/closures.ts",
+          "language": "typescript",
+          "sizeLines": 48,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/cms.ts",
+          "language": "typescript",
+          "sizeLines": 441,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/facilities.ts",
+          "language": "typescript",
+          "sizeLines": 81,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/governance.ts",
+          "language": "typescript",
+          "sizeLines": 247,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/media-actions.ts",
+          "language": "typescript",
+          "sizeLines": 508,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/tickets.ts",
+          "language": "typescript",
+          "sizeLines": 447,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/actions/users.ts",
+          "language": "typescript",
+          "sizeLines": 122,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/auth.ts",
+          "language": "typescript",
+          "sizeLines": 18,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/actions/newsletter.ts",
+          "language": "typescript",
+          "sizeLines": 51,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/actions/validator.ts",
+          "language": "typescript",
+          "sizeLines": 40,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/admin-bootstrap.ts",
+          "language": "typescript",
+          "sizeLines": 102,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/api-key-auth.ts",
+          "language": "typescript",
+          "sizeLines": 75,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/auth-guards.ts",
+          "language": "typescript",
+          "sizeLines": 83,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/auth.ts",
+          "language": "typescript",
+          "sizeLines": 73,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/data/discovery.ts",
+          "language": "typescript",
+          "sizeLines": 71,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/email-templates/reset-password.ts",
+          "language": "typescript",
+          "sizeLines": 27,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/email-templates/theme.ts",
+          "language": "typescript",
+          "sizeLines": 31,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/email-templates/ticket-delivery.ts",
+          "language": "typescript",
+          "sizeLines": 244,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/email.ts",
+          "language": "typescript",
+          "sizeLines": 86,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/error-messages.ts",
+          "language": "typescript",
+          "sizeLines": 6,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "scripts/check-seo.mjs": [],
+        "scripts/check-structured-data.mjs": [],
+        "server/actions/__tests__/facilities.test.ts": [],
+        "server/actions/api-keys.ts": [],
+        "server/actions/cities.ts": [],
+        "server/actions/closures.ts": [],
+        "server/actions/cms.ts": [],
+        "server/actions/facilities.ts": [],
+        "server/actions/governance.ts": [],
+        "server/actions/media-actions.ts": [],
+        "server/actions/tickets.ts": [],
+        "server/actions/users.ts": [],
+        "server/auth.ts": [],
+        "server/lib/actions/newsletter.ts": [],
+        "server/lib/actions/validator.ts": [],
+        "server/lib/admin-bootstrap.ts": [],
+        "server/lib/api-key-auth.ts": [],
+        "server/lib/auth-guards.ts": [],
+        "server/lib/auth.ts": [],
+        "server/lib/data/discovery.ts": [],
+        "server/lib/email-templates/reset-password.ts": [],
+        "server/lib/email-templates/theme.ts": [],
+        "server/lib/email-templates/ticket-delivery.ts": [],
+        "server/lib/email.ts": [],
+        "server/lib/error-messages.ts": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 20,
+      "files": [
+        {
+          "path": "server/lib/index.ts",
+          "language": "typescript",
+          "sizeLines": 63,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/media.ts",
+          "language": "typescript",
+          "sizeLines": 43,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/prisma.ts",
+          "language": "typescript",
+          "sizeLines": 24,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/revalidation.ts",
+          "language": "typescript",
+          "sizeLines": 85,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/server-action-error.ts",
+          "language": "typescript",
+          "sizeLines": 78,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/stripe-utils.ts",
+          "language": "typescript",
+          "sizeLines": 55,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/utils/seasonal.ts",
+          "language": "typescript",
+          "sizeLines": 46,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/validations/facility.ts",
+          "language": "typescript",
+          "sizeLines": 97,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/validations/image.ts",
+          "language": "typescript",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/validations/media.ts",
+          "language": "typescript",
+          "sizeLines": 30,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/validations/ticket.ts",
+          "language": "typescript",
+          "sizeLines": 86,
+          "fileCategory": "code"
+        },
+        {
+          "path": "server/lib/with-facility-access.ts",
+          "language": "typescript",
+          "sizeLines": 26,
+          "fileCategory": "code"
+        },
+        {
+          "path": "styles/light.css",
+          "language": "css",
+          "sizeLines": 101,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "vitest.config.ts",
+          "language": "typescript",
+          "sizeLines": 13,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "server/lib/index.ts": [],
+        "server/lib/media.ts": [],
+        "server/lib/prisma.ts": [],
+        "server/lib/revalidation.ts": [],
+        "server/lib/server-action-error.ts": [],
+        "server/lib/stripe-utils.ts": [],
+        "server/lib/utils/seasonal.ts": [],
+        "server/lib/validations/facility.ts": [],
+        "server/lib/validations/image.ts": [],
+        "server/lib/validations/media.ts": [],
+        "server/lib/validations/ticket.ts": [],
+        "server/lib/with-facility-access.ts": [],
+        "styles/light.css": [],
+        "vitest.config.ts": []
+      },
+      "neighborMap": {}
+    }
+  ]
+}

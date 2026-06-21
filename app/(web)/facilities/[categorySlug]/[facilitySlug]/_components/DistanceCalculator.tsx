@@ -15,7 +15,7 @@ interface DistanceCalculatorProps {
  * to destination using high-precision trigonometry (Haversine Formula), 
  * seamlessly delegating to device OS map navigators.
  */
-export function DistanceCalculator({ destLat, destLng, facilityName }: DistanceCalculatorProps) {
+export function DistanceCalculator({ destLat, destLng }: DistanceCalculatorProps) {
   const [distance, setDistance] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);

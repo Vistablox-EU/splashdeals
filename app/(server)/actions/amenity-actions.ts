@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache"
 import { put } from "@vercel/blob"
 import { processImageToWebP } from "@/server/lib/media"
 import { validateAction } from "@/server/lib/actions/validator"
-import { validateFacilityAccess, requireSuperAdmin } from "@/server/lib/auth-guards"
+import { validateFacilityAccess } from "@/server/lib/auth-guards"
 import { handleServerActionError } from "@/server/lib/server-action-error"
 import { updateFacilityAmenitiesSchema } from "@/server/lib/validations/facility"
 

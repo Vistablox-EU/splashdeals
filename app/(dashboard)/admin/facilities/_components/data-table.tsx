@@ -107,6 +107,7 @@ export function DataTable<TData, TValue>({
     return () => clearTimeout(timer)
   }, [globalFilter, router])
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable<TData>({
     data,
     columns,

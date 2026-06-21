@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
-import { useUIState } from "@/hooks/use-ui-state";
 import { cn } from "@/lib/utils";
 import type { DayType, TimeSlot } from "@prisma/client";
 import { TicketPurchaseModal } from "./TicketPurchaseModal";
@@ -121,9 +120,6 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
       return () => window.removeEventListener("hashchange", handleCheck);
     }
   }, [groups]);
-
-  const addItem = useCart((state) => state.addItem);
-  const openCart = useUIState((state) => state.openCart);
 
   const cartItems = useCart((state) => state.items);
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);

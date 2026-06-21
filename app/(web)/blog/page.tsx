@@ -1,5 +1,6 @@
 import { prisma } from "@/server/lib/prisma"
 import Link from "next/link"
+import Image from "next/image"
 import { Icon } from "@/components/ui/Icon"
 import type { Metadata } from "next"
 
@@ -68,12 +69,14 @@ export default async function BlogPage({
               className="group rounded-xl border bg-card hover:shadow-lg transition-all hover:-translate-y-0.5 overflow-hidden"
             >
               {/* Cover image */}
-              <div className="aspect-[16/9] bg-muted overflow-hidden">
+              <div className="relative aspect-[16/9] bg-muted overflow-hidden">
                 {post.coverImage ? (
-                  <img
+                  <Image
                     src={post.coverImage}
                     alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">

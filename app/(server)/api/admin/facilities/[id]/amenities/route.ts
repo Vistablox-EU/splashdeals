@@ -29,12 +29,6 @@ export async function PUT(
 
     // 4. Update Database
     await prisma.$transaction(async (tx) => {
-      // Get currently active amenities for this facility
-      const currentAmenities = await tx.facilityAmenity.findMany({
-        where: { facilityId }
-      })
-
-      const currentIds = new Set(currentAmenities.map(a => a.amenityId))
       const targetAmenities = validated.amenities.filter(a => a.checked)
       const targetIds = new Set(targetAmenities.map(a => a.amenityId))
 

@@ -81,13 +81,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         images: photos,
         // Only include video entries when we have a thumbnail (empty thumbnail_loc = XML error = sitemap rejected)
         videos: videos.length > 0 && photos[0]
-          ? videos.map((v: any) => ({
+          ? videos.map((v: string) => ({
               title: facility.name,
               thumbnail_loc: photos[0],
               description: facility.description || '',
               content_loc: v,
             }))
-          : undefined as any,
+          : undefined,
       });
     }
   } catch (error) {

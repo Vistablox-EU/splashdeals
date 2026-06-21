@@ -137,6 +137,7 @@ export function PageEditor({ page }: PageEditorProps) {
             <Separator />
             <div className="space-y-2">
               <Label>Sadržaj</Label>
+              {/* eslint-disable-next-line react-hooks/incompatible-library */}
               <RichTextEditor content={watch("content") || ""} onChange={(html) => setValue("content", html)} placeholder="Počni da pišeš sadržaj strane..." />
             </div>
           </div>

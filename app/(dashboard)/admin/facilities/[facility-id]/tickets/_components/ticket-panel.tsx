@@ -135,10 +135,10 @@ export function TicketPanel({
     return tickets.filter((t) => t.groupId === activeGroupId)
   }, [tickets, activeGroupId])
 
-  const handleEdit = (ticket: SerializedAdminTicket) => {
+  const handleEdit = React.useCallback((ticket: SerializedAdminTicket) => {
     setSelectedTicket(ticket)
     setIsSheetOpen(true)
-  }
+  }, [setSelectedTicket, setIsSheetOpen])
 
   const handleCreateNew = () => {
     setSelectedTicket(null)
@@ -147,6 +147,7 @@ export function TicketPanel({
 
   const columns = React.useMemo(() => createColumns({ onEdit: handleEdit }), [handleEdit])
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable<SerializedAdminTicket>({
     data: displayedTickets,
     columns,

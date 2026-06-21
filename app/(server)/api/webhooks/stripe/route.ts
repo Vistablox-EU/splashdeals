@@ -206,7 +206,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     });
 
     if (transaction && targetEmail) {
-      await sendTicketConfirmationEmail(targetEmail, transaction, session.id).catch(err => {
+      await sendTicketConfirmationEmail(targetEmail, transaction as any, session.id).catch(err => {
         console.error("[FULFILLMENT] Email sending failed, tickets still created successfully:", err);
       });
     }
@@ -224,7 +224,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
  */
 async function sendTicketConfirmationEmail(
   email: string,
-  transaction: { id: string; totalAmount: number | any },
+  transaction: { id: string; totalAmount: number },
   sessionId: string
 ) {
   // 1. Fetch all issued tickets with their ticket + facility + group data
@@ -250,7 +250,7 @@ async function sendTicketConfirmationEmail(
   }
 
   // 2. Generate QR Codes and prepare attachments
-  const attachments: any[] = [];
+  const attachments: Array<{ filename: string; content: string; encoding: string; cid: string }> = [];
   const ticketData = await Promise.all(
     issuedTickets.map(async (it, index) => {
       const title = it.ticket?.title || it.ticketGroup?.title || "Ulaznica";

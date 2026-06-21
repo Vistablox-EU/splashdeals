@@ -1,9 +1,9 @@
 import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Icon } from "@/components/ui/Icon"
 import type { Metadata } from "next"
-import { connection } from "next/server"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -130,11 +130,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Cover image */}
       {post.coverImage && (
-        <div className="aspect-[16/9] rounded-xl overflow-hidden mb-8 bg-muted">
-          <img
+        <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-8 bg-muted">
+          <Image
             src={post.coverImage}
             alt={post.title}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 768px"
+            className="object-cover"
           />
         </div>
       )}
@@ -157,11 +159,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 className="group rounded-lg border p-4 hover:shadow-md transition-all hover:-translate-y-0.5"
               >
                 {rp.coverImage && (
-                  <div className="aspect-[16/9] rounded-md overflow-hidden mb-3 bg-muted">
-                    <img
+                  <div className="relative aspect-[16/9] rounded-md overflow-hidden mb-3 bg-muted">
+                    <Image
                       src={rp.coverImage}
                       alt={rp.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform"
                     />
                   </div>
                 )}

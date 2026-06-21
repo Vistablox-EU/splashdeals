@@ -1,0 +1,2804 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "components/ui/badge.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 49,
+      "nonEmptyLines": 44,
+      "functions": [
+        {
+          "name": "Badge",
+          "startLine": 30,
+          "endLine": 47,
+          "params": [
+            "{\n  className,\n  variant = \"default\",\n  asChild = false,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Badge",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "badgeVariants",
+          "line": 49,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Badge",
+          "callee": "cn",
+          "lineNumber": 43
+        },
+        {
+          "caller": "Badge",
+          "callee": "badgeVariants",
+          "lineNumber": 43
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/breadcrumb.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 120,
+      "nonEmptyLines": 111,
+      "functions": [
+        {
+          "name": "Breadcrumb",
+          "startLine": 6,
+          "endLine": 15,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "BreadcrumbList",
+          "startLine": 17,
+          "endLine": 28,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "BreadcrumbItem",
+          "startLine": 30,
+          "endLine": 38,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "BreadcrumbLink",
+          "startLine": 40,
+          "endLine": 56,
+          "params": [
+            "{\n  asChild,\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "BreadcrumbPage",
+          "startLine": 58,
+          "endLine": 69,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "BreadcrumbSeparator",
+          "startLine": 71,
+          "endLine": 89,
+          "params": [
+            "{\n  children,\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "BreadcrumbEllipsis",
+          "startLine": 91,
+          "endLine": 110,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Breadcrumb",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "BreadcrumbList",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "BreadcrumbItem",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "BreadcrumbLink",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "BreadcrumbPage",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "BreadcrumbSeparator",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "BreadcrumbEllipsis",
+          "line": 112,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Breadcrumb",
+          "callee": "cn",
+          "lineNumber": 11
+        },
+        {
+          "caller": "BreadcrumbList",
+          "callee": "cn",
+          "lineNumber": 21
+        },
+        {
+          "caller": "BreadcrumbItem",
+          "callee": "cn",
+          "lineNumber": 34
+        },
+        {
+          "caller": "BreadcrumbLink",
+          "callee": "cn",
+          "lineNumber": 52
+        },
+        {
+          "caller": "BreadcrumbPage",
+          "callee": "cn",
+          "lineNumber": 65
+        },
+        {
+          "caller": "BreadcrumbSeparator",
+          "callee": "cn",
+          "lineNumber": 81
+        },
+        {
+          "caller": "BreadcrumbEllipsis",
+          "callee": "cn",
+          "lineNumber": 100
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 7,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/button.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 67,
+      "nonEmptyLines": 62,
+      "functions": [
+        {
+          "name": "Button",
+          "startLine": 44,
+          "endLine": 65,
+          "params": [
+            "{\n  className,\n  variant = \"default\",\n  size = \"default\",\n  asChild = false,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Button",
+          "line": 67,
+          "isDefault": false
+        },
+        {
+          "name": "buttonVariants",
+          "line": 67,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Button",
+          "callee": "cn",
+          "lineNumber": 61
+        },
+        {
+          "caller": "Button",
+          "callee": "buttonVariants",
+          "lineNumber": 61
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/calendar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 220,
+      "nonEmptyLines": 211,
+      "functions": [
+        {
+          "name": "Calendar",
+          "startLine": 14,
+          "endLine": 179,
+          "params": [
+            "{\n  className,\n  classNames,\n  showOutsideDays = true,\n  captionLayout = \"label\",\n  buttonVariant = \"ghost\",\n  locale,\n  formatters,\n  components,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CalendarDayButton",
+          "startLine": 181,
+          "endLine": 218,
+          "params": [
+            "{\n  className,\n  day,\n  modifiers,\n  locale,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Calendar",
+          "line": 220,
+          "isDefault": false
+        },
+        {
+          "name": "CalendarDayButton",
+          "line": 220,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Calendar",
+          "callee": "getDefaultClassNames",
+          "lineNumber": 27
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 32
+        },
+        {
+          "caller": "Calendar",
+          "callee": "String.raw",
+          "lineNumber": 34
+        },
+        {
+          "caller": "Calendar",
+          "callee": "String.raw",
+          "lineNumber": 35
+        },
+        {
+          "caller": "Calendar",
+          "callee": "date.toLocaleString",
+          "lineNumber": 42
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 46
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 47
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 51
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 52
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 56
+        },
+        {
+          "caller": "Calendar",
+          "callee": "buttonVariants",
+          "lineNumber": 57
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 61
+        },
+        {
+          "caller": "Calendar",
+          "callee": "buttonVariants",
+          "lineNumber": 62
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 66
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 70
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 74
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 78
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 82
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 89
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 90
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 94
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 95
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 99
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 103
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 110
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 114
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 115
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 119
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 123
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 127
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 131
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 140
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 148
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 154
+        },
+        {
+          "caller": "Calendar",
+          "callee": "cn",
+          "lineNumber": 159
+        },
+        {
+          "caller": "CalendarDayButton",
+          "callee": "getDefaultClassNames",
+          "lineNumber": 188
+        },
+        {
+          "caller": "CalendarDayButton",
+          "callee": "React.useRef",
+          "lineNumber": 190
+        },
+        {
+          "caller": "CalendarDayButton",
+          "callee": "React.useEffect",
+          "lineNumber": 191
+        },
+        {
+          "caller": "CalendarDayButton",
+          "callee": "ref.current?.focus",
+          "lineNumber": 192
+        },
+        {
+          "caller": "CalendarDayButton",
+          "callee": "day.date.toLocaleDateString",
+          "lineNumber": 200
+        },
+        {
+          "caller": "CalendarDayButton",
+          "callee": "cn",
+          "lineNumber": 210
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/card.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 103,
+      "nonEmptyLines": 94,
+      "functions": [
+        {
+          "name": "Card",
+          "startLine": 5,
+          "endLine": 21,
+          "params": [
+            "{\n  className,\n  size = \"default\",\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CardHeader",
+          "startLine": 23,
+          "endLine": 34,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "CardTitle",
+          "startLine": 36,
+          "endLine": 47,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "CardDescription",
+          "startLine": 49,
+          "endLine": 57,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "CardAction",
+          "startLine": 59,
+          "endLine": 70,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "CardContent",
+          "startLine": 72,
+          "endLine": 80,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "CardFooter",
+          "startLine": 82,
+          "endLine": 93,
+          "params": [
+            "{ className, ...props }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Card",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "CardHeader",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "CardFooter",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "CardTitle",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "CardAction",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "CardDescription",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "CardContent",
+          "line": 95,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Card",
+          "callee": "cn",
+          "lineNumber": 14
+        },
+        {
+          "caller": "CardHeader",
+          "callee": "cn",
+          "lineNumber": 27
+        },
+        {
+          "caller": "CardTitle",
+          "callee": "cn",
+          "lineNumber": 40
+        },
+        {
+          "caller": "CardDescription",
+          "callee": "cn",
+          "lineNumber": 53
+        },
+        {
+          "caller": "CardAction",
+          "callee": "cn",
+          "lineNumber": 63
+        },
+        {
+          "caller": "CardContent",
+          "callee": "cn",
+          "lineNumber": 76
+        },
+        {
+          "caller": "CardFooter",
+          "callee": "cn",
+          "lineNumber": 86
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 7,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/chart.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 361,
+      "nonEmptyLines": 325,
+      "functions": [
+        {
+          "name": "useChart",
+          "startLine": 27,
+          "endLine": 35,
+          "params": []
+        },
+        {
+          "name": "ChartContainer",
+          "startLine": 37,
+          "endLine": 70,
+          "params": [
+            "{\n  id,\n  className,\n  children,\n  config,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "ChartStyle",
+          "startLine": 72,
+          "endLine": 103,
+          "params": [
+            "{ id, config }"
+          ]
+        },
+        {
+          "name": "ChartTooltipContent",
+          "startLine": 107,
+          "endLine": 254,
+          "params": [
+            "{\n  active,\n  className,\n  indicator = \"dot\",\n  hideLabel = false,\n  hideIndicator = false,\n  labelFormatter,\n  labelClassName,\n  formatter,\n  color,\n  nameKey,\n  labelKey,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "ChartLegendContent",
+          "startLine": 258,
+          "endLine": 314,
+          "params": [
+            "{\n  className,\n  hideIcon = false,\n  payload,\n  verticalAlign = \"bottom\",\n  nameKey,\n}"
+          ]
+        },
+        {
+          "name": "getPayloadConfigFromPayload",
+          "startLine": 316,
+          "endLine": 352,
+          "params": [
+            "config",
+            "payload",
+            "key"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ChartContainer",
+          "line": 354,
+          "isDefault": false
+        },
+        {
+          "name": "ChartTooltip",
+          "line": 354,
+          "isDefault": false
+        },
+        {
+          "name": "ChartTooltipContent",
+          "line": 354,
+          "isDefault": false
+        },
+        {
+          "name": "ChartLegend",
+          "line": 354,
+          "isDefault": false
+        },
+        {
+          "name": "ChartLegendContent",
+          "line": 354,
+          "isDefault": false
+        },
+        {
+          "name": "ChartStyle",
+          "line": 354,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useChart",
+          "callee": "React.useContext",
+          "lineNumber": 28
+        },
+        {
+          "caller": "ChartContainer",
+          "callee": "React.useId",
+          "lineNumber": 49
+        },
+        {
+          "caller": "ChartContainer",
+          "callee": "uniqueId.replace",
+          "lineNumber": 50
+        },
+        {
+          "caller": "ChartContainer",
+          "callee": "cn",
+          "lineNumber": 57
+        },
+        {
+          "caller": "ChartStyle",
+          "callee": "Object.entries(config).filter",
+          "lineNumber": 73
+        },
+        {
+          "caller": "ChartStyle",
+          "callee": "Object.entries",
+          "lineNumber": 73
+        },
+        {
+          "caller": "ChartStyle",
+          "callee": "Object.entries(THEMES)\n          .map(\n            ([theme, prefix]) => `\n${prefix} [data-chart=${id}] {\n${colorConfig\n  .map(([key, itemConfig]) => {\n    const color =\n      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||\n      itemConfig.color\n    return color ? `  --color-${key}: ${color};` : null\n  })\n  .join(\"\\n\")}\n}\n`\n          )\n          .join",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ChartStyle",
+          "callee": "Object.entries(THEMES)\n          .map",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ChartStyle",
+          "callee": "Object.entries",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ChartStyle",
+          "callee": "colorConfig\n  .map(([key, itemConfig]) => {\n    const color =\n      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||\n      itemConfig.color\n    return color ? `  --color-${key}: ${color};` : null\n  })\n  .join",
+          "lineNumber": 88
+        },
+        {
+          "caller": "ChartStyle",
+          "callee": "colorConfig\n  .map",
+          "lineNumber": 88
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "useChart",
+          "lineNumber": 128
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "React.useMemo",
+          "lineNumber": 132
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "getPayloadConfigFromPayload",
+          "lineNumber": 139
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "cn",
+          "lineNumber": 147
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "labelFormatter",
+          "lineNumber": 148
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "cn",
+          "lineNumber": 157
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "cn",
+          "lineNumber": 176
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "payload\n          // eslint-disable-next-line @typescript-eslint/no-explicit-any\n          .filter((item: any) => item.type !== \"none\")\n          // eslint-disable-next-line @typescript-eslint/no-explicit-any\n          .map",
+          "lineNumber": 183
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "payload\n          // eslint-disable-next-line @typescript-eslint/no-explicit-any\n          .filter",
+          "lineNumber": 183
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "getPayloadConfigFromPayload",
+          "lineNumber": 189
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "cn",
+          "lineNumber": 195
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "formatter",
+          "lineNumber": 201
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "cn",
+          "lineNumber": 209
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "cn",
+          "lineNumber": 229
+        },
+        {
+          "caller": "ChartTooltipContent",
+          "callee": "item.value.toLocaleString",
+          "lineNumber": 242
+        },
+        {
+          "caller": "ChartLegendContent",
+          "callee": "useChart",
+          "lineNumber": 271
+        },
+        {
+          "caller": "ChartLegendContent",
+          "callee": "cn",
+          "lineNumber": 279
+        },
+        {
+          "caller": "ChartLegendContent",
+          "callee": "payload\n        .filter((item) => item.type !== \"none\")\n        .map",
+          "lineNumber": 285
+        },
+        {
+          "caller": "ChartLegendContent",
+          "callee": "payload\n        .filter",
+          "lineNumber": 285
+        },
+        {
+          "caller": "ChartLegendContent",
+          "callee": "getPayloadConfigFromPayload",
+          "lineNumber": 289
+        },
+        {
+          "caller": "ChartLegendContent",
+          "callee": "cn",
+          "lineNumber": 294
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/checkbox.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 31,
+      "nonEmptyLines": 28,
+      "functions": [
+        {
+          "name": "Checkbox",
+          "startLine": 8,
+          "endLine": 29,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Checkbox",
+          "line": 31,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Checkbox",
+          "callee": "cn",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/collapsible.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 33,
+      "nonEmptyLines": 28,
+      "functions": [
+        {
+          "name": "Collapsible",
+          "startLine": 5,
+          "endLine": 9,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CollapsibleTrigger",
+          "startLine": 11,
+          "endLine": 20,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CollapsibleContent",
+          "startLine": 22,
+          "endLine": 31,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Collapsible",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "CollapsibleTrigger",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "CollapsibleContent",
+          "line": 33,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/command.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 158,
+      "nonEmptyLines": 146,
+      "functions": [
+        {
+          "name": "Command",
+          "startLine": 9,
+          "endLine": 23,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CommandDialog",
+          "startLine": 25,
+          "endLine": 38,
+          "params": [
+            "{\n  children,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CommandInput",
+          "startLine": 40,
+          "endLine": 57,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CommandList",
+          "startLine": 59,
+          "endLine": 70,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CommandEmpty",
+          "startLine": 72,
+          "endLine": 83,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CommandGroup",
+          "startLine": 85,
+          "endLine": 99,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CommandSeparator",
+          "startLine": 101,
+          "endLine": 112,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CommandItem",
+          "startLine": 114,
+          "endLine": 128,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "CommandShortcut",
+          "startLine": 130,
+          "endLine": 144,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Command",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "CommandDialog",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "CommandInput",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "CommandList",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "CommandEmpty",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "CommandGroup",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "CommandItem",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "CommandShortcut",
+          "line": 148,
+          "isDefault": false
+        },
+        {
+          "name": "CommandSeparator",
+          "line": 148,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Command",
+          "callee": "cn",
+          "lineNumber": 16
+        },
+        {
+          "caller": "CommandInput",
+          "callee": "cn",
+          "lineNumber": 49
+        },
+        {
+          "caller": "CommandList",
+          "callee": "cn",
+          "lineNumber": 66
+        },
+        {
+          "caller": "CommandEmpty",
+          "callee": "cn",
+          "lineNumber": 79
+        },
+        {
+          "caller": "CommandGroup",
+          "callee": "cn",
+          "lineNumber": 92
+        },
+        {
+          "caller": "CommandSeparator",
+          "callee": "cn",
+          "lineNumber": 108
+        },
+        {
+          "caller": "CommandItem",
+          "callee": "cn",
+          "lineNumber": 121
+        },
+        {
+          "caller": "CommandShortcut",
+          "callee": "cn",
+          "lineNumber": 137
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 9,
+        "functionCount": 9,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/dialog.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 166,
+      "nonEmptyLines": 154,
+      "functions": [
+        {
+          "name": "Dialog",
+          "startLine": 9,
+          "endLine": 13,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DialogTrigger",
+          "startLine": 15,
+          "endLine": 19,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DialogPortal",
+          "startLine": 21,
+          "endLine": 25,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DialogClose",
+          "startLine": 27,
+          "endLine": 31,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DialogOverlay",
+          "startLine": 33,
+          "endLine": 47,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DialogContent",
+          "startLine": 49,
+          "endLine": 84,
+          "params": [
+            "{\n  className,\n  children,\n  showCloseButton = true,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DialogHeader",
+          "startLine": 86,
+          "endLine": 94,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "DialogFooter",
+          "startLine": 96,
+          "endLine": 121,
+          "params": [
+            "{\n  className,\n  showCloseButton = false,\n  children,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DialogTitle",
+          "startLine": 123,
+          "endLine": 137,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DialogDescription",
+          "startLine": 139,
+          "endLine": 153,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Dialog",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogClose",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogContent",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogDescription",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogFooter",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogHeader",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogOverlay",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogPortal",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogTitle",
+          "line": 155,
+          "isDefault": false
+        },
+        {
+          "name": "DialogTrigger",
+          "line": 155,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DialogOverlay",
+          "callee": "cn",
+          "lineNumber": 40
+        },
+        {
+          "caller": "DialogContent",
+          "callee": "cn",
+          "lineNumber": 62
+        },
+        {
+          "caller": "DialogHeader",
+          "callee": "cn",
+          "lineNumber": 90
+        },
+        {
+          "caller": "DialogFooter",
+          "callee": "cn",
+          "lineNumber": 107
+        },
+        {
+          "caller": "DialogTitle",
+          "callee": "cn",
+          "lineNumber": 130
+        },
+        {
+          "caller": "DialogDescription",
+          "callee": "cn",
+          "lineNumber": 146
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 10,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/dropdown-menu.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 266,
+      "nonEmptyLines": 249,
+      "functions": [
+        {
+          "name": "DropdownMenu",
+          "startLine": 8,
+          "endLine": 12,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuPortal",
+          "startLine": 14,
+          "endLine": 20,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuTrigger",
+          "startLine": 22,
+          "endLine": 31,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuContent",
+          "startLine": 33,
+          "endLine": 50,
+          "params": [
+            "{\n  className,\n  align = \"start\",\n  sideOffset = 4,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuGroup",
+          "startLine": 52,
+          "endLine": 58,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuItem",
+          "startLine": 60,
+          "endLine": 81,
+          "params": [
+            "{\n  className,\n  inset,\n  variant = \"default\",\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuCheckboxItem",
+          "startLine": 83,
+          "endLine": 114,
+          "params": [
+            "{\n  className,\n  children,\n  checked,\n  inset,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuRadioGroup",
+          "startLine": 116,
+          "endLine": 125,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuRadioItem",
+          "startLine": 127,
+          "endLine": 156,
+          "params": [
+            "{\n  className,\n  children,\n  inset,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuLabel",
+          "startLine": 158,
+          "endLine": 176,
+          "params": [
+            "{\n  className,\n  inset,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuSeparator",
+          "startLine": 178,
+          "endLine": 189,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuShortcut",
+          "startLine": 191,
+          "endLine": 205,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuSub",
+          "startLine": 207,
+          "endLine": 211,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuSubTrigger",
+          "startLine": 213,
+          "endLine": 235,
+          "params": [
+            "{\n  className,\n  inset,\n  children,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "DropdownMenuSubContent",
+          "startLine": 237,
+          "endLine": 248,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "DropdownMenu",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuPortal",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuTrigger",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuContent",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuGroup",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuLabel",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuItem",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuCheckboxItem",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuRadioGroup",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuRadioItem",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuSeparator",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuShortcut",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuSub",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuSubTrigger",
+          "line": 250,
+          "isDefault": false
+        },
+        {
+          "name": "DropdownMenuSubContent",
+          "line": 250,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DropdownMenuContent",
+          "callee": "cn",
+          "lineNumber": 45
+        },
+        {
+          "caller": "DropdownMenuItem",
+          "callee": "cn",
+          "lineNumber": 74
+        },
+        {
+          "caller": "DropdownMenuCheckboxItem",
+          "callee": "cn",
+          "lineNumber": 96
+        },
+        {
+          "caller": "DropdownMenuRadioItem",
+          "callee": "cn",
+          "lineNumber": 139
+        },
+        {
+          "caller": "DropdownMenuLabel",
+          "callee": "cn",
+          "lineNumber": 169
+        },
+        {
+          "caller": "DropdownMenuSeparator",
+          "callee": "cn",
+          "lineNumber": 185
+        },
+        {
+          "caller": "DropdownMenuShortcut",
+          "callee": "cn",
+          "lineNumber": 198
+        },
+        {
+          "caller": "DropdownMenuSubTrigger",
+          "callee": "cn",
+          "lineNumber": 225
+        },
+        {
+          "caller": "DropdownMenuSubContent",
+          "callee": "cn",
+          "lineNumber": 244
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 15,
+        "functionCount": 15,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/form.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 168,
+      "nonEmptyLines": 143,
+      "functions": [
+        {
+          "name": "FormField",
+          "startLine": 31,
+          "endLine": 42,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "useFormField",
+          "startLine": 44,
+          "endLine": 65,
+          "params": []
+        },
+        {
+          "name": "FormItem",
+          "startLine": 75,
+          "endLine": 83,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "FormLabel",
+          "startLine": 85,
+          "endLine": 99,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "FormControl",
+          "startLine": 101,
+          "endLine": 117,
+          "params": [
+            "{ ...props }"
+          ]
+        },
+        {
+          "name": "FormDescription",
+          "startLine": 119,
+          "endLine": 133,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "FormMessage",
+          "startLine": 135,
+          "endLine": 157,
+          "params": [
+            "{\n  className,\n  children,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useFormField",
+          "line": 159,
+          "isDefault": false
+        },
+        {
+          "name": "Form",
+          "line": 159,
+          "isDefault": false
+        },
+        {
+          "name": "FormItem",
+          "line": 159,
+          "isDefault": false
+        },
+        {
+          "name": "FormLabel",
+          "line": 159,
+          "isDefault": false
+        },
+        {
+          "name": "FormControl",
+          "line": 159,
+          "isDefault": false
+        },
+        {
+          "name": "FormDescription",
+          "line": 159,
+          "isDefault": false
+        },
+        {
+          "name": "FormMessage",
+          "line": 159,
+          "isDefault": false
+        },
+        {
+          "name": "FormField",
+          "line": 159,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useFormField",
+          "callee": "React.useContext",
+          "lineNumber": 45
+        },
+        {
+          "caller": "useFormField",
+          "callee": "React.useContext",
+          "lineNumber": 46
+        },
+        {
+          "caller": "useFormField",
+          "callee": "useFormContext",
+          "lineNumber": 47
+        },
+        {
+          "caller": "useFormField",
+          "callee": "getFieldState",
+          "lineNumber": 49
+        },
+        {
+          "caller": "FormItem",
+          "callee": "React.useId",
+          "lineNumber": 76
+        },
+        {
+          "caller": "FormItem",
+          "callee": "cn",
+          "lineNumber": 80
+        },
+        {
+          "caller": "FormLabel",
+          "callee": "useFormField",
+          "lineNumber": 89
+        },
+        {
+          "caller": "FormLabel",
+          "callee": "cn",
+          "lineNumber": 94
+        },
+        {
+          "caller": "FormControl",
+          "callee": "useFormField",
+          "lineNumber": 102
+        },
+        {
+          "caller": "FormDescription",
+          "callee": "useFormField",
+          "lineNumber": 123
+        },
+        {
+          "caller": "FormDescription",
+          "callee": "cn",
+          "lineNumber": 129
+        },
+        {
+          "caller": "FormMessage",
+          "callee": "useFormField",
+          "lineNumber": 140
+        },
+        {
+          "caller": "FormMessage",
+          "callee": "String",
+          "lineNumber": 141
+        },
+        {
+          "caller": "FormMessage",
+          "callee": "cn",
+          "lineNumber": 151
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/GlobalAmbient.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 20,
+      "functions": [
+        {
+          "name": "GlobalAmbient",
+          "startLine": 3,
+          "endLine": 25,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "GlobalAmbient",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/Icon.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 263,
+      "nonEmptyLines": 244,
+      "functions": [
+        {
+          "name": "Icon",
+          "startLine": 239,
+          "endLine": 263,
+          "params": [
+            "{ name, className, label }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Icon",
+          "line": 239,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Icon",
+          "callee": "cn",
+          "lineNumber": 251
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/input.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 19,
+      "nonEmptyLines": 16,
+      "functions": [
+        {
+          "name": "Input",
+          "startLine": 5,
+          "endLine": 17,
+          "params": [
+            "{ className, type, ...props }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Input",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Input",
+          "callee": "cn",
+          "lineNumber": 10
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/label.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 24,
+      "nonEmptyLines": 20,
+      "functions": [
+        {
+          "name": "Label",
+          "startLine": 8,
+          "endLine": 22,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Label",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Label",
+          "callee": "cn",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/LiquidButton.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 69,
+      "nonEmptyLines": 59,
+      "exports": [
+        {
+          "name": "LiquidButton",
+          "line": 13,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/navigation-menu.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 164,
+      "nonEmptyLines": 153,
+      "functions": [
+        {
+          "name": "NavigationMenu",
+          "startLine": 8,
+          "endLine": 30,
+          "params": [
+            "{\n  className,\n  children,\n  viewport = true,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "NavigationMenuList",
+          "startLine": 32,
+          "endLine": 46,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "NavigationMenuItem",
+          "startLine": 48,
+          "endLine": 59,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "NavigationMenuTrigger",
+          "startLine": 65,
+          "endLine": 80,
+          "params": [
+            "{\n  className,\n  children,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "NavigationMenuContent",
+          "startLine": 82,
+          "endLine": 96,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "NavigationMenuViewport",
+          "startLine": 98,
+          "endLine": 118,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "NavigationMenuLink",
+          "startLine": 120,
+          "endLine": 134,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "NavigationMenuIndicator",
+          "startLine": 136,
+          "endLine": 152,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "NavigationMenu",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "NavigationMenuList",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "NavigationMenuItem",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "NavigationMenuContent",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "NavigationMenuTrigger",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "NavigationMenuLink",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "NavigationMenuIndicator",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "NavigationMenuViewport",
+          "line": 154,
+          "isDefault": false
+        },
+        {
+          "name": "navigationMenuTriggerStyle",
+          "line": 154,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "NavigationMenu",
+          "callee": "cn",
+          "lineNumber": 20
+        },
+        {
+          "caller": "NavigationMenuList",
+          "callee": "cn",
+          "lineNumber": 39
+        },
+        {
+          "caller": "NavigationMenuItem",
+          "callee": "cn",
+          "lineNumber": 55
+        },
+        {
+          "caller": "NavigationMenuTrigger",
+          "callee": "cn",
+          "lineNumber": 73
+        },
+        {
+          "caller": "NavigationMenuTrigger",
+          "callee": "navigationMenuTriggerStyle",
+          "lineNumber": 73
+        },
+        {
+          "caller": "NavigationMenuContent",
+          "callee": "cn",
+          "lineNumber": 89
+        },
+        {
+          "caller": "NavigationMenuViewport",
+          "callee": "cn",
+          "lineNumber": 104
+        },
+        {
+          "caller": "NavigationMenuViewport",
+          "callee": "cn",
+          "lineNumber": 110
+        },
+        {
+          "caller": "NavigationMenuLink",
+          "callee": "cn",
+          "lineNumber": 127
+        },
+        {
+          "caller": "NavigationMenuIndicator",
+          "callee": "cn",
+          "lineNumber": 143
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 9,
+        "functionCount": 8,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/popover.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 89,
+      "nonEmptyLines": 79,
+      "functions": [
+        {
+          "name": "Popover",
+          "startLine": 8,
+          "endLine": 12,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "PopoverTrigger",
+          "startLine": 14,
+          "endLine": 18,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "PopoverContent",
+          "startLine": 20,
+          "endLine": 40,
+          "params": [
+            "{\n  className,\n  align = \"center\",\n  sideOffset = 4,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "PopoverAnchor",
+          "startLine": 42,
+          "endLine": 46,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "PopoverHeader",
+          "startLine": 48,
+          "endLine": 56,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "PopoverTitle",
+          "startLine": 58,
+          "endLine": 66,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "PopoverDescription",
+          "startLine": 68,
+          "endLine": 79,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Popover",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "PopoverAnchor",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "PopoverContent",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "PopoverDescription",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "PopoverHeader",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "PopoverTitle",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "PopoverTrigger",
+          "line": 81,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "PopoverContent",
+          "callee": "cn",
+          "lineNumber": 32
+        },
+        {
+          "caller": "PopoverHeader",
+          "callee": "cn",
+          "lineNumber": 52
+        },
+        {
+          "caller": "PopoverTitle",
+          "callee": "cn",
+          "lineNumber": 62
+        },
+        {
+          "caller": "PopoverDescription",
+          "callee": "cn",
+          "lineNumber": 75
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 7,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/progress.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 31,
+      "nonEmptyLines": 27,
+      "functions": [
+        {
+          "name": "Progress",
+          "startLine": 8,
+          "endLine": 29,
+          "params": [
+            "{\n  className,\n  value,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Progress",
+          "line": 31,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Progress",
+          "callee": "cn",
+          "lineNumber": 16
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/RouteErrorBoundary.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 136,
+      "nonEmptyLines": 122,
+      "functions": [
+        {
+          "name": "RouteErrorBoundary",
+          "startLine": 18,
+          "endLine": 136,
+          "params": [
+            "{\n  error,\n  reset,\n  subtitleKey,\n  isModal = false,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "RouteErrorBoundary",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "RouteErrorBoundary",
+          "callee": "useState",
+          "lineNumber": 24
+        },
+        {
+          "caller": "RouteErrorBoundary",
+          "callee": "useEffect",
+          "lineNumber": 26
+        },
+        {
+          "caller": "RouteErrorBoundary",
+          "callee": "console.error",
+          "lineNumber": 27
+        },
+        {
+          "caller": "RouteErrorBoundary",
+          "callee": "getClientDictionary().then",
+          "lineNumber": 28
+        },
+        {
+          "caller": "RouteErrorBoundary",
+          "callee": "getClientDictionary",
+          "lineNumber": 28
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/scroll-area.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 55,
+      "nonEmptyLines": 50,
+      "functions": [
+        {
+          "name": "ScrollArea",
+          "startLine": 8,
+          "endLine": 29,
+          "params": [
+            "{\n  className,\n  children,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "ScrollBar",
+          "startLine": 31,
+          "endLine": 53,
+          "params": [
+            "{\n  className,\n  orientation = \"vertical\",\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ScrollArea",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "ScrollBar",
+          "line": 55,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ScrollArea",
+          "callee": "cn",
+          "lineNumber": 16
+        },
+        {
+          "caller": "ScrollBar",
+          "callee": "cn",
+          "lineNumber": 41
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/select.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 189,
+      "nonEmptyLines": 177,
+      "functions": [
+        {
+          "name": "Select",
+          "startLine": 8,
+          "endLine": 12,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectGroup",
+          "startLine": 14,
+          "endLine": 25,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectValue",
+          "startLine": 27,
+          "endLine": 31,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectTrigger",
+          "startLine": 33,
+          "endLine": 57,
+          "params": [
+            "{\n  className,\n  size = \"default\",\n  children,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectContent",
+          "startLine": 59,
+          "endLine": 90,
+          "params": [
+            "{\n  className,\n  children,\n  position = \"item-aligned\",\n  align = \"center\",\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectLabel",
+          "startLine": 92,
+          "endLine": 103,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectItem",
+          "startLine": 105,
+          "endLine": 127,
+          "params": [
+            "{\n  className,\n  children,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectSeparator",
+          "startLine": 129,
+          "endLine": 140,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectScrollUpButton",
+          "startLine": 142,
+          "endLine": 158,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SelectScrollDownButton",
+          "startLine": 160,
+          "endLine": 176,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Select",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectContent",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectGroup",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectItem",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectLabel",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectScrollDownButton",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectScrollUpButton",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectSeparator",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectTrigger",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "SelectValue",
+          "line": 178,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "SelectGroup",
+          "callee": "cn",
+          "lineNumber": 21
+        },
+        {
+          "caller": "SelectTrigger",
+          "callee": "cn",
+          "lineNumber": 45
+        },
+        {
+          "caller": "SelectContent",
+          "callee": "cn",
+          "lineNumber": 71
+        },
+        {
+          "caller": "SelectContent",
+          "callee": "cn",
+          "lineNumber": 79
+        },
+        {
+          "caller": "SelectLabel",
+          "callee": "cn",
+          "lineNumber": 99
+        },
+        {
+          "caller": "SelectItem",
+          "callee": "cn",
+          "lineNumber": 113
+        },
+        {
+          "caller": "SelectSeparator",
+          "callee": "cn",
+          "lineNumber": 136
+        },
+        {
+          "caller": "SelectScrollUpButton",
+          "callee": "cn",
+          "lineNumber": 149
+        },
+        {
+          "caller": "SelectScrollDownButton",
+          "callee": "cn",
+          "lineNumber": 167
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 10,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/separator.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 28,
+      "nonEmptyLines": 24,
+      "functions": [
+        {
+          "name": "Separator",
+          "startLine": 8,
+          "endLine": 26,
+          "params": [
+            "{\n  className,\n  orientation = \"horizontal\",\n  decorative = true,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Separator",
+          "line": 28,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Separator",
+          "callee": "cn",
+          "lineNumber": 19
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "components/ui/sheet.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 145,
+      "nonEmptyLines": 133,
+      "functions": [
+        {
+          "name": "Sheet",
+          "startLine": 9,
+          "endLine": 11,
+          "params": [
+            "{ ...props }"
+          ]
+        },
+        {
+          "name": "SheetTrigger",
+          "startLine": 13,
+          "endLine": 17,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SheetClose",
+          "startLine": 19,
+          "endLine": 23,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SheetPortal",
+          "startLine": 25,
+          "endLine": 29,
+          "params": [
+            "{\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SheetOverlay",
+          "startLine": 31,
+          "endLine": 45,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SheetContent",
+          "startLine": 47,
+          "endLine": 85,
+          "params": [
+            "{\n  className,\n  children,\n  side = \"right\",\n  showCloseButton = true,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SheetHeader",
+          "startLine": 87,
+          "endLine": 95,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "SheetFooter",
+          "startLine": 97,
+          "endLine": 105,
+          "params": [
+            "{ className, ...props }"
+          ]
+        },
+        {
+          "name": "SheetTitle",
+          "startLine": 107,
+          "endLine": 121,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        },
+        {
+          "name": "SheetDescription",
+          "startLine": 123,
+          "endLine": 134,
+          "params": [
+            "{\n  className,\n  ...props\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Sheet",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "SheetTrigger",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "SheetClose",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "SheetContent",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "SheetHeader",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "SheetFooter",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "SheetTitle",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "SheetDescription",
+          "line": 136,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "SheetOverlay",
+          "callee": "cn",
+          "lineNumber": 38
+        },
+        {
+          "caller": "SheetContent",
+          "callee": "cn",
+          "lineNumber": 63
+        },
+        {
+          "caller": "SheetHeader",
+          "callee": "cn",
+          "lineNumber": 91
+        },
+        {
+          "caller": "SheetFooter",
+          "callee": "cn",
+          "lineNumber": 101
+        },
+        {
+          "caller": "SheetTitle",
+          "callee": "cn",
+          "lineNumber": 114
+        },
+        {
+          "caller": "SheetDescription",
+          "callee": "cn",
+          "lineNumber": 130
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    }
+  ]
+}

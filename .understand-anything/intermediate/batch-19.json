@@ -1,0 +1,1103 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 14,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "server/lib/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 63,
+      "nonEmptyLines": 52,
+      "exports": [
+        {
+          "name": "auth",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "prisma",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "AUTH_ERROR",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "requireAdmin",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "requireSuperAdmin",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "validateFacilityAccess",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "validateAction",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "subscribeToNewsletter",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "configureEmailReporter",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "sendEmail",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "generateIdempotencyKey",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "withStripeRetry",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "processImageToWebP",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "generateThumbnail",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "processTicketImage",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "handleServerActionError",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "ActionResult",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "withFacilityAccess",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "hashApiKey",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "generateApiKey",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "authenticateRequest",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "bootstrapSuperAdmin",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "getActiveCities",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "getDiscoveryCategories",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "validateDiscoverySlug",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "getSummerSeasonEnd",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "getSummerSeasonStart",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "getNextSubscriptionExpiry",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdmin",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminFacilities",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminFacility",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminAmenities",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminMedia",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminUsers",
+          "line": 56,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 34,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/media.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 43,
+      "nonEmptyLines": 40,
+      "functions": [
+        {
+          "name": "processImageToWebP",
+          "startLine": 8,
+          "endLine": 16,
+          "params": [
+            "buffer"
+          ]
+        },
+        {
+          "name": "generateThumbnail",
+          "startLine": 22,
+          "endLine": 29,
+          "params": [
+            "buffer"
+          ]
+        },
+        {
+          "name": "processTicketImage",
+          "startLine": 35,
+          "endLine": 43,
+          "params": [
+            "buffer"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "processImageToWebP",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "generateThumbnail",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "processTicketImage",
+          "line": 35,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "processImageToWebP",
+          "callee": "sharp(buffer)\n    .resize(2000, undefined, { \n      withoutEnlargement: true,\n      fit: 'inside'\n    })\n    .webp({ quality: 80 })\n    .toBuffer",
+          "lineNumber": 9
+        },
+        {
+          "caller": "processImageToWebP",
+          "callee": "sharp(buffer)\n    .resize(2000, undefined, { \n      withoutEnlargement: true,\n      fit: 'inside'\n    })\n    .webp",
+          "lineNumber": 9
+        },
+        {
+          "caller": "processImageToWebP",
+          "callee": "sharp(buffer)\n    .resize",
+          "lineNumber": 9
+        },
+        {
+          "caller": "processImageToWebP",
+          "callee": "sharp",
+          "lineNumber": 9
+        },
+        {
+          "caller": "generateThumbnail",
+          "callee": "sharp(buffer)\n    .resize(400, 400, {\n      fit: 'cover',\n    })\n    .webp({ quality: 70 })\n    .toBuffer",
+          "lineNumber": 23
+        },
+        {
+          "caller": "generateThumbnail",
+          "callee": "sharp(buffer)\n    .resize(400, 400, {\n      fit: 'cover',\n    })\n    .webp",
+          "lineNumber": 23
+        },
+        {
+          "caller": "generateThumbnail",
+          "callee": "sharp(buffer)\n    .resize",
+          "lineNumber": 23
+        },
+        {
+          "caller": "generateThumbnail",
+          "callee": "sharp",
+          "lineNumber": 23
+        },
+        {
+          "caller": "processTicketImage",
+          "callee": "sharp(buffer)\n    .resize(1200, 630, {\n      fit: 'cover',\n      position: 'center'\n    })\n    .webp({ quality: 85 })\n    .toBuffer",
+          "lineNumber": 36
+        },
+        {
+          "caller": "processTicketImage",
+          "callee": "sharp(buffer)\n    .resize(1200, 630, {\n      fit: 'cover',\n      position: 'center'\n    })\n    .webp",
+          "lineNumber": 36
+        },
+        {
+          "caller": "processTicketImage",
+          "callee": "sharp(buffer)\n    .resize",
+          "lineNumber": 36
+        },
+        {
+          "caller": "processTicketImage",
+          "callee": "sharp",
+          "lineNumber": 36
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/prisma.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 24,
+      "nonEmptyLines": 19,
+      "exports": [
+        {
+          "name": "prisma",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/revalidation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 85,
+      "nonEmptyLines": 70,
+      "functions": [
+        {
+          "name": "revalidateAdmin",
+          "startLine": 19,
+          "endLine": 21,
+          "params": [
+            "route",
+            "type"
+          ]
+        },
+        {
+          "name": "revalidateAdminFacilities",
+          "startLine": 23,
+          "endLine": 25,
+          "params": []
+        },
+        {
+          "name": "revalidateAdminFacility",
+          "startLine": 27,
+          "endLine": 29,
+          "params": [
+            "facilityId"
+          ]
+        },
+        {
+          "name": "revalidateAdminAmenities",
+          "startLine": 31,
+          "endLine": 33,
+          "params": [
+            "facilityId"
+          ]
+        },
+        {
+          "name": "revalidateAdminMedia",
+          "startLine": 35,
+          "endLine": 40,
+          "params": [
+            "facilityId",
+            "slug"
+          ]
+        },
+        {
+          "name": "revalidateAdminUsers",
+          "startLine": 42,
+          "endLine": 44,
+          "params": []
+        },
+        {
+          "name": "revalidateAdminPosts",
+          "startLine": 63,
+          "endLine": 65,
+          "params": []
+        },
+        {
+          "name": "revalidateAdminPost",
+          "startLine": 67,
+          "endLine": 69,
+          "params": [
+            "postId"
+          ]
+        },
+        {
+          "name": "revalidateAdminPages",
+          "startLine": 71,
+          "endLine": 73,
+          "params": []
+        },
+        {
+          "name": "revalidateAdminPage",
+          "startLine": 75,
+          "endLine": 77,
+          "params": [
+            "pageId"
+          ]
+        },
+        {
+          "name": "revalidateAdminCategories",
+          "startLine": 79,
+          "endLine": 81,
+          "params": []
+        },
+        {
+          "name": "revalidateAdminTags",
+          "startLine": 83,
+          "endLine": 85,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ADMIN_PATHS",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "PUBLIC_PATHS",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdmin",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminFacilities",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminFacility",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminAmenities",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminMedia",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminUsers",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "CMS_PATHS",
+          "line": 46,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminPosts",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminPost",
+          "line": 67,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminPages",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminPage",
+          "line": 75,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminCategories",
+          "line": 79,
+          "isDefault": false
+        },
+        {
+          "name": "revalidateAdminTags",
+          "line": 83,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "revalidateAdmin",
+          "callee": "revalidatePath",
+          "lineNumber": 20
+        },
+        {
+          "caller": "revalidateAdminFacilities",
+          "callee": "revalidatePath",
+          "lineNumber": 24
+        },
+        {
+          "caller": "revalidateAdminFacilities",
+          "callee": "ADMIN_PATHS.facilities.list",
+          "lineNumber": 24
+        },
+        {
+          "caller": "revalidateAdminFacility",
+          "callee": "revalidatePath",
+          "lineNumber": 28
+        },
+        {
+          "caller": "revalidateAdminFacility",
+          "callee": "ADMIN_PATHS.facilities.detail",
+          "lineNumber": 28
+        },
+        {
+          "caller": "revalidateAdminAmenities",
+          "callee": "revalidatePath",
+          "lineNumber": 32
+        },
+        {
+          "caller": "revalidateAdminAmenities",
+          "callee": "ADMIN_PATHS.facilities.amenities",
+          "lineNumber": 32
+        },
+        {
+          "caller": "revalidateAdminMedia",
+          "callee": "revalidatePath",
+          "lineNumber": 36
+        },
+        {
+          "caller": "revalidateAdminMedia",
+          "callee": "ADMIN_PATHS.facilities.media",
+          "lineNumber": 36
+        },
+        {
+          "caller": "revalidateAdminMedia",
+          "callee": "revalidatePath",
+          "lineNumber": 38
+        },
+        {
+          "caller": "revalidateAdminMedia",
+          "callee": "PUBLIC_PATHS.facilityDetail",
+          "lineNumber": 38
+        },
+        {
+          "caller": "revalidateAdminUsers",
+          "callee": "revalidatePath",
+          "lineNumber": 43
+        },
+        {
+          "caller": "revalidateAdminUsers",
+          "callee": "ADMIN_PATHS.users.list",
+          "lineNumber": 43
+        },
+        {
+          "caller": "revalidateAdminPosts",
+          "callee": "revalidatePath",
+          "lineNumber": 64
+        },
+        {
+          "caller": "revalidateAdminPosts",
+          "callee": "CMS_PATHS.posts.list",
+          "lineNumber": 64
+        },
+        {
+          "caller": "revalidateAdminPost",
+          "callee": "revalidatePath",
+          "lineNumber": 68
+        },
+        {
+          "caller": "revalidateAdminPost",
+          "callee": "CMS_PATHS.posts.detail",
+          "lineNumber": 68
+        },
+        {
+          "caller": "revalidateAdminPages",
+          "callee": "revalidatePath",
+          "lineNumber": 72
+        },
+        {
+          "caller": "revalidateAdminPages",
+          "callee": "CMS_PATHS.pages.list",
+          "lineNumber": 72
+        },
+        {
+          "caller": "revalidateAdminPage",
+          "callee": "revalidatePath",
+          "lineNumber": 76
+        },
+        {
+          "caller": "revalidateAdminPage",
+          "callee": "CMS_PATHS.pages.detail",
+          "lineNumber": 76
+        },
+        {
+          "caller": "revalidateAdminCategories",
+          "callee": "revalidatePath",
+          "lineNumber": 80
+        },
+        {
+          "caller": "revalidateAdminCategories",
+          "callee": "CMS_PATHS.categories.list",
+          "lineNumber": 80
+        },
+        {
+          "caller": "revalidateAdminTags",
+          "callee": "revalidatePath",
+          "lineNumber": 84
+        },
+        {
+          "caller": "revalidateAdminTags",
+          "callee": "CMS_PATHS.tags.list",
+          "lineNumber": 84
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 15,
+        "functionCount": 12,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/server-action-error.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 78,
+      "nonEmptyLines": 71,
+      "functions": [
+        {
+          "name": "handleServerActionError",
+          "startLine": 17,
+          "endLine": 78,
+          "params": [
+            "error",
+            "context"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "handleServerActionError",
+          "line": 17,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "handleServerActionError",
+          "callee": "issue.path.join",
+          "lineNumber": 23
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "fieldErrors[path].push",
+          "lineNumber": 25
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "console.warn",
+          "lineNumber": 27
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "console.warn",
+          "lineNumber": 36
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "(error.meta?.target as string[])?.join",
+          "lineNumber": 38
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "console.warn",
+          "lineNumber": 64
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "error.message?.startsWith",
+          "lineNumber": 67
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "console.warn",
+          "lineNumber": 68
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "console.warn",
+          "lineNumber": 72
+        },
+        {
+          "caller": "handleServerActionError",
+          "callee": "console.error",
+          "lineNumber": 76
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/stripe-utils.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 55,
+      "nonEmptyLines": 49,
+      "functions": [
+        {
+          "name": "generateIdempotencyKey",
+          "startLine": 14,
+          "endLine": 18,
+          "params": [
+            "payload",
+            "discriminator"
+          ]
+        },
+        {
+          "name": "withStripeRetry",
+          "startLine": 24,
+          "endLine": 55,
+          "params": [
+            "fn",
+            "retries",
+            "delay"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateIdempotencyKey",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "withStripeRetry",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateIdempotencyKey",
+          "callee": "Math.floor",
+          "lineNumber": 15
+        },
+        {
+          "caller": "generateIdempotencyKey",
+          "callee": "Date.now",
+          "lineNumber": 15
+        },
+        {
+          "caller": "generateIdempotencyKey",
+          "callee": "JSON.stringify",
+          "lineNumber": 16
+        },
+        {
+          "caller": "generateIdempotencyKey",
+          "callee": "crypto.createHash(\"sha256\").update(data).digest",
+          "lineNumber": 17
+        },
+        {
+          "caller": "generateIdempotencyKey",
+          "callee": "crypto.createHash(\"sha256\").update",
+          "lineNumber": 17
+        },
+        {
+          "caller": "generateIdempotencyKey",
+          "callee": "crypto.createHash",
+          "lineNumber": 17
+        },
+        {
+          "caller": "withStripeRetry",
+          "callee": "fn",
+          "lineNumber": 33
+        },
+        {
+          "caller": "withStripeRetry",
+          "callee": "console.warn",
+          "lineNumber": 48
+        },
+        {
+          "caller": "withStripeRetry",
+          "callee": "setTimeout",
+          "lineNumber": 49
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/utils/seasonal.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 46,
+      "nonEmptyLines": 38,
+      "functions": [
+        {
+          "name": "getSummerSeasonEnd",
+          "startLine": 6,
+          "endLine": 15,
+          "params": [
+            "year"
+          ]
+        },
+        {
+          "name": "getSummerSeasonStart",
+          "startLine": 22,
+          "endLine": 31,
+          "params": [
+            "year"
+          ]
+        },
+        {
+          "name": "getNextSubscriptionExpiry",
+          "startLine": 38,
+          "endLine": 46,
+          "params": [
+            "year",
+            "now"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "getSummerSeasonEnd",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "getSummerSeasonStart",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "getNextSubscriptionExpiry",
+          "line": 38,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getSummerSeasonEnd",
+          "callee": "date.getDay",
+          "lineNumber": 11
+        },
+        {
+          "caller": "getSummerSeasonEnd",
+          "callee": "date.setDate",
+          "lineNumber": 12
+        },
+        {
+          "caller": "getSummerSeasonStart",
+          "callee": "date.getDay",
+          "lineNumber": 27
+        },
+        {
+          "caller": "getSummerSeasonStart",
+          "callee": "date.setDate",
+          "lineNumber": 28
+        },
+        {
+          "caller": "getNextSubscriptionExpiry",
+          "callee": "getSummerSeasonEnd",
+          "lineNumber": 39
+        },
+        {
+          "caller": "getNextSubscriptionExpiry",
+          "callee": "getSummerSeasonEnd",
+          "lineNumber": 42
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/validations/facility.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 97,
+      "nonEmptyLines": 87,
+      "exports": [
+        {
+          "name": "facilitySchema",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "updateFacilityGovernanceSchema",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "updateFacilityAmenitiesSchema",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "updateFacilityStatusSchema",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "updateFacilityOperationsSchema",
+          "line": 87,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 5,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/validations/image.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 23,
+      "nonEmptyLines": 20,
+      "exports": [
+        {
+          "name": "imageFileNameSchema",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "renameTicketImageSchema",
+          "line": 17,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/validations/media.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 30,
+      "nonEmptyLines": 26,
+      "exports": [
+        {
+          "name": "mediaUploadSchema",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "renameMediaSchema",
+          "line": 16,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/validations/ticket.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 86,
+      "nonEmptyLines": 74,
+      "exports": [
+        {
+          "name": "ticketSchema",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "upsertTicketSchema",
+          "line": 42,
+          "isDefault": false
+        },
+        {
+          "name": "groupTicketSchema",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "ticketGroupSchema",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "reorderSchema",
+          "line": 77,
+          "isDefault": false
+        },
+        {
+          "name": "slugSchema",
+          "line": 84,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 6,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "server/lib/with-facility-access.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 24,
+      "functions": [
+        {
+          "name": "withFacilityAccess",
+          "startLine": 15,
+          "endLine": 26,
+          "params": [
+            "handler"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "withFacilityAccess",
+          "line": 15,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "withFacilityAccess",
+          "callee": "validateFacilityAccess",
+          "lineNumber": 20
+        },
+        {
+          "caller": "withFacilityAccess",
+          "callee": "handler",
+          "lineNumber": 21
+        },
+        {
+          "caller": "withFacilityAccess",
+          "callee": "handleServerActionError",
+          "lineNumber": 23
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "styles/light.css",
+      "language": "css",
+      "fileCategory": "markup",
+      "totalLines": 101,
+      "nonEmptyLines": 88,
+      "metrics": {}
+    },
+    {
+      "path": "vitest.config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 12,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

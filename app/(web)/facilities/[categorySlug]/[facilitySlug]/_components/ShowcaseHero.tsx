@@ -25,7 +25,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   useEffect(() => {
     // 📡 Network Information API: Defer HD loading on constrained data connections
     if (typeof navigator !== "undefined" && "connection" in navigator) {
-      const conn = (navigator as any).connection;
+      const conn = (navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
       if (conn && (conn.saveData || conn.effectiveType === "2g" || conn.effectiveType === "slow-2g")) {
         Promise.resolve().then(() => setAllowHDMedia(false));
       }
@@ -75,7 +75,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
             loop 
             muted 
             playsInline 
-            {...{ fetchPriority: "high" } as any}
+            fetchPriority="high" as const
             className="absolute inset-0 w-full h-full object-cover brightness-75 transition-all duration-700 pointer-events-none z-10"
             poster={heroMedia.thumbnailUrl || undefined}
           >

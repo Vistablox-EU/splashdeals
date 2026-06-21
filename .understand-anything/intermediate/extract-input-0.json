@@ -1,0 +1,1 @@
+{"projectRoot": "/home/damir/Documents/Projects/Splashdeals/codebase", "batchFiles": [{"path": ".github/workflows/ci.yml", "language": "yaml", "sizeLines": 70, "fileCategory": "infra"}], "batchImportData": {".github/workflows/ci.yml": []}}

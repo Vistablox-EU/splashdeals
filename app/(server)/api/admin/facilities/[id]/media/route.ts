@@ -173,7 +173,7 @@ export async function POST(
     let processedBuffer: Buffer
     try {
       processedBuffer = await processImageToWebP(buffer)
-    } catch (err) {
+    } catch {
       return NextResponse.json({
         success: false,
         error: "Preuzeta datoteka nije validna slika ili je oštećena",
@@ -192,7 +192,7 @@ export async function POST(
         contentType: "image/webp"
       })
       thumbUrl = thumbBlob.url
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Failed to generate/upload WebP thumbnail (skipped):", err)
     }
 

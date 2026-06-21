@@ -124,7 +124,7 @@ export function GlobalSearch() {
               </div>
             ) : results.length > 0 ? (
               <div className="space-y-1" aria-live="polite">
-                {results.map((result, i) => (
+                {results.map((result) => (
                   <button
                     key={result.id}
                     onClick={() => router.push(result.href)}

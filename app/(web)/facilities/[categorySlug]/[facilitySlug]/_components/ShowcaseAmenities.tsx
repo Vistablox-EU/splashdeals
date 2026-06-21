@@ -23,7 +23,7 @@ interface FacilityAmenity {
 
 interface ShowcaseAmenitiesProps {
   amenities: FacilityAmenity[]
-  dict: any
+  dict: Record<string, unknown>
 }
 
 /**
@@ -127,7 +127,7 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
     <div className="w-full">
       {/* 🍱 Premium spaced grid layout */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {sortedAmenities.map((fa, i) => {
+        {sortedAmenities.map((fa) => {
           const iconName = resolveAmenityIcon(fa.amenity.icon)
 
           return (

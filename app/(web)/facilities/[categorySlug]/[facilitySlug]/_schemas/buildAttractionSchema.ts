@@ -1,6 +1,6 @@
 import { FacilitySchemaInput } from "./types";
 
-export function buildAttractionSchema(facility: FacilitySchemaInput, facilitySlug: string, operatingHours: any[]) {
+export function buildAttractionSchema(facility: FacilitySchemaInput, facilitySlug: string, operatingHours: Record<string, unknown>[]) {
   const heroImage = facility.media?.[0]?.url || `https://www.splashdeals.rs/og-image.png`;
   return {
     "@type": ["AmusementPark", "TouristAttraction"],

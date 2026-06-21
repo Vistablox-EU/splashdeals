@@ -23,7 +23,7 @@ const sendEmailSchema = z.object({
 export async function POST(request: Request) {
   try {
     // Authenticate via API key or session
-    const user = await authenticateRequest(request).catch(() => requireSuperAdmin())
+    await authenticateRequest(request).catch(() => requireSuperAdmin())
 
     // Validate payload
     const json = await request.json()

@@ -13,7 +13,7 @@ interface PageProps {
   params: Promise<Record<string, never>>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params: _params }: PageProps): Promise<Metadata> {
   
   const dict = await getDictionary();
 
@@ -42,7 +42,7 @@ import { connection } from "next/server";
 /**
  * 🌊 Landing Portal (Aquastream Pro Max)
  */
-export default async function LandingPage({ params }: { params: Promise<Record<string, never>> }) {
+export default async function LandingPage({ params: _params }: { params: Promise<Record<string, never>> }) {
   await connection();
   const dict = await getDictionary();
 

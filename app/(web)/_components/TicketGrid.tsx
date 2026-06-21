@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { Badge } from "@/components/ui/badge";
 
-import { connection } from "next/server";
+
 
 async function getTickets() {
   const data = await prisma.ticket.findMany({
@@ -87,7 +87,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
 
   return (
     <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-      {tickets.map((ticket, idx) => {
+      {tickets.map((ticket) => {
         const ticketUrl = `/facilities/${ticket.categorySlug}/${ticket.facility.slug}#deals`;
         const cardImage = ticket.imageUrl || ticket.facility.media?.[0]?.url;
         

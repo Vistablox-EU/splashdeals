@@ -14,7 +14,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ dict, cities }: HeaderProps) => {
-  const { items: breadcrumbItems } = useBreadcrumb();
+  const { items: _breadcrumbItems } = useBreadcrumb();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const openCart = useUIState((state) => state.openCart);

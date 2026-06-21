@@ -4,7 +4,7 @@ import { getDictionary } from "@/lib/dictionaries";
 
 import { connection } from "next/server";
 
-export async function generateMetadata({ params }: { params: Promise<Record<string, never>> }): Promise<Metadata> {
+export async function generateMetadata({ params: _params }: { params: Promise<Record<string, never>> }): Promise<Metadata> {
   
   const dict = await getDictionary();
   return {
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<Record<stri
  * within the @modal slot of the layout, preserving background state.
  */
 export default async function InterceptedSearchPage({
-  params,
+  params: _params,
 }: {
   params: Promise<Record<string, never>>
 }) {

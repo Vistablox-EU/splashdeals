@@ -164,9 +164,9 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
     })
   }
 
-  const handleSelectAll = () => {
+  const handleSelectAll = useCallback(() => {
     setSelectedIds(new Set(media.map(m => m.id)))
-  }
+  }, [media])
 
   const handleDeselectAll = () => {
     setSelectedIds(new Set())
@@ -225,11 +225,8 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
             }
           } else {
             // Pre-process images on the client to avoid hitting the 4.5MB Serverless Function payload size limit
-            const originalSize = file.size
             const optimizedBlob = await optimizeImageOnClient(file, { mode: "fit", maxWidth: 2000, maxHeight: 2000, quality: 0.85 }).catch(() => file)
-            const optimizedFile = optimizedBlob instanceof File ? optimizedBlob : new File([optimizedBlob], file.name.replace(/\.[^.]+$/, ".webp"), { type: "image/webp" })
-            const optimizedSize = optimizedFile.size
-            const savedBytes = originalSize - optimizedSize
+            const optimizedFile = optimizedBlob instanceof File ? optimizedBlob : new File([optimizedBlob], file.name.replace(/\\.[^.]+$/, ".webp"), { type: "image/webp" })
 
             const formData = new FormData()
             formData.append("facilityId", facilityId)
@@ -356,7 +353,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [isSelectionMode, selectedIds, media])
+  }, [isSelectionMode, selectedIds, handleSelectAll, media])
 
   const handleDelete = async (id: string) => {
     const itemToDelete = media.find(m => m.id === id)

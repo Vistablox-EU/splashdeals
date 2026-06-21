@@ -240,7 +240,6 @@ export function Icon({ name, className, label }: IconProps) {
   // Resolve alias if applicable
   const canonicalName = ALIASES[name] ?? name;
   const path = ICON_PATHS[canonicalName] ?? FALLBACK_PATH;
-  const isFallback = !ICON_PATHS[canonicalName];
 
   return (
     <svg

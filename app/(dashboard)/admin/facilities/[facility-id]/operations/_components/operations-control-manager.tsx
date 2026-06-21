@@ -50,7 +50,7 @@ function OperationsTable({ facilityId, initialHours }: { facilityId: string, ini
   return <OperationsTableInner facilityId={facilityId} initialHours={initialHours} />
 }
 
-function OperationsTableInner({ facilityId, initialHours }: { facilityId: string, initialHours: UpdateFacilityGovernanceValues["hours"] }) {
+function OperationsTableInner({ facilityId }: { facilityId: string, initialHours: UpdateFacilityGovernanceValues["hours"] }) {
   const { control, watch, setValue, getValues, formState: { isDirty } } = useFormContext<UpdateFacilityGovernanceValues>()
   const [isPending, setIsPending] = React.useState(false)
   const router = useRouter()
@@ -75,7 +75,7 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
       } else {
         toast.error(result.error || "Failed to update schedule")
       }
-    } catch (_err) {
+    } catch {
       toast.error("Failed to persist operational data")
     } finally {
       setIsPending(false)

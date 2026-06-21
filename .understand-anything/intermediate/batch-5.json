@@ -1,0 +1,4229 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/_components/index.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "exports": [
+        {
+          "name": "CompactAmenitiesTableContainer",
+          "line": 1,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "AmenitiesError",
+          "startLine": 5,
+          "endLine": 13,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AmenitiesError",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/loading.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 33,
+      "functions": [
+        {
+          "name": "AmenitiesLoading",
+          "startLine": 3,
+          "endLine": 34,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "AmenitiesLoading",
+          "line": 3,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "AmenitiesLoading",
+          "callee": "[1, 2, 3, 4, 5, 6].map",
+          "lineNumber": 16
+        },
+        {
+          "caller": "AmenitiesLoading",
+          "callee": "[1, 2, 3, 4, 5].map",
+          "lineNumber": 20
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/amenities/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 82,
+      "nonEmptyLines": 75,
+      "functions": [
+        {
+          "name": "generateMetadata",
+          "startLine": 10,
+          "endLine": 24,
+          "params": [
+            "{\n  params,\n}"
+          ]
+        },
+        {
+          "name": "AmenitiesPage",
+          "startLine": 32,
+          "endLine": 82,
+          "params": [
+            "{ params }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMetadata",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "AmenitiesPage",
+          "line": 32,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMetadata",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 16
+        },
+        {
+          "caller": "AmenitiesPage",
+          "callee": "connection",
+          "lineNumber": 34
+        },
+        {
+          "caller": "AmenitiesPage",
+          "callee": "Promise.all",
+          "lineNumber": 36
+        },
+        {
+          "caller": "AmenitiesPage",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 37
+        },
+        {
+          "caller": "AmenitiesPage",
+          "callee": "prisma.amenity.findMany",
+          "lineNumber": 45
+        },
+        {
+          "caller": "AmenitiesPage",
+          "callee": "notFound",
+          "lineNumber": 50
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "OverviewError",
+          "startLine": 5,
+          "endLine": 13,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "OverviewError",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/layout.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 110,
+      "nonEmptyLines": 100,
+      "functions": [
+        {
+          "name": "generateMetadata",
+          "startLine": 12,
+          "endLine": 27,
+          "params": [
+            "{\n  params,\n}"
+          ]
+        },
+        {
+          "name": "FacilityManagementLayout",
+          "startLine": 29,
+          "endLine": 110,
+          "params": [
+            "{\n  children,\n  params,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMetadata",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "FacilityManagementLayout",
+          "line": 29,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMetadata",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 18
+        },
+        {
+          "caller": "FacilityManagementLayout",
+          "callee": "connection",
+          "lineNumber": 36
+        },
+        {
+          "caller": "FacilityManagementLayout",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 38
+        },
+        {
+          "caller": "FacilityManagementLayout",
+          "callee": "notFound",
+          "lineNumber": 65
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/loading.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 27,
+      "nonEmptyLines": 26,
+      "functions": [
+        {
+          "name": "OverviewLoading",
+          "startLine": 1,
+          "endLine": 27,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "OverviewLoading",
+          "line": 1,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "OverviewLoading",
+          "callee": "[1, 2, 3].map",
+          "lineNumber": 6
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/media/_components/media-gallery.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1571,
+      "nonEmptyLines": 1436,
+      "functions": [
+        {
+          "name": "filenameFromBlobUrl",
+          "startLine": 81,
+          "endLine": 91,
+          "params": [
+            "url"
+          ]
+        },
+        {
+          "name": "MediaGallery",
+          "startLine": 93,
+          "endLine": 874,
+          "params": [
+            "{ facilityId, initialMedia }"
+          ]
+        },
+        {
+          "name": "MediaItemCard",
+          "startLine": 876,
+          "endLine": 1221,
+          "params": [
+            "{\n  item, \n  onDelete, \n  isOverlay, \n  isSelected, \n  isSelectionMode, \n  onSelect, \n  listeners, \n  attributes, \n  onToggleHero, \n  onToggleCardBG, \n  onToggleVisibility,\n  focalPointMediaId,\n  onToggleFocalPoint,\n  onCrop,\n  onFocalPointSaved,\n  onUnsavedEdit,\n  onRename\n}"
+          ]
+        },
+        {
+          "name": "SortableMediaItem",
+          "startLine": 1223,
+          "endLine": 1294,
+          "params": [
+            "{ \n  item, \n  isSelected, \n  isSelectionMode, \n  onSelect, \n  onDelete, \n  onToggleHero, \n  onToggleCardBG,\n  onToggleVisibility,\n  focalPointMediaId,\n  onToggleFocalPoint,\n  onCrop,\n  onFocalPointSaved,\n  onUnsavedEdit,\n  onRename\n}"
+          ]
+        },
+        {
+          "name": "CropModal",
+          "startLine": 1301,
+          "endLine": 1571,
+          "params": [
+            "{ \n  media, \n  onClose, \n  onSave \n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MediaGallery",
+          "line": 93,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "filenameFromBlobUrl",
+          "callee": "new URL(url).pathname.split",
+          "lineNumber": 83
+        },
+        {
+          "caller": "filenameFromBlobUrl",
+          "callee": "last\n      .replace(/^\\d+-/, \"\")\n      .replace",
+          "lineNumber": 85
+        },
+        {
+          "caller": "filenameFromBlobUrl",
+          "callee": "last\n      .replace",
+          "lineNumber": 85
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 94
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 95
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useTransition",
+          "lineNumber": 96
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 97
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 98
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 99
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 102
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 103
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 104
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 105
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 106
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 107
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 108
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 109
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useSensors",
+          "lineNumber": 111
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useSensor",
+          "lineNumber": 112
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useSensor",
+          "lineNumber": 117
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useMemo",
+          "lineNumber": 122
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "media.filter",
+          "lineNumber": 123
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "item.caption.toLowerCase().includes",
+          "lineNumber": 126
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "item.caption.toLowerCase",
+          "lineNumber": 126
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "searchQuery.toLowerCase",
+          "lineNumber": 126
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "item.url.toLowerCase().includes",
+          "lineNumber": 127
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "item.url.toLowerCase",
+          "lineNumber": 127
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "searchQuery.toLowerCase",
+          "lineNumber": 127
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "item.caption.trim",
+          "lineNumber": 146
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useMemo",
+          "lineNumber": 153
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "filteredMedia.map",
+          "lineNumber": 153
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useMemo",
+          "lineNumber": 154
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "media.find",
+          "lineNumber": 154
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 156
+        },
+        {
+          "caller": "toggleSelection",
+          "callee": "setSelectedIds",
+          "lineNumber": 159
+        },
+        {
+          "caller": "toggleSelection",
+          "callee": "next.has",
+          "lineNumber": 161
+        },
+        {
+          "caller": "toggleSelection",
+          "callee": "next.delete",
+          "lineNumber": 161
+        },
+        {
+          "caller": "toggleSelection",
+          "callee": "next.add",
+          "lineNumber": 162
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useCallback",
+          "lineNumber": 167
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setSelectedIds",
+          "lineNumber": 168
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "media.map",
+          "lineNumber": 168
+        },
+        {
+          "caller": "handleDeselectAll",
+          "callee": "setSelectedIds",
+          "lineNumber": 172
+        },
+        {
+          "caller": "handleBulkDelete",
+          "callee": "setShowBulkDeleteDialog",
+          "lineNumber": 176
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "setShowBulkDeleteDialog",
+          "lineNumber": 180
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "Array.from",
+          "lineNumber": 181
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "setMedia",
+          "lineNumber": 182
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "prev.filter",
+          "lineNumber": 182
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "selectedIds.has",
+          "lineNumber": 182
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "setSelectedIds",
+          "lineNumber": 183
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "setIsSelectionMode",
+          "lineNumber": 184
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "startUpload",
+          "lineNumber": 186
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "deleteMediaAction",
+          "lineNumber": 188
+        },
+        {
+          "caller": "confirmBulkDelete",
+          "callee": "toast.success",
+          "lineNumber": 190
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 194
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useRef",
+          "lineNumber": 195
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useState",
+          "lineNumber": 196
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useCallback",
+          "lineNumber": 198
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setUploadingFiles",
+          "lineNumber": 201
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "files.map",
+          "lineNumber": 201
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "startUpload",
+          "lineNumber": 203
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "file.type.startsWith",
+          "lineNumber": 205
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "upload",
+          "lineNumber": 209
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "JSON.stringify",
+          "lineNumber": 212
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setUploadProgress",
+          "lineNumber": 214
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "syncMediaAction",
+          "lineNumber": 218
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setMedia",
+          "lineNumber": 221
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.success",
+          "lineNumber": 222
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.error",
+          "lineNumber": 224
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "optimizeImageOnClient(file, { mode: \"fit\", maxWidth: 2000, maxHeight: 2000, quality: 0.85 }).catch",
+          "lineNumber": 228
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "optimizeImageOnClient",
+          "lineNumber": 228
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "file.name.replace",
+          "lineNumber": 229
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "formData.append",
+          "lineNumber": 232
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "formData.append",
+          "lineNumber": 233
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "uploadMediaAction",
+          "lineNumber": 235
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setMedia",
+          "lineNumber": 237
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.success",
+          "lineNumber": 238
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.error",
+          "lineNumber": 240
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "console.error",
+          "lineNumber": 244
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.error",
+          "lineNumber": 245
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setUploadProgress",
+          "lineNumber": 247
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setUploadingFiles",
+          "lineNumber": 252
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "prev.filter",
+          "lineNumber": 252
+        },
+        {
+          "caller": "handleUpload",
+          "callee": "Array.from",
+          "lineNumber": 259
+        },
+        {
+          "caller": "handleUpload",
+          "callee": "processFilesUpload",
+          "lineNumber": 260
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useEffect",
+          "lineNumber": 264
+        },
+        {
+          "caller": "handleDragEnter",
+          "callee": "e.preventDefault",
+          "lineNumber": 266
+        },
+        {
+          "caller": "handleDragEnter",
+          "callee": "e.stopPropagation",
+          "lineNumber": 267
+        },
+        {
+          "caller": "handleDragEnter",
+          "callee": "e.dataTransfer?.types.includes",
+          "lineNumber": 268
+        },
+        {
+          "caller": "handleDragEnter",
+          "callee": "setIsDragActive",
+          "lineNumber": 270
+        },
+        {
+          "caller": "handleDragLeave",
+          "callee": "e.preventDefault",
+          "lineNumber": 275
+        },
+        {
+          "caller": "handleDragLeave",
+          "callee": "e.stopPropagation",
+          "lineNumber": 276
+        },
+        {
+          "caller": "handleDragLeave",
+          "callee": "e.dataTransfer?.types.includes",
+          "lineNumber": 277
+        },
+        {
+          "caller": "handleDragLeave",
+          "callee": "setIsDragActive",
+          "lineNumber": 281
+        },
+        {
+          "caller": "handleDragOver",
+          "callee": "e.preventDefault",
+          "lineNumber": 287
+        },
+        {
+          "caller": "handleDragOver",
+          "callee": "e.stopPropagation",
+          "lineNumber": 288
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "e.preventDefault",
+          "lineNumber": 295
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "e.stopPropagation",
+          "lineNumber": 296
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "setIsDragActive",
+          "lineNumber": 297
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "Array.from",
+          "lineNumber": 301
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "processFilesUpload",
+          "lineNumber": 302
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.addEventListener",
+          "lineNumber": 306
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.addEventListener",
+          "lineNumber": 307
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.addEventListener",
+          "lineNumber": 308
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.addEventListener",
+          "lineNumber": 309
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.removeEventListener",
+          "lineNumber": 312
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.removeEventListener",
+          "lineNumber": 313
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.removeEventListener",
+          "lineNumber": 314
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.removeEventListener",
+          "lineNumber": 315
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useEffect",
+          "lineNumber": 319
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "e.key.toLowerCase",
+          "lineNumber": 331
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "e.preventDefault",
+          "lineNumber": 334
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "handleSelectAll",
+          "lineNumber": 335
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "toast.info",
+          "lineNumber": 336
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "e.preventDefault",
+          "lineNumber": 338
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "handleDeselectAll",
+          "lineNumber": 339
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "toast.info",
+          "lineNumber": 340
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "e.preventDefault",
+          "lineNumber": 342
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "setIsSelectionMode",
+          "lineNumber": 343
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "setSelectedIds",
+          "lineNumber": 344
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "toast.info",
+          "lineNumber": 345
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "e.preventDefault",
+          "lineNumber": 347
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "handleBulkDelete",
+          "lineNumber": 348
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.addEventListener",
+          "lineNumber": 352
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.removeEventListener",
+          "lineNumber": 354
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "media.find",
+          "lineNumber": 359
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setMedia",
+          "lineNumber": 362
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "prev.filter",
+          "lineNumber": 362
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "deleteMediaAction",
+          "lineNumber": 364
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "toast.success",
+          "lineNumber": 367
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setMedia",
+          "lineNumber": 369
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "next.sort",
+          "lineNumber": 371
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "toast.error",
+          "lineNumber": 373
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useCallback",
+          "lineNumber": 378
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "filenameFromBlobUrl",
+          "lineNumber": 379
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenameValue",
+          "lineNumber": 380
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenamingMedia",
+          "lineNumber": 381
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useCallback",
+          "lineNumber": 384
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renameValue.trim",
+          "lineNumber": 385
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renameMediaAction",
+          "lineNumber": 387
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renameValue.trim",
+          "lineNumber": 387
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setMedia",
+          "lineNumber": 389
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "prev.map",
+          "lineNumber": 389
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.success",
+          "lineNumber": 390
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenamingMedia",
+          "lineNumber": 391
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenameValue",
+          "lineNumber": 392
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.error",
+          "lineNumber": 394
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.error",
+          "lineNumber": 397
+        },
+        {
+          "caller": "handleToggleHero",
+          "callee": "media.find",
+          "lineNumber": 402
+        },
+        {
+          "caller": "handleToggleHero",
+          "callee": "setMedia",
+          "lineNumber": 406
+        },
+        {
+          "caller": "handleToggleHero",
+          "callee": "prev.map",
+          "lineNumber": 406
+        },
+        {
+          "caller": "handleToggleHero",
+          "callee": "toggleMediaHeroAction",
+          "lineNumber": 412
+        },
+        {
+          "caller": "handleToggleHero",
+          "callee": "setMedia",
+          "lineNumber": 414
+        },
+        {
+          "caller": "handleToggleHero",
+          "callee": "prev.map",
+          "lineNumber": 414
+        },
+        {
+          "caller": "handleToggleHero",
+          "callee": "toast.error",
+          "lineNumber": 415
+        },
+        {
+          "caller": "handleToggleHero",
+          "callee": "toast.success",
+          "lineNumber": 417
+        },
+        {
+          "caller": "handleToggleCardBackground",
+          "callee": "media.find",
+          "lineNumber": 422
+        },
+        {
+          "caller": "handleToggleCardBackground",
+          "callee": "setMedia",
+          "lineNumber": 426
+        },
+        {
+          "caller": "handleToggleCardBackground",
+          "callee": "prev.map",
+          "lineNumber": 426
+        },
+        {
+          "caller": "handleToggleCardBackground",
+          "callee": "toggleMediaCardBackgroundAction",
+          "lineNumber": 432
+        },
+        {
+          "caller": "handleToggleCardBackground",
+          "callee": "setMedia",
+          "lineNumber": 434
+        },
+        {
+          "caller": "handleToggleCardBackground",
+          "callee": "prev.map",
+          "lineNumber": 434
+        },
+        {
+          "caller": "handleToggleCardBackground",
+          "callee": "toast.error",
+          "lineNumber": 435
+        },
+        {
+          "caller": "handleToggleCardBackground",
+          "callee": "toast.success",
+          "lineNumber": 437
+        },
+        {
+          "caller": "handleToggleVisibility",
+          "callee": "media.find",
+          "lineNumber": 442
+        },
+        {
+          "caller": "handleToggleVisibility",
+          "callee": "setMedia",
+          "lineNumber": 445
+        },
+        {
+          "caller": "handleToggleVisibility",
+          "callee": "prev.map",
+          "lineNumber": 445
+        },
+        {
+          "caller": "handleToggleVisibility",
+          "callee": "toggleMediaGalleryVisibilityAction",
+          "lineNumber": 447
+        },
+        {
+          "caller": "handleToggleVisibility",
+          "callee": "setMedia",
+          "lineNumber": 449
+        },
+        {
+          "caller": "handleToggleVisibility",
+          "callee": "prev.map",
+          "lineNumber": 449
+        },
+        {
+          "caller": "handleToggleVisibility",
+          "callee": "toast.error",
+          "lineNumber": 450
+        },
+        {
+          "caller": "handleDragStart",
+          "callee": "setActiveId",
+          "lineNumber": 455
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "setActiveId",
+          "lineNumber": 460
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "setMedia",
+          "lineNumber": 464
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "items.findIndex",
+          "lineNumber": 465
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "items.findIndex",
+          "lineNumber": 466
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "arrayMove",
+          "lineNumber": 467
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "startUpload",
+          "lineNumber": 469
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "updateMediaOrderAction",
+          "lineNumber": 470
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "nextItems.map",
+          "lineNumber": 470
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "toast.error",
+          "lineNumber": 472
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "useEffect",
+          "lineNumber": 480
+        },
+        {
+          "caller": "handler",
+          "callee": "e.preventDefault",
+          "lineNumber": 483
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.addEventListener",
+          "lineNumber": 485
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "window.removeEventListener",
+          "lineNumber": 486
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setIsSelectionMode",
+          "lineNumber": 519
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setSelectedIds",
+          "lineNumber": 520
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "cn",
+          "lineNumber": 522
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setBulkCaptionText",
+          "lineNumber": 570
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "bulkCaptionText.trim",
+          "lineNumber": 577
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.error",
+          "lineNumber": 579
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "startUpload",
+          "lineNumber": 582
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "Array.from",
+          "lineNumber": 584
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "bulkUpdateMediaCaptionAction",
+          "lineNumber": 585
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setMedia",
+          "lineNumber": 587
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "prev.map",
+          "lineNumber": 587
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "ids.includes",
+          "lineNumber": 587
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setSelectedIds",
+          "lineNumber": 588
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setIsSelectionMode",
+          "lineNumber": 589
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setBulkCaptionText",
+          "lineNumber": 590
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.success",
+          "lineNumber": 591
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.error",
+          "lineNumber": 593
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "console.error",
+          "lineNumber": 596
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toast.error",
+          "lineNumber": 597
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setSearchQuery",
+          "lineNumber": 630
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setSearchQuery",
+          "lineNumber": 635
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "[\n            { id: \"ALL\", label: \"Svi\" },\n            { id: \"PHOTOS\", label: \"Slike\" },\n            { id: \"VIDEOS\", label: \"Video\" },\n            { id: \"HERO\", label: \"Hero\" },\n            { id: \"CARDBG\", label: \"Kartica BG\" },\n            { id: \"PUBLIC\", label: \"Javno\" },\n            { id: \"HIDDEN\", label: \"Skriveno\" },\n            { id: \"MISSING_ALT\", label: \"⚠️ Bez ALT taga\" },\n          ].map",
+          "lineNumber": 646
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setActiveFilter",
+          "lineNumber": 661
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "cn",
+          "lineNumber": 662
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "cn",
+          "lineNumber": 677
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "Object.keys",
+          "lineNumber": 719
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "Object.values(uploadProgress)[0].toFixed",
+          "lineNumber": 720
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "Object.values",
+          "lineNumber": 720
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setActiveId",
+          "lineNumber": 735
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "filteredMedia.map",
+          "lineNumber": 742
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "selectedIds.has",
+          "lineNumber": 746
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "toggleSelection",
+          "lineNumber": 748
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "handleDelete",
+          "lineNumber": 749
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "handleToggleHero",
+          "lineNumber": 750
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "handleToggleCardBackground",
+          "lineNumber": 751
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "handleToggleVisibility",
+          "lineNumber": 752
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setFocalPointMediaId",
+          "lineNumber": 754
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setCroppingMedia",
+          "lineNumber": 755
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setMedia",
+          "lineNumber": 756
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "prev.map",
+          "lineNumber": 756
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "handleOpenRename",
+          "lineNumber": 758
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "uploadingFiles.map",
+          "lineNumber": 763
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "uploadProgress[file.name].toFixed",
+          "lineNumber": 774
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setShowBulkDeleteDialog",
+          "lineNumber": 801
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setCroppingMedia",
+          "lineNumber": 811
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "processFilesUpload",
+          "lineNumber": 813
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setCroppingMedia",
+          "lineNumber": 814
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenamingMedia",
+          "lineNumber": 820
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenameValue",
+          "lineNumber": 820
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenameValue",
+          "lineNumber": 837
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renameValue.trim",
+          "lineNumber": 841
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "e.preventDefault",
+          "lineNumber": 842
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "handleRename",
+          "lineNumber": 843
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renamingMedia.url.split(\"?\")[0].split(\".\").pop()?.toLowerCase",
+          "lineNumber": 849
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renamingMedia.url.split(\"?\")[0].split(\".\").pop",
+          "lineNumber": 849
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renamingMedia.url.split(\"?\")[0].split",
+          "lineNumber": 849
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renamingMedia.url.split",
+          "lineNumber": 849
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenamingMedia",
+          "lineNumber": 858
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "setRenameValue",
+          "lineNumber": 858
+        },
+        {
+          "caller": "MediaGallery",
+          "callee": "renameValue.trim",
+          "lineNumber": 865
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "useState",
+          "lineNumber": 915
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "item.url.substring(item.url.lastIndexOf(\".\") + 1).split(\"?\")[0].toUpperCase",
+          "lineNumber": 916
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "item.url.substring(item.url.lastIndexOf(\".\") + 1).split",
+          "lineNumber": 916
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "item.url.substring",
+          "lineNumber": 916
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "item.url.lastIndexOf",
+          "lineNumber": 916
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 919
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onSelect",
+          "lineNumber": 926
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 927
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "item.originalUrl.split",
+          "lineNumber": 937
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "item.originalUrl.split",
+          "lineNumber": 938
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "e.stopPropagation",
+          "lineNumber": 949
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "e.currentTarget.getBoundingClientRect",
+          "lineNumber": 950
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "Math.round",
+          "lineNumber": 951
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "Math.round",
+          "lineNumber": 952
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "updateMediaFocalPointAction",
+          "lineNumber": 955
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "toast.success",
+          "lineNumber": 957
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onFocalPointSaved",
+          "lineNumber": 958
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onToggleFocalPoint",
+          "lineNumber": 959
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "toast.error",
+          "lineNumber": 961
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "console.error",
+          "lineNumber": 964
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "toast.error",
+          "lineNumber": 965
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "e.stopPropagation",
+          "lineNumber": 979
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onToggleFocalPoint",
+          "lineNumber": 980
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 996
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "setIsPortrait",
+          "lineNumber": 1002
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 1016
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "e.currentTarget.play().catch",
+          "lineNumber": 1024
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "e.currentTarget.play",
+          "lineNumber": 1024
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "console.warn",
+          "lineNumber": 1024
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "e.currentTarget.pause",
+          "lineNumber": 1027
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 1056
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "e.stopPropagation",
+          "lineNumber": 1086
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onDelete",
+          "lineNumber": 1086
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 1102
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 1107
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 1115
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 1120
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 1128
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "filenameFromBlobUrl",
+          "lineNumber": 1146
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "extension.toLowerCase",
+          "lineNumber": 1146
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onUnsavedEdit",
+          "lineNumber": 1171
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "e.target.value.trim",
+          "lineNumber": 1173
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onUnsavedEdit",
+          "lineNumber": 1174
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "updateMediaCaptionAction",
+          "lineNumber": 1176
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "toast.success",
+          "lineNumber": 1178
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onUnsavedEdit",
+          "lineNumber": 1179
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "toast.error",
+          "lineNumber": 1181
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "console.error",
+          "lineNumber": 1184
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "toast.error",
+          "lineNumber": 1185
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onToggleFocalPoint",
+          "lineNumber": 1195
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "cn",
+          "lineNumber": 1196
+        },
+        {
+          "caller": "MediaItemCard",
+          "callee": "onCrop",
+          "lineNumber": 1208
+        },
+        {
+          "caller": "SortableMediaItem",
+          "callee": "useSortable",
+          "lineNumber": 1261
+        },
+        {
+          "caller": "SortableMediaItem",
+          "callee": "CSS.Transform.toString",
+          "lineNumber": 1267
+        },
+        {
+          "caller": "CropModal",
+          "callee": "useState",
+          "lineNumber": 1310
+        },
+        {
+          "caller": "CropModal",
+          "callee": "useState",
+          "lineNumber": 1311
+        },
+        {
+          "caller": "CropModal",
+          "callee": "useState",
+          "lineNumber": 1312
+        },
+        {
+          "caller": "CropModal",
+          "callee": "useState",
+          "lineNumber": 1313
+        },
+        {
+          "caller": "CropModal",
+          "callee": "useState",
+          "lineNumber": 1314
+        },
+        {
+          "caller": "CropModal",
+          "callee": "useRef",
+          "lineNumber": 1316
+        },
+        {
+          "caller": "CropModal",
+          "callee": "useRef",
+          "lineNumber": 1317
+        },
+        {
+          "caller": "CropModal",
+          "callee": "useEffect",
+          "lineNumber": 1320
+        },
+        {
+          "caller": "CropModal",
+          "callee": "canvas.getContext",
+          "lineNumber": 1325
+        },
+        {
+          "caller": "CropModal",
+          "callee": "ctx.fillRect",
+          "lineNumber": 1345
+        },
+        {
+          "caller": "CropModal",
+          "callee": "ctx.drawImage",
+          "lineNumber": 1365
+        },
+        {
+          "caller": "handleSave",
+          "callee": "setIsSaving",
+          "lineNumber": 1372
+        },
+        {
+          "caller": "handleSave",
+          "callee": "document.createElement",
+          "lineNumber": 1386
+        },
+        {
+          "caller": "handleSave",
+          "callee": "canvas.getContext",
+          "lineNumber": 1389
+        },
+        {
+          "caller": "handleSave",
+          "callee": "ctx.fillRect",
+          "lineNumber": 1393
+        },
+        {
+          "caller": "handleSave",
+          "callee": "ctx.drawImage",
+          "lineNumber": 1413
+        },
+        {
+          "caller": "handleSave",
+          "callee": "canvas.toBlob",
+          "lineNumber": 1415
+        },
+        {
+          "caller": "handleSave",
+          "callee": "Date.now",
+          "lineNumber": 1418
+        },
+        {
+          "caller": "handleSave",
+          "callee": "onSave",
+          "lineNumber": 1419
+        },
+        {
+          "caller": "handleSave",
+          "callee": "setIsSaving",
+          "lineNumber": 1421
+        },
+        {
+          "caller": "CropModal",
+          "callee": "setZoom",
+          "lineNumber": 1441
+        },
+        {
+          "caller": "CropModal",
+          "callee": "[\n                { id: \"16:9\", label: \"16:9 (Hero/Bazen)\" },\n                { id: \"4:3\", label: \"4:3 (Kartica BG)\" },\n                { id: \"1:1\", label: \"1:1 (Kvadrat)\" },\n              ].map",
+          "lineNumber": 1466
+        },
+        {
+          "caller": "CropModal",
+          "callee": "setAspectRatio",
+          "lineNumber": 1476
+        },
+        {
+          "caller": "CropModal",
+          "callee": "cn",
+          "lineNumber": 1477
+        },
+        {
+          "caller": "CropModal",
+          "callee": "zoom.toFixed",
+          "lineNumber": 1496
+        },
+        {
+          "caller": "CropModal",
+          "callee": "setZoom",
+          "lineNumber": 1504
+        },
+        {
+          "caller": "CropModal",
+          "callee": "parseFloat",
+          "lineNumber": 1504
+        },
+        {
+          "caller": "CropModal",
+          "callee": "setOffsetX",
+          "lineNumber": 1521
+        },
+        {
+          "caller": "CropModal",
+          "callee": "parseInt",
+          "lineNumber": 1521
+        },
+        {
+          "caller": "CropModal",
+          "callee": "setOffsetY",
+          "lineNumber": 1538
+        },
+        {
+          "caller": "CropModal",
+          "callee": "parseInt",
+          "lineNumber": 1538
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/media/error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "MediaError",
+          "startLine": 5,
+          "endLine": 13,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MediaError",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/media/loading.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 15,
+      "nonEmptyLines": 13,
+      "functions": [
+        {
+          "name": "MediaLoading",
+          "startLine": 3,
+          "endLine": 15,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "MediaLoading",
+          "line": 3,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "MediaLoading",
+          "callee": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map",
+          "lineNumber": 9
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/media/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 49,
+      "nonEmptyLines": 45,
+      "functions": [
+        {
+          "name": "generateMetadata",
+          "startLine": 10,
+          "endLine": 24,
+          "params": [
+            "{\n  params,\n}"
+          ]
+        },
+        {
+          "name": "MediaPage",
+          "startLine": 26,
+          "endLine": 49,
+          "params": [
+            "{ params }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMetadata",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "MediaPage",
+          "line": 26,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMetadata",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 16
+        },
+        {
+          "caller": "MediaPage",
+          "callee": "connection",
+          "lineNumber": 28
+        },
+        {
+          "caller": "MediaPage",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 29
+        },
+        {
+          "caller": "MediaPage",
+          "callee": "(facility?.media || []).filter",
+          "lineNumber": 35
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/not-found.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 28,
+      "nonEmptyLines": 26,
+      "functions": [
+        {
+          "name": "FacilityNotFound",
+          "startLine": 10,
+          "endLine": 28,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "metadata",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "FacilityNotFound",
+          "line": 10,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/operations/_components/operations-control-manager.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 251,
+      "nonEmptyLines": 238,
+      "functions": [
+        {
+          "name": "StandaloneOperationsTable",
+          "startLine": 27,
+          "endLine": 39,
+          "params": [
+            "{ facilityId, initialHours }"
+          ]
+        },
+        {
+          "name": "OperationsTable",
+          "startLine": 45,
+          "endLine": 51,
+          "params": [
+            "{ facilityId, initialHours }"
+          ]
+        },
+        {
+          "name": "OperationsTableInner",
+          "startLine": 53,
+          "endLine": 250,
+          "params": [
+            "{ facilityId }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "OperationsTable",
+          "line": 251,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "StandaloneOperationsTable",
+          "callee": "useForm",
+          "lineNumber": 28
+        },
+        {
+          "caller": "OperationsTable",
+          "callee": "useFormContext",
+          "lineNumber": 46
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "useFormContext",
+          "lineNumber": 54
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "React.useState",
+          "lineNumber": 55
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "useRouter",
+          "lineNumber": 56
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "useFieldArray",
+          "lineNumber": 58
+        },
+        {
+          "caller": "onSave",
+          "callee": "setIsPending",
+          "lineNumber": 64
+        },
+        {
+          "caller": "onSave",
+          "callee": "getValues",
+          "lineNumber": 66
+        },
+        {
+          "caller": "onSave",
+          "callee": "updateFacilityOperationsAction",
+          "lineNumber": 67
+        },
+        {
+          "caller": "onSave",
+          "callee": "toast.success",
+          "lineNumber": 73
+        },
+        {
+          "caller": "onSave",
+          "callee": "router.refresh",
+          "lineNumber": 74
+        },
+        {
+          "caller": "onSave",
+          "callee": "toast.error",
+          "lineNumber": 76
+        },
+        {
+          "caller": "onSave",
+          "callee": "toast.error",
+          "lineNumber": 79
+        },
+        {
+          "caller": "onSave",
+          "callee": "setIsPending",
+          "lineNumber": 81
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "getValues",
+          "lineNumber": 100
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "DAYS.map",
+          "lineNumber": 102
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "setValue",
+          "lineNumber": 108
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "toast.success",
+          "lineNumber": 109
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "getValues(\"hours\")?.map",
+          "lineNumber": 122
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "getValues",
+          "lineNumber": 122
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "DAYS.find",
+          "lineNumber": 123
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "selectedDays.includes",
+          "lineNumber": 123
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "append",
+          "lineNumber": 125
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "fields.map",
+          "lineNumber": 155
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "watch",
+          "lineNumber": 156
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "field.onChange",
+          "lineNumber": 165
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "parseInt",
+          "lineNumber": 165
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "field.value?.toString",
+          "lineNumber": 166
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "DAYS.map",
+          "lineNumber": 172
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "day.value.toString",
+          "lineNumber": 173
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "cn",
+          "lineNumber": 183
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "remove",
+          "lineNumber": 221
+        },
+        {
+          "caller": "OperationsTableInner",
+          "callee": "cn",
+          "lineNumber": 240
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/operations/error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "OperationsError",
+          "startLine": 5,
+          "endLine": 13,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "OperationsError",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/operations/loading.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 49,
+      "nonEmptyLines": 46,
+      "functions": [
+        {
+          "name": "OperationsLoading",
+          "startLine": 4,
+          "endLine": 49,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "OperationsLoading",
+          "line": 4,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "OperationsLoading",
+          "callee": "[1, 2, 3, 4, 5, 6, 7].map",
+          "lineNumber": 31
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/operations/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 77,
+      "nonEmptyLines": 69,
+      "functions": [
+        {
+          "name": "generateMetadata",
+          "startLine": 11,
+          "endLine": 25,
+          "params": [
+            "{\n  params,\n}"
+          ]
+        },
+        {
+          "name": "FacilityOperationsPage",
+          "startLine": 33,
+          "endLine": 77,
+          "params": [
+            "{ params }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMetadata",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "FacilityOperationsPage",
+          "line": 33,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMetadata",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 17
+        },
+        {
+          "caller": "FacilityOperationsPage",
+          "callee": "connection",
+          "lineNumber": 35
+        },
+        {
+          "caller": "FacilityOperationsPage",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 37
+        },
+        {
+          "caller": "FacilityOperationsPage",
+          "callee": "notFound",
+          "lineNumber": 46
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 210,
+      "nonEmptyLines": 197,
+      "functions": [
+        {
+          "name": "generateMetadata",
+          "startLine": 15,
+          "endLine": 25,
+          "params": [
+            "{ params }"
+          ]
+        },
+        {
+          "name": "FacilityOverviewPage",
+          "startLine": 27,
+          "endLine": 210,
+          "params": [
+            "{ params }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMetadata",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "FacilityOverviewPage",
+          "line": 27,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMetadata",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 17
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "connection",
+          "lineNumber": 28
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 31
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "notFound",
+          "lineNumber": 44
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "prisma.ticket.findMany",
+          "lineNumber": 46
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "facility.id.split",
+          "lineNumber": 86
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "facility.category.toLowerCase",
+          "lineNumber": 103
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "stats.map",
+          "lineNumber": 112
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "recentTickets.map",
+          "lineNumber": 140
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "Number",
+          "lineNumber": 145
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "new Date(ticket.updatedAt).toLocaleDateString",
+          "lineNumber": 149
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "new Date(facility.createdAt).toLocaleDateString",
+          "lineNumber": 180
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "facility.lat?.toFixed",
+          "lineNumber": 186
+        },
+        {
+          "caller": "FacilityOverviewPage",
+          "callee": "facility.lng?.toFixed",
+          "lineNumber": 186
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/branding-logo-card.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 63,
+      "nonEmptyLines": 58,
+      "functions": [
+        {
+          "name": "BrandingLogoCard",
+          "startLine": 25,
+          "endLine": 63,
+          "params": [
+            "{ facilityId, facilityName }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "BrandingLogoCard",
+          "line": 25,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "BrandingLogoCard",
+          "callee": "useFormContext",
+          "lineNumber": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/danger-zone.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 202,
+      "nonEmptyLines": 189,
+      "functions": [
+        {
+          "name": "DangerZone",
+          "startLine": 35,
+          "endLine": 202,
+          "params": [
+            "{\n  facilityId,\n  facilityName,\n  userRole,\n  transactionCount,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "DangerZone",
+          "line": 35,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DangerZone",
+          "callee": "useRouter",
+          "lineNumber": 41
+        },
+        {
+          "caller": "DangerZone",
+          "callee": "useTransition",
+          "lineNumber": 42
+        },
+        {
+          "caller": "DangerZone",
+          "callee": "useState",
+          "lineNumber": 43
+        },
+        {
+          "caller": "DangerZone",
+          "callee": "useState",
+          "lineNumber": 44
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "toast.error",
+          "lineNumber": 51
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "startTransition",
+          "lineNumber": 55
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "deleteFacilityAction",
+          "lineNumber": 57
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "toast.success",
+          "lineNumber": 59
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setIsOpen",
+          "lineNumber": 60
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "router.push",
+          "lineNumber": 61
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "router.refresh",
+          "lineNumber": 62
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "toast.error",
+          "lineNumber": 64
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "console.error",
+          "lineNumber": 67
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "toast.error",
+          "lineNumber": 68
+        },
+        {
+          "caller": "DangerZone",
+          "callee": "setIsOpen",
+          "lineNumber": 119
+        },
+        {
+          "caller": "DangerZone",
+          "callee": "setConfirmName",
+          "lineNumber": 120
+        },
+        {
+          "caller": "DangerZone",
+          "callee": "setConfirmName",
+          "lineNumber": 158
+        },
+        {
+          "caller": "DangerZone",
+          "callee": "setIsOpen",
+          "lineNumber": 171
+        },
+        {
+          "caller": "DangerZone",
+          "callee": "setConfirmName",
+          "lineNumber": 172
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/distribution-logic.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 475,
+      "nonEmptyLines": 434,
+      "functions": [
+        {
+          "name": "DistributionLogic",
+          "startLine": 43,
+          "endLine": 475,
+          "params": [
+            "{ availableCities }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "DistributionLogic",
+          "line": 43,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "DistributionLogic",
+          "callee": "useRouter",
+          "lineNumber": 44
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "useFormContext",
+          "lineNumber": 45
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useTransition",
+          "lineNumber": 47
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useState",
+          "lineNumber": 48
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useState",
+          "lineNumber": 49
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useState",
+          "lineNumber": 51
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useState",
+          "lineNumber": 52
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useState",
+          "lineNumber": 53
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useState",
+          "lineNumber": 54
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useState",
+          "lineNumber": 55
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useRef",
+          "lineNumber": 57
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useEffect",
+          "lineNumber": 60
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setTimeout",
+          "lineNumber": 62
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setPrevAvailableCities",
+          "lineNumber": 63
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setLocalCities",
+          "lineNumber": 64
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useEffect",
+          "lineNumber": 70
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "availableCities.find",
+          "lineNumber": 72
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "getValues",
+          "lineNumber": 74
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "current.includes",
+          "lineNumber": 75
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setValue",
+          "lineNumber": 76
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setTimeout",
+          "lineNumber": 79
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setPendingSlugToSelect",
+          "lineNumber": 80
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useEffect",
+          "lineNumber": 87
+        },
+        {
+          "caller": "handleClickOutside",
+          "callee": "dropdownRef.current.contains",
+          "lineNumber": 89
+        },
+        {
+          "caller": "handleClickOutside",
+          "callee": "setIsOpen",
+          "lineNumber": 90
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "document.addEventListener",
+          "lineNumber": 93
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "document.removeEventListener",
+          "lineNumber": 94
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "watch",
+          "lineNumber": 97
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useMemo",
+          "lineNumber": 98
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useMemo",
+          "lineNumber": 101
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "localCities.filter",
+          "lineNumber": 102
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "selectedCityIds.includes",
+          "lineNumber": 102
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useMemo",
+          "lineNumber": 105
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "localCities.filter",
+          "lineNumber": 106
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "selectedCityIds.includes",
+          "lineNumber": 106
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useMemo",
+          "lineNumber": 109
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "search.toLowerCase",
+          "lineNumber": 111
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "unselectedCities.filter",
+          "lineNumber": 112
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "c.name.toLowerCase().includes",
+          "lineNumber": 113
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "c.name.toLowerCase",
+          "lineNumber": 113
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "c.slug.toLowerCase().includes",
+          "lineNumber": 114
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "c.slug.toLowerCase",
+          "lineNumber": 114
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useMemo",
+          "lineNumber": 118
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "search.toLowerCase().trim",
+          "lineNumber": 120
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "search.toLowerCase",
+          "lineNumber": 120
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "localCities.some",
+          "lineNumber": 121
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "c.name.toLowerCase().trim",
+          "lineNumber": 121
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "c.name.toLowerCase",
+          "lineNumber": 121
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useCallback",
+          "lineNumber": 125
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "getValues",
+          "lineNumber": 126
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "current.includes",
+          "lineNumber": 127
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setValue",
+          "lineNumber": 128
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setSearch",
+          "lineNumber": 130
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setIsOpen",
+          "lineNumber": 131
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useCallback",
+          "lineNumber": 135
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "getValues",
+          "lineNumber": 136
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setValue",
+          "lineNumber": 137
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "current.filter",
+          "lineNumber": 137
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useCallback",
+          "lineNumber": 141
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "search.trim",
+          "lineNumber": 142
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "toast.error",
+          "lineNumber": 144
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "name.toLowerCase().replace",
+          "lineNumber": 148
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "name.toLowerCase",
+          "lineNumber": 148
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setPendingSlugToSelect",
+          "lineNumber": 149
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "startTransition",
+          "lineNumber": 151
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "manageCitiesAction",
+          "lineNumber": 153
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "toast.success",
+          "lineNumber": 155
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setSearch",
+          "lineNumber": 156
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setIsOpen",
+          "lineNumber": 157
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "router.refresh",
+          "lineNumber": 158
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "toast.error",
+          "lineNumber": 160
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setPendingSlugToSelect",
+          "lineNumber": 161
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "console.error",
+          "lineNumber": 164
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "toast.error",
+          "lineNumber": 165
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setPendingSlugToSelect",
+          "lineNumber": 166
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useCallback",
+          "lineNumber": 172
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setLocalCities",
+          "lineNumber": 173
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "prev.map",
+          "lineNumber": 173
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useCallback",
+          "lineNumber": 177
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setIsRegistryPending",
+          "lineNumber": 178
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "manageCitiesAction",
+          "lineNumber": 180
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "toast.success",
+          "lineNumber": 182
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "router.refresh",
+          "lineNumber": 183
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "toast.error",
+          "lineNumber": 185
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setIsRegistryPending",
+          "lineNumber": 188
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useCallback",
+          "lineNumber": 193
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setCityToPurge",
+          "lineNumber": 194
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "React.useCallback",
+          "lineNumber": 197
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setCityToPurge",
+          "lineNumber": 200
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setIsRegistryPending",
+          "lineNumber": 201
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "manageCitiesAction",
+          "lineNumber": 203
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setValue",
+          "lineNumber": 205
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "selectedCityIds.filter",
+          "lineNumber": 205
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setLocalCities",
+          "lineNumber": 206
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "prev.filter",
+          "lineNumber": 206
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "toast.success",
+          "lineNumber": 207
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "router.refresh",
+          "lineNumber": 208
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "toast.error",
+          "lineNumber": 210
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setIsRegistryPending",
+          "lineNumber": 213
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setValue",
+          "lineNumber": 252
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "localCities.map",
+          "lineNumber": 252
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setValue",
+          "lineNumber": 262
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "selectedCities.map",
+          "lineNumber": 272
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "removeCity",
+          "lineNumber": 284
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setSearch",
+          "lineNumber": 308
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setIsOpen",
+          "lineNumber": 309
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setIsOpen",
+          "lineNumber": 311
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "filteredSuggestions.map",
+          "lineNumber": 325
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "selectCity",
+          "lineNumber": 329
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "search.trim",
+          "lineNumber": 338
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "search.trim",
+          "lineNumber": 350
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "localCities.map",
+          "lineNumber": 373
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "updateCityRegistry",
+          "lineNumber": 382
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "updateCityRegistry",
+          "lineNumber": 391
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "saveRegistryEdit",
+          "lineNumber": 404
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "purgeCityFromRegistry",
+          "lineNumber": 415
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setCityToPurge",
+          "lineNumber": 435
+        },
+        {
+          "caller": "DistributionLogic",
+          "callee": "setCityToPurge",
+          "lineNumber": 449
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/facility-logo-upload.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 251,
+      "nonEmptyLines": 223,
+      "functions": [
+        {
+          "name": "FacilityLogoUpload",
+          "startLine": 25,
+          "endLine": 251,
+          "params": [
+            "{ value, onChange, facilityId, facilityName }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "FacilityLogoUpload",
+          "line": 25,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "React.useState",
+          "lineNumber": 26
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "React.useState",
+          "lineNumber": 27
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "React.useState",
+          "lineNumber": 28
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "React.useRef",
+          "lineNumber": 29
+        },
+        {
+          "caller": "slugify",
+          "callee": "s.toLowerCase().replace(/[^a-z0-9]+/g, \"-\").replace",
+          "lineNumber": 31
+        },
+        {
+          "caller": "slugify",
+          "callee": "s.toLowerCase().replace",
+          "lineNumber": 31
+        },
+        {
+          "caller": "slugify",
+          "callee": "s.toLowerCase",
+          "lineNumber": 31
+        },
+        {
+          "caller": "processFile",
+          "callee": "file.type.startsWith",
+          "lineNumber": 34
+        },
+        {
+          "caller": "processFile",
+          "callee": "toast.error",
+          "lineNumber": 35
+        },
+        {
+          "caller": "processFile",
+          "callee": "setIsUploading",
+          "lineNumber": 39
+        },
+        {
+          "caller": "processFile",
+          "callee": "(async () => {\n      const isGif = file.type === \"image/gif\"\n\n      let uploadFile: File\n      let filename: string\n\n      if (isGif) {\n        // 🎞️ Animated GIF — upload raw, preserve animation\n        const slug = slugify(facilityName)\n        filename = `facilities/${facilityId}/logos/logo-${slug}.gif`\n        uploadFile = file\n      } else {\n        // 🖼️ Static image — optimize to WebP via canvas\n        const optimizedBlob = await optimizeImageOnClient(file, { mode: \"smart-crop\", size: 512, quality: 0.9 })\n        const slug = slugify(facilityName)\n        filename = `facilities/${facilityId}/logos/logo-${slug}.webp`\n        uploadFile = new File([optimizedBlob], filename, { type: \"image/webp\" })\n      }\n\n      const blob = await upload(filename, uploadFile, {\n        access: \"public\",\n        handleUploadUrl: \"/api/upload\",\n        clientPayload: JSON.stringify({ facilityId, uploadType: \"LOGO\" }),\n      })\n\n      if (!blob.url) {\n        throw new Error(\"Upload endpoint returned void URL\")\n      }\n\n      const finalUrl = `${blob.url}?t=${Date.now()}`\n\n      // 🔥 INSTANT PERSISTENCE: Write directly to Database immediately\n      const dbResult = await updateFacilityLogoAction(facilityId, finalUrl)\n      if (!dbResult.success) {\n         throw new Error(\"Storage successful, but database alignment failed.\")\n      }\n\n      // Update local React-Hook-Form state\n      onChange(finalUrl)\n      return finalUrl\n    })",
+          "lineNumber": 41
+        },
+        {
+          "caller": "processFile",
+          "callee": "slugify",
+          "lineNumber": 49
+        },
+        {
+          "caller": "processFile",
+          "callee": "optimizeImageOnClient",
+          "lineNumber": 54
+        },
+        {
+          "caller": "processFile",
+          "callee": "slugify",
+          "lineNumber": 55
+        },
+        {
+          "caller": "processFile",
+          "callee": "upload",
+          "lineNumber": 60
+        },
+        {
+          "caller": "processFile",
+          "callee": "JSON.stringify",
+          "lineNumber": 63
+        },
+        {
+          "caller": "processFile",
+          "callee": "Date.now",
+          "lineNumber": 70
+        },
+        {
+          "caller": "processFile",
+          "callee": "updateFacilityLogoAction",
+          "lineNumber": 73
+        },
+        {
+          "caller": "processFile",
+          "callee": "onChange",
+          "lineNumber": 79
+        },
+        {
+          "caller": "processFile",
+          "callee": "toast.promise",
+          "lineNumber": 83
+        },
+        {
+          "caller": "processFile",
+          "callee": "console.error",
+          "lineNumber": 92
+        },
+        {
+          "caller": "processFile",
+          "callee": "setIsUploading",
+          "lineNumber": 94
+        },
+        {
+          "caller": "onInputChange",
+          "callee": "processFile",
+          "lineNumber": 101
+        },
+        {
+          "caller": "handleDragOver",
+          "callee": "e.preventDefault",
+          "lineNumber": 106
+        },
+        {
+          "caller": "handleDragOver",
+          "callee": "e.stopPropagation",
+          "lineNumber": 107
+        },
+        {
+          "caller": "handleDragOver",
+          "callee": "setIsDragging",
+          "lineNumber": 108
+        },
+        {
+          "caller": "handleDragLeave",
+          "callee": "e.preventDefault",
+          "lineNumber": 112
+        },
+        {
+          "caller": "handleDragLeave",
+          "callee": "e.stopPropagation",
+          "lineNumber": 113
+        },
+        {
+          "caller": "handleDragLeave",
+          "callee": "setIsDragging",
+          "lineNumber": 114
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "e.preventDefault",
+          "lineNumber": 118
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "e.stopPropagation",
+          "lineNumber": 119
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "setIsDragging",
+          "lineNumber": 120
+        },
+        {
+          "caller": "handleDrop",
+          "callee": "processFile",
+          "lineNumber": 123
+        },
+        {
+          "caller": "removeImage",
+          "callee": "onChange",
+          "lineNumber": 127
+        },
+        {
+          "caller": "removeImage",
+          "callee": "updateFacilityLogoAction",
+          "lineNumber": 129
+        },
+        {
+          "caller": "removeImage",
+          "callee": "toast.success",
+          "lineNumber": 130
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "value?.endsWith",
+          "lineNumber": 133
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "fileInputRef.current?.click",
+          "lineNumber": 157
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "cn",
+          "lineNumber": 158
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "e.stopPropagation",
+          "lineNumber": 182
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "removeImage",
+          "lineNumber": 183
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "e.stopPropagation",
+          "lineNumber": 200
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "setPreviewBg",
+          "lineNumber": 201
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "cn",
+          "lineNumber": 203
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "fileInputRef.current?.click",
+          "lineNumber": 216
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "cn",
+          "lineNumber": 217
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "cn",
+          "lineNumber": 224
+        },
+        {
+          "caller": "FacilityLogoUpload",
+          "callee": "cn",
+          "lineNumber": 230
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/facility-profile-form.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 382,
+      "nonEmptyLines": 346,
+      "functions": [
+        {
+          "name": "FacilityProfileForm",
+          "startLine": 79,
+          "endLine": 382,
+          "params": [
+            "{ \n  facility, \n  availableCities, \n  userRole,\n  transactionCount\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "FacilityProfileForm",
+          "line": 79,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useTransition",
+          "lineNumber": 85
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useRouter",
+          "lineNumber": 86
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useSearchParams",
+          "lineNumber": 87
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "searchParams.get",
+          "lineNumber": 88
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useState",
+          "lineNumber": 90
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useState",
+          "lineNumber": 91
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useEffect",
+          "lineNumber": 93
+        },
+        {
+          "caller": "updateTargets",
+          "callee": "document.getElementById",
+          "lineNumber": 96
+        },
+        {
+          "caller": "updateTargets",
+          "callee": "document.getElementById",
+          "lineNumber": 97
+        },
+        {
+          "caller": "updateTargets",
+          "callee": "setPortalTarget",
+          "lineNumber": 99
+        },
+        {
+          "caller": "updateTargets",
+          "callee": "setLogoPortalTarget",
+          "lineNumber": 100
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "updateTargets",
+          "lineNumber": 104
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "updateTargets",
+          "lineNumber": 108
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "observer.observe",
+          "lineNumber": 111
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "observer.disconnect",
+          "lineNumber": 116
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "(facility.hours || []).map(h => ({\n    dayOfWeek: h.dayOfWeek,\n    openTime: h.openTime,\n    closeTime: h.closeTime,\n    isClosed: h.isClosed,\n  })).sort",
+          "lineNumber": 119
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "(facility.hours || []).map",
+          "lineNumber": 119
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useForm",
+          "lineNumber": 126
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "zodResolver",
+          "lineNumber": 127
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "(facility.marketplaceCities || []).map",
+          "lineNumber": 138
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useEffect",
+          "lineNumber": 152
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "document.getElementById",
+          "lineNumber": 154
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "element.closest",
+          "lineNumber": 157
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "scrollContainer.getBoundingClientRect",
+          "lineNumber": 159
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "element.getBoundingClientRect",
+          "lineNumber": 160
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "scrollContainer.scrollTo",
+          "lineNumber": 163
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "Math.max",
+          "lineNumber": 165
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "element.scrollIntoView",
+          "lineNumber": 170
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useRef",
+          "lineNumber": 177
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useEffect",
+          "lineNumber": 179
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useEffect",
+          "lineNumber": 183
+        },
+        {
+          "caller": "handleSyncOnWake",
+          "callee": "router.refresh",
+          "lineNumber": 187
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "document.addEventListener",
+          "lineNumber": 190
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "document.removeEventListener",
+          "lineNumber": 191
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "useEffect",
+          "lineNumber": 195
+        },
+        {
+          "caller": "handlePreventLoss",
+          "callee": "e.preventDefault",
+          "lineNumber": 198
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "window.addEventListener",
+          "lineNumber": 203
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "window.removeEventListener",
+          "lineNumber": 204
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "startTransition",
+          "lineNumber": 209
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "updateFacilityGovernanceAction",
+          "lineNumber": 211
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.success",
+          "lineNumber": 213
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "form.reset",
+          "lineNumber": 214
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "router.refresh",
+          "lineNumber": 215
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.error",
+          "lineNumber": 217
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "console.error",
+          "lineNumber": 220
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.error",
+          "lineNumber": 221
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "form.handleSubmit",
+          "lineNumber": 230
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "cn",
+          "lineNumber": 237
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "new Date(facility.updatedAt).toLocaleString",
+          "lineNumber": 254
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "cn",
+          "lineNumber": 311
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "cn",
+          "lineNumber": 315
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "cn",
+          "lineNumber": 346
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "createPortal",
+          "lineNumber": 369
+        },
+        {
+          "caller": "FacilityProfileForm",
+          "callee": "createPortal",
+          "lineNumber": 375
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/location-section.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 101,
+      "nonEmptyLines": 95,
+      "functions": [
+        {
+          "name": "LocationSection",
+          "startLine": 18,
+          "endLine": 101,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "LocationSection",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "LocationSection",
+          "callee": "useFormContext",
+          "lineNumber": 19
+        },
+        {
+          "caller": "LocationSection",
+          "callee": "window.open",
+          "lineNumber": 86
+        },
+        {
+          "caller": "LocationSection",
+          "callee": "encodeURIComponent",
+          "lineNumber": 86
+        },
+        {
+          "caller": "LocationSection",
+          "callee": "getValues",
+          "lineNumber": 86
+        },
+        {
+          "caller": "LocationSection",
+          "callee": "getValues",
+          "lineNumber": 86
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/_components/profile-and-seo.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 223,
+      "nonEmptyLines": 209,
+      "functions": [
+        {
+          "name": "ProfileAndSEO",
+          "startLine": 29,
+          "endLine": 223,
+          "params": [
+            "{ facilityId }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ProfileAndSEO",
+          "line": 29,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "useFormContext",
+          "lineNumber": 30
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "watch",
+          "lineNumber": 31
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "watch",
+          "lineNumber": 32
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "watch",
+          "lineNumber": 33
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "watch",
+          "lineNumber": 34
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "React.useState",
+          "lineNumber": 36
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "React.useCallback",
+          "lineNumber": 38
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "setSlugAvailability",
+          "lineNumber": 40
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "setSlugAvailability",
+          "lineNumber": 43
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "checkSlugAvailabilityAction",
+          "lineNumber": 45
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "setSlugAvailability",
+          "lineNumber": 46
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "console.error",
+          "lineNumber": 48
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "toast.error",
+          "lineNumber": 49
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "setSlugAvailability",
+          "lineNumber": 50
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "React.useEffect",
+          "lineNumber": 54
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "setTimeout",
+          "lineNumber": 55
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "checkSlug",
+          "lineNumber": 55
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "clearTimeout",
+          "lineNumber": 56
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "cn",
+          "lineNumber": 84
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "e.target.value.toLowerCase().replace",
+          "lineNumber": 102
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "e.target.value.toLowerCase",
+          "lineNumber": 102
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "field.onChange",
+          "lineNumber": 103
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "cn",
+          "lineNumber": 161
+        },
+        {
+          "caller": "ProfileAndSEO",
+          "callee": "cn",
+          "lineNumber": 181
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "ProfileError",
+          "startLine": 5,
+          "endLine": 13,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ProfileError",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    }
+  ]
+}

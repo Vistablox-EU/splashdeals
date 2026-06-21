@@ -18,7 +18,7 @@
  */
 
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, FacilityStatus, TicketType, ValidityType, DayType, TimeSlot } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 
 const connectionString = process.env.DATABASE_URL || "";
@@ -707,7 +707,7 @@ async function main() {
           descriptionSr: f.descriptionSr,
           lat: f.lat,
           lng: f.lng,
-          status: f.status as any,
+          status: f.status as FacilityStatus,
         },
       });
       const facilityId = existing.id;
@@ -748,16 +748,16 @@ async function main() {
               groupId: group.id,
               title: t.title,
               titleSr: t.titleSr,
-              type: t.type as any,
+              type: t.type as TicketType,
               price: t.price,
               originalPrice: t.originalPrice || t.price + 200,
               currency: "RSD",
-              validityType: t.validityType as any,
+              validityType: t.validityType as ValidityType,
               isActive: true,
               isFeatured: t.isFeatured || false,
               displayOrder: ti,
-              dayType: t.dayType as any,
-              timeSlot: t.timeSlot as any,
+              dayType: t.dayType as DayType,
+              timeSlot: t.timeSlot as TimeSlot,
               isSeasonPass: t.isSeasonPass || false,
               minPeople: t.minPeople || 1,
               maxPeople: t.maxPeople || null,

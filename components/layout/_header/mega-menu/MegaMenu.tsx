@@ -191,7 +191,7 @@ export function MegaMenu({ dict }: MegaMenuProps) {
                             href={href}
                             className="flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none hover:bg-accent hover:text-accent-foreground"
                           >
-                            <Icon name={icon as any} className="size-5 shrink-0 mt-0.5" />
+                            <Icon name={icon as string} className="size-5 shrink-0 mt-0.5" />
                             <div>
                               <span className="block font-medium">{label}</span>
                             </div>
@@ -329,7 +329,7 @@ export function MegaMenu({ dict }: MegaMenuProps) {
                           href={href}
                           className="flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none hover:bg-accent hover:text-accent-foreground"
                         >
-                          <Icon name={icon as any} className="size-5 shrink-0 mt-0.5" />
+                          <Icon name={icon as string} className="size-5 shrink-0 mt-0.5" />
                           <div>
                             <span className="block font-medium">{title}</span>
                             <span className="block text-muted-foreground">{desc}</span>
@@ -350,7 +350,7 @@ export function MegaMenu({ dict }: MegaMenuProps) {
                           href={href}
                           className="flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none hover:bg-accent hover:text-accent-foreground"
                         >
-                          <Icon name={icon as any} className="size-5 shrink-0 mt-0.5" />
+                          <Icon name={icon as string} className="size-5 shrink-0 mt-0.5" />
                           <div>
                             <span className="block font-medium">{title}</span>
                             <span className="block text-muted-foreground">{desc}</span>
@@ -417,7 +417,7 @@ export function MegaMenu({ dict }: MegaMenuProps) {
                           href={href}
                           className="flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none hover:bg-accent hover:text-accent-foreground"
                         >
-                          <Icon name={icon as any} className="size-5 shrink-0 mt-0.5" />
+                          <Icon name={icon as string} className="size-5 shrink-0 mt-0.5" />
                           <div>
                             <span className="block font-medium">{title}</span>
                             <span className="block text-muted-foreground">{desc}</span>
@@ -438,7 +438,7 @@ export function MegaMenu({ dict }: MegaMenuProps) {
                           href={href}
                           className="flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none hover:bg-accent hover:text-accent-foreground"
                         >
-                          <Icon name={icon as any} className="size-5 shrink-0 mt-0.5" />
+                          <Icon name={icon as string} className="size-5 shrink-0 mt-0.5" />
                           <div>
                             <span className="block font-medium">{title}</span>
                             <span className="block text-muted-foreground">{desc}</span>
@@ -483,7 +483,7 @@ export function MegaMenu({ dict }: MegaMenuProps) {
                           href={href}
                           className="flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none hover:bg-accent hover:text-accent-foreground"
                         >
-                          <Icon name={icon as any} className="size-5 shrink-0 mt-0.5" />
+                          <Icon name={icon as string} className="size-5 shrink-0 mt-0.5" />
                           <div>
                             <span className="block font-medium">{label}</span>
                             <span className="block text-muted-foreground">{desc}</span>

@@ -9,7 +9,7 @@ interface PageProps {
   params: Promise<Record<string, never>>;
 }
 
-export async function generateMetadata({ params: _params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({}: PageProps): Promise<Metadata> {
   return {
     title: "Politika Kolačića i Upravljanje Podacima",
     description: "Saznajte kako Splashdeals.rs koristi kolačiće za optimalan rad korpe i personalizaciju pretrage, i kako možete sami upravljati njima u pretraživaču.",
@@ -30,7 +30,7 @@ export async function generateMetadata({ params: _params }: PageProps): Promise<
   };
 }
 
-export default async function CookiesPage({ params: _params }: PageProps) {
+export default async function CookiesPage({}: PageProps) {
   
   const dict = await getDictionary();
   await connection();

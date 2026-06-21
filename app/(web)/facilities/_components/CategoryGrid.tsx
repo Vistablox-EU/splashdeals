@@ -36,7 +36,7 @@ export async function CategoryGrid({ facilitiesLabel }: CategoryGridProps) {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-      {categories.map((cat, i) => (
+      {categories.map((cat) => (
         <div
           key={cat.category}
           className="transition-all duration-300"

@@ -3,7 +3,7 @@ import { FacilitySchemaInput } from "./types";
 export function buildProductSchema(
   facility: FacilitySchemaInput, 
   facilitySlug: string, 
-  aggregateOffer: any, 
+  aggregateOffer: Record<string, unknown> | null, 
   ticketCount: number, 
   additionalType: string
   // ratingValue and reviewCount removed: AggregateRating requires real user reviews.

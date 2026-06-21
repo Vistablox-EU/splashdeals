@@ -131,7 +131,7 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
     setRenameValue(currentFilename)
     setRenameError(null)
     setRenameOpen(true)
-  }, [value])
+  }, [value, currentFilename])
 
   const validateRename = useCallback((name: string) => {
     const result = imageFileNameSchema.safeParse(name)

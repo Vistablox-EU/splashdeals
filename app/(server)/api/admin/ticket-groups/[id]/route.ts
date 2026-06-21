@@ -63,7 +63,7 @@ export async function PATCH(
 
     const group = await prisma.ticketGroup.update({
       where: { id },
-      data: validated,
+      data: validated as Record<string, unknown>,
     })
 
     return NextResponse.json(group)

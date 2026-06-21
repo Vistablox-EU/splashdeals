@@ -1,0 +1,2654 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 25,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/loading.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 40,
+      "nonEmptyLines": 37,
+      "functions": [
+        {
+          "name": "ProfileLoading",
+          "startLine": 5,
+          "endLine": 40,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ProfileLoading",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ProfileLoading",
+          "callee": "[1, 2, 3, 4].map",
+          "lineNumber": 11
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/profile/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 71,
+      "nonEmptyLines": 65,
+      "functions": [
+        {
+          "name": "generateMetadata",
+          "startLine": 12,
+          "endLine": 26,
+          "params": [
+            "{\n  params,\n}"
+          ]
+        },
+        {
+          "name": "ProfilePage",
+          "startLine": 28,
+          "endLine": 71,
+          "params": [
+            "{ params }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMetadata",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "ProfilePage",
+          "line": 28,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMetadata",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 18
+        },
+        {
+          "caller": "ProfilePage",
+          "callee": "connection",
+          "lineNumber": 30
+        },
+        {
+          "caller": "ProfilePage",
+          "callee": "Promise.all",
+          "lineNumber": 32
+        },
+        {
+          "caller": "ProfilePage",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 33
+        },
+        {
+          "caller": "ProfilePage",
+          "callee": "prisma.city.findMany",
+          "lineNumber": 41
+        },
+        {
+          "caller": "ProfilePage",
+          "callee": "prisma.transaction.count",
+          "lineNumber": 44
+        },
+        {
+          "caller": "ProfilePage",
+          "callee": "auth.api.getSession",
+          "lineNumber": 47
+        },
+        {
+          "caller": "ProfilePage",
+          "callee": "headers",
+          "lineNumber": 48
+        },
+        {
+          "caller": "ProfilePage",
+          "callee": "notFound",
+          "lineNumber": 52
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/columns.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 279,
+      "nonEmptyLines": 270,
+      "functions": [
+        {
+          "name": "createGroupColumns",
+          "startLine": 43,
+          "endLine": 139,
+          "params": [
+            "{ onEdit, onDelete }"
+          ]
+        },
+        {
+          "name": "createColumns",
+          "startLine": 143,
+          "endLine": 279,
+          "params": [
+            "{ \n  onEdit \n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createGroupColumns",
+          "line": 43,
+          "isDefault": false
+        },
+        {
+          "name": "createColumns",
+          "line": 143,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createGroupColumns",
+          "callee": "row.original.tiers.slice(0, 3).map",
+          "lineNumber": 73
+        },
+        {
+          "caller": "createGroupColumns",
+          "callee": "row.original.tiers.slice",
+          "lineNumber": 73
+        },
+        {
+          "caller": "createGroupColumns",
+          "callee": "(tier.label ?? tier.titleSr ?? tier.title).charAt",
+          "lineNumber": 79
+        },
+        {
+          "caller": "createGroupColumns",
+          "callee": "cn",
+          "lineNumber": 96
+        },
+        {
+          "caller": "createGroupColumns",
+          "callee": "onEdit",
+          "lineNumber": 120
+        },
+        {
+          "caller": "createGroupColumns",
+          "callee": "onDelete",
+          "lineNumber": 129
+        },
+        {
+          "caller": "createColumns",
+          "callee": "Number",
+          "lineNumber": 191
+        },
+        {
+          "caller": "createColumns",
+          "callee": "price.toLocaleString",
+          "lineNumber": 194
+        },
+        {
+          "caller": "createColumns",
+          "callee": "originalPrice.toLocaleString",
+          "lineNumber": 209
+        },
+        {
+          "caller": "createColumns",
+          "callee": "onEdit",
+          "lineNumber": 270
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/confirm-dialog.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 57,
+      "nonEmptyLines": 54,
+      "functions": [
+        {
+          "name": "ConfirmDialog",
+          "startLine": 28,
+          "endLine": 57,
+          "params": [
+            "{\n  open,\n  onOpenChange,\n  title,\n  description,\n  confirmLabel = \"Potvrdi\",\n  cancelLabel = \"Otkaži\",\n  variant = \"destructive\",\n  onConfirm,\n  disabled = false,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ConfirmDialog",
+          "line": 28,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ConfirmDialog",
+          "callee": "onOpenChange",
+          "lineNumber": 47
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/empty-state.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 53,
+      "nonEmptyLines": 49,
+      "functions": [
+        {
+          "name": "EmptyState",
+          "startLine": 22,
+          "endLine": 53,
+          "params": [
+            "{ icon, title, description, action, compact }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "EmptyState",
+          "line": 22,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/group-panel.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 350,
+      "nonEmptyLines": 320,
+      "functions": [
+        {
+          "name": "SortableGroupCard",
+          "startLine": 43,
+          "endLine": 155,
+          "params": [
+            "{\n  group,\n  isActive,\n  onSelect,\n  onEdit,\n  onDelete,\n}"
+          ]
+        },
+        {
+          "name": "GroupPanel",
+          "startLine": 159,
+          "endLine": 350,
+          "params": [
+            "{\n  facilityId,\n  initialGroups,\n  activeGroupId,\n  onGroupSelect,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "GroupPanel",
+          "line": 159,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "SortableGroupCard",
+          "callee": "useSortable",
+          "lineNumber": 63
+        },
+        {
+          "caller": "SortableGroupCard",
+          "callee": "CSS.Transform.toString",
+          "lineNumber": 66
+        },
+        {
+          "caller": "SortableGroupCard",
+          "callee": "cn",
+          "lineNumber": 76
+        },
+        {
+          "caller": "SortableGroupCard",
+          "callee": "e.stopPropagation",
+          "lineNumber": 88
+        },
+        {
+          "caller": "SortableGroupCard",
+          "callee": "cn",
+          "lineNumber": 102
+        },
+        {
+          "caller": "SortableGroupCard",
+          "callee": "cn",
+          "lineNumber": 116
+        },
+        {
+          "caller": "SortableGroupCard",
+          "callee": "e.stopPropagation",
+          "lineNumber": 127
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "React.useState",
+          "lineNumber": 165
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "React.useState",
+          "lineNumber": 166
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "useDnDSensors",
+          "lineNumber": 167
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "useDeepLink",
+          "lineNumber": 176
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "groups.findIndex",
+          "lineNumber": 182
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "groups.findIndex",
+          "lineNumber": 183
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "arrayMove",
+          "lineNumber": 184
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "setLocalReorder",
+          "lineNumber": 185
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "reorderTicketGroupsAction",
+          "lineNumber": 188
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "reordered.map",
+          "lineNumber": 190
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "toast.error",
+          "lineNumber": 193
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "setLocalReorder",
+          "lineNumber": 194
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "console.error",
+          "lineNumber": 197
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "toast.error",
+          "lineNumber": 198
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "setLocalReorder",
+          "lineNumber": 199
+        },
+        {
+          "caller": "handleEdit",
+          "callee": "setSelectedGroup",
+          "lineNumber": 204
+        },
+        {
+          "caller": "handleEdit",
+          "callee": "setIsSheetOpen",
+          "lineNumber": 205
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setGroupToDelete",
+          "lineNumber": 209
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "deleteTicketGroupAction",
+          "lineNumber": 217
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "toast.error",
+          "lineNumber": 219
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "toast.error",
+          "lineNumber": 223
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "setLocalReorder",
+          "lineNumber": 227
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "toast.success",
+          "lineNumber": 228
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "onGroupSelect",
+          "lineNumber": 232
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "setGroupToDelete",
+          "lineNumber": 235
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "setSelectedGroup",
+          "lineNumber": 255
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "setIsSheetOpen",
+          "lineNumber": 255
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "onGroupSelect",
+          "lineNumber": 269
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "cn",
+          "lineNumber": 270
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "cn",
+          "lineNumber": 281
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "groups.reduce",
+          "lineNumber": 288
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "groups.map",
+          "lineNumber": 303
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "groups.map",
+          "lineNumber": 306
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "onGroupSelect",
+          "lineNumber": 311
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "handleEdit",
+          "lineNumber": 312
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "handleDelete",
+          "lineNumber": 313
+        },
+        {
+          "caller": "GroupPanel",
+          "callee": "setGroupToDelete",
+          "lineNumber": 341
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/index.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 13,
+      "exports": [
+        {
+          "name": "createGroupColumns",
+          "line": 1,
+          "isDefault": false
+        },
+        {
+          "name": "TicketColumns",
+          "line": 1,
+          "isDefault": false
+        },
+        {
+          "name": "GroupPanel",
+          "line": 2,
+          "isDefault": false
+        },
+        {
+          "name": "TicketGroupSheet",
+          "line": 3,
+          "isDefault": false
+        },
+        {
+          "name": "TicketImageUpload",
+          "line": 4,
+          "isDefault": false
+        },
+        {
+          "name": "TicketManagement",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "TicketPanel",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "TicketSheet",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "TicketBasicInfoFields",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "TicketStatusSection",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "TicketDescriptionSection",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "TicketMediaSection",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "ConfirmDialog",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "EmptyState",
+          "line": 13,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 14,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-basic-fields.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 304,
+      "nonEmptyLines": 291,
+      "functions": [
+        {
+          "name": "TicketBasicInfoFields",
+          "startLine": 38,
+          "endLine": 304,
+          "params": [
+            "{\n  control,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketBasicInfoFields",
+          "line": 38,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "useWatch",
+          "lineNumber": 41
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "String",
+          "lineNumber": 129
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "field.onChange",
+          "lineNumber": 131
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Number",
+          "lineNumber": 131
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Object.values(TicketType).map",
+          "lineNumber": 160
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Object.values",
+          "lineNumber": 160
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "t.replace",
+          "lineNumber": 162
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Object.values(DayType).map",
+          "lineNumber": 221
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Object.values",
+          "lineNumber": 221
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "v.replace",
+          "lineNumber": 223
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Object.values(TimeSlot).map",
+          "lineNumber": 247
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Object.values",
+          "lineNumber": 247
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "v.replace",
+          "lineNumber": 249
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "field.onChange",
+          "lineNumber": 275
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Number",
+          "lineNumber": 275
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "String",
+          "lineNumber": 293
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "field.onChange",
+          "lineNumber": 295
+        },
+        {
+          "caller": "TicketBasicInfoFields",
+          "callee": "Number",
+          "lineNumber": 295
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-description-section.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 79,
+      "nonEmptyLines": 75,
+      "functions": [
+        {
+          "name": "TicketDescriptionSection",
+          "startLine": 24,
+          "endLine": 79,
+          "params": [
+            "{\n  control,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketDescriptionSection",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-group-sheet.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 531,
+      "nonEmptyLines": 515,
+      "functions": [
+        {
+          "name": "TicketGroupSheet",
+          "startLine": 53,
+          "endLine": 531,
+          "params": [
+            "{ facilityId, group, open, onOpenChange }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketGroupSheet",
+          "line": 53,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "useRouter",
+          "lineNumber": 54
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "React.useTransition",
+          "lineNumber": 55
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "useForm",
+          "lineNumber": 57
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "zodResolver",
+          "lineNumber": 58
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "(group?.tickets || group?.tiers)?.map",
+          "lineNumber": 67
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "useFieldArray",
+          "lineNumber": 104
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "useWatch",
+          "lineNumber": 110
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "React.useEffect",
+          "lineNumber": 112
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "watchedTickets.forEach",
+          "lineNumber": 114
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "form.setValue",
+          "lineNumber": 116
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "startTransition",
+          "lineNumber": 122
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "upsertTicketGroupAction",
+          "lineNumber": 124
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.success",
+          "lineNumber": 126
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "onOpenChange",
+          "lineNumber": 127
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "router.refresh",
+          "lineNumber": 128
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.error",
+          "lineNumber": 130
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.error",
+          "lineNumber": 133
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "form.handleSubmit",
+          "lineNumber": 142
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "append",
+          "lineNumber": 235
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "fields.map",
+          "lineNumber": 257
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "remove",
+          "lineNumber": 293
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Object.values(TicketType).map",
+          "lineNumber": 313
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Object.values",
+          "lineNumber": 313
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "v.replace",
+          "lineNumber": 314
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "field.onChange",
+          "lineNumber": 328
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Number",
+          "lineNumber": 328
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "String",
+          "lineNumber": 341
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "field.onChange",
+          "lineNumber": 341
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Number",
+          "lineNumber": 341
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Object.values(DayType).map",
+          "lineNumber": 360
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Object.values",
+          "lineNumber": 360
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "v.replace",
+          "lineNumber": 361
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Object.values(ValidityType).map",
+          "lineNumber": 384
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Object.values",
+          "lineNumber": 384
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "v.replace",
+          "lineNumber": 385
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Object.values(TimeSlot).map",
+          "lineNumber": 405
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Object.values",
+          "lineNumber": 405
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "v.replace",
+          "lineNumber": 406
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "field.onChange",
+          "lineNumber": 420
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Number",
+          "lineNumber": 420
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "String",
+          "lineNumber": 433
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "field.onChange",
+          "lineNumber": 433
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "Number",
+          "lineNumber": 433
+        },
+        {
+          "caller": "TicketGroupSheet",
+          "callee": "onOpenChange",
+          "lineNumber": 510
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-image-upload.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 356,
+      "nonEmptyLines": 329,
+      "functions": [
+        {
+          "name": "filenameFromBlobUrl",
+          "startLine": 33,
+          "endLine": 43,
+          "params": [
+            "url"
+          ]
+        },
+        {
+          "name": "uploadImage",
+          "startLine": 49,
+          "endLine": 81,
+          "params": [
+            "file",
+            "facilityId",
+            "onUrl"
+          ]
+        },
+        {
+          "name": "TicketImageUpload",
+          "startLine": 89,
+          "endLine": 356,
+          "params": [
+            "{ value, onChange, facilityId }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketImageUpload",
+          "line": 89,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "filenameFromBlobUrl",
+          "callee": "new URL(url).pathname.split",
+          "lineNumber": 35
+        },
+        {
+          "caller": "filenameFromBlobUrl",
+          "callee": "last\n      .replace(/^\\d+-/, \"\")\n      .replace",
+          "lineNumber": 37
+        },
+        {
+          "caller": "filenameFromBlobUrl",
+          "callee": "last\n      .replace",
+          "lineNumber": 37
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "setTimeout",
+          "lineNumber": 56
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "reject",
+          "lineNumber": 56
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "Promise.race",
+          "lineNumber": 58
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "optimizeImageOnClient",
+          "lineNumber": 59
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "file.name.split",
+          "lineNumber": 65
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "Date.now",
+          "lineNumber": 65
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "formData.append",
+          "lineNumber": 71
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "formData.append",
+          "lineNumber": 72
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "uploadTicketImageAction",
+          "lineNumber": 74
+        },
+        {
+          "caller": "uploadImage",
+          "callee": "onUrl",
+          "lineNumber": 80
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useState",
+          "lineNumber": 90
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useState",
+          "lineNumber": 91
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useRef",
+          "lineNumber": 92
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useState",
+          "lineNumber": 93
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useState",
+          "lineNumber": 94
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useState",
+          "lineNumber": 95
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useState",
+          "lineNumber": 96
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "filenameFromBlobUrl",
+          "lineNumber": 98
+        },
+        {
+          "caller": "onUpload",
+          "callee": "setIsUploading",
+          "lineNumber": 104
+        },
+        {
+          "caller": "onUpload",
+          "callee": "uploadImage",
+          "lineNumber": 106
+        },
+        {
+          "caller": "onUpload",
+          "callee": "toast.promise",
+          "lineNumber": 108
+        },
+        {
+          "caller": "onUpload",
+          "callee": "setIsUploading",
+          "lineNumber": 120
+        },
+        {
+          "caller": "removeImage",
+          "callee": "onChange",
+          "lineNumber": 126
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useCallback",
+          "lineNumber": 129
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameValue",
+          "lineNumber": 131
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameError",
+          "lineNumber": 132
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameOpen",
+          "lineNumber": 133
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useCallback",
+          "lineNumber": 136
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "imageFileNameSchema.safeParse",
+          "lineNumber": 137
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameError",
+          "lineNumber": 139
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameError",
+          "lineNumber": 141
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "useCallback",
+          "lineNumber": 145
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "renameValue.trim",
+          "lineNumber": 146
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "imageFileNameSchema.safeParse",
+          "lineNumber": 148
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "renameValue.trim",
+          "lineNumber": 148
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameError",
+          "lineNumber": 150
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameError",
+          "lineNumber": 153
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setIsRenaming",
+          "lineNumber": 154
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "renameTicketImageAction",
+          "lineNumber": 156
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "renameValue.trim",
+          "lineNumber": 156
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "onChange",
+          "lineNumber": 158
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "toast.success",
+          "lineNumber": 159
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameOpen",
+          "lineNumber": 160
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "toast.error",
+          "lineNumber": 162
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "toast.error",
+          "lineNumber": 165
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setIsRenaming",
+          "lineNumber": 167
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setIsImageError",
+          "lineNumber": 190
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "fileInputRef.current?.click",
+          "lineNumber": 190
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setIsImageError",
+          "lineNumber": 205
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "fileInputRef.current?.click",
+          "lineNumber": 255
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "cn",
+          "lineNumber": 256
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameValue",
+          "lineNumber": 299
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "validateRename",
+          "lineNumber": 300
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "cn",
+          "lineNumber": 303
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "e.preventDefault",
+          "lineNumber": 309
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "handleRename",
+          "lineNumber": 310
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "setRenameOpen",
+          "lineNumber": 332
+        },
+        {
+          "caller": "TicketImageUpload",
+          "callee": "renameValue.trim",
+          "lineNumber": 340
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-management.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 121,
+      "nonEmptyLines": 111,
+      "functions": [
+        {
+          "name": "TicketManagement",
+          "startLine": 18,
+          "endLine": 121,
+          "params": [
+            "{\n  facilityId,\n  initialTickets,\n  initialGroups,\n  facilityStatus,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketManagement",
+          "line": 18,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TicketManagement",
+          "callee": "React.useState",
+          "lineNumber": 24
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "React.useState",
+          "lineNumber": 27
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "React.useMemo",
+          "lineNumber": 29
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "initialGroups.find",
+          "lineNumber": 30
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "React.useMemo",
+          "lineNumber": 34
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "initialGroups.map",
+          "lineNumber": 35
+        },
+        {
+          "caller": "handleGroupSelect",
+          "callee": "setActiveGroupId",
+          "lineNumber": 40
+        },
+        {
+          "caller": "handleGroupSelect",
+          "callee": "setMobileView",
+          "lineNumber": 42
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "setMobileView",
+          "lineNumber": 53
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "cn",
+          "lineNumber": 54
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "setMobileView",
+          "lineNumber": 68
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "cn",
+          "lineNumber": 69
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "cn",
+          "lineNumber": 85
+        },
+        {
+          "caller": "TicketManagement",
+          "callee": "cn",
+          "lineNumber": 102
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-media-section.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 117,
+      "nonEmptyLines": 111,
+      "functions": [
+        {
+          "name": "TicketMediaSection",
+          "startLine": 27,
+          "endLine": 117,
+          "params": [
+            "{\n  control,\n  facilityId,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketMediaSection",
+          "line": 27,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TicketMediaSection",
+          "callee": "useFormContext",
+          "lineNumber": 31
+        },
+        {
+          "caller": "TicketMediaSection",
+          "callee": "useWatch",
+          "lineNumber": 32
+        },
+        {
+          "caller": "TicketMediaSection",
+          "callee": "field.onChange",
+          "lineNumber": 84
+        },
+        {
+          "caller": "TicketMediaSection",
+          "callee": "setValue",
+          "lineNumber": 85
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-panel.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 347,
+      "nonEmptyLines": 319,
+      "functions": [
+        {
+          "name": "SortableRow",
+          "startLine": 64,
+          "endLine": 108,
+          "params": [
+            "{ row }"
+          ]
+        },
+        {
+          "name": "TicketPanel",
+          "startLine": 112,
+          "endLine": 347,
+          "params": [
+            "{\n  facilityId,\n  initialTickets,\n  ticketGroups,\n  facilityStatus,\n  activeGroupId,\n  activeGroup,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketPanel",
+          "line": 112,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "SortableRow",
+          "callee": "useSortable",
+          "lineNumber": 72
+        },
+        {
+          "caller": "SortableRow",
+          "callee": "CSS.Transform.toString",
+          "lineNumber": 75
+        },
+        {
+          "caller": "SortableRow",
+          "callee": "row.getIsSelected",
+          "lineNumber": 85
+        },
+        {
+          "caller": "SortableRow",
+          "callee": "cn",
+          "lineNumber": 86
+        },
+        {
+          "caller": "SortableRow",
+          "callee": "row.getVisibleCells().map",
+          "lineNumber": 91
+        },
+        {
+          "caller": "SortableRow",
+          "callee": "row.getVisibleCells",
+          "lineNumber": 91
+        },
+        {
+          "caller": "SortableRow",
+          "callee": "flexRender",
+          "lineNumber": 102
+        },
+        {
+          "caller": "SortableRow",
+          "callee": "cell.getContext",
+          "lineNumber": 102
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "React.useState",
+          "lineNumber": 120
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "React.useState",
+          "lineNumber": 121
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "useDnDSensors",
+          "lineNumber": 122
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "useDeepLink",
+          "lineNumber": 130
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "React.useMemo",
+          "lineNumber": 133
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "tickets.filter",
+          "lineNumber": 135
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "React.useCallback",
+          "lineNumber": 138
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "setSelectedTicket",
+          "lineNumber": 139
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "setIsSheetOpen",
+          "lineNumber": 140
+        },
+        {
+          "caller": "handleCreateNew",
+          "callee": "setSelectedTicket",
+          "lineNumber": 144
+        },
+        {
+          "caller": "handleCreateNew",
+          "callee": "setIsSheetOpen",
+          "lineNumber": 145
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "React.useMemo",
+          "lineNumber": 148
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "createColumns",
+          "lineNumber": 148
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "useReactTable",
+          "lineNumber": 151
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "getCoreRowModel",
+          "lineNumber": 156
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "getFilteredRowModel",
+          "lineNumber": 157
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "displayedTickets.findIndex",
+          "lineNumber": 164
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "displayedTickets.findIndex",
+          "lineNumber": 165
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "arrayMove",
+          "lineNumber": 166
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "tickets.filter",
+          "lineNumber": 169
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "[...fullList, ...reordered].sort",
+          "lineNumber": 172
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "setLocalReorder",
+          "lineNumber": 173
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "reorderTicketsAction({\n      facilityId,\n      orderedIds: reordered.map((t) => t.id),\n    }).then",
+          "lineNumber": 175
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "reorderTicketsAction",
+          "lineNumber": 175
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "reordered.map",
+          "lineNumber": 177
+        },
+        {
+          "caller": "handleDragEnd",
+          "callee": "toast.error",
+          "lineNumber": 179
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "setGlobalFilter",
+          "lineNumber": 233
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "setGlobalFilter",
+          "lineNumber": 258
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "table.getHeaderGroups().map",
+          "lineNumber": 281
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "table.getHeaderGroups",
+          "lineNumber": 281
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "headerGroup.headers.map",
+          "lineNumber": 286
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "flexRender",
+          "lineNumber": 293
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "header.getContext",
+          "lineNumber": 295
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "displayedTickets.map",
+          "lineNumber": 304
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "table.getRowModel",
+          "lineNumber": 307
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "table.getRowModel().rows.map",
+          "lineNumber": 308
+        },
+        {
+          "caller": "TicketPanel",
+          "callee": "table.getRowModel",
+          "lineNumber": 308
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-sheet.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 297,
+      "nonEmptyLines": 274,
+      "functions": [
+        {
+          "name": "TicketSheet",
+          "startLine": 47,
+          "endLine": 297,
+          "params": [
+            "{ facilityId, ticket, open, onOpenChange, ticketGroups, defaultGroupId }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketSheet",
+          "line": 47,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TicketSheet",
+          "callee": "React.useState",
+          "lineNumber": 48
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "React.useState",
+          "lineNumber": 49
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "useRouter",
+          "lineNumber": 50
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "useForm",
+          "lineNumber": 52
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "zodResolver",
+          "lineNumber": 53
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "Number",
+          "lineNumber": 57
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "Number",
+          "lineNumber": 58
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "new Date(ticket.saleStart).toISOString().slice",
+          "lineNumber": 64
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "new Date(ticket.saleStart).toISOString",
+          "lineNumber": 64
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "new Date(ticket.saleEnd).toISOString().slice",
+          "lineNumber": 65
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "new Date(ticket.saleEnd).toISOString",
+          "lineNumber": 65
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "React.useEffect",
+          "lineNumber": 84
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "form.reset",
+          "lineNumber": 87
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "Number",
+          "lineNumber": 90
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "Number",
+          "lineNumber": 91
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "new Date(ticket.saleStart).toISOString().slice",
+          "lineNumber": 97
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "new Date(ticket.saleStart).toISOString",
+          "lineNumber": 97
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "new Date(ticket.saleEnd).toISOString().slice",
+          "lineNumber": 98
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "new Date(ticket.saleEnd).toISOString",
+          "lineNumber": 98
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "form.reset",
+          "lineNumber": 115
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "useWatch",
+          "lineNumber": 146
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "React.useEffect",
+          "lineNumber": 148
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "form.setValue",
+          "lineNumber": 150
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "form.getValues",
+          "lineNumber": 151
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "form.setValue",
+          "lineNumber": 152
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "useUnsavedChangesGuard",
+          "lineNumber": 156
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "setIsSubmitting",
+          "lineNumber": 162
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "upsertTicketAction",
+          "lineNumber": 164
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "Number",
+          "lineNumber": 169
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "Number",
+          "lineNumber": 170
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.success",
+          "lineNumber": 177
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "form.reset",
+          "lineNumber": 178
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "router.refresh",
+          "lineNumber": 179
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "onOpenChange",
+          "lineNumber": 180
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.error",
+          "lineNumber": 182
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "console.error",
+          "lineNumber": 185
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "toast.error",
+          "lineNumber": 186
+        },
+        {
+          "caller": "onSubmit",
+          "callee": "setIsSubmitting",
+          "lineNumber": 188
+        },
+        {
+          "caller": "onInvalid",
+          "callee": "console.error",
+          "lineNumber": 193
+        },
+        {
+          "caller": "onInvalid",
+          "callee": "toast.error",
+          "lineNumber": 194
+        },
+        {
+          "caller": "onDelete",
+          "callee": "setShowDeleteDialog",
+          "lineNumber": 199
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "setShowDeleteDialog",
+          "lineNumber": 204
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "setIsSubmitting",
+          "lineNumber": 205
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "deleteTicketAction",
+          "lineNumber": 206
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "toast.success",
+          "lineNumber": 208
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "router.refresh",
+          "lineNumber": 209
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "onOpenChange",
+          "lineNumber": 210
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "toast.error",
+          "lineNumber": 212
+        },
+        {
+          "caller": "confirmDelete",
+          "callee": "setIsSubmitting",
+          "lineNumber": 214
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "form.handleSubmit",
+          "lineNumber": 228
+        },
+        {
+          "caller": "TicketSheet",
+          "callee": "setShowUnsavedDialog",
+          "lineNumber": 275
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_components/ticket-status-section.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 163,
+      "nonEmptyLines": 157,
+      "functions": [
+        {
+          "name": "TicketStatusSection",
+          "startLine": 34,
+          "endLine": 163,
+          "params": [
+            "{\n  control,\n  ticketGroups,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketStatusSection",
+          "line": 34,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TicketStatusSection",
+          "callee": "ticketGroups?.map",
+          "lineNumber": 108
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-deep-link.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 42,
+      "nonEmptyLines": 37,
+      "functions": [
+        {
+          "name": "useDeepLink",
+          "startLine": 15,
+          "endLine": 42,
+          "params": [
+            "items",
+            "paramName"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useDeepLink",
+          "line": 15,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useDeepLink",
+          "callee": "useState",
+          "lineNumber": 19
+        },
+        {
+          "caller": "useDeepLink",
+          "callee": "params.get",
+          "lineNumber": 22
+        },
+        {
+          "caller": "useDeepLink",
+          "callee": "items.find",
+          "lineNumber": 23
+        },
+        {
+          "caller": "useDeepLink",
+          "callee": "useState",
+          "lineNumber": 27
+        },
+        {
+          "caller": "useDeepLink",
+          "callee": "useEffect",
+          "lineNumber": 31
+        },
+        {
+          "caller": "useDeepLink",
+          "callee": "currentUrl.searchParams.set",
+          "lineNumber": 34
+        },
+        {
+          "caller": "useDeepLink",
+          "callee": "currentUrl.searchParams.delete",
+          "lineNumber": 36
+        },
+        {
+          "caller": "useDeepLink",
+          "callee": "window.history.replaceState",
+          "lineNumber": 38
+        },
+        {
+          "caller": "useDeepLink",
+          "callee": "currentUrl.toString",
+          "lineNumber": 38
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-dnd-sensors.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 15,
+      "nonEmptyLines": 13,
+      "functions": [
+        {
+          "name": "useDnDSensors",
+          "startLine": 10,
+          "endLine": 15,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "useDnDSensors",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useDnDSensors",
+          "callee": "useSensors",
+          "lineNumber": 11
+        },
+        {
+          "caller": "useDnDSensors",
+          "callee": "useSensor",
+          "lineNumber": 12
+        },
+        {
+          "caller": "useDnDSensors",
+          "callee": "useSensor",
+          "lineNumber": 13
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/_hooks/use-unsaved-changes-guard.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 46,
+      "nonEmptyLines": 40,
+      "functions": [
+        {
+          "name": "useUnsavedChangesGuard",
+          "startLine": 9,
+          "endLine": 46,
+          "params": [
+            "isDirty",
+            "onOpenChange"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "useUnsavedChangesGuard",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "useState",
+          "lineNumber": 13
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "useEffect",
+          "lineNumber": 16
+        },
+        {
+          "caller": "handlePreventLoss",
+          "callee": "e.preventDefault",
+          "lineNumber": 19
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "window.addEventListener",
+          "lineNumber": 24
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "window.removeEventListener",
+          "lineNumber": 25
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "useCallback",
+          "lineNumber": 29
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "setShowUnsavedDialog",
+          "lineNumber": 32
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "onOpenChange",
+          "lineNumber": 35
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "useCallback",
+          "lineNumber": 40
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "setShowUnsavedDialog",
+          "lineNumber": 41
+        },
+        {
+          "caller": "useUnsavedChangesGuard",
+          "callee": "onOpenChange",
+          "lineNumber": 42
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 13,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "TicketsError",
+          "startLine": 5,
+          "endLine": 13,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketsError",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/loading.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 55,
+      "nonEmptyLines": 53,
+      "functions": [
+        {
+          "name": "TicketManagementLoading",
+          "startLine": 3,
+          "endLine": 55,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "TicketManagementLoading",
+          "line": 3,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TicketManagementLoading",
+          "callee": "[1, 2, 3, 4].map",
+          "lineNumber": 16
+        },
+        {
+          "caller": "TicketManagementLoading",
+          "callee": "[1, 2, 3, 4, 5, 6].map",
+          "lineNumber": 33
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/[facility-id]/tickets/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 153,
+      "nonEmptyLines": 146,
+      "functions": [
+        {
+          "name": "generateMetadata",
+          "startLine": 11,
+          "endLine": 25,
+          "params": [
+            "{\n  params,\n}"
+          ]
+        },
+        {
+          "name": "TicketsPage",
+          "startLine": 27,
+          "endLine": 153,
+          "params": [
+            "{\n  params,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateMetadata",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "TicketsPage",
+          "line": 27,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generateMetadata",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 17
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "connection",
+          "lineNumber": 33
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "Promise.all",
+          "lineNumber": 35
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "prisma.ticket.findMany",
+          "lineNumber": 36
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "prisma.facility.findUnique",
+          "lineNumber": 40
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "notFound",
+          "lineNumber": 53
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "ticketsRaw.map",
+          "lineNumber": 57
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "Number",
+          "lineNumber": 85
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "Number",
+          "lineNumber": 86
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "facilityWithGroups.ticketGroups.map",
+          "lineNumber": 90
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "group.tickets.map",
+          "lineNumber": 91
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "Number",
+          "lineNumber": 120
+        },
+        {
+          "caller": "TicketsPage",
+          "callee": "Number",
+          "lineNumber": 121
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/error.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 57,
+      "nonEmptyLines": 52,
+      "functions": [
+        {
+          "name": "FacilitiesError",
+          "startLine": 7,
+          "endLine": 57,
+          "params": [
+            "{\n  error,\n  reset,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "FacilitiesError",
+          "line": 7,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "FacilitiesError",
+          "callee": "useEffect",
+          "lineNumber": 14
+        },
+        {
+          "caller": "FacilitiesError",
+          "callee": "console.error",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/layout.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 11,
+      "nonEmptyLines": 10,
+      "functions": [
+        {
+          "name": "FacilitiesLayout",
+          "startLine": 3,
+          "endLine": 11,
+          "params": [
+            "{ children }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "FacilitiesLayout",
+          "line": 3,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "app/(dashboard)/admin/facilities/loading.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 33,
+      "nonEmptyLines": 30,
+      "functions": [
+        {
+          "name": "FacilitiesLoading",
+          "startLine": 3,
+          "endLine": 33,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "FacilitiesLoading",
+          "line": 3,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "FacilitiesLoading",
+          "callee": "Array.from({ length: 4 }).map",
+          "lineNumber": 8
+        },
+        {
+          "caller": "FacilitiesLoading",
+          "callee": "Array.from",
+          "lineNumber": 8
+        },
+        {
+          "caller": "FacilitiesLoading",
+          "callee": "Array.from({ length: 6 }).map",
+          "lineNumber": 26
+        },
+        {
+          "caller": "FacilitiesLoading",
+          "callee": "Array.from",
+          "lineNumber": 26
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    }
+  ]
+}

@@ -495,8 +495,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const aggregateOffer = allTiers.length > 0 ? {
     "@type": "AggregateOffer",
     "priceCurrency": "RSD",
-    "lowPrice": Math.min(...allTiers.map((t: any) => Number(t.price))),
-    "highPrice": Math.max(...allTiers.map((t: any) => Number(t.price))),
+    "lowPrice": Math.min(...allTiers.map((t) => Number((t as { price: number }).price))),
+    "highPrice": Math.max(...allTiers.map((t) => Number((t as { price: number }).price))),
     "offerCount": allTiers.length,
     "shippingDetails": {
       "@type": "OfferShippingDetails",
@@ -519,7 +519,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       "applicableCountry": "RS",
       "returnPolicyCategory": "https://schema.org/NoReturns"
     },
-    "offers": allTiers.map((tier: any) => {
+    "offers": allTiers.map((tier: Record<string, unknown>) => {
       const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
       
       const priceSpecification = hasDiscount ? [
@@ -772,7 +772,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               )}
 
               <ShowcaseAmenities 
-                amenities={serialize(facility.amenities) as any} 
+                amenities={serialize(facility.amenities)} 
                 dict={dict} 
               />
            </div>

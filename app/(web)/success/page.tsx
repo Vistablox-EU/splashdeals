@@ -12,7 +12,7 @@ const SuccessClient = dynamic(() => import("./_components/SuccessClient").then((
   loading: () => <SuccessSkeleton />
 });
 
-export async function generateMetadata({ params }: { params: Promise<Record<string, never>> }): Promise<Metadata> {
+export async function generateMetadata({ params: _params }: { params: Promise<Record<string, never>> }): Promise<Metadata> {
   
   const dict = await getDictionary();
   
@@ -47,7 +47,6 @@ export default async function SuccessPage(props: {
   params: Promise<Record<string, never>>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const params = await props.params;
   const searchParams = await props.searchParams;
   const session_id = searchParams.session_id as string | undefined;
   const dict = await getDictionary();

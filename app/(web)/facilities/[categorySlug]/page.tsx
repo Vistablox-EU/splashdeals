@@ -1,20 +1,5 @@
-import { Suspense } from "react";
 import { Metadata } from "next";
 import { connection } from "next/server";
-import { getDictionary } from "@/lib/dictionaries";
-import { FacilityGrid } from "../_components/FacilityGrid";
-import { FacilityGridSkeleton } from "../_components/FacilitySkeletons";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import Link from "next/link";
-import { prisma } from "@/server/lib/prisma";
-import { JsonLd } from "@/components/SEO/JsonLd";
 
 // Re-export shared discovery functions from lib/routing
 export { getDiscoveryMetadata, DiscoveryTemplate } from "@/lib/routing/discovery";
@@ -49,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  * 🌊 Legacy Page Entry (Triggers HTTP 301 Permanent Redirect)
  * This page is never rendered in production — proxy.ts handles the redirect at edge.
  */
-export default async function DiscoveryPage(_props: PageProps) {
+export default async function DiscoveryPage() {
   await connection();
   return <div />;
 }

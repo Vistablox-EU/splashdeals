@@ -172,7 +172,7 @@ export function CompactAmenitiesTable({
           duration: 1500,
         })
         router.refresh()
-      } catch (_err) {
+      } catch {
         toast.error("Auto-sync Failed", {
           description: "Failed to persist changes to the infrastructure grid.",
         })
@@ -214,7 +214,7 @@ export function CompactAmenitiesTable({
     }
   }
 
-  const handleValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, _id: string) => {
+  const handleValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault()
       e.currentTarget.blur()
@@ -243,7 +243,7 @@ export function CompactAmenitiesTable({
         } else {
           throw new Error("Failed to delete custom amenity")
         }
-      } catch (_err) {
+      } catch {
         toast.error("Deletion Rejected", {
           description: "This custom asset is still tied to operational dependencies.",
         })
@@ -306,7 +306,7 @@ export function CompactAmenitiesTable({
       } else {
         throw new Error("API rejection")
       }
-    } catch (_err) {
+    } catch {
       toast.error("Registration Failed", {
         description: "Verify name uniqueness and schema limits.",
       })
@@ -408,7 +408,7 @@ export function CompactAmenitiesTable({
                         value={item.value}
                         onChange={(e) => handleValueChange(item.id, e.target.value)}
                         onBlur={() => handleValueBlur(item.id)}
-                        onKeyDown={(e) => handleValueKeyDown(e, item.id)}
+                        onKeyDown={(e) => handleValueKeyDown(e)}
                         placeholder={item.type === "QUANTIFIABLE" ? "e.g. 5 slides" : "e.g. Wi-Fi speed, extra details"}
                         className="h-8 bg-background/40 border-border/50 text-xs text-foreground/90 focus-visible:ring-primary rounded-lg max-w-[180px]"
                         aria-label={`${item.name} value`}

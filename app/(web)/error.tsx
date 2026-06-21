@@ -16,6 +16,18 @@ export default function GlobalWebError({
   
   const [dict, setDict] = useState<Record<string, unknown> | null>(null)
 
+  // Safe dictionary accessor for deeply nested keys
+  const t = (...keys: string[]): string => {
+    if (!dict) return ''
+    let current: unknown = dict
+    for (const key of keys) {
+      if (current && typeof current === 'object')
+        current = (current as Record<string, unknown>)[key]
+      else return ''
+    }
+    return typeof current === 'string' ? current : ''
+  }
+
   useEffect(() => {
     console.error("Global Web Error:", error)
     let mounted = true
@@ -50,11 +62,15 @@ export default function GlobalWebError({
 
         <div className="space-y-4">
            <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase leading-none text-slate-100">
-             {dict.errors.title} <br />
-             <span className="text-primary">{dict.errors.highlight}</span>
+             {(dict as Record<string, unknown>)?.errors ? (
+                <>
+                  {t('errors', 'title')} <br />
+                  <span className="text-primary">{t('errors', 'highlight')}</span>
+                </>
+              ) : ''}
            </h1>
            <p className="text-muted-foreground text-lg leading-relaxed max-w-sm mx-auto">
-             {dict.errors.subtitle}
+             {t('errors', 'subtitle')}
            </p>
         </div>
 
@@ -64,14 +80,14 @@ export default function GlobalWebError({
              className="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-border font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all group"
            >
              <Icon name="refresh" className="text-[16px]" />
-             {dict.errors.try_again}
+             {t('errors', 'try_again')}
            </button>
            <Link 
              href="/"
              className="px-8 py-4 rounded-2xl bg-primary hover:bg-primary/90 text-background font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-2xl shadow-primary/10 transition-all"
            >
              <Icon name="home" className="text-[16px]" />
-             {dict.errors.back_home}
+             {t('errors', 'back_home')}
            </Link>
         </div>
       </Card>

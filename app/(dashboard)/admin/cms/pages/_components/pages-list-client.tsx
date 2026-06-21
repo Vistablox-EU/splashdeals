@@ -142,6 +142,7 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
     },
   ]
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: pages as unknown as PageRow[],
     columns,

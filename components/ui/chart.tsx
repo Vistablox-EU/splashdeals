@@ -263,6 +263,7 @@ function ChartLegendContent({
   nameKey,
 }: React.ComponentProps<"div"> & {
   hideIcon?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any[]
   nameKey?: string
   verticalAlign?: "bottom" | "top"

@@ -1,6 +1,6 @@
 import { FacilitySchemaInput } from "./types";
 
-export function buildVideoSchema(facility: FacilitySchemaInput, facilitySlug: string, heroMedia: any, videoThumbnail: string) {
+export function buildVideoSchema(facility: FacilitySchemaInput, facilitySlug: string, heroMedia: Record<string, unknown> | null, videoThumbnail: string) {
   if (heroMedia?.type !== "VIDEO") return null;
   
   // VideoObject requires `duration` (ISO 8601) for Google video rich results.

@@ -30,7 +30,13 @@ describe('pricing utilities', () => {
   });
 
   describe('resolveTicketsForDate', () => {
-    const mockTickets: any[] = [
+    const mockTickets: Array<{
+      id: string;
+      title: string;
+      isActive: boolean;
+      dayType: DayType;
+      timeSlot: TimeSlot;
+    }> = [
       {
         id: '1',
         title: 'Weekday Pass',
@@ -144,7 +150,7 @@ describe('pricing utilities', () => {
 
     it('safely handles string or decimal-like values', () => {
       const tickets = [
-        { isActive: true, price: '700.00' as any, originalPrice: '1000.00' as any }, // 30%
+        { isActive: true, price: '700.00' as unknown as number, originalPrice: '1000.00' as unknown as number }, // 30%
       ];
       expect(calculateMaxDiscount(tickets)).toBe(30);
     });

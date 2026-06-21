@@ -170,6 +170,7 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
             <Separator />
             <div className="space-y-2">
               <Label>Sadržaj</Label>
+              {/* eslint-disable-next-line react-hooks/incompatible-library */}
               <RichTextEditor content={watch("content") || ""} onChange={(html) => setValue("content", html)} placeholder="Počni da pišeš blog objavu..." />
             </div>
           </div>

@@ -44,7 +44,7 @@ export function ShareButton({ title, text }: ShareButtonProps) {
         setCopied(true);
         toast.success("Link kopiran u clipboard!");
         setTimeout(() => setCopied(false), 2000);
-      } catch (err) {
+      } catch {
         toast.error("Nije moguće kopirati link.");
       }
     }
