@@ -125,6 +125,7 @@ model Facility {
   payoutProfile     PayoutProfile?
   tickets           Ticket[]
   ticketGroups      TicketGroup[]
+  ticketCategories  TicketCategory[]
   revenue           Transaction[]
   closures          FacilityClosure[]
   staffAssignments  FacilityStaffAssignment[]
@@ -349,6 +350,82 @@ model TicketGroup {
   @@schema("partners")
 }
 
+/// Kategorija — "Ulaznice", "Sezonske Karte"
+model TicketCategory {
+  id           String   @id @default(uuid())
+  facilityId   String
+  title        String
+  titleSr      String?
+  slug         String?
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  facility Facility     @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  types    TicketProduct[]
+
+  @@unique([facilityId, slug])
+  @@index([facilityId])
+  @@schema("partners")
+}
+
+/// Tip — "Odrasli", "Deca", "Penzioneri" — shared metadata
+model TicketProduct {
+  id               String       @id @default(uuid())
+  categoryId       String
+  title            String
+  titleSr          String?
+  label            String?
+  labelSr          String?
+  description      String?
+  descriptionSr    String?
+  imageUrl         String?
+  slug             String?
+  displayOrder     Int          @default(0)
+  isActive         Boolean      @default(true)
+  requiresIdentity Boolean      @default(false)
+  requiresPhoto    Boolean      @default(false)
+  minPeople        Int          @default(1)
+  maxPeople        Int?
+  isSeasonPass     Boolean      @default(false)
+  validityType     ValidityType @default(FLEXIBLE_30_DAY)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  category TicketCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  prices   TicketPrice[]
+
+  @@index([categoryId, isActive])
+  @@schema("partners")
+}
+
+/// Cena — konkretna varijanta dayType × timeSlot × cena
+model TicketPrice {
+  id            String       @id @default(uuid())
+  ticketTypeId  String
+  label         String?
+  labelSr       String?
+  displayOrder  Int          @default(0)
+  isActive      Boolean      @default(true)
+  price         Decimal      @db.Decimal(10, 2)
+  originalPrice Decimal?     @db.Decimal(10, 2)
+  dayType       DayType?     @default(ALL)
+  timeSlot      TimeSlot?    @default(FULL_DAY)
+  validFrom     DateTime?
+  validTo       DateTime?
+  saleStart     DateTime?
+  saleEnd       DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  ticketType    TicketProduct    @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
+  issuedTickets IssuedTicket[]
+
+  @@index([ticketTypeId, isActive, dayType, timeSlot])
+  @@schema("partners")
+}
+
 model Transaction {
   id               String         @id @default(uuid())
   userId           String
@@ -358,6 +435,7 @@ model Transaction {
   currency         String         @default("RSD")
   status           String         @default("PENDING")
   receiptPdfUrl    String?
+  ticketDetails    Json?          // snapshot: [{ type, price, dayType, timeSlot }] at time of purchase
   createdAt        DateTime       @default(now())
   fulfillmentError Json?
   issuedTickets    IssuedTicket[]
@@ -395,6 +473,7 @@ model IssuedTicket {
   id             String       @id @default(uuid())
   qrHash         String       @unique
   ticketId       String
+  ticketPriceId  String?
   transactionId  String
   status         TicketStatus @default(ACTIVE)
   usageCount     Int          @default(0)
@@ -403,11 +482,12 @@ model IssuedTicket {
   holderName     String?
   holderPhotoUrl String?
 
-  ticket      Ticket      @relation(fields: [ticketId], references: [id], onDelete: Restrict)
-  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  ticket      Ticket        @relation(fields: [ticketId], references: [id], onDelete: Restrict)
+  ticketPrice TicketPrice?  @relation(fields: [ticketPriceId], references: [id])
+  transaction Transaction  @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
-  ticketGroupId String
-  ticketGroup   TicketGroup @relation(fields: [ticketGroupId], references: [id])
+  ticketGroupId String?
+  ticketGroup   TicketGroup? @relation(fields: [ticketGroupId], references: [id])
 
   @@schema("sales")
 }
