@@ -53,7 +53,7 @@ async function WebLayoutContent({
       {/* 🧭 Breadcrumb bar — always visible just below the top nav header */}
       <BreadcrumbBar />
 
-      <main className="flex-grow pt-[6.5rem] pb-16 sm:pb-0">
+      <main className="flex-grow pt-16 pb-16 sm:pb-0">
         <React.Suspense
           fallback={
             <div className="flex-1 flex items-center justify-center p-20 animate-pulse bg-muted" />
