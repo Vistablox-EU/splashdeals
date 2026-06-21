@@ -91,7 +91,16 @@ function getAvailableDates(dayType: string): DateOption[] {
 }
 
 export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: TicketPurchaseModalProps) {
-  const [quantity, setQuantity] = useState<number>(1);
+  // Lazy initializer: modal remounts via key prop, so ticket is current
+  const computeInitialQuantity = (tkt: typeof ticket) => {
+    if (tkt) {
+      const min = tkt.minPeople || 1;
+      const max = tkt.maxPeople ?? MAX_QUANTITY_PER_ITEM;
+      return Math.min(max, Math.max(min, 1));
+    }
+    return 1;
+  };
+  const [quantity, setQuantity] = useState<number>(() => computeInitialQuantity(ticket));
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
@@ -156,16 +165,6 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
     window.addEventListener('keydown', handleTabKey);
     return () => window.removeEventListener('keydown', handleTabKey);
   }, [isOpen]);
-
-  // Sync quantity with ticket's min/maxPeople when modal opens
-  useEffect(() => {
-    if (ticket) {
-      const min = ticket.minPeople || 1;
-      const max = ticket.maxPeople ?? MAX_QUANTITY_PER_ITEM;
-      setQuantity(Math.min(max, Math.max(min, 1)));
-      setSelectedDate("");
-    }
-  }, [ticket]);
 
   // Generate date options based on ticket configuration
   const availableDates = ticket ? getAvailableDates(ticket.dayType ?? "ALL") : [];
