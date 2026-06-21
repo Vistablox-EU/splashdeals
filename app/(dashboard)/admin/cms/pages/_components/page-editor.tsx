@@ -187,7 +187,7 @@ export function PageEditor({ page }: PageEditorProps) {
               <SheetContent side="right" className="w-[400px] sm:w-[480px] overflow-y-auto">
                 <SheetHeader><SheetTitle>SEO podešavanja</SheetTitle></SheetHeader>
                 <div className="mt-6">
-                  <SEOPanel control={form.control as never} />
+                  <SEOPanel />
                 </div>
               </SheetContent>
             </Sheet>

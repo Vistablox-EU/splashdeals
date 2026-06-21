@@ -10,6 +10,7 @@ import {
   type TicketGroupValues,
   groupTicketSchema,
   type TicketTierValues,
+  reorderSchema,
   slugSchema
 } from "@/server/lib/validations/ticket"
 import { validateFacilityAccess } from "@/server/lib/auth-guards"
@@ -393,7 +394,7 @@ export async function reorderTiersAction(groupId: string, ids: string[], facilit
     const validated = reorderSchema.parse({ groupId, ids })
     
     await prisma.$transaction(
-      validated.ids.map((id, index) =>
+      validated.ids.map((id: string, index: number) =>
         prisma.ticket.update({
           where: { id },
           data: { displayOrder: index },
