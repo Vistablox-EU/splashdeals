@@ -4,15 +4,13 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import type { Control } from "react-hook-form"
 import { useFormContext } from "react-hook-form"
 
 interface SEOPanelProps {
-  control: Control<any>
   previewUrl?: string
 }
 
-export function SEOPanel({ control, previewUrl }: SEOPanelProps) {
+export function SEOPanel({ previewUrl }: SEOPanelProps) {
   const { register, watch } = useFormContext()
   const title = watch("title")
   const metaTitle = watch("metaTitle")

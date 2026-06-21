@@ -202,7 +202,7 @@ export function FacilityProfileForm({
     }
     window.addEventListener("beforeunload", handlePreventLoss)
     return () => window.removeEventListener("beforeunload", handlePreventLoss)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   async function onSubmit(values: UpdateFacilityGovernanceValues) {

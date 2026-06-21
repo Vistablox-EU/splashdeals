@@ -52,9 +52,7 @@ export function validateDiscoverySlug(
     category: string, 
     slug: string, 
     marketplaceCities?: { city: { slug: string } }[] 
-  },
-  basePath: string = "/facilities"
-): { isCategory: boolean; isCity: boolean; canonicalPath: string } {
+  }): { isCategory: boolean; isCity: boolean; canonicalPath: string } {
   const canonicalCategory = facility.category.toLowerCase().replace(/\s+/g, '-');
   const citySlugs = facility.marketplaceCities?.map((mc) => mc.city.slug) || [];
   

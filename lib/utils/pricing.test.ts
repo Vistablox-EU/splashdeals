@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getDayType, resolveTicketsForDate, formatPrice, calculateMaxDiscount } from './pricing';
-import { DayType, TimeSlot, TicketStatus, ValidityType, TicketType } from '@prisma/client';
+import { DayType, TimeSlot } from '@prisma/client';
 
 describe('pricing utilities', () => {
   describe('getDayType', () => {

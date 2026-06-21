@@ -10,8 +10,6 @@ import {
   type TicketGroupValues,
   groupTicketSchema,
   type TicketTierValues,
-  reorderSchema,
-  type ReorderValues,
   slugSchema
 } from "@/server/lib/validations/ticket"
 import { validateFacilityAccess } from "@/server/lib/auth-guards"
@@ -304,7 +302,7 @@ export const upsertTicketGroupAction = withFacilityAccess(async (values: TicketG
         // Create associated tickets if present
         if (tickets && tickets.length > 0) {
           for (const ticket of tickets) {
-            const { id: _, label, ...ticketData } = ticket
+            const { label, ...ticketData } = ticket
             const titleValue = ticketData.title || label || "Standard"
             await tx.ticket.create({
               data: {

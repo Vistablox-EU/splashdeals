@@ -1,6 +1,5 @@
 import 'dotenv/config'
-import * as PrismaClientPkg from '@prisma/client'
-const { PrismaClient } = PrismaClientPkg as any;
+import { PrismaClient } from '@prisma/client'
 import type { Amenity, FacilityStatus, TicketType, ValidityType } from '@prisma/client'
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { betterAuth } from "better-auth";

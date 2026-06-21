@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Toggle } from "@/components/ui/toggle"
 import { Separator } from "@/components/ui/separator"
-import { createImageUploadPlugin, imageUploadKey } from "./image-upload-plugin"
+import { createImageUploadPlugin } from "./image-upload-plugin"
 
 interface RichTextEditorProps {
   content: string

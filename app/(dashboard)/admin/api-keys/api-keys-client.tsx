@@ -24,7 +24,7 @@ interface ApiKey {
 }
 
 export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
-  const [keys, setKeys] = useState<ApiKey[]>(initialKeys)
+  const [keys] = useState<ApiKey[]>(initialKeys)
   const [newKeyName, setNewKeyName] = useState("")
   const [generatedKey, setGeneratedKey] = useState<string | null>(null)
   const [hasCopied, setHasCopied] = useState(false)

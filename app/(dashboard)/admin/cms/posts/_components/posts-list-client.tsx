@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useTransition } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import {
@@ -26,13 +26,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
-import {
-  deleteBlogPostAction,
-  bulkUpdateBlogPostsAction,
-  bulkDeleteBlogPostsAction,
-} from "@/app/(server)/actions/cms"
+import { deleteBlogPostAction } from "@/app/(server)/actions/cms"
 
 const statusColors: Record<string, string> = {
   DRAFT: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",

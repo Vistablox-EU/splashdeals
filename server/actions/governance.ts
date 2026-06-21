@@ -2,8 +2,7 @@
 
 import { z } from "zod"
 import { prisma } from "@/server/lib/prisma"
-import { FacilityStatus } from "@prisma/client"
-import { revalidateAdminFacility, revalidateAdminFacilities } from "@/server/lib/revalidation"
+import { revalidateAdminFacility } from "@/server/lib/revalidation"
 import { 
   updateFacilityGovernanceSchema, 
   type UpdateFacilityGovernanceValues,
@@ -36,11 +35,6 @@ const contactSchema = z.object({
 const logoUrlSchema = z.object({
   facilityId: z.string(),
   logoUrl: z.string().url().nullable(),
-})
-
-const slugCheckSchema = z.object({
-  slug: z.string().min(2),
-  excludeFacilityId: z.string(),
 })
 
 export async function updateFacilityStatusAction(rawValues: UpdateFacilityStatusValues) {

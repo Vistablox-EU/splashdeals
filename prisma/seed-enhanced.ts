@@ -73,9 +73,7 @@ async function main() {
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
   const cities = await prisma.city.findMany();
-  const cityBySlug = Object.fromEntries(cities.map((c) => [c.slug, c]));
   const amenities = await prisma.amenity.findMany();
-  const amenityByName = Object.fromEntries(amenities.map((a) => [a.name, a]));
 
   console.log(`📦 Found ${cities.length} cities and ${amenities.length} amenities in DB.`);
 
