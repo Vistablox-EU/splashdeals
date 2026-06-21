@@ -6,9 +6,11 @@ import Image from "next/image";
 import type { FacilityMedia } from "@prisma/client";
 import { cn } from "@/lib/utils";
 
+import { Dict } from "@/lib/types";
+
 interface MediaGalleryProps {
   media: FacilityMedia[];
-  dict?: Record<string, any>;
+  dict?: Dict;
 }
 
 /**

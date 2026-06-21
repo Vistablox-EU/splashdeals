@@ -519,6 +519,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       "applicableCountry": "RS",
       "returnPolicyCategory": "https://schema.org/NoReturns"
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     "offers": allTiers.map((tier: any) => {
       const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
       
@@ -772,7 +773,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               )}
 
               <ShowcaseAmenities 
-                amenities={serialize(facility.amenities) as any} 
+                amenities={serialize(facility.amenities) as any /* eslint-disable-line @typescript-eslint/no-explicit-any */} 
                 dict={dict} 
               />
            </div>

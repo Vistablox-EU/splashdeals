@@ -76,6 +76,7 @@ describe('pricing utilities', () => {
 
     it('filters for weekday correctly', () => {
       const friday = new Date('2026-05-22');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const resolved = resolveTicketsForDate(mockTickets as any, friday);
       expect(resolved.map(t => t.id)).toContain('1');
       expect(resolved.map(t => t.id)).toContain('3');
@@ -85,6 +86,7 @@ describe('pricing utilities', () => {
 
     it('filters for weekend correctly', () => {
       const saturday = new Date('2026-05-23');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const resolved = resolveTicketsForDate(mockTickets as any, saturday);
       expect(resolved.map(t => t.id)).toContain('2');
       expect(resolved.map(t => t.id)).toContain('3');
@@ -93,6 +95,7 @@ describe('pricing utilities', () => {
 
     it('filters by time slot correctly', () => {
       const friday = new Date('2026-05-22');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const resolved = resolveTicketsForDate(mockTickets as any, friday, TimeSlot.AFTER_16H);
       expect(resolved.map(t => t.id)).toContain('4');
       // Full day tickets should also be compatible according to the logic

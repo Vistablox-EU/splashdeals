@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { useForm, useWatch, type SubmitHandler, type FieldErrors } from "react-hook-form"
+import { useForm, useWatch, type SubmitHandler, type FieldErrors, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Sheet,
@@ -50,7 +50,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
   const router = useRouter()
 
   const form = useForm<TicketFormValues>({
-    resolver: zodResolver(ticketSchema) as any,
+    resolver: zodResolver(ticketSchema) as unknown as Resolver<TicketFormValues>,
     defaultValues: {
       title: ticket?.titleSr || ticket?.title || "",
       type: ticket?.type || "ADULT",

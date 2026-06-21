@@ -75,7 +75,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
             loop 
             muted 
             playsInline 
-            {...({"fetchPriority":"high"} as any)}
+            {...{fetchPriority: "high" as const}}
             className="absolute inset-0 w-full h-full object-cover brightness-75 transition-all duration-700 pointer-events-none z-10"
             poster={heroMedia.thumbnailUrl || undefined}
           >

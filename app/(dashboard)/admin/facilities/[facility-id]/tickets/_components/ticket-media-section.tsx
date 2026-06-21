@@ -82,7 +82,7 @@ export function TicketMediaSection<T extends FieldValues>({
                     checked={field.value}
                     onCheckedChange={(checked) => {
                       field.onChange(checked)
-                      if (checked) setValue("requiresPhoto" as Path<T>, true as any)
+                      if (checked) setValue("requiresPhoto" as Path<T>, true as boolean)
                     }}
                     className="scale-90"
                   />

@@ -206,6 +206,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     });
 
     if (transaction && targetEmail) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await sendTicketConfirmationEmail(targetEmail, transaction as any, session.id).catch(err => {
         console.error("[FULFILLMENT] Email sending failed, tickets still created successfully:", err);
       });

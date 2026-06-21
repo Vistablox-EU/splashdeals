@@ -21,9 +21,11 @@ interface FacilityAmenity {
   amenity: Amenity
 }
 
+import { Dict } from "@/lib/types";
+
 interface ShowcaseAmenitiesProps {
   amenities: FacilityAmenity[]
-  dict: Record<string, any>
+  dict: Dict
 }
 
 /**
