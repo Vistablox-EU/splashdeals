@@ -188,3 +188,5 @@ data/seo/gsc-report-*.md
 
 # Docs (agent-generated)
 docs/
+.understand-anything/
+.codegraph/
