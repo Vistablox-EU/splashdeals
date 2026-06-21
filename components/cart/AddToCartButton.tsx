@@ -15,8 +15,10 @@ interface AddToCartButtonProps {
     validityType: string;
     requiresIdentity?: boolean;
     requiresPhoto?: boolean;
+    minPeople?: number;
+    maxPeople?: number | null;
     imageUrl?: string | null;
-    facility?: {
+    facility: {
       id: string;
       name: string;
       category: string;
@@ -36,9 +38,9 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
     
     addItem({
       ticketId: ticket.id,
-      facilityId: ticket.facility?.id,
-      facilityName: ticket.facility?.name,
-      category: ticket.facility?.category,
+      facilityId: ticket.facility.id,
+      facilityName: ticket.facility.name,
+      category: ticket.facility.category,
       quantity: 1,
       title: ticket.title,
       price: Number(ticket.price),
@@ -46,6 +48,8 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
       validityType: ticket.validityType,
       requiresIdentity: ticket.requiresIdentity,
       requiresPhoto: ticket.requiresPhoto,
+      minPeople: ticket.minPeople,
+      maxPeople: ticket.maxPeople,
       imageUrl: ticket.imageUrl,
     });
     setAdded(true);

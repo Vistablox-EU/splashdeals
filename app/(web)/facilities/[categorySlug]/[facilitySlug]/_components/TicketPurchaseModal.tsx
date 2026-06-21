@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useCart } from "@/hooks/use-cart";
+import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
 
@@ -15,8 +15,8 @@ interface TicketPurchaseModalProps {
     id: string;
     title: string;
     titleSr: string | null;
-    price: number | { toString: () => string };
-    originalPrice: number | null | { toString: () => string };
+    price: number;
+    originalPrice: number | null;
     dayType: string | null;
     timeSlot: string | null;
     minPeople: number;
@@ -95,7 +95,6 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -158,6 +157,16 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
     return () => window.removeEventListener('keydown', handleTabKey);
   }, [isOpen]);
 
+  // Sync quantity with ticket's min/maxPeople when modal opens
+  useEffect(() => {
+    if (ticket) {
+      const min = ticket.minPeople || 1;
+      const max = ticket.maxPeople ?? MAX_QUANTITY_PER_ITEM;
+      setQuantity(Math.min(max, Math.max(min, 1)));
+      setSelectedDate("");
+    }
+  }, [ticket]);
+
   // Generate date options based on ticket configuration
   const availableDates = ticket ? getAvailableDates(ticket.dayType ?? "ALL") : [];
 
@@ -179,7 +188,9 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(10);
     }
-    setQuantity(Math.max(1, q));
+    const min = ticket?.minPeople || 1;
+    const max = ticket?.maxPeople ?? MAX_QUANTITY_PER_ITEM;
+    setQuantity(Math.max(min, Math.min(max, q)));
   };
 
   const handleDateSelect = (dateStr: string) => {
@@ -189,12 +200,10 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
     setSelectedDate(dateStr);
   };
 
-  const handleCheckout = async () => {
-    setIsCheckingOut(true);
+  const handleCheckout = () => {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate([20, 100, 20]);
     }
-    await new Promise((resolve) => setTimeout(resolve, 600));
 
     addItem({
       ticketId: ticket.id,
@@ -208,15 +217,34 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
       requiresIdentity: ticket.requiresIdentity,
       requiresPhoto: ticket.requiresPhoto,
       validityType: ticket.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
+      minPeople: ticket.minPeople,
+      maxPeople: ticket.maxPeople,
       imageUrl: ticket.imageUrl,
     });
 
-    setIsCheckingOut(false);
     onClose();
     router.push("/cart");
   };
 
   const handleAddToCart = async () => {
+    // Add to cart FIRST — instant, synchronous
+    addItem({
+      ticketId: ticket.id,
+      facilityId: facility.id,
+      facilityName: facility.name,
+      category: facility.category,
+      quantity,
+      title: `${facility.name} - ${ticket.labelSr || ticket.label || ticket.titleSr || ticket.title}${activeDate ? ` (${activeDate})` : ''}`,
+      price,
+      currency: "RSD",
+      requiresIdentity: ticket.requiresIdentity,
+      requiresPhoto: ticket.requiresPhoto,
+      validityType: ticket.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
+      minPeople: ticket.minPeople,
+      maxPeople: ticket.maxPeople,
+      imageUrl: ticket.imageUrl,
+    });
+
     setIsAdding(true);
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate([15, 80, 15]);
@@ -227,22 +255,6 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
     setIsAdded(true);
 
     await new Promise((resolve) => setTimeout(resolve, 800));
-
-    addItem({
-      ticketId: ticket.id,
-      facilityId: facility.id,
-      facilityName: facility.name,
-      category: facility.category,
-      quantity,
-      title: `${facility.name} - ${ticket.labelSr || ticket.label || ticket.titleSr || ticket.title}${activeDate ? ` (${activeDate})` : ''}`,
-      price,
-      currency: "RSD",
-      requiresIdentity: ticket.requiresIdentity,
-      requiresPhoto: ticket.requiresPhoto,
-      validityType: ticket.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
-      imageUrl: ticket.imageUrl,
-    });
-
     setIsAdded(false);
     onClose();
     openCart();
@@ -255,7 +267,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
           {/* Backdrop Blur Overlay */}
           <div
             onClick={onClose}
-            className="absolute inset-0 bg-[#020617]/95 backdrop-blur-md pointer-events-auto animate-fade-in"
+            className="absolute inset-0 bg-background/95 backdrop-blur-md pointer-events-auto animate-fade-in"
           />
 
           {/* Modal Container */}
@@ -335,25 +347,31 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
               {availableDates.length > 0 && (
                 <div className="space-y-2.5 z-10">
                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Izaberite Datum Posete</span>
-                  <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
-                    {availableDates.map((d) => {
-                      const isSelected = activeDate === d.dateStr;
-                      return (
-                        <button
-                          key={d.dateStr}
-                          onClick={() => handleDateSelect(d.dateStr)}
-                          className={`flex-shrink-0 w-16 h-20 rounded-xl border flex flex-col items-center justify-center gap-1 snap-start transition-all duration-300 ${
-                            isSelected
-                              ? "bg-primary/10 border-primary/40 text-primary shadow-lg scale-102"
-                              : "bg-muted/20 border-border text-muted-foreground hover:text-foreground/80 hover:border-border hover:bg-muted/40"
-                          }`}
-                        >
-                          <span className="text-[8px] font-black uppercase tracking-wider">{d.dayName}</span>
-                          <span className="text-lg font-black tracking-tight">{d.dayNum}</span>
-                          <span className="text-[8px] font-black uppercase tracking-wider opacity-80">{d.monthName}</span>
-                        </button>
-                      );
-                    })}
+                  <div className="relative">
+                    {/* Left fade affordance */}
+                    <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none rounded-l-xl" />
+                    {/* Right fade affordance */}
+                    <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none rounded-r-xl" />
+                    <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
+                      {availableDates.map((d) => {
+                        const isSelected = activeDate === d.dateStr;
+                        return (
+                          <button
+                            key={d.dateStr}
+                            onClick={() => handleDateSelect(d.dateStr)}
+                            className={`flex-shrink-0 w-16 h-20 rounded-xl border flex flex-col items-center justify-center gap-1 snap-start transition-all duration-300 ${
+                              isSelected
+                                ? "bg-primary/10 border-primary/40 text-primary shadow-lg scale-102"
+                                : "bg-muted/20 border-border text-muted-foreground hover:text-foreground/80 hover:border-border hover:bg-muted/40"
+                            }`}
+                          >
+                            <span className="text-[8px] font-black uppercase tracking-wider">{d.dayName}</span>
+                            <span className="text-lg font-black tracking-tight">{d.dayNum}</span>
+                            <span className="text-[8px] font-black uppercase tracking-wider opacity-80">{d.monthName}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               )}
@@ -361,13 +379,13 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
               {/* Perforated Separator Row */}
               <div className="relative -mx-8 md:-mx-10 flex items-center justify-center my-2 select-none pointer-events-none">
                 {/* Left Notch cutout (semi-circle bulging in) */}
-                <div className="absolute left-0 w-3.5 h-7 bg-[#020617] rounded-r-full border-y border-r border-border -translate-x-px z-20 shadow-[inset_-3px_0_5px_rgba(0,0,0,0.8)]" />
+                <div className="absolute left-0 w-3.5 h-7 bg-background rounded-r-full border-y border-r border-border -translate-x-px z-20 shadow-[inset_-3px_0_5px_rgba(0,0,0,0.8)]" />
                 
                 {/* Dashed Line */}
                 <div className="w-full border-t border-dashed border-white/15" />
                 
                 {/* Right Notch cutout (semi-circle bulging in) */}
-                <div className="absolute right-0 w-3.5 h-7 bg-[#020617] rounded-l-full border-y border-l border-border translate-x-px z-20 shadow-[inset_3px_0_5px_rgba(0,0,0,0.8)]" />
+                <div className="absolute right-0 w-3.5 h-7 bg-background rounded-l-full border-y border-l border-border translate-x-px z-20 shadow-[inset_3px_0_5px_rgba(0,0,0,0.8)]" />
               </div>
 
               {/* Price & Quantity Panel */}
@@ -395,7 +413,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                     onClick={() => handleQuantityChange(quantity - 1)} 
                     className="w-9 h-9 flex items-center justify-center hover:bg-white/5 active:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-foreground active:scale-90"
                     aria-label="Smanji količinu"
-                    disabled={isAdding || isAdded || isCheckingOut}
+                    disabled={isAdding || isAdded}
                   >
                     <Icon name="remove" className="text-[14px]" />
                   </button>
@@ -404,7 +422,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                     onClick={() => handleQuantityChange(quantity + 1)} 
                     className="w-9 h-9 flex items-center justify-center hover:bg-white/5 active:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-foreground active:scale-90"
                     aria-label="Povećaj količinu"
-                    disabled={isAdding || isAdded || isCheckingOut}
+                    disabled={isAdding || isAdded}
                   >
                     <Icon name="add" className="text-[14px]" />
                   </button>
@@ -421,25 +439,18 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
               <div className="flex flex-col gap-3.5 z-10 w-full">
                 <Button 
                   onClick={handleCheckout} 
-                  disabled={isCheckingOut || isAdding || isAdded}
+                  disabled={isAdding || isAdded}
                   className="w-full h-14 text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-2 shadow-[0_4px_30px_rgba(6,182,212,0.25)] bg-primary text-black hover:bg-primary/90 rounded-full"
                 >
-                  {isCheckingOut ? (
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                  ) : (
-                    <>
-                      <span>Kupi Odmah (1-Klik)</span>
-                      <Icon name="bolt" className="text-[16px] fill-current animate-pulse" />
-                    </>
-                  )}
+                  <>
+                    <span>Kupi Odmah (1-Klik)</span>
+                    <Icon name="bolt" className="text-[16px] fill-current animate-pulse" />
+                  </>
                 </Button>
 
                 <button 
                   onClick={handleAddToCart} 
-                  disabled={isAdding || isAdded || isCheckingOut}
+                  disabled={isAdding || isAdded}
                   className={`w-full h-12 rounded-2xl border flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
                     isAdded
                       ? "border-emerald-500/30 bg-emerald-950/20 text-emerald-400"

@@ -40,6 +40,8 @@ export interface SerializedTicket {
   descriptionSr: string | null;
   requiresIdentity: boolean;
   requiresPhoto: boolean;
+  minPeople: number;
+  maxPeople: number | null;
   imageUrl?: string | null;
 }
 
@@ -320,11 +322,13 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                             facilityName,
                             category,
                             quantity: getQuantity(t.id),
-                            title: t.titleSr || t.title,
+                            title: `${facilityName} - ${t.titleSr || t.title}`,
                             price: t.price,
                             currency: t.currency,
                             requiresIdentity: t.requiresIdentity,
                             requiresPhoto: t.requiresPhoto,
+                            minPeople: t.minPeople,
+                            maxPeople: t.maxPeople,
                             validityType: t.validityType,
                             imageUrl: t.imageUrl,
                           });

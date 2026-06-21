@@ -12,7 +12,12 @@ import { toast } from "sonner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function CartClient({ dict }: {  dict: Record<string, any> }) {
-  const { items, updateQuantity, removeItem, getTotalPrice, clearCart, clearStaleCart } = useCart();
+  const items = useCart((s) => s.items);
+  const updateQuantity = useCart((s) => s.updateQuantity);
+  const removeItem = useCart((s) => s.removeItem);
+  const getTotalPrice = useCart((s) => s.getTotalPrice);
+  const clearCart = useCart((s) => s.clearCart);
+  const clearStaleCart = useCart((s) => s.clearStaleCart);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const [showIdentityDialog, setShowIdentityDialog] = React.useState(false);
@@ -54,6 +59,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
         body: JSON.stringify({ 
           items: items.map(i => ({
             ticketTierId: i.ticketId,
+            facilityId: i.facilityId,
             quantity: i.quantity
           })),
           holderName,
@@ -71,6 +77,8 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
         // 🌊 Clear cart immediately so it's empty when they return
         clearCart();
         window.location.href = data.url;
+      } else {
+        throw new Error(data.error || "Checkout endpoint returned no redirect URL");
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong.";
@@ -156,7 +164,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                        {/* Quantity Controls */}
                        <div className="flex items-center gap-6 bg-muted/50 p-2 rounded-2xl border border-border">
                           <button 
-                            disabled={isCheckingOut || item.quantity <= 1}
+                            disabled={isCheckingOut || item.quantity <= (item.minPeople || 1)}
                             onClick={() => {
                               if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
                               updateQuantity(item.id, item.quantity - 1);
@@ -167,7 +175,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                           </button>
                           <span className="font-black text-xl text-foreground w-6 text-center">{item.quantity}</span>
                           <button 
-                            disabled={isCheckingOut || item.quantity >= MAX_QUANTITY_PER_ITEM}
+                            disabled={isCheckingOut || item.quantity >= Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)}
                             onClick={() => {
                               if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
                               updateQuantity(item.id, item.quantity + 1);

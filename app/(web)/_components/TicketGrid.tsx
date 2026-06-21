@@ -158,18 +158,18 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                   
                   <AddToCartButton ticket={{
                     id: ticket.id,
-                    title: ticket.title,
+                    title: `${ticket.facility.name} - ${ticket.titleSr || ticket.title}`,
                     price: ticket.price,
                     currency: ticket.currency,
                     validityType: ticket.validityType,
                     requiresIdentity: ticket.requiresIdentity,
                     requiresPhoto: ticket.requiresPhoto,
                     imageUrl: cardImage,
-                    facility: ticket.facility ? {
-                      id: ticket.facility.id,
-                      name: ticket.facility.name,
-                      category: ticket.facility.category,
-                    } : undefined,
+                    facility: {
+                      id: ticket.facility!.id,
+                      name: ticket.facility!.name,
+                      category: ticket.facility!.category,
+                    },
                   }} />
                 </div>
               </div>

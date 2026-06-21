@@ -11,8 +11,12 @@ import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
 
 export const CartDrawer = () => {
-  const { isCartOpen, closeCart } = useUIState();
-  const { items, removeItem, updateQuantity, getTotalPrice } = useCart();
+  const isCartOpen = useUIState((s) => s.isCartOpen);
+  const closeCart = useUIState((s) => s.closeCart);
+  const items = useCart((s) => s.items);
+  const removeItem = useCart((s) => s.removeItem);
+  const updateQuantity = useCart((s) => s.updateQuantity);
+  const getTotalPrice = useCart((s) => s.getTotalPrice);
   const totalPrice = getTotalPrice();
   const [isMounted, setIsMounted] = React.useState(false);
   const [dict, setDict] = React.useState<Dict | null>(null);
@@ -22,8 +26,11 @@ export const CartDrawer = () => {
   };
 
   React.useEffect(() => {
-    setTimeout(() => setIsMounted(true));
+    const timer = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
     getClientDictionary().then(setDict);
+    return () => cancelAnimationFrame(timer);
   }, []);
 
   if (!isMounted) return null;
@@ -89,7 +96,7 @@ export const CartDrawer = () => {
                         <div className="flex items-center gap-4 mt-4">
                             <div className="flex items-center bg-navy-deep/50 rounded-full border border-white/5 p-1">
                              <button 
-                                disabled={item.quantity <= 1}
+                                disabled={item.quantity <= (item.minPeople || 1)}
                                 onClick={() => {
                                   if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
                                   updateQuantity(item.id, item.quantity - 1);
@@ -100,7 +107,7 @@ export const CartDrawer = () => {
                              </button>
                              <span className="w-8 text-center text-xs font-black text-white">{item.quantity}</span>
                              <button 
-                                disabled={item.quantity >= MAX_QUANTITY_PER_ITEM}
+                                disabled={item.quantity >= Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)}
                                 onClick={() => {
                                   if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
                                   updateQuantity(item.id, item.quantity + 1);
@@ -117,7 +124,7 @@ export const CartDrawer = () => {
                               }}
                               className="text-[10px] font-black uppercase text-red-400/50 hover:text-red-400 transition-colors tracking-widest"
                             >
-                              {(dict as Record<string, Record<string, string>>)?.cart?.remove ?? "Ukloni"}
+                              {dict?.cart?.remove ?? "Ukloni"}
                             </button>
                         </div>
                       </div>

@@ -15,7 +15,9 @@ export interface CartItem {
   requiresIdentity?: boolean;
   requiresPhoto?: boolean;
   imageUrl?: string | null;
-  updatedAt: number; // ISO timestamp for conflict resolution
+  minPeople?: number;
+  maxPeople?: number | null;
+  updatedAt: number; // Unix ms (Date.now()) for conflict resolution
 }
 
 interface CartStore {
