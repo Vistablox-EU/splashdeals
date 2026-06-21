@@ -173,8 +173,11 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
   // Derive ticket data from new hierarchy (ticketCategories → types → prices)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tickets = (facility.ticketCategories || []).flatMap((cat: any) =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (cat.types || []).flatMap((prod: any) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (prod.prices || []).filter((p: any) => p.isActive)
     )
   );
@@ -344,8 +347,11 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
   // Find all active prices across all categories/products
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const allPrices = (facility.ticketCategories || []).flatMap((cat: any) =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (cat.types || []).flatMap((prod: any) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (prod.prices || []).filter((p: any) => p.isActive).map((p: any) => ({
         ...p,
         catTitle: cat.title,
@@ -400,6 +406,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   // Build groups from the new hierarchy — each category becomes a group,
   // each product becomes a tier (modal handles price selection)
   if (facility.ticketCategories && facility.ticketCategories.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mappedGroups = facility.ticketCategories.map((cat: any) => ({
       id: cat.id,
       title: cat.title,
@@ -407,6 +414,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       description: null,
       descriptionSr: null,
       slug: cat.slug || cat.title.toLowerCase().replace(/\\s+/g, "-"),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tiers: (cat.types || []).filter((prod: any) => prod.isActive).map((prod: any) => ({
         id: prod.id,
         title: prod.title,
@@ -440,6 +448,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
       descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
       slug: "standardne-ponude",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tiers: allPrices.map((p: any) => ({
         id: p.id,
         title: p.prodTitle,

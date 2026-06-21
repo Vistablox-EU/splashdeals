@@ -1,5 +1,6 @@
 import { prisma } from "@/server/lib/prisma"
 import { revalidatePath } from "next/cache"
+import type { ValidityType, DayType, TimeSlot } from "@prisma/client"
 
 // ─── Types ──────────────────────────────────────────
 
@@ -167,7 +168,7 @@ export async function createProduct(
       minPeople: data.minPeople ?? 1,
       maxPeople: data.maxPeople ?? null,
       isSeasonPass: data.isSeasonPass ?? false,
-      validityType: (data.validityType as any) ?? "FLEXIBLE_30_DAY",
+      validityType: data.validityType as ValidityType ?? "FLEXIBLE_30_DAY",
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   })
@@ -224,8 +225,8 @@ export async function createPrice(
       originalPrice: data.originalPrice ?? null,
       label: data.label || null,
       labelSr: data.labelSr || null,
-      dayType: (data.dayType as any) ?? "ALL",
-      timeSlot: (data.timeSlot as any) ?? "FULL_DAY",
+      dayType: data.dayType as DayType ?? "ALL",
+      timeSlot: data.timeSlot as TimeSlot ?? "FULL_DAY",
       validFrom: data.validFrom ?? null,
       validTo: data.validTo ?? null,
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
@@ -254,8 +255,8 @@ export async function updatePrice(
       ...(data.originalPrice !== undefined ? { originalPrice: data.originalPrice } : {}),
       ...(data.label !== undefined ? { label: data.label } : {}),
       ...(data.labelSr !== undefined ? { labelSr: data.labelSr } : {}),
-      ...(data.dayType !== undefined ? { dayType: data.dayType as any } : {}),
-      ...(data.timeSlot !== undefined ? { timeSlot: data.timeSlot as any } : {}),
+      ...(data.dayType !== undefined ? { dayType: data.dayType as DayType } : {}),
+      ...(data.timeSlot !== undefined ? { timeSlot: data.timeSlot as TimeSlot } : {}),
       ...(data.isActive !== undefined ? { isActive: data.isActive } : {}),
     },
   })

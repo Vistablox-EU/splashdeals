@@ -19,14 +19,20 @@ interface FacilityGridProps {
  * Asynchronous data provider for marketplace discovery with dynamic filtering.
  * Applies multi-dimensional filters and sorting directly in the discovery engine.
  */
-export async function FacilityGrid({ dict,
-  fromLabel, 
+interface FacilityWithMinPrice {
+  minPrice?: number | null;
+  [key: string]: unknown;
+}
+
+export async function FacilityGrid({
+  dict,
+  fromLabel,
   category,
   citySlug,
   minPrice,
   maxPrice,
   sort = "newest",
-  noFacilitiesLabel 
+  noFacilitiesLabel
 }: FacilityGridProps) {
   
   // 1. Build Query
@@ -69,8 +75,8 @@ export async function FacilityGrid({ dict,
   
   if (sort === 'price_asc' || sort === 'price_desc') {
     processedFacilities.sort((a, b) => {
-      const priceA = (a as any).minPrice ?? Infinity;
-      const priceB = (b as any).minPrice ?? Infinity;
+      const priceA = (a as FacilityWithMinPrice).minPrice ?? Infinity;
+      const priceB = (b as FacilityWithMinPrice).minPrice ?? Infinity;
 
       return sort === 'price_asc' ? priceA - priceB : priceB - priceA;
     });
@@ -97,10 +103,11 @@ export async function FacilityGrid({ dict,
   }
 
   // 3. Serialize Prisma Decimal → number for client component props
-  const serializedFacilities = processedFacilities.map((f: any) => ({
+  const serializedFacilities = processedFacilities.map((f) => ({
     ...f,
     tickets: [],
-    minPrice: f.minPrice ? Number(f.minPrice) : null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    minPrice: (f as any).minPrice ? Number((f as any).minPrice) : null,
   }));
 
   return (

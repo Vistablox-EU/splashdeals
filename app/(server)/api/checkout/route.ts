@@ -98,7 +98,7 @@ export async function POST(request: Request) {
 
       const facilityName = facility.name;
       const productName = `${facilityName} - ${ticketType.title}`;
-      const labelSuffix = (ticketPrice as any).label ? ` (${(ticketPrice as any).label})` : "";
+      const labelSuffix = ticketPrice.label ? ` (${ticketPrice.label})` : "";
       const productDescription = `${ticketType.title}${labelSuffix}`;
 
       lineItems.push({
