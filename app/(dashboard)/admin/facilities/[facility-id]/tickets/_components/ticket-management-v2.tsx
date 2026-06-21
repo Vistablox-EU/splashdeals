@@ -385,7 +385,7 @@ function PriceCard({
     })
     // Reload
     const { getTicketHierarchy } = await import("../_lib/ticket-admin-actions")
-    const fresh = await getTicketHierarchy(facilityId)
+    await getTicketHierarchy(facilityId)
     // Find and update
     setEditing(false)
   }

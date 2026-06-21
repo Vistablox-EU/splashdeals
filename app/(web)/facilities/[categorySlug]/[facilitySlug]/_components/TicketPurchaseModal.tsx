@@ -177,8 +177,6 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   const activeProduct = activeCategory?.products.find((p) => p.id === selectedProduct);
   const activePrice = activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
   const showCategoryPicker = categories.length > 1;
-  const facilityName = facility?.name || activeProduct?.title || "";
-  const facilityId = facility?.id || "";
 
   const handleAddToCart = async () => {
     if (!activePrice || !activeProduct || !facility) return;
