@@ -4,7 +4,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/Icon"
 import { cn } from "@/lib/utils"
-import { type SerializedCategory, createCategory, createProduct, createPrice, deleteCategory, deleteProduct, deletePrice } from "../_lib/ticket-admin-actions"
+import type { SerializedCategory } from "../_lib/ticket-admin-actions"
 
 interface Props {
   facilityId: string
@@ -40,6 +40,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleAddCategory = async () => {
     if (!newCatTitle.trim()) return
+    const { createCategory } = await import("../_lib/ticket-admin-actions")
     const cat = await createCategory(facilityId, newCatTitle)
     setCategories((prev) => [
       ...prev,
@@ -60,6 +61,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleAddProduct = async () => {
     if (!selectedCategoryId || !newProdTitle.trim()) return
+    const { createProduct } = await import("../_lib/ticket-admin-actions")
     const prod = await createProduct(selectedCategoryId, { title: newProdTitle })
     setCategories((prev) =>
       prev.map((c) =>
@@ -96,6 +98,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   }
 
   const handleDeleteCategory = async (id: string) => {
+    const { deleteCategory } = await import("../_lib/ticket-admin-actions")
     await deleteCategory(id)
     setCategories((prev) => prev.filter((c) => c.id !== id))
     if (selectedCategoryId === id) {
@@ -105,6 +108,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   }
 
   const handleDeleteProduct = async (id: string) => {
+    const { deleteProduct } = await import("../_lib/ticket-admin-actions")
     await deleteProduct(id)
     setCategories((prev) =>
       prev.map((c) => ({
@@ -116,6 +120,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   }
 
   const handleAddPrice = async (productId: string) => {
+    const { createPrice } = await import("../_lib/ticket-admin-actions")
     await createPrice(productId, { price: 0 })
     // Refresh categories to get the new price
     const { getTicketHierarchy } = await import("../_lib/ticket-admin-actions")
@@ -472,7 +477,7 @@ function PriceCard({
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-all">
                 <Icon name="edit" className="text-[12px]" />
               </button>
-              <button onClick={async () => { await deletePrice(price.id); onDeleted() }}
+              <button onClick={async () => { const { deletePrice } = await import("../_lib/ticket-admin-actions"); await deletePrice(price.id); onDeleted() }}
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all">
                 <Icon name="delete" className="text-[12px]" />
               </button>

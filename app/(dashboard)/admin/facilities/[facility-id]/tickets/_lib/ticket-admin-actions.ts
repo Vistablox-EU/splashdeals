@@ -1,3 +1,4 @@
+"use server"
 import { prisma } from "@/server/lib/prisma"
 import { revalidatePath } from "next/cache"
 import type { ValidityType, DayType, TimeSlot } from "@prisma/client"
