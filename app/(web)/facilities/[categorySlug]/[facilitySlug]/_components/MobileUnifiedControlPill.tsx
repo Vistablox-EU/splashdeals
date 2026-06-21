@@ -56,37 +56,6 @@ const WMO_DESCRIPTIONS: Record<number, string> = {
   99: "Oluja sa gradom",
 };
 
-const WMO_MOOD: Record<number, string> = {
-  0: "Kupanje idealno",
-  1: "Kupanje idealno",
-  2: "Dobro za kupanje",
-  3: "Dobro za kupanje",
-  45: "Vidljivost smanjena",
-  48: "Vidljivost smanjena",
-  51: "Moguća kiša",
-  53: "Moguća kiša",
-  55: "Ponesite kišobran",
-  56: "Pazite na poledicu",
-  57: "Pazite na poledicu",
-  61: "Ponesite kišobran",
-  63: "Kišovito",
-  65: "Jaka kiša",
-  66: "Ledena kiša",
-  67: "Ledena kiša",
-  71: "Sneg",
-  73: "Sneg",
-  75: "Jak sneg",
-  77: "Snežna zrna",
-  80: "Mogući pljuskovi",
-  81: "Pljuskovi",
-  82: "Jaki pljuskovi",
-  85: "Snežni pljuskovi",
-  86: "Snežni pljuskovi",
-  95: "Oluja",
-  96: "Oluja sa gradom",
-  99: "Oluja sa gradom",
-};
-
 export function MobileUnifiedControlPill({
   weather,
   dailyForecast,
@@ -191,7 +160,6 @@ export function MobileUnifiedControlPill({
   };
 
   const weatherDescription = weather ? WMO_DESCRIPTIONS[weather.weathercode] ?? "" : "";
-  const weatherMood = weather ? WMO_MOOD[weather.weathercode] ?? "" : "";
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -212,7 +180,7 @@ export function MobileUnifiedControlPill({
                   {Math.round(weather.temperature)}°C
                 </span>
                 <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-wider leading-none">
-                  {weatherMood}
+                  {weatherDescription}
                 </span>
               </div>
               <Icon
