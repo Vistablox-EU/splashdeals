@@ -58,8 +58,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           items: items.map(i => ({
-            ticketTierId: i.ticketId,
-            facilityId: i.facilityId,
+            ticketPriceId: i.ticketId,
             quantity: i.quantity
           })),
           holderName,

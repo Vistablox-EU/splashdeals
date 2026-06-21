@@ -6,13 +6,17 @@ import { generateIdempotencyKey, withStripeRetry } from "@/server/lib/stripe-uti
 
 const checkoutSchema = z.object({
   items: z.array(z.object({
-    ticketTierId: z.string().uuid(),
+    ticketPriceId: z.string().uuid().optional(),
+    ticketTierId: z.string().uuid().optional(),
     quantity: z.number().int().positive().max(50),
   })).min(1),
   email: z.string().email().optional().nullable(),
   holderName: z.string().optional().nullable(),
   holderPhotoUrl: z.string().url().optional().nullable(),
-});
+}).refine(
+  (data) => data.items.every((item) => item.ticketPriceId || item.ticketTierId),
+  { message: "Each item must have either ticketPriceId or ticketTierId" }
+);
 
 export async function POST(request: Request) {
   try {
@@ -48,32 +52,76 @@ export async function POST(request: Request) {
     const { items, email, holderName, holderPhotoUrl } = parsed.data;
 
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-    const orderDetails: { ticketTierId: string; quantity: number; facilityId: string }[] = [];
+    const ticketDetails: { 
+      ticketPriceId: string; 
+      quantity: number; 
+      facilityId: string;
+      ticketTypeTitle: string;
+      priceLabel: string | null;
+      unitPrice: number;
+      dayType: string | null;
+      timeSlot: string | null;
+    }[] = [];
 
-    // 1. Verify and Process Each Item
+    // 1. Verify and Process Each Item — supports both new (ticketPriceId) and legacy (ticketTierId)
     for (const item of items) {
-      const ticket = await prisma.ticket.findUnique({
-        where: { id: item.ticketTierId },
-        include: { 
-          group: {
-            include: { facility: true }
-          },
-          facility: true,
-        },
-      });
+      let ticketPrice, ticketType, facility;
 
-      if (!ticket || !ticket.isActive) {
-        return NextResponse.json(
-          { error: `Karta ${item.ticketTierId} nije dostupna.` },
-          { 
-            status: 404,
-            headers: { 'Cache-Control': 'no-store, must-revalidate' }
+      if (item.ticketPriceId) {
+        // New hierarchy
+        const tp = await prisma.ticketPrice.findUnique({
+          where: { id: item.ticketPriceId },
+          include: {
+            ticketType: {
+              include: {
+                category: {
+                  include: { facility: true }
+                }
+              }
+            }
           }
+        });
+        if (!tp || !tp.isActive) {
+          return NextResponse.json(
+            { error: `Karta nije dostupna.` },
+            { status: 404, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
+          );
+        }
+        ticketPrice = tp;
+        ticketType = tp.ticketType;
+        facility = ticketType.category.facility;
+      } else if (item.ticketTierId) {
+        // Legacy: old Ticket model
+        const oldTicket = await prisma.ticket.findUnique({
+          where: { id: item.ticketTierId },
+          include: { facility: true }
+        });
+        if (!oldTicket || !oldTicket.isActive) {
+          return NextResponse.json(
+            { error: `Karta nije dostupna.` },
+            { status: 404, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
+          );
+        }
+        ticketPrice = { id: oldTicket.id, price: oldTicket.price, label: null, dayType: oldTicket.dayType, timeSlot: oldTicket.timeSlot };
+        ticketType = { title: oldTicket.title, requiresIdentity: oldTicket.requiresIdentity, requiresPhoto: oldTicket.requiresPhoto };
+        facility = oldTicket.facility;
+      } else {
+        return NextResponse.json(
+          { error: `Nepoznata karta.` },
+          { status: 400, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
+        );
+      }
+
+      // Validate required fields are present
+      if (!ticketType || !facility || !ticketPrice) {
+        return NextResponse.json(
+          { error: `Greška pri obradi karte.` },
+          { status: 500, headers: { 'Cache-Control': 'no-store, must-revalidate' } }
         );
       }
 
       // 2. Validate Identity for Personalized Passes
-      if ((ticket.requiresIdentity && !holderName) || (ticket.requiresPhoto && !holderPhotoUrl)) {
+      if ((ticketType.requiresIdentity && !holderName) || (ticketType.requiresPhoto && !holderPhotoUrl)) {
         return NextResponse.json(
           { error: "Personalizovane karte zahtevaju identifikaciju nosioca." },
           { 
@@ -83,11 +131,10 @@ export async function POST(request: Request) {
         );
       }
 
-      const facilityName = ticket.group?.facility.name || ticket.facility.name;
-      const productName = ticket.group
-        ? `${facilityName} - ${ticket.group.title}`
-        : `${facilityName} - ${ticket.title}`;
-      const productDescription = ticket.group ? `Tip: ${ticket.title}` : `Karta: ${ticket.title}`;
+      const facilityName = facility.name;
+      const productName = `${facilityName} - ${ticketType.title}`;
+      const labelSuffix = (ticketPrice as any).label ? ` (${(ticketPrice as any).label})` : "";
+      const productDescription = `${ticketType.title}${labelSuffix}`;
 
       lineItems.push({
         price_data: {
@@ -96,19 +143,24 @@ export async function POST(request: Request) {
             name: productName,
             description: productDescription,
           },
-          unit_amount: Math.round(Number(ticket.price) * 100),
+          unit_amount: Math.round(Number(ticketPrice.price) * 100),
         },
         quantity: item.quantity,
       });
 
-      orderDetails.push({
-        ticketTierId: item.ticketTierId,
+      ticketDetails.push({
+        ticketPriceId: (item.ticketPriceId || item.ticketTierId) as string,
         quantity: item.quantity,
-        facilityId: ticket.group?.facilityId || ticket.facilityId,
+        facilityId: facility.id,
+        ticketTypeTitle: ticketType.title,
+        priceLabel: ticketPrice.label,
+        unitPrice: Number(ticketPrice.price),
+        dayType: ticketPrice.dayType,
+        timeSlot: ticketPrice.timeSlot,
       });
     }
 
-    const idempotencyKey = generateIdempotencyKey({ body, userId: null }); // No auth context yet
+    const idempotencyKey = generateIdempotencyKey({ body, userId: null });
 
     // 3. Create Checkout Session with Retry and Idempotency
     const session = await withStripeRetry(async () => {
@@ -120,7 +172,7 @@ export async function POST(request: Request) {
         success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/facilities`, 
         metadata: {
-          orderDetails: JSON.stringify(orderDetails),
+          orderDetails: JSON.stringify(ticketDetails),
           holderName: holderName || "",
           holderPhotoUrl: holderPhotoUrl || "",
           fulfillmentEmail: email || "",
@@ -128,9 +180,7 @@ export async function POST(request: Request) {
       }, { idempotencyKey });
     });
 
-    // 4. Create PENDING Transaction in our DB
-    // We assume the first facility in the list is the primary facility for the transaction record
-    // Resolve user from email if available
+    // 4. Create PENDING Transaction with ticketDetails snapshot
     let checkoutUserId: string | null = null;
     if (email) {
       const user = await prisma.user.upsert({
@@ -143,12 +193,20 @@ export async function POST(request: Request) {
 
     await prisma.transaction.create({
       data: {
-        facilityId: orderDetails[0].facilityId,
+        facilityId: ticketDetails[0].facilityId,
         stripeSession: session.id,
         totalAmount: (session.amount_total || 0) / 100,
         currency: "RSD",
         status: "PENDING",
         userId: checkoutUserId || "",
+        ticketDetails: JSON.stringify(ticketDetails.map((td) => ({
+          type: td.ticketTypeTitle,
+          price: td.unitPrice,
+          label: td.priceLabel,
+          dayType: td.dayType,
+          timeSlot: td.timeSlot,
+          quantity: td.quantity,
+        }))),
       },
     });
 

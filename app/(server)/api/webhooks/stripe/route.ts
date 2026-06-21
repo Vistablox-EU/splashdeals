@@ -91,7 +91,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
   }
 
   try {
-    const orderDetails: { ticketTierId: string; quantity: number; facilityId: string }[] = JSON.parse(metadata.orderDetails);
+    const orderDetails: { ticketPriceId: string; quantity: number; facilityId: string; ticketTypeTitle: string; priceLabel: string | null; unitPrice: number; dayType: string | null; timeSlot: string | null }[] = JSON.parse(metadata.orderDetails);
     const { fulfillmentEmail, holderName, holderPhotoUrl } = metadata;
     const targetEmail = fulfillmentEmail || session.customer_details?.email;
     
@@ -108,8 +108,6 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
 
     // 2. Atomic Fulfillment Transaction
     const transaction = await prisma.$transaction(async (tx) => {
-      // 🛡️ Atomic check-and-update to prevent double-minting
-      // We use 'update' with a 'where' clause that includes the status to act as a lock
       const transaction = await tx.transaction.upsert({
         where: { stripeSession: session.id },
         update: {
@@ -126,9 +124,6 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
         }
       });
 
-      // If it was already SUCCESS, abort to prevent duplicate tickets
-      // (Though upsert handles creation, if it already existed as SUCCESS, 
-      // we need to be careful. In this case, we'll check if tickets already exist).
       const existingTickets = await tx.issuedTicket.count({
         where: { transactionId: transaction.id }
       });
@@ -140,22 +135,22 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
       const partialFailures: { ticketId: string; error: string }[] = [];
 
       for (const item of orderDetails) {
-        const ticket = await tx.ticket.findUnique({
-          where: { id: item.ticketTierId },
-          include: { group: true, facility: true }
+        const ticketPrice = await tx.ticketPrice.findUnique({
+          where: { id: item.ticketPriceId },
+          include: { ticketType: true }
         });
 
-        // 🔴 Partial Failure Handling
-        if (!ticket) {
-          console.error(`[FULFILLMENT WARNING] Ticket ${item.ticketTierId} missing!`);
-          partialFailures.push({ ticketId: item.ticketTierId, error: "TICKET_MISSING" });
+        if (!ticketPrice) {
+          console.error(`[FULFILLMENT WARNING] TicketPrice ${item.ticketPriceId} missing!`);
+          partialFailures.push({ ticketId: item.ticketPriceId, error: "TICKET_PRICE_MISSING" });
           
           for (let i = 0; i < item.quantity; i++) {
             await tx.issuedTicket.create({
               data: {
                 qrHash: crypto.randomUUID().replace(/-/g, ""),
-                ticketId: item.ticketTierId,
-                ticketGroupId: item.ticketTierId,
+                ticketPriceId: item.ticketPriceId,
+                ticketId: item.ticketPriceId,
+                ticketGroupId: item.facilityId,
                 transactionId: transaction.id,
                 expiryDate: new Date(),
                 status: TicketStatus.HOLD,
@@ -167,19 +162,17 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
           continue;
         }
 
-        // Normal fulfillment
+        const isSeason = ticketPrice.ticketType.validityType === "SUMMER_SEASON";
         const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + 30); // Default flex logic
-        
-        // Season pass check: we can look at validityType or keep flexible defaults
-        const isSeason = ticket.validityType === "SUMMER_SEASON";
+        expiryDate.setDate(expiryDate.getDate() + 30);
 
         const tickets = [];
         for (let i = 0; i < item.quantity; i++) {
           tickets.push({
             qrHash: crypto.randomUUID().replace(/-/g, ""),
-            ticketId: ticket.id,
-            ticketGroupId: ticket.groupId || ticket.id,
+            ticketPriceId: ticketPrice.id,
+            ticketId: ticketPrice.id,
+            ticketGroupId: item.facilityId,
             transactionId: transaction.id,
             expiryDate: isSeason 
               ? getNextSubscriptionExpiry(new Date().getFullYear(), new Date()) 
@@ -194,7 +187,6 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
         await tx.issuedTicket.createMany({ data: tickets });
       }
 
-      // Record partial failures if any
       if (partialFailures.length > 0) {
         return await tx.transaction.update({
           where: { id: transaction.id },
@@ -215,8 +207,6 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     console.log(`[FULFILLMENT SUCCESS] Processed session ${session.id}`);
   } catch (error) {
     console.error(`[FULFILLMENT CRITICAL ERROR] session ${session.id}:`, error);
-    // In a real prod environment, we would send this to Sentry/Logsnag
-    // and potentially trigger a retry or manual audit alert.
   }
 }
 
@@ -228,19 +218,20 @@ async function sendTicketConfirmationEmail(
   transaction: { id: string; totalAmount: number },
   sessionId: string
 ) {
-  // 1. Fetch all issued tickets with their ticket + facility + group data
+  // 1. Fetch all issued tickets with their ticketPrice + ticketType + facility data
   const issuedTickets = await prisma.issuedTicket.findMany({
     where: { transactionId: transaction.id },
     include: {
-      ticket: {
+      ticketPrice: {
         include: {
-          facility: true,
-        },
-      },
-      ticketGroup: {
-        include: {
-          facility: true,
-        },
+          ticketType: {
+            include: {
+              category: {
+                include: { facility: true }
+              }
+            }
+          }
+        }
       },
     },
   });
@@ -254,7 +245,10 @@ async function sendTicketConfirmationEmail(
   const attachments: Array<{ filename: string; content: string; encoding: string; cid: string }> = [];
   const ticketData = await Promise.all(
     issuedTickets.map(async (it, index) => {
-      const title = it.ticket?.title || it.ticketGroup?.title || "Ulaznica";
+      const ticketType = it.ticketPrice?.ticketType;
+      const productTitle = ticketType?.title || "Ulaznica";
+      const priceLabel = it.ticketPrice?.label;
+      const title = priceLabel ? `${productTitle} (${priceLabel})` : productTitle;
       const qrDataUrl = await QRCode.toDataURL(it.qrHash, { width: 200, margin: 1 });
       
       const cid = `ticket-qr-${index}`;
@@ -277,9 +271,9 @@ async function sendTicketConfirmationEmail(
     })
   );
 
-  // 3. Get facility info from the first ticket's facility relations
-  const firstTicketWithFacility = issuedTickets.find((it) => it.ticket?.facility || it.ticketGroup?.facility);
-  const facility = firstTicketWithFacility?.ticket?.facility || firstTicketWithFacility?.ticketGroup?.facility;
+  // 3. Get facility info from the first ticket's category
+  const firstTicketWithFacility = issuedTickets.find((it) => it.ticketPrice?.ticketType?.category?.facility);
+  const facility = firstTicketWithFacility?.ticketPrice?.ticketType?.category?.facility;
   const facilityName = facility?.name || "Objekat";
   const facilityAddress = facility
     ? `${facility.streetName} ${facility.streetNumber}, ${facility.city}`
