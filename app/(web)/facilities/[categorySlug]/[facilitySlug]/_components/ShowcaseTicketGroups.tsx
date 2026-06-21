@@ -459,7 +459,19 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
         <div key={tier.id} id={`ticket-${tier.id}`} className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-3xl bg-muted/20 border border-border hover:bg-muted/50 transition-all group">
           
           {/* Ticket Information */}
-          <div className="flex-1 space-y-2 text-center md:text-left w-full">
+          <div className="flex-1 flex items-start gap-4 w-full">
+            {tier.imageUrl && (
+              <div className="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden border border-border/50">
+                <Image
+                  src={tier.imageUrl}
+                  alt={tier.labelSr || tier.label}
+                  fill
+                  className="object-cover"
+                  sizes="80px"
+                />
+              </div>
+            )}
+            <div className="space-y-2 text-center md:text-left w-full">
             <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
               <h4 className="text-base md:text-lg font-black text-foreground uppercase italic tracking-tight">{tier.labelSr || tier.label}</h4>
               {tier.dayType && tier.dayType !== 'ALL' && (
@@ -488,6 +500,7 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                 </span>
               )}
             </div>
+          </div>
           </div>
 
           {/* Pricing & Actions Section */}
