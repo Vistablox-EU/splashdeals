@@ -776,9 +776,12 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
            <aside className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
               <PartnerBranding logoUrl={facility.logoUrl} name={facility.name} />
               
+              {/* Operational Portal — hidden on mobile (already in MobileUnifiedControlPill) */}
+              <div className="hidden md:block">
               <Suspense fallback={<Skeleton className="h-[600px] rounded-[3rem] bg-white/5" />}>
                  <OperationalPortal hours={facility.hours} />
               </Suspense>
+              </div>
               
               {/* Sidebar Weather Widget — hidden on mobile (already in MobileUnifiedControlPill) */}
               <div className="hidden md:block">
