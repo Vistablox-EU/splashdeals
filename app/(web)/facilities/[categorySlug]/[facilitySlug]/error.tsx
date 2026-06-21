@@ -4,7 +4,6 @@ import { Icon } from "@/components/ui/Icon";
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
-import { useParams } from "next/navigation"
 import { getClientDictionary } from "@/lib/client-dictionaries"
 
 /**
@@ -17,14 +16,16 @@ export default function FacilityError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  const params = useParams()
-  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dict, setDict] = useState<Record<string, any> | null>(null)
 
   useEffect(() => {
     console.error("Facility Showcase Error:", error)
-    getClientDictionary().then((d) => requestAnimationFrame(() => setDict(d)))
+    let mounted = true
+    getClientDictionary().then((d) => {
+      if (mounted) setDict(d)
+    })
+    return () => { mounted = false }
   }, [error])
 
   if (!dict) {
