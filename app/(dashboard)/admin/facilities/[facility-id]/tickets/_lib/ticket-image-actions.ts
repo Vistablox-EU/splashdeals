@@ -1,6 +1,6 @@
 "use server"
 
-import sharp from "sharp"
+import { processImageToWebP } from "@/server/lib/media"
 import { prisma } from "@/server/lib/prisma"
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024 // 25MB
@@ -23,9 +23,9 @@ export async function uploadProductImage(productId: string, formData: FormData) 
   }
 
   try {
-    // Convert to WebP via sharp
+    // Convert to WebP via shared utility
     const buffer = Buffer.from(await file.arrayBuffer())
-    const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer()
+    const webpBuffer = await processImageToWebP(buffer)
 
     const { put } = await import("@vercel/blob")
     const fileName = `tickets/products/${productId}/${Date.now()}.webp`
