@@ -53,10 +53,9 @@ export default async function FacilityManagementLayout({
       hours: true,
       _count: {
         select: {
-          tickets: true,
+          ticketCategories: true,
           media: true,
           amenities: true,
-          ticketGroups: true,
         }
       }
     }
@@ -81,10 +80,9 @@ export default async function FacilityManagementLayout({
         <FacilityNav
           facility={facility}
           counts={{
-            tickets: facility._count.tickets,
+            ticketCategories: facility._count.ticketCategories,
             media: facility._count.media,
             amenities: facility._count.amenities,
-            ticketGroups: facility._count.ticketGroups,
           }}
         />
       </Suspense>

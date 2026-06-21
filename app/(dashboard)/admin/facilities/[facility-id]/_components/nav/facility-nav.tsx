@@ -18,10 +18,9 @@ interface FacilityNavProps {
     status: FacilityStatus
   }
   counts?: {
-    tickets: number
+    ticketCategories: number
     media: number
     amenities: number
-    ticketGroups?: number
   }
 }
 
@@ -40,7 +39,7 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
       href: `${b}/tickets`,
       active: isActive(`${b}/tickets`),
       icon: "confirmation_number",
-      count: (counts?.tickets ?? 0) + (counts?.ticketGroups ?? 0) || undefined,
+      count: counts?.ticketCategories ?? 0,
     },
     { title: "Profil", href: `${b}/profile`, active: isActive(`${b}/profile`, true), icon: "account_circle" },
     {
