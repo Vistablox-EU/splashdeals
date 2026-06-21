@@ -33,7 +33,6 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
     include: {
       _count: {
         select: {
-          tickets: true,
           amenities: true,
           media: true,
         }
@@ -42,6 +41,10 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
   })
 
   if (!facility) notFound()
+
+  const ticketCount = await prisma.ticketPrice.count({
+    where: { ticketType: { category: { facilityId } } },
+  })
 
   const recentTickets = await prisma.ticketPrice.findMany({
     where: { isActive: true, ticketType: { category: { facilityId } } },
