@@ -1,7 +1,7 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useState, useEffect, useRef, startTransition } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
@@ -92,7 +92,7 @@ const TIME_LABELS: Record<string, string> = {
   THREE_HOUR: "3 sata",
 };
 
-export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProductId, ticket, facility }: TicketPurchaseModalProps) {
+export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProductId, ticket: _ticket, facility }: TicketPurchaseModalProps) {
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(initialProductId ?? null);

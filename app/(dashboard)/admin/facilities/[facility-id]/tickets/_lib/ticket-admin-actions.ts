@@ -124,46 +124,6 @@ export async function createCategory(facilityId: string, title: string, titleSr?
 
 // ─── Image Upload ─────────────────────────────────────
 
-export async function uploadTicketImageAction(formData: FormData) {
-  "use server"
-
-  const facilityId = formData.get("facilityId") as string;
-  const file = formData.get("file") as File;
-  if (!file || !facilityId) return { success: false, error: "Missing file or facilityId" };
-
-  try {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(`tickets/${facilityId}/${file.name}`, file, {
-      access: "public",
-      addRandomSuffix: true,
-    });
-    return { success: true, url: blob.url };
-  } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Upload failed" };
-  }
-}
-
-export async function renameTicketImageAction(facilityId: string, oldUrl: string, newName: string) {
-  "use server"
-
-  try {
-    const { put, del } = await import("@vercel/blob");
-    // Fetch existing blob, copy with new name, delete old
-    const response = await fetch(oldUrl);
-    const blob = await response.blob();
-    const file = new File([blob], `${newName}.webp`, { type: "image/webp" });
-    const newBlob = await put(`tickets/${facilityId}/${newName}.webp`, file, {
-      access: "public",
-      addRandomSuffix: false,
-    });
-    // Delete old blob (best-effort)
-    await del(oldUrl).catch(() => {});
-    return { success: true, url: newBlob.url };
-  } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Rename failed" };
-  }
-}
-
 export async function updateCategory(id: string, data: { title?: string; titleSr?: string | null; isActive?: boolean }) {
   await prisma.ticketCategory.update({ where: { id }, data })
   revalidatePath(`/admin/facilities/*/tickets`)

@@ -312,7 +312,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                 <PriceCard
                   key={price.id}
                   price={price}
-                  product={selectedProduct}
+                  _product={selectedProduct}
                   facilityId={facilityId}
                   onDeleted={() => {
                     setCategories((prev) =>
@@ -335,7 +335,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
       {/* Mobile nav dots */}
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex lg:hidden gap-1.5 bg-background/80 backdrop-blur-md border border-border/50 px-3 py-2 rounded-full shadow-lg z-50">
-        {(["cats", "prods", "prices"] as const).map((v, i) => (
+        {(['cats', 'prods', 'prices'] as const).map((v, _i) => (
           <button
             key={v}
             onClick={() => setMobileView(v)}
@@ -354,12 +354,12 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
 function PriceCard({
   price,
-  product,
+  _product,
   facilityId,
   onDeleted,
 }: {
   price: SerializedCategory["products"][number]["prices"][number]
-  product: SerializedCategory["products"][number]
+  _product: SerializedCategory["products"][number]
   facilityId: string
   onDeleted: () => void
 }) {

@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { connection } from "next/server"
 import { notFound } from "next/navigation"
 import { prisma } from "@/server/lib/prisma"
-import { getTicketHierarchy, type SerializedCategory } from "./_lib/ticket-admin-actions"
+import { getTicketHierarchy } from "./_lib/ticket-admin-actions"
 import { TicketManagementV2 } from "./_components/ticket-management-v2"
 
 export const metadata: Metadata = {

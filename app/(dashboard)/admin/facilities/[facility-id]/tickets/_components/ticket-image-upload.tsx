@@ -17,7 +17,7 @@ import {
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer"
-import { uploadTicketImageAction, renameTicketImageAction } from "../_lib/ticket-admin-actions"
+import { uploadTicketImageAction, renameTicketImageAction } from "../_lib/ticket-image-actions"
 import { imageFileNameSchema } from "@/server/lib/validations/image"
 
 interface TicketImageUploadProps {
