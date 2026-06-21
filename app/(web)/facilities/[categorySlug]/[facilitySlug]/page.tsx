@@ -738,6 +738,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                <ShowcaseTicketGroups 
                   groups={mappedGroups} 
                   facilityId={facility.id}
+                  facilitySlug={facility.slug}
                   facilityName={facility.name}
                   category={facility.category}
                   facility={facility}

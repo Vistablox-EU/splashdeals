@@ -61,6 +61,7 @@ interface TicketGroup {
 interface ShowcaseTicketGroupsProps {
   groups: TicketGroup[];
   facilityId: string;
+  facilitySlug: string;
   facilityName: string;
   category: string;
   facility?: {
@@ -74,7 +75,7 @@ interface ShowcaseTicketGroupsProps {
   };
 }
 
-export function ShowcaseTicketGroups({ groups, facilityId, facilityName, category, facility }: ShowcaseTicketGroupsProps) {
+export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilityName, category, facility }: ShowcaseTicketGroupsProps) {
   const { prefix, main } = parseFacilityName(facilityName);
   const [activeGroupId, setActiveGroupId] = useState<string>(groups[0]?.id || "");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -285,6 +286,8 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
         key={selectedTicket ? selectedTicket.id : "closed"}
         isOpen={selectedTicket !== null}
         onClose={() => setSelectedTicket(null)}
+        facilitySlug={facilitySlug}
+        initialProductId={selectedTicket?.id}
         ticket={selectedTicket}
         facility={facility || { id: facilityId, name: facilityName, category }}
       />
