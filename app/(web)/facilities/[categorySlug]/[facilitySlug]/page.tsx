@@ -638,7 +638,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         backHref={`/${categorySlug}`}
       />
 
-      <section className="relative h-[90vh] md:h-screen w-full flex flex-col justify-end p-6 md:p-12 overflow-hidden">
+      <section className="relative h-[60vh] md:h-screen w-full flex flex-col justify-end p-6 md:p-12 overflow-hidden">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12">
