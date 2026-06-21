@@ -82,7 +82,8 @@ export function TicketMediaSection<T extends FieldValues>({
                     checked={field.value}
                     onCheckedChange={(checked) => {
                       field.onChange(checked)
-                      if (checked) setValue("requiresPhoto" as Path<T>, true as boolean)
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      if (checked) setValue("requiresPhoto" as Path<T>, true as any)
                     }}
                     className="scale-90"
                   />
