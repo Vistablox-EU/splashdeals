@@ -784,7 +784,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
           {tier.label}
         </span>
         {hasDiscount && (
-          <span className="shrink-0 text-[7px] font-black uppercase tracking-widest bg-rose-500/15 text-rose-400 px-1.5 py-0.5 rounded-full leading-none">
+          <span className="shrink-0 text-[10px] font-black text-rose-500 leading-none">
             -{discountPercent}%
           </span>
         )}
@@ -796,24 +796,22 @@ function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
       </div>
 
       {/* Right: price + stepper */}
-      <div className="flex items-center gap-3 shrink-0">
-        {/* Price */}
-        <div className="text-right min-w-[60px]">
-          {hasDiscount ? (
-            <div className="flex flex-col items-end leading-tight -space-y-0.5">
-              <span className="text-[9px] font-black text-foreground tabular-nums leading-none">
-                {tier.price} RSD
-              </span>
-              <span className="text-[7px] font-bold text-muted-foreground line-through leading-none">
-                {tier.originalPrice} RSD
-              </span>
-            </div>
-          ) : (
-            <span className="text-sm font-black text-foreground tabular-nums leading-none">
+      <div className="flex items-center gap-2 shrink-0">
+        {/* Price — inline strikethrough + current */}
+        {hasDiscount ? (
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[10px] font-bold text-muted-foreground line-through tabular-nums leading-none">
+              {tier.originalPrice} RSD
+            </span>
+            <span className="text-sm font-black text-primary tabular-nums leading-none">
               {tier.price} RSD
             </span>
-          )}
-        </div>
+          </div>
+        ) : (
+          <span className="text-sm font-black text-foreground tabular-nums leading-none">
+            {tier.price} RSD
+          </span>
+        )}
 
         {/* Stepper */}
         <div className="flex items-center bg-black/25 rounded-lg border border-border/50">
