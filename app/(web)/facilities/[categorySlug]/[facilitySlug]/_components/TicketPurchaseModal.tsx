@@ -104,6 +104,18 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   const openCart = useUIState((state) => state.openCart);
   const router = useRouter();
 
+  // Helper: find the best discount price in a product's prices
+  const findBestDeal = (prices: PriceOption[]) => {
+    const best = [...prices]
+      .filter((p) => p.originalPrice && p.originalPrice > p.price)
+      .sort((a, b) => {
+        const aPct = ((Number(a.originalPrice) - Number(a.price)) / Number(a.originalPrice)) * 100;
+        const bPct = ((Number(b.originalPrice) - Number(b.price)) / Number(b.originalPrice)) * 100;
+        return bPct - aPct;
+      })[0];
+    return best?.id ?? prices[0]?.id ?? null;
+  };
+
   // Fetch hierarchy on open
   useEffect(() => {
     if (!isOpen) return;
@@ -121,8 +133,15 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
                 setSelectedProduct(found.id);
                 setSelectedCategory(cat.id);
                 setQuantity(found.minPeople || 1);
+                setSelectedPrice(findBestDeal(found.prices));
                 break;
               }
+            }
+          } else {
+            // Auto-select first product's best deal
+            const firstProd = data[0].products[0];
+            if (firstProd) {
+              setSelectedPrice(findBestDeal(firstProd.prices));
             }
           }
         }
@@ -174,32 +193,8 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   const activePrice = activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
   const showCategoryPicker = categories.length > 1;
 
-  // Auto-select the best deal variation (highest discount %) when product changes
-  useEffect(() => {
-    if (!activeProduct) return;
-    const best = activeProduct.prices
-      .filter((p) => p.originalPrice && p.originalPrice > p.price)
-      .sort((a, b) => {
-        const aPct = ((Number(a.originalPrice) - Number(a.price)) / Number(a.originalPrice)) * 100;
-        const bPct = ((Number(b.originalPrice) - Number(b.price)) / Number(b.originalPrice)) * 100;
-        return bPct - aPct;
-      })[0];
-    setSelectedPrice(best?.id ?? activeProduct.prices[0]?.id ?? null);
-    setQuantity(activeProduct.minPeople || 1);
-  }, [activeProduct]);
-
   // Best deal ID for highlighting in the variation list
-  const bestDealId = (() => {
-    if (!activeProduct) return null;
-    const best = activeProduct.prices
-      .filter((p) => p.originalPrice && p.originalPrice > p.price)
-      .sort((a, b) => {
-        const aPct = ((Number(a.originalPrice) - Number(a.price)) / Number(a.originalPrice)) * 100;
-        const bPct = ((Number(b.originalPrice) - Number(b.price)) / Number(b.originalPrice)) * 100;
-        return bPct - aPct;
-      })[0];
-    return best?.id ?? null;
-  })();
+  const bestDealId = activeProduct ? findBestDeal(activeProduct.prices) : null;
   const handleAddToCart = async () => {
     if (!activePrice || !activeProduct || !facility) return;
 
@@ -296,6 +291,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
             onClick={() => {
               setSelectedProduct(prod.id);
               setQuantity(prod.minPeople || 1);
+              setSelectedPrice(findBestDeal(prod.prices));
             }}
             className="w-full text-left py-3 flex items-center justify-between transition-colors hover:bg-muted/10 active:bg-muted/20"
           >
