@@ -1,57 +1,64 @@
-/* Splashdeals Aquastream Theme Tokens */
+/* Splashdeals Aquastream Theme Tokens — Brand-Aligned Light Theme */
+/* Matches the teal + amber palette from the SplashDeals logo */
 :root {
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.15 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0 0);
-  --popover: oklch(0.92 0 0);
-  --popover-foreground: oklch(0.15 0 0);
+  --background: oklch(1 0 0);           /* Pure white — matches logo bg */
+  --foreground: oklch(0.13 0 0);        /* Near black for high contrast */
 
-  /* Aqua/Cyan palette (Hue 210) */
-  --primary: oklch(0.60 0.15 210);
+  --card: oklch(0.995 0 0);             /* Near white */
+  --card-foreground: oklch(0.13 0 0);
+
+  --popover: oklch(0.995 0 0);
+  --popover-foreground: oklch(0.13 0 0);
+
+  /* 🌊 Aqua/Cyan (Hue 210) — matches the glossy teal logo text */
+  --primary: oklch(0.58 0.18 210);
   --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.25 0 0);
+  /* 🍊 Warm Amber (Hue 45) — matches the orange logo splashes */
+  --secondary: oklch(0.68 0.16 55);
+  --secondary-foreground: oklch(1 0 0);
 
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.50 0 0);
+  /* Warm-tinted neutrals — amber undertone instead of cold gray */
+  --muted: oklch(0.955 0.01 55);
+  --muted-foreground: oklch(0.47 0.02 55);
 
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.15 0 0);
+  /* 🔶 Amber accent — splash energy */
+  --accent: oklch(0.65 0.18 50);
+  --accent-foreground: oklch(1 0 0);
 
-  --destructive: oklch(0.60 0.15 25);
+  --destructive: oklch(0.60 0.18 25);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.90 0 0);
-  --input: oklch(0.90 0 0);
-  --ring: oklch(0.60 0.15 210);
 
-  /* Sidebar Theme */
-  --sidebar: oklch(0.99 0 0);
-  --sidebar-foreground: oklch(0.20 0 0);
-  --sidebar-primary: oklch(0.60 0.15 210);
+  --border: oklch(0.88 0.01 55);        /* Warm light border */
+  --input: oklch(0.88 0.01 55);
+  --ring: oklch(0.58 0.18 210);         /* Matches primary */
+
+  /* Sidebar */
+  --sidebar: oklch(0.995 0 0);
+  --sidebar-foreground: oklch(0.18 0 0);
+  --sidebar-primary: oklch(0.58 0.18 210);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.95 0 0);
-  --sidebar-accent-foreground: oklch(0.15 0 0);
-  --sidebar-border: oklch(0.90 0 0);
-  --sidebar-ring: oklch(0.60 0.15 210);
+  --sidebar-accent: oklch(0.94 0.02 55);
+  --sidebar-accent-foreground: oklch(0.13 0 0);
+  --sidebar-border: oklch(0.88 0.01 55);
+  --sidebar-ring: oklch(0.58 0.18 210);
 
-  /* Vivid Chart Colors (NO PURPLE) - The Splash Palette */
-  --chart-1: oklch(0.60 0.15 210); /* Electric Cyan */
-  --chart-2: oklch(0.65 0.15 180); /* Teal */
-  --chart-3: oklch(0.55 0.12 230); /* Slate Blue */
-  --chart-4: oklch(0.70 0.18 190); /* Electric Sky */
-  --chart-5: oklch(0.50 0.10 200); /* Deep Azure */
+  /* Chart Colors — Splash Palette (NO PURPLE) */
+  --chart-1: oklch(0.58 0.18 210);      /* Teal */
+  --chart-2: oklch(0.65 0.18 45);       /* Amber */
+  --chart-3: oklch(0.52 0.12 230);      /* Slate Blue */
+  --chart-4: oklch(0.72 0.18 190);      /* Sky */
+  --chart-5: oklch(0.48 0.10 200);      /* Deep Azure */
 
   --radius: 0.75rem;
 
-  /* 🌞 Light glass & utilities */
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(0, 0, 0, 0.08);
+  /* Glass & Utilities */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(0, 0, 0, 0.06);
   --navy-deep: #f8fafc;
   --navy-muted: #f1f5f9;
-  --splash-gradient-end: #0284c7;
-  --text-splash-mid: #22d3ee;
+  --splash-gradient-end: #f59e0b;        /* Amber — logo splash color */
+  --text-splash-mid: #fbbf24;           /* Warm amber mid-tone */
 }
 
 .dark {
@@ -61,16 +68,24 @@
   --card-foreground: oklch(0.97 0 0);
   --popover: oklch(0.16 0.01 260);
   --popover-foreground: oklch(0.97 0 0);
+
+  /* 🌊 Brighter teal for dark mode */
   --primary: oklch(0.65 0.18 210);
   --primary-foreground: oklch(0.13 0.01 260);
-  --secondary: oklch(0.22 0.01 260);
-  --secondary-foreground: oklch(0.97 0 0);
+
+  /* 🍊 Warm amber pops on dark bg */
+  --secondary: oklch(0.70 0.18 50);
+  --secondary-foreground: oklch(0.13 0.01 260);
+
   --muted: oklch(0.22 0.01 260);
-  --muted-foreground: oklch(0.60 0.01 260);
-  --accent: oklch(0.22 0.01 260);
-  --accent-foreground: oklch(0.97 0 0);
-  --destructive: oklch(0.60 0.15 25);
+  --muted-foreground: oklch(0.58 0.01 260);
+
+  --accent: oklch(0.70 0.20 50);
+  --accent-foreground: oklch(0.13 0.01 260);
+
+  --destructive: oklch(0.60 0.18 25);
   --destructive-foreground: oklch(0.97 0 0);
+
   --border: oklch(0.22 0.01 260 / 0.5);
   --input: oklch(0.22 0.01 260);
   --ring: oklch(0.65 0.18 210);
@@ -84,18 +99,18 @@
   --sidebar-accent-foreground: oklch(0.97 0 0);
   --sidebar-border: oklch(0.16 0.01 260 / 0.5);
 
-  /* Charts in dark mode */
+  /* Charts Dark */
   --chart-1: oklch(0.65 0.18 210);
-  --chart-2: oklch(0.70 0.20 180);
+  --chart-2: oklch(0.70 0.20 45);
   --chart-3: oklch(0.55 0.12 230);
   --chart-4: oklch(0.60 0.18 190);
   --chart-5: oklch(0.50 0.10 200);
 
-  /* 🌙 Dark glass & utilities */
+  /* Dark mode glass */
   --glass-bg: rgba(15, 23, 42, 0.85);
   --glass-border: rgba(255, 255, 255, 0.15);
   --navy-deep: #020617;
   --navy-muted: #0f172a;
-  --splash-gradient-end: #1d4ed8;
-  --text-splash-mid: #a5f3fc;
+  --splash-gradient-end: #f59e0b;       /* Amber even in dark mode */
+  --text-splash-mid: #fbbf24;
 }
