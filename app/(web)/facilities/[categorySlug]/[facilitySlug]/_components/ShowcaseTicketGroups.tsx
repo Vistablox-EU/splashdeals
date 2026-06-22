@@ -784,7 +784,8 @@ function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
           {tier.label}
         </span>
         {hasDiscount && (
-          <span className="shrink-0 text-[10px] font-black text-rose-500 leading-none">
+          <span className="shrink-0 inline-flex items-center gap-0.5 bg-secondary text-secondary-foreground font-black text-[10px] leading-none px-1.5 py-1 rounded-lg shadow-sm">
+            <Icon name="star" className="text-[9px]" />
             -{discountPercent}%
           </span>
         )}
