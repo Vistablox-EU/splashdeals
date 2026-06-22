@@ -2,7 +2,6 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -117,9 +116,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
     }
   }, [groups]);
 
-  const cartItems = useCart((state) => state.items);
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const addItem = useCart((state) => state.addItem);
 
   const getQuantity = (id: string) => quantities[id] || 1;
   const setQuantity = (id: string, q: number) => {
@@ -139,6 +136,38 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
   }
 
   const activeGroup = groups.find((g) => g.id === activeGroupId) || groups[0];
+
+  // Local selection totals from quantities + active group tiers
+  const localTotalItems = activeGroup.tiers.reduce((acc, tier) => acc + getQuantity(tier.id), 0);
+  const localTotalPrice = activeGroup.tiers.reduce((acc, tier) => acc + getQuantity(tier.id) * Number(tier.price), 0);
+
+  // Add all selected tickets to cart and navigate
+  const handleBuySelection = () => {
+    if (!facility) return;
+    for (const tier of activeGroup.tiers) {
+      const qty = getQuantity(tier.id);
+      if (qty > 0) {
+        addItem({
+          ticketId: tier.id,
+          facilityId: facility.id,
+          facilityName: facility.name,
+          category: facility.category,
+          quantity: qty,
+          title: `${facility.name} - ${tier.label || tier.title}`,
+          price: Number(tier.price),
+          currency: "RSD",
+          requiresIdentity: false,
+          requiresPhoto: false,
+          validityType: tier.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
+          minPeople: tier.minPeople || 1,
+          maxPeople: tier.maxPeople || null,
+          imageUrl: tier.imageUrl || null,
+        });
+      }
+    }
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
+    window.location.href = "/cart";
+  };
 
   return (
     <div className="space-y-8 w-full max-w-6xl mx-auto pb-24 md:pb-0">
@@ -238,15 +267,10 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
                 return (
                   <MobileTicketCard
                     key={tier.id}
-                    prefix={prefix}
-                    main={main}
                     tier={tier}
                     quantity={getQuantity(tier.id)}
                     setQuantity={(id: string, q: number) => setQuantity(id, q)}
                     isHighlighted={isFeatured}
-                    onAdd={(tier: TicketTier) => {
-                      setSelectedTicket(tier);
-                    }}
                   />
                 );
               })}
@@ -254,28 +278,36 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
           </div>
         )}
 
-      {/* Dynamic Sticky Checkout Drawer on Mobile */}
-      {totalItems > 0 && (
-        <div className="fixed bottom-20 left-4 right-4 z-[999] md:bottom-4 md:left-4 md:right-4 md:z-50 animate-in slide-in-from-bottom duration-300">
-          <div className="mobile-glass rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
-            <div className="space-y-0.5">
-              <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Izabrano</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-sm font-black text-foreground">{totalItems} {totalItems === 1 ? 'ulaznica' : 'ulaznice'}</span>
-                <span className="text-xs font-bold text-primary">{totalPrice} RSD</span>
-              </div>
+      {/* Dynamic Sticky Checkout Drawer on Mobile — always visible */}
+      <div className="fixed bottom-20 left-4 right-4 z-[999] md:hidden animate-in slide-in-from-bottom duration-300">
+        <div className="mobile-glass rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
+          <div className="space-y-0.5">
+            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+              {localTotalItems > 0 ? "Izabrano" : "Vaša korpa"}
+            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm font-black text-foreground">
+                {localTotalItems} {localTotalItems === 1 ? 'ulaznica' : 'ulaznice'}
+              </span>
+              <span className="text-xs font-bold text-primary">{localTotalPrice.toLocaleString("sr-Latn")} RSD</span>
             </div>
-            
-            <Link 
-              href="/cart"
-              className="px-6 h-12 bg-primary hover:bg-primary/90 active:scale-95 transition-all text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)] shrink-0"
-            >
-              <span>Kupi Odmah</span>
-              <Icon name="bolt" className="text-[16px] fill-current animate-pulse" />
-            </Link>
           </div>
+          
+          <button
+            onClick={handleBuySelection}
+            disabled={localTotalItems === 0}
+            className={cn(
+              "px-6 h-12 flex items-center gap-2 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shrink-0",
+              localTotalItems > 0
+                ? "bg-primary hover:bg-primary/90 active:scale-95 text-primary-foreground shadow-[0_0_20px_rgba(6,182,212,0.3)] cursor-pointer"
+                : "bg-muted/50 text-muted-foreground/50 cursor-not-allowed"
+            )}
+          >
+            <span>{localTotalItems > 0 ? "Kupi" : "Dodaj karte"}</span>
+            {localTotalItems > 0 && <Icon name="arrow_forward" className="text-[16px]" />}
+          </button>
         </div>
-      )}
+      </div>
 
       <TicketPurchaseModal
         key={selectedTicket ? selectedTicket.id : "closed"}
@@ -720,14 +752,11 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
   );
 }
 
-function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, prefix, main }: {
+function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
   tier: TicketTier;
   quantity: number;
   setQuantity: (id: string, qty: number) => void;
-  onAdd: (tier: TicketTier) => void;
   isHighlighted: boolean;
-  prefix: string;
-  main: string;
 }) {
   const [justAdded, setJustAdded] = useState(false);
   const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
