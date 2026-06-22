@@ -174,7 +174,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   const activePrice = activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
   const showCategoryPicker = categories.length > 1;
 
-  // Auto-select the best deal variation (highest discount %)
+  // Auto-select the best deal variation (highest discount %) when product changes
   useEffect(() => {
     if (!activeProduct) return;
     const best = activeProduct.prices
@@ -184,10 +184,9 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
         const bPct = ((Number(b.originalPrice) - Number(b.price)) / Number(b.originalPrice)) * 100;
         return bPct - aPct;
       })[0];
-    if (best && !selectedPrice) {
-      setSelectedPrice(best.id);
-    }
-  }, [activeProduct, selectedPrice]);
+    setSelectedPrice(best?.id ?? activeProduct.prices[0]?.id ?? null);
+    setQuantity(activeProduct.minPeople || 1);
+  }, [activeProduct]);
 
   // Best deal ID for highlighting in the variation list
   const bestDealId = (() => {
