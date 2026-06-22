@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
@@ -94,6 +95,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   const [quantity, setQuantity] = useState<number>(1);
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -172,6 +174,33 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   const activePrice = activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
   const showCategoryPicker = categories.length > 1;
 
+  // Auto-select the best deal variation (highest discount %)
+  useEffect(() => {
+    if (!activeProduct) return;
+    const best = activeProduct.prices
+      .filter((p) => p.originalPrice && p.originalPrice > p.price)
+      .sort((a, b) => {
+        const aPct = ((Number(a.originalPrice) - Number(a.price)) / Number(a.originalPrice)) * 100;
+        const bPct = ((Number(b.originalPrice) - Number(b.price)) / Number(b.originalPrice)) * 100;
+        return bPct - aPct;
+      })[0];
+    if (best && !selectedPrice) {
+      setSelectedPrice(best.id);
+    }
+  }, [activeProduct, selectedPrice]);
+
+  // Best deal ID for highlighting in the variation list
+  const bestDealId = (() => {
+    if (!activeProduct) return null;
+    const best = activeProduct.prices
+      .filter((p) => p.originalPrice && p.originalPrice > p.price)
+      .sort((a, b) => {
+        const aPct = ((Number(a.originalPrice) - Number(a.price)) / Number(a.originalPrice)) * 100;
+        const bPct = ((Number(b.originalPrice) - Number(b.price)) / Number(b.originalPrice)) * 100;
+        return bPct - aPct;
+      })[0];
+    return best?.id ?? null;
+  })();
   const handleAddToCart = async () => {
     if (!activePrice || !activeProduct || !facility) return;
 
@@ -199,6 +228,9 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
     setIsAdded(true);
     await new Promise((r) => setTimeout(r, 800));
     setIsAdded(false);
+    setClosing(true);
+    await new Promise((r) => setTimeout(r, 300));
+    setClosing(false);
     onClose();
     openCart();
   };
@@ -304,7 +336,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
 
       {/* Price variations */}
       <div>
-        <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest pb-2 block">Izaberite varijantu</span>
+        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest pb-2 block">Izaberite varijantu</span>
         <div className="divide-y divide-border/40">
           {activeProduct!.prices.map((p) => {
             const isSelected = activePrice?.id === p.id;
@@ -331,8 +363,13 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
                   <div className="min-w-0">
                     <span className="text-sm font-bold text-foreground block truncate">{displayLabel}</span>
                     {hasDiscount && (
-                      <span className="text-[9px] text-muted-foreground">
+                      <span className="text-[9px] text-muted-foreground flex items-center gap-1">
                         Ušteda {discountPct}%
+                        {p.id === bestDealId && (
+                          <span className="text-[7px] font-black uppercase tracking-widest bg-secondary/20 text-secondary px-1 py-[1px] rounded-full leading-none">
+                            Najbolja ponuda
+                          </span>
+                        )}
                       </span>
                     )}
                   </div>
@@ -433,7 +470,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
       {/* Mobile: Bottom Sheet */}
       <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end">
         <div onClick={onClose} className="absolute inset-0 bg-background/80 backdrop-blur-sm animate-fade-in pointer-events-auto" />
-        <div ref={modalRef} className="relative z-10 bg-card rounded-t-3xl border border-border/50 shadow-2xl max-h-[85vh] flex flex-col animate-slide-up pb-safe overflow-hidden">
+        <div ref={modalRef} className={cn("relative z-10 bg-card rounded-t-3xl border border-border/50 shadow-2xl max-h-[85vh] flex flex-col pb-safe overflow-hidden", closing ? "animate-fade-out-up" : "animate-slide-up")}>
           <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-border/30 shrink-0">
             <h2 className="text-base font-black text-foreground tracking-tight uppercase leading-tight">
               {facility?.name || "Izaberite kartu"}
@@ -455,7 +492,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
       {/* Desktop: Centered Card */}
       <div className="hidden md:fixed md:inset-0 md:z-50 md:flex md:items-center md:justify-center md:p-6">
         <div onClick={onClose} className="absolute inset-0 bg-background/95 backdrop-blur-md animate-fade-in pointer-events-auto" />
-        <div ref={modalRef} className="relative w-full max-w-lg md:max-w-xl z-10 animate-fade-in-up">
+        <div ref={modalRef} className={cn("relative w-full max-w-lg md:max-w-xl z-10 animate-fade-in-up", closing && "scale-95 opacity-0 transition-all duration-300")}>
           <Card className="p-8 md:p-10 overflow-visible border-border relative z-10 flex flex-col gap-6 bg-card shadow-2xl rounded-3xl">
             <div className="absolute -top-12 left-1/4 right-1/4 h-24 bg-primary/10 rounded-full blur-[50px] pointer-events-none z-0" />
             <button
