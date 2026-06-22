@@ -31,7 +31,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
               <Icon name="photo_camera" className="text-[16px]" />
               {dict?.media_gallery?.eyebrow || "Galerija"}
           </div>
-          <h2 className="text-5xl font-black italic tracking-tighter uppercase leading-none text-white">
+          <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter uppercase leading-none text-white">
               {(() => {
                 const fullTitle = dict?.media_gallery?.title || "Doživite Atmosferu";
                 const words = fullTitle.split(" ");
@@ -49,7 +49,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           <p className="text-muted-foreground font-medium">Uronite u atmosferu naše destinacije kroz objektiv naših posetilaca.</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[250px]">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 auto-rows-[180px] md:auto-rows-[250px]">
           {galleryMedia.map((m: FacilityMedia, i: number) => (
             <div
               key={m.id}

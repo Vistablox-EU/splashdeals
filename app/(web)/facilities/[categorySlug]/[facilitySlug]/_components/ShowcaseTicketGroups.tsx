@@ -118,12 +118,12 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
 
   const addItem = useCart((state) => state.addItem);
 
-  const getQuantity = (id: string) => quantities[id] || 1;
+  const getQuantity = (id: string) => quantities[id] || 0;
   const setQuantity = (id: string, q: number) => {
     if (typeof navigator !== 'undefined' && "vibrate" in navigator) {
       navigator.vibrate(10);
     }
-    setQuantities(prev => ({ ...prev, [id]: Math.max(1, q) }));
+    setQuantities(prev => ({ ...prev, [id]: Math.max(0, q) }));
   };
 
   if (groups.length === 0) {
@@ -773,7 +773,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
 
   const handleDecrement = () => {
     if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
-    setQuantity(tier.id, Math.max(1, quantity - 1));
+    setQuantity(tier.id, Math.max(0, quantity - 1));
   };
 
   return (

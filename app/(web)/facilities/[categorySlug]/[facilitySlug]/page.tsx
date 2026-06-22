@@ -725,7 +725,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-16 md:mt-20 relative z-20 space-y-16 sm:space-y-32 pb-24 sm:pb-48">
+      <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-16 md:mt-20 relative z-20 space-y-12 sm:space-y-32 pb-24 sm:pb-48">
         <div id="deals" className="space-y-8 sm:space-y-12 scroll-mt-32">
            <div className="flex flex-col items-center text-center space-y-4 mb-8 sm:mb-16">
               <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase text-white leading-none">
@@ -748,7 +748,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <div id="overview" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
            <div className="lg:col-span-8 space-y-8">
               {/* Main Text Card */}
-              <Card className="p-12 md:p-16 space-y-8 min-h-[400px] flex flex-col justify-center">
+              <Card className="p-6 sm:p-12 md:p-16 space-y-8 min-h-0 md:min-h-[400px] flex flex-col justify-center">
                  <div className="flex items-center gap-3 text-cyan-400 font-black uppercase tracking-[0.2em] text-xs">
                     <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
                  </div>
@@ -808,7 +808,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         </div>
 
         {facility.faqs && facility.faqs.length > 0 && (
-          <div className="space-y-8 pt-12 max-w-3xl mx-auto w-full px-6 md:px-12">
+          <div className="space-y-8 pt-8 max-w-3xl mx-auto w-full px-6 md:px-12">
             <FaqAccordion
               faqs={facility.faqs.map((f) => ({
                 id: f.id,
