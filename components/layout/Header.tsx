@@ -1,22 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useCart, initCartSync } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
-import { useBreadcrumb } from "@/hooks/use-breadcrumb";
-import { useHeaderScroll, DesktopTopNav, MobileOverlay } from "./_header";
-import type { Dict } from "@/lib/types";
+import { useHeaderScroll, DesktopTopNav } from "./_header";
 ;
 
 interface HeaderProps {
-  dict: Dict;
   cities: { id: string; name: string; slug: string }[];
 }
 
-export const Header = ({ dict, cities }: HeaderProps) => {
-  const { items: _breadcrumbItems } = useBreadcrumb();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export const Header = ({ cities }: HeaderProps) => {
+  const [isHovered, setIsHovered] = React.useState(false);
   const openCart = useUIState((state) => state.openCart);
   const totalItems = useCart((state) => state.getTotalItems());
 
@@ -27,18 +22,6 @@ export const Header = ({ dict, cities }: HeaderProps) => {
     isReducedMotion,
     mounted,
   } = useHeaderScroll();
-
-  // Lock body scroll when mobile menu is open
-  React.useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMobileMenuOpen]);
 
   // Init cart sync on mount
   React.useEffect(() => {
@@ -65,8 +48,6 @@ export const Header = ({ dict, cities }: HeaderProps) => {
           totalItems={totalItems}
           isOnline={isOnline}
           openCart={openCart}
-          onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          isMobileMenuOpen={isMobileMenuOpen}
           isTabActive={isTabActive}
           isReducedMotion={isReducedMotion}
           isHovered={isHovered}
@@ -77,16 +58,6 @@ export const Header = ({ dict, cities }: HeaderProps) => {
         {isOnline === false && (
           <div className="hidden" role="status" aria-label="offline" />
         )}
-
-        {/* 📱 Mobile Menu Overlay */}
-        <MobileOverlay
-          isMobileMenuOpen={isMobileMenuOpen}
-          setIsMobileMenuOpen={setIsMobileMenuOpen}
-          dict={dict}
-          cities={cities}
-          isReducedMotion={isReducedMotion}
-          isTabActive={isTabActive}
-        />
       </header>
     </>
   );

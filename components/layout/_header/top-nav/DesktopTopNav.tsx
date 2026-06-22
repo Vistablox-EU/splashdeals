@@ -6,7 +6,6 @@ import { Logo } from "./Logo";
 
 import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
-import { MobileTopNav } from "./MobileTopNav";
 
 
 interface DesktopTopNavProps {
@@ -15,8 +14,6 @@ interface DesktopTopNavProps {
   totalItems: number;
   isOnline: boolean;
   openCart: () => void;
-  onMobileMenuToggle: () => void;
-  isMobileMenuOpen: boolean;
   isTabActive: boolean;
   isReducedMotion: boolean;
   isHovered: boolean;
@@ -28,8 +25,6 @@ export function DesktopTopNav({
   totalItems,
   isOnline,
   openCart,
-  onMobileMenuToggle,
-  isMobileMenuOpen,
   isTabActive,
   isReducedMotion,
   isHovered,
@@ -59,10 +54,6 @@ export function DesktopTopNav({
             openCart={openCart}
           />
           </div>
-          <MobileTopNav
-            isMobileMenuOpen={isMobileMenuOpen}
-            onToggle={onMobileMenuToggle}
-          />
         </div>
       </nav>
     </div>
