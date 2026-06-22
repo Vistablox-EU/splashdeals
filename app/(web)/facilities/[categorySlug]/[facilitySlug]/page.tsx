@@ -728,7 +728,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-16 md:mt-20 relative z-20 space-y-12 sm:space-y-32 pb-24 sm:pb-48">
         <div id="deals" className="space-y-8 sm:space-y-12 scroll-mt-32">
            <div className="flex flex-col items-center text-center space-y-4 mb-8 sm:mb-16">
-              <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase text-white leading-none">
+              <div className="brand-divider w-16 mb-2" />
+              <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase text-foreground leading-none">
                  Aktuelne <span className="text-splash">Ponude.</span>
               </h2>
            </div>
@@ -748,14 +749,15 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <div id="overview" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
            <div className="lg:col-span-8 space-y-8">
               {/* Main Text Card */}
-              <Card className="p-6 sm:p-12 md:p-16 space-y-8 min-h-0 md:min-h-[400px] flex flex-col justify-center">
-                 <div className="flex items-center gap-3 text-cyan-400 font-black uppercase tracking-[0.2em] text-xs">
+              <Card className="p-6 sm:p-12 md:p-16 space-y-8 min-h-0 md:min-h-[400px] flex flex-col justify-center brand-card">
+                 <div className="flex items-center gap-3 text-primary font-black uppercase tracking-[0.2em] text-xs">
                     <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
                  </div>
-                 <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase leading-tight text-white">
+                 <div className="brand-divider w-24 mb-4" />
+                 <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase leading-tight text-foreground">
                     Zabava <span className="text-splash">Otključana.</span>
                  </h2>
-                 <p className="text-slate-300 text-xl leading-relaxed font-medium italic opacity-90 max-w-2xl space-y-4">
+                 <p className="text-muted-foreground text-xl leading-relaxed font-medium italic opacity-90 max-w-2xl space-y-4">
                     <span>{facility.description || "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}</span>
                     {facility.amenities && facility.amenities.length > 0 && (
                       <span className="block text-base not-italic font-medium text-slate-400 mt-4 border-t border-border/30 pt-4">
@@ -808,7 +810,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         </div>
 
         {facility.faqs && facility.faqs.length > 0 && (
-          <div className="space-y-8 pt-8 max-w-3xl mx-auto w-full px-6 md:px-12">
+          <div className="space-y-8 pt-8 max-w-3xl mx-auto w-full px-6 md:px-12 bg-brand-amber-subtle rounded-3xl py-8">
             <FaqAccordion
               faqs={facility.faqs.map((f) => ({
                 id: f.id,

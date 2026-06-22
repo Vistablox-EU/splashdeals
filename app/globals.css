@@ -143,3 +143,45 @@ a, button, [role="button"], select, summary, [type="checkbox"], [type="radio"], 
 .mobile-glass {
   @apply bg-background/80 backdrop-blur-xl border border-border;
 }
+
+/* 🎨 Brand Utilities — Teal + Amber Splash Palette */
+
+/* Brand card with thicker teal-tinted border */
+.brand-card {
+  @apply border-2 border-primary/10 rounded-2xl shadow-sm;
+}
+
+/* Brand accent left border (amber) */
+.brand-accent-left {
+  border-left: 3px solid var(--color-secondary);
+}
+
+/* Brand accent left border (teal) */
+.brand-accent-left-teal {
+  border-left: 3px solid var(--color-primary);
+}
+
+/* Section divider — teal to amber gradient line */
+.brand-divider {
+  @apply w-full h-px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 50%, transparent 100%);
+}
+
+/* Subtle amber ambient background */
+.bg-brand-amber-subtle {
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.03) 0%, transparent 100%);
+}
+
+/* Subtle teal ambient background */
+.bg-brand-teal-subtle {
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.03) 0%, transparent 100%);
+}
+
+/* Teal glow on hover for interactive cards */
+.hover-glow-teal {
+  @apply transition-all duration-300;
+}
+.hover-glow-teal:hover {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.08);
+  @apply border-primary/25;
+}

@@ -281,7 +281,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
       {/* Dynamic Sticky Checkout Drawer on Mobile */}
       {localTotalItems > 0 && (
         <div className="fixed bottom-20 left-4 right-4 z-[999] md:hidden animate-in slide-in-from-bottom duration-300">
-          <div className="mobile-glass rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
+          <div className="mobile-glass rounded-3xl p-4 shadow-[0_0_25px_rgba(6,182,212,0.1)] flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Izabrano</span>
               <div className="flex items-baseline gap-2">
@@ -774,7 +774,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
     <div 
       id={`ticket-${tier.id}`}
       className={cn(
-        "flex items-center justify-between px-3 py-3 border-b border-border/40 transition-colors even:bg-muted/[0.02]",
+        "flex items-center justify-between px-3 py-3 border-b border-border/40 transition-colors even:bg-muted/[0.02] hover-glow-teal",
         isHighlighted ? "bg-primary/[0.03]" : "hover:bg-muted/20"
       )}
     >

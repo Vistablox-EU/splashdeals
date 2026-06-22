@@ -58,7 +58,7 @@ export function FaqAccordion({ faqs }: Props) {
           <AccordionItem
             key={faq.id}
             value={faq.id}
-            className="rounded-xl border border-border bg-card px-4 sm:px-6"
+            className="rounded-xl border border-border bg-card px-4 sm:px-6 brand-accent-left"
             ref={(el) => setItemRef(faq.id, el)}
           >
             <AccordionTrigger className="text-left font-medium text-foreground py-4 hover:no-underline">

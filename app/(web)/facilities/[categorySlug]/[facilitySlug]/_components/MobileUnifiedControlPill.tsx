@@ -164,7 +164,7 @@ export function MobileUnifiedControlPill({
   return (
     <div className="w-full max-w-md mx-auto">
       <div
-        className="mobile-glass flex items-center justify-between w-full h-16 rounded-full px-4 shadow-2xl relative select-none"
+        className="mobile-glass flex items-center justify-between w-full h-16 rounded-full px-4 shadow-2xl relative select-none border-primary/10"
       >
         {/* 🌤️ Segment 1: Weather (tappable → toggle forecast) */}
         <button
