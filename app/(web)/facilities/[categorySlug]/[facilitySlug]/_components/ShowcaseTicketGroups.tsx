@@ -117,6 +117,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
   }, [groups]);
 
   const addItem = useCart((state) => state.addItem);
+  const cartItems = useCart((state) => state.items);
 
   const getQuantity = (id: string) => quantities[id] || 0;
   const setQuantity = (id: string, q: number) => {
@@ -137,9 +138,9 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
 
   const activeGroup = groups.find((g) => g.id === activeGroupId) || groups[0];
 
-  // Local selection totals from quantities + active group tiers
-  const localTotalItems = activeGroup.tiers.reduce((acc, tier) => acc + getQuantity(tier.id), 0);
-  const localTotalPrice = activeGroup.tiers.reduce((acc, tier) => acc + getQuantity(tier.id) * Number(tier.price), 0);
+  // Cart totals from cart state (modal adds directly to cart)
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   // Add all selected tickets to cart and navigate
   const handleBuySelection = () => {
@@ -268,8 +269,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
                   <MobileTicketCard
                     key={tier.id}
                     tier={tier}
-                    quantity={getQuantity(tier.id)}
-                    setQuantity={(id: string, q: number) => setQuantity(id, q)}
+                    onSelect={(t: TicketTier) => setSelectedTicket(t)}
                     isHighlighted={isFeatured}
                   />
                 );
@@ -279,21 +279,21 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
         )}
 
       {/* Dynamic Sticky Checkout Drawer on Mobile */}
-      {localTotalItems > 0 && (
+      {totalItems > 0 && (
         <div className="fixed bottom-20 left-4 right-4 z-[999] md:hidden animate-in slide-in-from-bottom duration-300">
           <div className="mobile-glass rounded-3xl p-4 shadow-[0_0_25px_rgba(6,182,212,0.1)] flex items-center justify-between gap-4">
             <div className="space-y-0.5">
-              <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Izabrano</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Korpa</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-sm font-black text-foreground">
-                  {localTotalItems} {localTotalItems === 1 ? 'ulaznica' : 'ulaznice'}
+                  {totalItems} {totalItems === 1 ? 'ulaznica' : 'ulaznice'}
                 </span>
-                <span className="text-xs font-bold text-primary">{localTotalPrice.toLocaleString("sr-Latn")} RSD</span>
+                <span className="text-xs font-bold text-primary">{totalPrice.toLocaleString("sr-Latn")} RSD</span>
               </div>
             </div>
             
             <button
-              onClick={handleBuySelection}
+              onClick={() => window.location.href = "/cart"}
               className="px-6 h-12 bg-primary hover:bg-primary/90 active:scale-95 transition-all text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)] shrink-0 cursor-pointer"
             >
               <span>Kupi</span>
@@ -746,29 +746,15 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
   );
 }
 
-function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
+function MobileTicketCard({ tier, onSelect, isHighlighted }: {
   tier: TicketTier;
-  quantity: number;
-  setQuantity: (id: string, qty: number) => void;
+  onSelect: (tier: TicketTier) => void;
   isHighlighted: boolean;
 }) {
-  const [justAdded, setJustAdded] = useState(false);
   const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
-  const discountPercent = hasDiscount 
+  const discountPercent = hasDiscount
     ? Math.round(((Number(tier.originalPrice) - Number(tier.price)) / Number(tier.originalPrice)) * 100)
     : 0;
-
-  const handleIncrement = () => {
-    if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
-    setQuantity(tier.id, quantity + 1);
-    setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 600);
-  };
-
-  const handleDecrement = () => {
-    if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
-    setQuantity(tier.id, Math.max(0, quantity - 1));
-  };
 
   return (
     <div 
@@ -778,7 +764,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
         isHighlighted ? "bg-primary/[0.03]" : "hover:bg-muted/20"
       )}
     >
-      {/* Left: label + badge */}
+      {/* Left: label + badges */}
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <span className="text-sm font-bold text-foreground tracking-tight truncate">
           {tier.label}
@@ -795,47 +781,21 @@ function MobileTicketCard({ tier, quantity, setQuantity, isHighlighted }: {
         )}
       </div>
 
-      {/* Right: price + stepper */}
+      {/* Right: gate price (strikethrough) + add button */}
       <div className="flex items-center gap-2 shrink-0">
-        {/* Price — inline strikethrough + current */}
-        {hasDiscount ? (
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-[10px] font-bold text-muted-foreground line-through tabular-nums leading-none">
-              {tier.originalPrice} RSD
-            </span>
-            <span className="text-sm font-black text-primary tabular-nums leading-none">
-              {tier.price} RSD
-            </span>
-          </div>
-        ) : (
-          <span className="text-sm font-black text-foreground tabular-nums leading-none">
-            {tier.price} RSD
+        {hasDiscount && (
+          <span className="text-[10px] font-bold text-muted-foreground line-through tabular-nums leading-none">
+            {tier.originalPrice} RSD
           </span>
         )}
 
-        {/* Stepper */}
-        <div className="flex items-center bg-black/25 rounded-lg border border-border/50">
-          <button
-            onClick={handleDecrement}
-            className="w-8 h-8 flex items-center justify-center hover:bg-muted/30 rounded-l-lg transition-colors text-muted-foreground"
-            aria-label="Smanji količinu"
-          >
-            <Icon name="remove" className="text-[14px]" />
-          </button>
-          <span className={cn(
-            "w-7 text-center font-black text-foreground text-xs transition-all duration-300",
-            justAdded && "scale-125 text-primary"
-          )}>
-            {quantity}
-          </span>
-          <button
-            onClick={handleIncrement}
-            className="w-8 h-8 flex items-center justify-center hover:bg-muted/30 rounded-r-lg transition-colors text-muted-foreground"
-            aria-label="Povećaj količinu"
-          >
-            <Icon name="add" className="text-[14px]" />
-          </button>
-        </div>
+        <button
+          onClick={() => onSelect(tier)}
+          className="w-8 h-8 flex items-center justify-center bg-primary/15 text-primary hover:bg-primary/25 active:scale-90 rounded-lg transition-all"
+          aria-label={`Dodaj ${tier.label}`}
+        >
+          <Icon name="add" className="text-[16px]" />
+        </button>
       </div>
     </div>
   );
