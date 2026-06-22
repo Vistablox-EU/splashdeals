@@ -4,13 +4,14 @@ import React from "react";
 import { useCart, initCartSync } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useHeaderScroll, DesktopTopNav } from "./_header";
-;
+import type { Dict } from "@/lib/types";
 
 interface HeaderProps {
+  dict: Dict;
   cities: { id: string; name: string; slug: string }[];
 }
 
-export const Header = ({ cities }: HeaderProps) => {
+export const Header = ({ dict: _dict, cities }: HeaderProps) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const openCart = useUIState((state) => state.openCart);
   const totalItems = useCart((state) => state.getTotalItems());
