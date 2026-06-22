@@ -745,8 +745,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             </Suspense>
         </div>
 
-        {/* 🍱 Bento Experience Sections */}
-        <div id="overview" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* 🍱 Bento Experience Sections — hidden on mobile, visible on desktop */}
+        <div id="overview" className="hidden md:grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
            <div className="lg:col-span-8 space-y-8">
               {/* Main Text Card */}
               <Card className="p-6 sm:p-12 md:p-16 space-y-8 min-h-0 md:min-h-[400px] flex flex-col justify-center brand-card">
