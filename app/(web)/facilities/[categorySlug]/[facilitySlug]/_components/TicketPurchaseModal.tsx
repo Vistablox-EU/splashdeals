@@ -421,7 +421,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
         <Button
           onClick={handleCheckout}
           disabled={isAdding || isAdded || !activePrice}
-          className="w-full h-14 text-xs font-black tracking-[0.2em] uppercase flex items-center justify-center gap-2 shadow-lg shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
+          className="hidden md:flex w-full h-14 text-xs font-black tracking-[0.2em] uppercase items-center justify-center gap-2 shadow-lg shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
         >
           <span>Kupi Odmah (1-Klik)</span>
           <Icon name="bolt" className="text-[16px] fill-current animate-pulse" />
