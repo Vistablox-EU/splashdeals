@@ -164,7 +164,7 @@ export function MobileUnifiedControlPill({
   return (
     <div className="w-full max-w-md mx-auto">
       <div
-        className="flex items-center justify-between w-full h-16 bg-background/80 backdrop-blur-xl border border-border rounded-full px-4 shadow-2xl relative select-none"
+        className="mobile-glass flex items-center justify-between w-full h-16 rounded-full px-4 shadow-2xl relative select-none"
       >
         {/* 🌤️ Segment 1: Weather (tappable → toggle forecast) */}
         <button
@@ -260,7 +260,7 @@ export function MobileUnifiedControlPill({
 
       {/* 📅 Expandable 3‑day forecast */}
       {forecastOpen && dailyForecast && dailyForecast.length > 0 && (
-        <div className="mt-2 bg-background/80 backdrop-blur-xl border border-border rounded-2xl p-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+        <div className="mt-2 mobile-glass rounded-2xl p-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
           <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-2 px-1">
             <span>Prognoza</span>
             <span>Visoko / Nisko</span>

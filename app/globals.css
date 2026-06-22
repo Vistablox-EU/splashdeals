@@ -138,3 +138,8 @@ a, button, [role="button"], select, summary, [type="checkbox"], [type="radio"], 
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Mobile Glassmorphism Utility */
+.mobile-glass {
+  @apply bg-background/80 backdrop-blur-xl border border-border;
+}

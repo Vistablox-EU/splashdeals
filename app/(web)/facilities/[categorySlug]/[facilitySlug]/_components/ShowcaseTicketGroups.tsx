@@ -257,7 +257,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
       {/* Dynamic Sticky Checkout Drawer on Mobile */}
       {totalItems > 0 && (
         <div className="fixed bottom-20 left-4 right-4 z-[999] md:bottom-4 md:left-4 md:right-4 md:z-50 animate-in slide-in-from-bottom duration-300">
-          <div className="backdrop-blur-xl bg-background/80 border border-border rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
+          <div className="mobile-glass rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Izabrano</span>
               <div className="flex items-baseline gap-2">
