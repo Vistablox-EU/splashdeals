@@ -27,9 +27,9 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: 
       {/* Brand Logo Image */}
       <Image
         src="/logo-splashdeals.webp"
-        alt="SplashDeals"
-        width={132}
-        height={40}
+        alt="SplashDeals - digitalne ulaznice za vodene parkove Srbija"
+        width={331}
+        height={112}
         className={cn(
           "h-9 sm:h-12 w-auto object-contain",
           "transition-all duration-300",

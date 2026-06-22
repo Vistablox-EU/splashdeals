@@ -66,7 +66,7 @@ export default async function LandingPage({ params: _params }: { params: Promise
     "@type": "Organization",
     "name": "SplashDeals",
     "url": "https://www.splashdeals.rs",
-    "logo": "https://www.splashdeals.rs/og-image.png",
+    "logo": "https://www.splashdeals.rs/logo-splashdeals.webp",
     "description": "Splashdeals je prvi srpski marketplace za digitalne ulaznice za vodene parkove, bazene i wellness centre. Preskočite redove na blagajni — kupite karte instant, direktno sa svog telefona.",
     "areaServed": {
       "@type": "Country",
