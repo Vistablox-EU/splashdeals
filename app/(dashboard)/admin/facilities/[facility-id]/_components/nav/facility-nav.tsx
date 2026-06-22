@@ -21,6 +21,7 @@ interface FacilityNavProps {
     ticketCategories: number
     media: number
     amenities: number
+    faq: number
   }
 }
 
@@ -42,6 +43,13 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
       count: counts?.ticketCategories ?? 0,
     },
     { title: "Profil", href: `${b}/profile`, active: isActive(`${b}/profile`, true), icon: "account_circle" },
+    {
+      title: "FAQ",
+      href: `${b}/faq`,
+      active: isActive(`${b}/faq`),
+      icon: "help",
+      count: counts?.faq ?? 0,
+    },
     {
       title: "Sadržaji",
       href: `${b}/amenities`,

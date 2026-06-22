@@ -56,6 +56,7 @@ export default async function FacilityManagementLayout({
           ticketCategories: true,
           media: true,
           amenities: true,
+          faqs: true,
         }
       }
     }
@@ -83,6 +84,7 @@ export default async function FacilityManagementLayout({
             ticketCategories: facility._count.ticketCategories,
             media: facility._count.media,
             amenities: facility._count.amenities,
+            faq: facility._count.faqs,
           }}
         />
       </Suspense>

@@ -125,6 +125,7 @@ model Facility {
   ticketCategories  TicketCategory[]
   revenue           Transaction[]
   closures          FacilityClosure[]
+  faqs              FacilityFAQ[]
   staffAssignments  FacilityStaffAssignment[]
   products          Product[]
   campaignLinks     CampaignFacility[]
@@ -655,6 +656,22 @@ enum TicketStatus {
   HOLD
 
   @@schema("sales")
+}
+
+/// Pitanja i odgovori za objekat — prikazuju se na javnoj stranici objekta
+model FacilityFAQ {
+  id           String   @id @default(uuid())
+  facilityId   String
+  facility     Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  question     String
+  answer       String   @db.Text
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([facilityId, displayOrder])
+  @@schema("partners")
+  @@map("facility_faqs")
 }
 
 enum AmenityValueType {

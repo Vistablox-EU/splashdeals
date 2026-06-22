@@ -28,6 +28,7 @@ import {
 
 // 🏝️ Islands: Client Components for interactive portions
 import { ShowcaseHero, WeatherBadge } from "./_components/ShowcaseHero"
+import { FaqAccordion } from "./_components/FaqAccordion"
 import { OperationalPortal, CurrentOperationalStatus } from "./_components/OperationalPortal"
 import { WeatherBadgeSkeleton, OperationalStatusSkeleton, TicketGridSkeleton } from "./_components/ShowcaseSkeletons"
 import dynamic from "next/dynamic"
@@ -123,7 +124,8 @@ async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
     policy: true,
     hours: { orderBy: { dayOfWeek: "asc" } },
     amenities: { include: { amenity: true }, orderBy: { displayOrder: "asc" } },
-    marketplaceCities: { include: { city: true } }
+    marketplaceCities: { include: { city: true } },
+    faqs: { orderBy: { displayOrder: "asc" } },
   }
 }> | null> {
   const result = await prisma.facility.findUnique({
@@ -149,7 +151,8 @@ async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
       policy: true,
       hours: { orderBy: { dayOfWeek: "asc" } },
       amenities: { include: { amenity: true }, orderBy: { displayOrder: "asc" } },
-      marketplaceCities: { include: { city: true } }
+      marketplaceCities: { include: { city: true } },
+      faqs: { orderBy: { displayOrder: "asc" } },
     }
   });
 
@@ -794,19 +797,16 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
            </aside>
         </div>
 
-        {facility.policy?.faq && (
-           <div className="space-y-8 pt-12">
-              <div className="flex flex-col items-center text-center space-y-4 mb-8">
-                 <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase text-white leading-none">
-                    Korisne <span className="text-splash">Informacije.</span>
-                 </h2>
-              </div>
-              <Card className="max-w-4xl mx-auto p-8 md:p-12">
-                 <div className="whitespace-pre-line text-slate-300 text-sm leading-relaxed font-medium">
-                    {facility.policy.faq}
-                 </div>
-              </Card>
-           </div>
+        {facility.faqs && facility.faqs.length > 0 && (
+          <div className="space-y-8 pt-12">
+            <FaqAccordion
+              faqs={facility.faqs.map((f) => ({
+                id: f.id,
+                question: f.question,
+                answer: f.answer,
+              }))}
+            />
+          </div>
         )}
 
         <MediaGallery media={facility.media} dict={dict} />
