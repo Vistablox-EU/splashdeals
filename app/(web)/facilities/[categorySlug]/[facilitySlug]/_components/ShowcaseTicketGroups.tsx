@@ -278,36 +278,30 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
           </div>
         )}
 
-      {/* Dynamic Sticky Checkout Drawer on Mobile — always visible */}
-      <div className="fixed bottom-20 left-4 right-4 z-[999] md:hidden animate-in slide-in-from-bottom duration-300">
-        <div className="mobile-glass rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
-          <div className="space-y-0.5">
-            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
-              {localTotalItems > 0 ? "Izabrano" : "Vaša korpa"}
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-sm font-black text-foreground">
-                {localTotalItems} {localTotalItems === 1 ? 'ulaznica' : 'ulaznice'}
-              </span>
-              <span className="text-xs font-bold text-primary">{localTotalPrice.toLocaleString("sr-Latn")} RSD</span>
+      {/* Dynamic Sticky Checkout Drawer on Mobile */}
+      {localTotalItems > 0 && (
+        <div className="fixed bottom-20 left-4 right-4 z-[999] md:hidden animate-in slide-in-from-bottom duration-300">
+          <div className="mobile-glass rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Izabrano</span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm font-black text-foreground">
+                  {localTotalItems} {localTotalItems === 1 ? 'ulaznica' : 'ulaznice'}
+                </span>
+                <span className="text-xs font-bold text-primary">{localTotalPrice.toLocaleString("sr-Latn")} RSD</span>
+              </div>
             </div>
+            
+            <button
+              onClick={handleBuySelection}
+              className="px-6 h-12 bg-primary hover:bg-primary/90 active:scale-95 transition-all text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)] shrink-0 cursor-pointer"
+            >
+              <span>Kupi</span>
+              <Icon name="arrow_forward" className="text-[16px]" />
+            </button>
           </div>
-          
-          <button
-            onClick={handleBuySelection}
-            disabled={localTotalItems === 0}
-            className={cn(
-              "px-6 h-12 flex items-center gap-2 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shrink-0",
-              localTotalItems > 0
-                ? "bg-primary hover:bg-primary/90 active:scale-95 text-primary-foreground shadow-[0_0_20px_rgba(6,182,212,0.3)] cursor-pointer"
-                : "bg-muted/50 text-muted-foreground/50 cursor-not-allowed"
-            )}
-          >
-            <span>{localTotalItems > 0 ? "Kupi" : "Dodaj karte"}</span>
-            {localTotalItems > 0 && <Icon name="arrow_forward" className="text-[16px]" />}
-          </button>
         </div>
-      </div>
+      )}
 
       <TicketPurchaseModal
         key={selectedTicket ? selectedTicket.id : "closed"}

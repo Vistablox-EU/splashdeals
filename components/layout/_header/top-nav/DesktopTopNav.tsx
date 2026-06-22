@@ -51,12 +51,14 @@ export function DesktopTopNav({
 
         <div className="flex items-center gap-1.5 md:gap-3">
           <ThemeToggle />
+          <div className="hidden md:flex">
           <CartButton
             isOnline={isOnline}
             mounted={mounted}
             totalItems={totalItems}
             openCart={openCart}
           />
+          </div>
           <MobileTopNav
             isMobileMenuOpen={isMobileMenuOpen}
             onToggle={onMobileMenuToggle}
