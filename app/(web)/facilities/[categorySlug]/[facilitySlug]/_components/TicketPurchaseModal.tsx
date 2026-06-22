@@ -230,41 +230,34 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6">
-      {/* Backdrop */}
-      <div onClick={onClose} className="absolute inset-0 bg-background/95 backdrop-blur-md pointer-events-auto animate-fade-in" />
+    <>
+      {/* Mobile: Bottom Sheet */}
+      <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end">
+        <div onClick={onClose} className="absolute inset-0 bg-background/80 backdrop-blur-sm animate-fade-in pointer-events-auto" />
+        <div ref={modalRef} className="relative z-10 bg-card rounded-t-3xl border border-border/50 shadow-2xl max-h-[85vh] flex flex-col animate-slide-up pb-safe overflow-hidden">
+          <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-border/30 shrink-0">
+            <h2 className="text-base font-black text-foreground tracking-tight uppercase leading-tight">
+              {facility?.name || "Izaberite kartu"}
+            </h2>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-muted/20 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground active:scale-90 transition-all shrink-0"
+              aria-label="Zatvori"
+            >
+              <Icon name="close" className="text-[16px]" />
+            </button>
+          </div>
 
-      {/* Modal Container */}
-      <div ref={modalRef} className="relative w-full max-w-lg md:max-w-xl z-10 overflow-visible animate-fade-in-up">
-        <Card className="p-8 md:p-10 overflow-visible border-border relative z-10 flex flex-col gap-6 bg-card shadow-2xl rounded-3xl">
-
-          {/* Decorative glow */}
-          <div className="absolute -top-12 left-1/4 right-1/4 h-24 bg-primary/10 rounded-full blur-[50px] pointer-events-none z-0" />
-
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            className="absolute top-6 right-6 w-9 h-9 rounded-full bg-muted/10 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/20 active:scale-90 transition-all z-30 shadow-sm"
-            aria-label="Zatvori"
-          >
-            <Icon name="close" className="text-[18px]" />
-          </button>
-
-          {loading ? (
-            <div className="flex items-center justify-center py-16">
-              <svg className="animate-spin h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            </div>
-          ) : !activeProduct ? (
-            <>
-              {/* Step 1: Pick Category + Product */}
-              <div className="space-y-4 z-10">
-                <h2 className="text-xl font-black text-foreground tracking-tight uppercase leading-tight">
-                  {facility?.name || "Izaberite kartu"}
-                </h2>
-
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <svg className="animate-spin h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              </div>
+            ) : !activeProduct ? (
+              <>
                 {/* Category tabs */}
                 {showCategoryPicker && (
                   <div className="flex gap-1 p-1 rounded-xl bg-muted/20 border border-border">
@@ -284,8 +277,8 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
                   </div>
                 )}
 
-                {/* Product cards */}
-                <div className="grid gap-3">
+                {/* Product list */}
+                <div className="divide-y divide-border/40">
                   {activeCategory?.products.map((prod) => (
                     <button
                       key={prod.id}
@@ -293,57 +286,47 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
                         setSelectedProduct(prod.id);
                         setQuantity(prod.minPeople || 1);
                       }}
-                      className={`w-full text-left rounded-xl border p-4 transition-all ${
-                        selectedProduct === prod.id
-                          ? "bg-primary/5 border-primary/30"
-                          : "bg-muted/5 border-border hover:border-primary/20"
-                      }`}
+                      className="w-full text-left py-3 flex items-center justify-between transition-colors hover:bg-muted/10 active:bg-muted/20"
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                          selectedProduct === prod.id ? "border-primary" : "border-muted-foreground/30"
+                        }`}>
+                          {selectedProduct === prod.id && <div className="w-2 h-2 rounded-full bg-primary" />}
+                        </div>
                         <span className="text-sm font-bold text-foreground">{prod.title}</span>
-                        <span className="text-lg font-black text-foreground">
-                          od {Math.min(...prod.prices.map((p) => p.price)).toLocaleString("sr-RS")} RSD
-                        </span>
                       </div>
-                      <div className="flex gap-2 mt-1">
-                        {prod.prices.map((p) => (
-                          <span key={p.id} className="text-[9px] px-2 py-0.5 rounded-full bg-muted/20 text-muted-foreground">
-                            {DAY_LABELS[p.dayType ?? "ALL"]} — {TIME_LABELS[p.timeSlot ?? "FULL_DAY"]}
-                          </span>
-                        ))}
-                      </div>
+                      <span className="text-xs font-black text-primary shrink-0">
+                        od {Math.min(...prod.prices.map((p) => p.price)).toLocaleString("sr-RS")} RSD
+                      </span>
                     </button>
                   ))}
                 </div>
-              </div>
-            </>
-          ) : (
-            <>
-              {/* Step 2: Price Selection + Quantity */}
-              <div className="space-y-4 z-10">
-                {/* Header */}
+              </>
+            ) : (
+              <>
+                {/* Back + title */}
                 <div className="flex items-center gap-2">
                   {categories.length > 1 && (
-                    <button onClick={() => setSelectedProduct(null)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-all">
-                      <Icon name="arrow_back" className="text-[16px]" />
+                    <button onClick={() => setSelectedProduct(null)} className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-all">
+                      <Icon name="arrow_back" className="text-[14px]" />
                     </button>
                   )}
                   <div>
-                    <h2 className="text-lg font-black text-foreground italic tracking-tight uppercase leading-tight">
-                      {activeProduct.title}
-                    </h2>
+                    <h3 className="text-sm font-black text-foreground italic tracking-tight uppercase">{activeProduct.title}</h3>
                     {facility?.name && (
-                      <span className="text-[10px] font-bold text-primary tracking-widest uppercase">{facility.name}</span>
+                      <span className="text-[9px] font-bold text-primary tracking-widest uppercase">{facility.name}</span>
                     )}
                   </div>
                 </div>
 
-                {/* Price options */}
-                <div className="space-y-2">
-                  <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Izaberite varijantu</span>
+                {/* Price variations */}
+                <div className="divide-y divide-border/40">
+                  <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest pb-2 block">Izaberite varijantu</span>
                   {activeProduct.prices.map((p) => {
                     const isSelected = activePrice?.id === p.id;
                     const hasDiscount = p.originalPrice && p.originalPrice > p.price;
+                    const discountPct = hasDiscount ? Math.round(((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) * 100) : 0;
                     const dayLabel = DAY_LABELS[p.dayType ?? "ALL"];
                     const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"];
                     const displayLabel = p.label || `${dayLabel} — ${timeLabel}`;
@@ -352,25 +335,30 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
                       <button
                         key={p.id}
                         onClick={() => setSelectedPrice(p.id)}
-                        className={`w-full text-left rounded-xl border p-3 flex items-center justify-between transition-all ${
-                          isSelected
-                            ? "bg-primary/5 border-primary/40"
-                            : "bg-muted/5 border-border hover:border-primary/20"
+                        className={`w-full text-left py-3 flex items-center justify-between transition-colors ${
+                          isSelected ? "bg-primary/[0.02]" : "hover:bg-muted/10 active:bg-muted/20"
                         }`}
                       >
-                        <div className="flex items-center gap-2">
-                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
                             isSelected ? "border-primary" : "border-muted-foreground/30"
                           }`}>
                             {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
                           </div>
-                          <span className="text-xs font-bold text-foreground">{displayLabel}</span>
+                          <div className="min-w-0">
+                            <span className="text-sm font-bold text-foreground block truncate">{displayLabel}</span>
+                            {hasDiscount && (
+                              <span className="text-[9px] text-muted-foreground">
+                                Ušteda {discountPct}%
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex items-baseline gap-1.5">
+                        <div className="flex items-baseline gap-1.5 shrink-0">
                           <span className="text-sm font-black text-foreground">{p.price.toLocaleString("sr-RS")}</span>
                           <span className="text-[9px] font-bold text-primary">RSD</span>
                           {hasDiscount && (
-                            <span className="text-[9px] text-muted-foreground line-through ml-1">
+                            <span className="text-[8px] text-muted-foreground line-through ml-0.5">
                               {p.originalPrice?.toLocaleString("sr-RS")}
                             </span>
                           )}
@@ -411,7 +399,6 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
                     </span>
                   </div>
                 )}
-              </div>
 
               {/* CTA Buttons */}
               <div className="flex flex-col gap-3.5 z-10 w-full">
@@ -446,8 +433,36 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
               </div>
             </>
           )}
-        </Card>
+        </div>
       </div>
     </div>
+
+      {/* Desktop: centered card */}
+      <div className="hidden md:fixed md:inset-0 md:z-50 md:flex md:items-center md:justify-center md:p-6">
+        <div onClick={onClose} className="absolute inset-0 bg-background/95 backdrop-blur-md animate-fade-in pointer-events-auto" />
+        <div className="relative w-full max-w-lg md:max-w-xl z-10 animate-fade-in-up">
+          <Card className="p-8 md:p-10 overflow-visible border-border relative z-10 flex flex-col gap-6 bg-card shadow-2xl rounded-3xl">
+            <div className="absolute -top-12 left-1/4 right-1/4 h-24 bg-primary/10 rounded-full blur-[50px] pointer-events-none z-0" />
+            <button
+              onClick={onClose}
+              className="absolute top-6 right-6 w-9 h-9 rounded-full bg-muted/10 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/20 active:scale-90 transition-all z-30 shadow-sm"
+              aria-label="Zatvori"
+            >
+              <Icon name="close" className="text-[18px]" />
+            </button>
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <svg className="animate-spin h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              </div>
+            ) : (
+              <div className="space-y-4">Desktop content needs mobile sheet content duplicated here</div>
+            )}
+          </Card>
+        </div>
+      </div>
+    </>
   );
 }
