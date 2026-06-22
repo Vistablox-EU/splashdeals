@@ -745,16 +745,16 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             </Suspense>
         </div>
 
-        {/* 🍱 Bento Experience Sections — hidden on mobile, visible on desktop */}
-        <div id="overview" className="hidden md:grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* 🍱 Bento Experience Sections */}
+        <div id="overview" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
            <div className="lg:col-span-8 space-y-8">
               {/* Main Text Card */}
               <Card className="p-6 sm:p-12 md:p-16 space-y-8 min-h-0 md:min-h-[400px] flex flex-col justify-center brand-card">
-                 <div className="flex items-center gap-3 text-primary font-black uppercase tracking-[0.2em] text-xs">
+                 <div className="hidden md:flex items-center gap-3 text-primary font-black uppercase tracking-[0.2em] text-xs">
                     <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
                  </div>
-                 <div className="brand-divider w-24 mb-4" />
-                 <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase leading-tight text-foreground">
+                 <div className="hidden md:block brand-divider w-24 mb-4" />
+                 <h2 className="hidden md:block text-2xl md:text-5xl font-black italic tracking-tighter uppercase leading-tight text-foreground">
                     Zabava <span className="text-splash">Otključana.</span>
                  </h2>
                  <p className="text-muted-foreground text-xl leading-relaxed font-medium italic opacity-90 max-w-2xl space-y-4">
