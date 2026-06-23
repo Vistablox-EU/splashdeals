@@ -5,9 +5,20 @@ import { prisma } from "@/server/lib/prisma"
 import { getTicketHierarchy } from "./_lib/ticket-admin-actions"
 import { TicketManagementV2 } from "./_components/ticket-management-v2"
 
-export const metadata: Metadata = {
-  title: "Ticket Management | Splashdeals Admin",
-  description: "Manage ticket categories, products, and pricing variations.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ "facility-id": string }>
+}): Promise<Metadata> {
+  const { "facility-id": facilityId } = await params
+  const facility = await prisma.facility.findUnique({
+    where: { id: facilityId },
+    select: { name: true },
+  })
+  return {
+    title: `${facility?.name || "Facility"} — Tickets | Splashdeals Admin`,
+    description: `Manage ticket categories, products, and pricing for ${facility?.name || "this facility"}.`,
+  }
 }
 
 export default async function TicketsPageV2({

@@ -1,5 +1,6 @@
 import "server-only";
-import { prisma } from "@/server/lib/prisma"
+import { prisma } from "@/server/lib/prisma";
+import { dbValueToSlug } from "@/lib/routing/categories";
 
 /**
  * 🏙️ Active Cities
@@ -53,7 +54,7 @@ export function validateDiscoverySlug(
     slug: string, 
     marketplaceCities?: { city: { slug: string } }[] 
   }): { isCategory: boolean; isCity: boolean; canonicalPath: string } {
-  const canonicalCategory = facility.category.toLowerCase().replace(/\s+/g, '-');
+  const canonicalCategory = dbValueToSlug(facility.category) ?? facility.category.toLowerCase().replace(/\s+/g, '-');
   const citySlugs = facility.marketplaceCities?.map((mc) => mc.city.slug) || [];
   
   const currentSlugLower = currentSlug.toLowerCase();

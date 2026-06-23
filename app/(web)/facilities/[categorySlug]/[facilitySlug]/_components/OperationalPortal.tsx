@@ -56,11 +56,25 @@ export function OperationalPortal({ hours = [] }: OperationalPortalProps) {
   );
 }
 
+interface CurrentOperationalStatusProps {
+  hours: Array<{
+    dayOfWeek: number
+    openTime: string
+    closeTime: string
+    isClosed: boolean
+  }>
+}
+
 /**
  * 🕓 CurrentOperationalStatus Island (Client)
  */
-export function CurrentOperationalStatus({ hours = [] }: { hours: OperatingHours[] }) {
-  const [status, setStatus] = useState<OperatingHours | null>(null);
+export function CurrentOperationalStatus({ hours = [] }: CurrentOperationalStatusProps) {
+  const [status, setStatus] = useState<{
+    dayOfWeek: number
+    openTime: string
+    closeTime: string
+    isClosed: boolean
+  } | null>(null);
 
   useEffect(() => {
     const todayId = new Date().getDay();

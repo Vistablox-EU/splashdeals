@@ -1,8 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { notFound, permanentRedirect } from "next/navigation"
 import { Metadata } from "next"
-import { prisma } from "@/server/lib/prisma"
-import Link from "next/link"
 import { connection } from "next/server"
 import { Suspense } from "react"
 import { getDictionary } from "@/lib/dictionaries"
@@ -20,17 +18,16 @@ function isDeletedFacility(slug: string): boolean {
   return DELETED_FACILITY_SLUGS.has(slug);
 }
 import { 
-  OperatingHours, 
   DayType,
   TimeSlot,
-  Prisma
 } from "@prisma/client"
 
 // 🏝️ Islands: Client Components for interactive portions
-import { ShowcaseHero, WeatherBadge } from "./_components/ShowcaseHero"
+import { ShowcaseHero } from "./_components/ShowcaseHero"
 import { FaqAccordion } from "./_components/FaqAccordion"
-import { OperationalPortal, CurrentOperationalStatus } from "./_components/OperationalPortal"
-import { WeatherBadgeSkeleton, OperationalStatusSkeleton, TicketGridSkeleton } from "./_components/ShowcaseSkeletons"
+import { OperationalPortal } from "./_components/OperationalPortal"
+import { TicketGridSkeleton } from "./_components/ShowcaseSkeletons"
+import { HeroActionPill } from "./_components/HeroActionPill"
 import dynamic from "next/dynamic"
 
 const ShowcaseTicketGroups = dynamic(() => import("./_components/ShowcaseTicketGroups").then((mod) => mod.ShowcaseTicketGroups), {
@@ -45,35 +42,23 @@ const ShowcaseAmenities = dynamic(() => import("./_components/ShowcaseAmenities"
   ssr: true
 });
 
-const DistanceCalculator = dynamic(() => import("./_components/DistanceCalculator").then((mod) => mod.DistanceCalculator), {
-  loading: () => <div className="h-10 w-36 rounded-2xl bg-muted border border-border" />,
-});
-
-const MobileUnifiedControlPill = dynamic(() => import("./_components/MobileUnifiedControlPill").then((mod) => mod.MobileUnifiedControlPill), {
-  loading: () => <div className="h-16 w-full max-w-md mx-auto rounded-full bg-muted border border-border" />,
-});
-
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PartnerBranding } from "./_components/PartnerBranding"
-import { SidebarWeatherWidget } from "./_components/WeatherWidget"
 import { ScrollManager } from "./_components/ScrollManager"
 import { BreadcrumbInjector } from "./_components/BreadcrumbInjector"
 
 
 import { serialize } from "@/lib/serialize"
-import { ShareButton } from "./_components/ShareButton";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { validateDiscoverySlug } from "@/server/lib/data/discovery";
-import { calculateMaxDiscount } from "@/lib/utils/pricing";
 import { 
   catLabelMap,
-  buildAttractionSchema, 
-  buildBusinessSchema, 
-  buildProductSchema, 
-  buildVideoSchema, 
-  buildBreadcrumbSchema
+  buildFacilitySchema,
+  TierEntry,
 } from "./_schemas";
+import { getFacility, buildFacilityMetadata } from "./_metadata";
+import { getWeather } from "@/server/lib/weather";
 
 interface _TicketData {
   id: string;
@@ -100,175 +85,6 @@ interface FacilityPageProps {
 }
 
 /**
- * 🔒 Reusable cached fetcher forperformance and consistency
- */
-async function getFacility(slug: string): Promise<Prisma.FacilityGetPayload<{
-  include: {
-    media: { orderBy: { order: "asc" } },
-    ticketCategories: {
-      where: { isActive: true },
-      include: {
-        types: {
-          where: { isActive: true },
-          include: {
-            prices: {
-              where: { isActive: true },
-              orderBy: { displayOrder: "asc" }
-            }
-          },
-          orderBy: { displayOrder: "asc" }
-        }
-      },
-      orderBy: { displayOrder: "asc" }
-    },
-    policy: true,
-    hours: { orderBy: { dayOfWeek: "asc" } },
-    amenities: { include: { amenity: true }, orderBy: { displayOrder: "asc" } },
-    marketplaceCities: { include: { city: true } },
-    faqs: { orderBy: { displayOrder: "asc" } },
-  }
-}> | null> {
-  const result = await prisma.facility.findUnique({
-    where: { slug },
-    include: {
-      media: { orderBy: { order: "asc" } },
-      ticketCategories: {
-        where: { isActive: true },
-        include: {
-          types: {
-            where: { isActive: true },
-            include: {
-              prices: {
-                where: { isActive: true },
-                orderBy: { displayOrder: "asc" }
-              }
-            },
-            orderBy: { displayOrder: "asc" }
-          }
-        },
-        orderBy: { displayOrder: "asc" }
-      },
-      policy: true,
-      hours: { orderBy: { dayOfWeek: "asc" } },
-      amenities: { include: { amenity: true }, orderBy: { displayOrder: "asc" } },
-      marketplaceCities: { include: { city: true } },
-      faqs: { orderBy: { displayOrder: "asc" } },
-    }
-  });
-
-  if (result) {
-    return serialize(result);
-  }
-  return null;
-}
-
-/**
- * 🕵️ Metadata Engine (Shared for native showcase page)
- */
-export async function getFacilityMetadata(facilitySlug: string, categorySlug: string, subPath?: string): Promise<Metadata> {
-  const facility = await getFacility(facilitySlug)
-  if (!facility) {
-    notFound()
-  }
-
-  const currentYear = new Date().getFullYear();
-  const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
-
-  // Derive ticket data from new hierarchy (ticketCategories → types → prices)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tickets = (facility.ticketCategories || []).flatMap((cat: any) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (cat.types || []).flatMap((prod: any) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (prod.prices || []).filter((p: any) => p.isActive)
-    )
-  );
-  const activeTickets = tickets;
-  const ticketCount = activeTickets.length;
-  const ticketHint = ticketCount > 0 
-    ? ` | ${ticketCount} vrsta ulaznica dostupno`
-    : '';
-
-  const minPrice = activeTickets.length > 0 
-    ? Math.min(...activeTickets.map((t: { price: number | { toString: () => string } }) => Number(t.price)))
-    : null;
-
-  const priceHint = minPrice 
-    ? ` Već od ${minPrice} RSD!`
-    : '';
-
-  // Prioritize metaTitle from database, fall back to dynamic formula
-  const maxDiscount = calculateMaxDiscount(
-    tickets.map((t: { isActive: boolean; price: unknown; originalPrice: unknown | null }) => ({
-      isActive: t.isActive,
-      price: Number(t.price),
-      originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
-    }))
-  );
-  
-  // Localize and normalize the facility name (e.g. "AquaPark Petroland" -> "Akva park Petroland")
-  const localizedName = facility.name
-    .replace(/\bAquaPark\b/gi, "Akva park")
-    .replace(/\bAqua Park\b/gi, "Akva park");
-
-  const fallbackTitle = maxDiscount > 0
-    ? `${localizedName} ${facility.city} Ulaznice - Uštedi do ${maxDiscount}%`
-    : `${localizedName} ${facility.city} Ulaznice ${currentYear}`;
-  
-  const rawTitle = facility.metaTitle || fallbackTitle;
-  
-  // Clean up trailing brand suffixes to prevent the root layout template from duplicating the brand name
-  const title = rawTitle
-    .replace(/\s*\|\s*Splash\s*Deals\s*$/i, "")
-    .replace(/\s*\|\s*Splashdeals\s*$/i, "");
-
-  // Prioritize metaDescription from database, fall back to dynamic formula
-  const fallbackDescription = `Kupi ulaznice za ${facility.name} u ${facility.city}.${priceHint} Najbolje cene za ${categoryLabel.toLowerCase()} u Srbiji na Splashdeals.`;
-  const baseDescription = facility.metaDescription || (facility.description?.slice(0, 140) || fallbackDescription);
-  const finalDescription = baseDescription.includes("Već od") ? baseDescription : `${baseDescription}${priceHint}${ticketHint}`;
-
-  const ogImage = facility.media.find((m: { isHero: boolean; isCardBackground: boolean; type: string; url?: string }) => m.isHero && m.type === 'PHOTO')?.url 
-    || facility.media.find((m: { isHero: boolean; isCardBackground: boolean; type: string; url?: string }) => m.isCardBackground && m.type === 'PHOTO')?.url
-    || facility.media.find((m: { isHero: boolean; isCardBackground: boolean; type: string; url?: string }) => m.type === 'PHOTO')?.url
-    || "/og-image.png";
-
-  const canonicalUrl = subPath 
-    ? `https://www.splashdeals.rs/${facilitySlug}/${subPath}`
-    : `https://www.splashdeals.rs/${facilitySlug}`;
-
-  return {
-    title,
-    description: finalDescription,
-    // Explicit index directive — must arrive in the same chunk as the canonical tag.
-    // Never rely on the loading skeleton's absence of noindex; declare it positively.
-    robots: { index: true, follow: true },
-    alternates: { 
-      canonical: canonicalUrl,
-      languages: {
-        "sr-RS": canonicalUrl,
-        "sr": canonicalUrl,
-        "x-default": canonicalUrl,
-      }
-    },
-    openGraph: {
-      title,
-      description: finalDescription,
-      url: canonicalUrl,
-      siteName: "SplashDeals",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: facility.name }],
-      locale: "sr_RS",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description: finalDescription,
-      images: [ogImage],
-    }
-  }
-}
-
-/**
  * 🕵️ Metadata Engine (For the legacy long-segment redirect)
  */
 export async function generateMetadata({ params }: FacilityPageProps): Promise<Metadata> {
@@ -286,36 +102,6 @@ export async function generateMetadata({ params }: FacilityPageProps): Promise<M
   permanentRedirect(`/${facilitySlug}`)
 }
 
-async function WeatherBadgeIsland({ lat, lng }: { lat: number, lng: number }) {
-  let weather = null;
-  try {
-    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`, { 
-      next: { revalidate: 3600 } 
-    })
-    const data = await res.json()
-    weather = data.current_weather
-  } catch { 
-    weather = null;
-  }
-  if (!weather) return null;
-  return <WeatherBadge weather={weather} />
-}
-
-async function SidebarWeatherIsland({ lat, lng }: { lat: number, lng: number }) {
-  let weather = null;
-  try {
-    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`, { 
-      next: { revalidate: 3600 } 
-    })
-    const data = await res.json()
-    weather = data.current_weather
-  } catch { 
-    weather = null;
-  }
-  if (!weather) return null;
-  return <SidebarWeatherWidget weather={weather} />
-}
-
 /**
  * 🌊 Showcase Template Component (Used natively by catching routes)
  */
@@ -330,31 +116,6 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
   // 🛡️ PRERENDER SIGNAL: Everything below this can be dynamic (PPR)
   await connection();
-
-  // Fetch weather data for the unified mobile pill
-  let weather = null;
-  let dailyForecast = null;
-  if (facility.lat && facility.lng) {
-    try {
-      const res = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${facility.lat}&longitude=${facility.lng}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`,
-        { next: { revalidate: 3600 } }
-      );
-      const data = await res.json();
-      weather = data.current_weather;
-      if (data.daily) {
-        const dayNames = ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"];
-        dailyForecast = data.daily.time.map((dateStr: string, i: number) => ({
-          day: dayNames[new Date(dateStr).getDay()],
-          weathercode: data.daily.weathercode[i],
-          tempHigh: Math.round(data.daily.temperature_2m_max[i]),
-          tempLow: Math.round(data.daily.temperature_2m_min[i]),
-        }));
-      }
-    } catch {
-      weather = null;
-    }
-  }
 
   validateDiscoverySlug(categorySlug, facility);
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
@@ -477,162 +238,24 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const heroMedia = explicitHero || firstVideo || facility.media[0];
 
   // 🧠 Structured Data Block
-  const allTiers = mappedGroups.flatMap((group: { tiers: Array<unknown> }) => group.tiers || []);
+  const allTiers = mappedGroups.flatMap((group: { tiers: Array<unknown> }) => group.tiers || []) as TierEntry[];
 
-  // Deterministic ratings removed — AggregateRating requires real user reviews,
-  // not values computed from facility name hashes. Remove once a review system exists.
+  const facilitySchema = buildFacilitySchema({
+    facility,
+    facilitySlug,
+    categorySlug,
+    categoryLabel,
+    allTiers,
+    heroMedia: heroMedia ?? null,
+    ticketCount,
+    currentYear,
+    hours: facility.hours ?? [],
+  });
 
-  // Dynamic Wikidata entity mapping for advanced generative search engines (GEO)
-  const additionalType = facility.category.toLowerCase() === 'waterpark' 
-    ? "https://www.wikidata.org/wiki/Q740331" 
-    : facility.category.toLowerCase() === 'swimming-pool' 
-      ? "https://www.wikidata.org/wiki/Q64528" 
-      : "https://www.wikidata.org/wiki/Q11947";
-
-  const aggregateOffer = allTiers.length > 0 ? {
-    "@type": "AggregateOffer",
-    "priceCurrency": "RSD",
-    "lowPrice": Math.min(...allTiers.map((t) => Number((t as { price: number }).price))),
-    "highPrice": Math.max(...allTiers.map((t) => Number((t as { price: number }).price))),
-    "offerCount": allTiers.length,
-    "shippingDetails": {
-      "@type": "OfferShippingDetails",
-      "shippingRate": {
-        "@type": "MonetaryAmount",
-        "value": 0,
-        "priceCurrency": "RSD"
-      },
-      "deliveryTime": {
-        "@type": "ShippingDeliveryTime",
-        "handlingTime": {
-          "@type": "QuantitativeValue",
-          "maxValue": 0,
-          "unitCode": "DAY"
-        }
-      }
-    },
-    "hasMerchantReturnPolicy": {
-      "@type": "MerchantReturnPolicy",
-      "applicableCountry": "RS",
-      "returnPolicyCategory": "https://schema.org/NoReturns"
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    "offers": allTiers.map((tier: any) => {
-      const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
-      
-      const priceSpecification = hasDiscount ? [
-        {
-          "@type": "UnitPriceSpecification",
-          "priceType": "https://schema.org/ListPrice",
-          "price": Number(tier.originalPrice),
-          "priceCurrency": "RSD",
-          "valueAddedTaxIncluded": true
-        },
-        {
-          "@type": "UnitPriceSpecification",
-          "priceType": "https://schema.org/SalePrice",
-          "price": Number(tier.price),
-          "priceCurrency": "RSD",
-          "valueAddedTaxIncluded": true
-        }
-      ] : [
-        {
-          "@type": "UnitPriceSpecification",
-          "priceType": "https://schema.org/ListPrice",
-          "price": Number(tier.price),
-          "priceCurrency": "RSD",
-          "valueAddedTaxIncluded": true
-        }
-      ];
-
-      const saleEndDate = tier.saleEnd ? new Date(tier.saleEnd) : null;
-      const priceValidUntil = saleEndDate && !isNaN(saleEndDate.getTime())
-        ? saleEndDate.toISOString().slice(0, 10)
-        : `${currentYear}-12-31`;
-
-      const saleStartDate = tier.saleStart ? new Date(tier.saleStart) : null;
-      const availabilityStarts = saleStartDate && !isNaN(saleStartDate.getTime())
-        ? saleStartDate.toISOString().slice(0, 10)
-        : null;
-
-      const saleEndDateVal = tier.saleEnd ? new Date(tier.saleEnd) : null;
-      const availabilityEnds = saleEndDateVal && !isNaN(saleEndDateVal.getTime())
-        ? saleEndDateVal.toISOString().slice(0, 10)
-        : null;
-
-      return {
-        "@type": "Offer",
-        "@id": `https://www.splashdeals.rs/${facilitySlug}#ticket-${tier.id}`,
-        "name": tier.label,
-        "price": Number(tier.price),
-        "priceCurrency": "RSD",
-        "priceSpecification": priceSpecification,
-        "priceValidUntil": priceValidUntil,
-        "availability": tier.isActive ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-        "url": `https://www.splashdeals.rs/${facilitySlug}#ticket-${tier.id}`,
-        "acceptedPaymentMethod": [
-          {"@type": "PaymentMethod", "@id": "https://schema.org/CreditCard"},
-          {"@type": "PaymentMethod", "@id": "https://schema.org/PaymentMethodTypeWallet"}
-        ],
-        ...(availabilityStarts ? { "availabilityStarts": availabilityStarts } : {}),
-        ...(availabilityEnds ? { "availabilityEnds": availabilityEnds } : {}),
-        ...(tier.minPeople || tier.maxPeople ? {
-          "eligibleQuantity": {
-            "@type": "QuantitativeValue",
-            ...(tier.minPeople ? { "minValue": Number(tier.minPeople) } : {}),
-            ...(tier.maxPeople ? { "maxValue": Number(tier.maxPeople) } : {})
-          }
-        } : {}),
-        "seller": {
-          "@type": "Organization",
-          "name": "Splashdeals",
-          "url": "https://www.splashdeals.rs"
-        },
-        "provider": {
-          "@type": "LocalBusiness",
-          "name": facility.name,
-          ...(facility.media?.[0]?.url ? { image: facility.media[0].url } : {}),
-          priceRange: "RSD",
-          ...(facility.publicPhone ? { telephone: facility.publicPhone } : {}),
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": `${facility.streetName} ${facility.streetNumber}`,
-            "addressLocality": facility.city,
-            "postalCode": facility.postalCode,
-            "addressCountry": "RS"
-          }
-        }
-      };
-    })
-  } : null;
-
-  const videoThumbnailFallback = facility.media.find((m: { type: string; isHero: boolean; isCardBackground: boolean }) => m.type === 'PHOTO' && m.isHero)?.url
-    || facility.media.find((m: { type: string; isHero: boolean; isCardBackground: boolean }) => m.type === 'PHOTO' && m.isCardBackground)?.url
-    || facility.media.find((m: { type: string; isHero: boolean; isCardBackground: boolean }) => m.type === 'PHOTO')?.url
-    || "/og-image.png";
-
-  const videoThumbnail = heroMedia?.thumbnailUrl || videoThumbnailFallback;
-
-  const operatingHours = facility.hours?.map((h: OperatingHours) => ({
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: [
-      "Sunday", "Monday", "Tuesday", "Wednesday", 
-      "Thursday", "Friday", "Saturday"
-    ][h.dayOfWeek],
-    opens: h.openTime,
-    closes: h.closeTime,
-  })) || [];
-
-  const facilitySchema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      buildAttractionSchema(facility, facilitySlug, operatingHours),
-      buildBusinessSchema(facility, facilitySlug, !!aggregateOffer),
-      buildProductSchema(facility, facilitySlug, aggregateOffer, ticketCount, additionalType),
-      buildVideoSchema(facility, facilitySlug, heroMedia, videoThumbnail),
-      buildBreadcrumbSchema(facility, facilitySlug, categorySlug, categoryLabel)
-    ].filter(Boolean),
-  };
+  // 🌤️ Fetch live weather from Open-Meteo (server-side, passed to client component)
+  const weather = facility.lat && facility.lng
+    ? await getWeather(Number(facility.lat), Number(facility.lng))
+    : null;
 
   return (
     <div className="relative min-h-screen text-foreground selection:bg-primary/30 font-sans">
@@ -658,31 +281,22 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12">
            <div className="md:col-span-8 space-y-6">
-              {/* 📱 MOBILE SHARE ROW */}
-              <div className="flex md:hidden items-center justify-end">
-                 <ShareButton
-                    title={facility.name}
-                    url={`https://www.splashdeals.rs/${facilitySlug}`}
-                 />
-               </div>
-
-              {/* 🧭 DESKTOP ACTIONS */}
-              <div className="hidden md:flex flex-wrap gap-2 items-center">
-                <Link href={`/${categorySlug}`} className="px-4 py-2 rounded-full backdrop-blur-xl bg-white/5 text-xs font-black flex items-center gap-2 hover:bg-white/10 transition-all border border-border uppercase tracking-widest text-muted-foreground">
-                   <Icon name="arrow_back" className="text-[12px]" /> Nazad
-                </Link>
-                <ShareButton 
-                   title={facility.name} 
-                   url={`https://www.splashdeals.rs/${facilitySlug}`} 
-                />
-                 <div className="hidden md:block">
-                    <Suspense fallback={<WeatherBadgeSkeleton />}>
-                       {facility.lat && facility.lng && (
-                          <WeatherBadgeIsland lat={Number(facility.lat)} lng={Number(facility.lng)} />
-                       )}
-                    </Suspense>
-                 </div>
-              </div>
+              <HeroActionPill
+                facility={{
+                  name: facility.name,
+                  slug: facility.slug,
+                  lat: facility.lat,
+                  lng: facility.lng,
+                  hours: facility.hours,
+                  streetName: facility.streetName,
+                  streetNumber: facility.streetNumber,
+                  postalCode: facility.postalCode,
+                  city: facility.city,
+                }}
+                facilitySlug={facilitySlug}
+                categorySlug={categorySlug}
+                weather={weather}
+              />
 
                <h1 className="text-4xl md:text-7xl font-black leading-[0.8] tracking-tighter text-white italic py-2">
                {facility.name.split(' ').map((word: string, i: number) => (
@@ -690,37 +304,6 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                ))}
              </h1>
 
-             <div className="flex flex-wrap items-center gap-6 text-slate-300 font-bold pb-4 w-full">
-                <div className="hidden md:flex items-center gap-2 bg-muted/50 px-5 py-2.5 rounded-2xl backdrop-blur-md border border-border">
-                   <Icon name="location_on" className="text-[16px] text-cyan-400" />
-                   <span className="text-sm tracking-tight font-medium opacity-80">{facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}</span>
-                </div>
-                <div className="hidden md:block">
-                   <Suspense fallback={<OperationalStatusSkeleton />}>
-                      <CurrentOperationalStatus hours={facility.hours} />
-                   </Suspense>
-                </div>
-                <div className="hidden md:block">
-                   <Suspense fallback={<div className="h-10 w-36 rounded-2xl bg-muted border border-border" />}>
-                   {facility.lat && facility.lng && (
-                      <DistanceCalculator 
-                         destLat={Number(facility.lat)} 
-                         destLng={Number(facility.lng)} 
-                         facilityName={facility.name} 
-                      />
-                   )}
-                   </Suspense>
-                </div>
-                <div className="block md:hidden w-full pt-2">
-                   <MobileUnifiedControlPill 
-                      weather={weather}
-                      dailyForecast={dailyForecast}
-                      hours={facility.hours}
-                      destLat={Number(facility.lat)}
-                      destLng={Number(facility.lng)}
-                   />
-                </div>
-             </div>
              </div>
              </div>
       </section>
@@ -802,15 +385,6 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               <Suspense fallback={<Skeleton className="h-[600px] rounded-[3rem] bg-white/5" />}>
                  <OperationalPortal hours={facility.hours} />
               </Suspense>
-              </div>
-              
-              {/* Sidebar Weather Widget — hidden on mobile (already in MobileUnifiedControlPill) */}
-              <div className="hidden md:block">
-              {facility.lat && facility.lng && (
-                 <Suspense fallback={<Skeleton className="h-[250px] rounded-[2.5rem] bg-white/5" />}>
-                    <SidebarWeatherIsland lat={Number(facility.lat)} lng={Number(facility.lng)} />
-                 </Suspense>
-              )}
               </div>
            </aside>
         </div>

@@ -1,13 +1,13 @@
-import { FacilitySchemaInput } from "./types";
+import { FacilitySchemaInput, SITE_URL } from "./types";
 
 export function buildAttractionSchema(facility: FacilitySchemaInput, facilitySlug: string, operatingHours: Record<string, unknown>[]) {
-  const heroImage = facility.media?.[0]?.url || `https://www.splashdeals.rs/og-image.png`;
+  const heroImage = facility.media?.[0]?.url || `${SITE_URL}/og-image.png`;
   return {
     "@type": ["AmusementPark", "TouristAttraction"],
-    "@id": `https://www.splashdeals.rs/${facilitySlug}#attraction`,
+    "@id": `${SITE_URL}/${facilitySlug}#attraction`,
     name: facility.name,
     description: facility.description?.slice(0, 300),
-    url: `https://www.splashdeals.rs/${facilitySlug}`,
+    url: `${SITE_URL}/${facilitySlug}`,
     image: heroImage,
     priceRange: "RSD",
     ...(facility.publicPhone ? { telephone: facility.publicPhone } : {}),

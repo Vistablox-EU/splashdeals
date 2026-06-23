@@ -1,4 +1,4 @@
-import { FacilitySchemaInput } from "./types";
+import { FacilitySchemaInput, SITE_URL } from "./types";
 
 export function buildVideoSchema(facility: FacilitySchemaInput, facilitySlug: string, heroMedia: Record<string, unknown> | null, videoThumbnail: string) {
   if (heroMedia?.type !== "VIDEO") return null;
@@ -10,7 +10,7 @@ export function buildVideoSchema(facility: FacilitySchemaInput, facilitySlug: st
 
   return {
     "@type": "VideoObject",
-    "@id": `https://www.splashdeals.rs/${facilitySlug}#video`,
+    "@id": `${SITE_URL}/${facilitySlug}#video`,
     name: `${facility.name} - Promotional Video`,
     description: heroMedia.caption || `Promotional video for ${facility.name}`,
     contentUrl: heroMedia.url,

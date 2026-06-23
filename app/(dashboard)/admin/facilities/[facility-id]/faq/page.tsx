@@ -1,11 +1,13 @@
 import { prisma } from "@/server/lib/prisma"
 import { FAQSectionList } from "./_components/faq-section-list"
+import { connection } from "next/server"
 
 interface Props {
   params: Promise<{ "facility-id": string }>
 }
 
 export default async function FAQPage({ params }: Props) {
+  await connection()
   const { "facility-id": facilityId } = await params
 
   const faqs = await prisma.facilityFAQ.findMany({

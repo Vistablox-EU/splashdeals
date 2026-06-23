@@ -1,7 +1,8 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { Metadata } from "next";
 import { prisma } from "@/server/lib/prisma";
-import { FacilityShowcaseTemplate, getFacilityMetadata } from "../facilities/[categorySlug]/[facilitySlug]/page";
+import { FacilityShowcaseTemplate } from "../facilities/[categorySlug]/[facilitySlug]/page";
+import { buildFacilityMetadata } from "../facilities/[categorySlug]/[facilitySlug]/_metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 import { slugToDbValue, isKnownCategory, dbValueToSlug } from "@/lib/routing/categories";
 
@@ -131,7 +132,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const resolved = await resolveSlug(slug[0]);
     if (resolved) {
       if (resolved.type === "facility") {
-        return await getFacilityMetadata(slug[0], resolved.category!);
+        return await buildFacilityMetadata(slug[0], resolved.category!);
       }
       return await getDiscoveryMetadata(slug[0]);
     }
@@ -141,7 +142,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (slug[1] === "dnevne-ulaznice") {
       const resolved = await resolveSlug(slug[0]);
       if (resolved && resolved.type === "facility") {
-        return await getFacilityMetadata(slug[0], resolved.category!, "dnevne-ulaznice");
+        return await buildFacilityMetadata(slug[0], resolved.category!, "dnevne-ulaznice");
       }
     }
 

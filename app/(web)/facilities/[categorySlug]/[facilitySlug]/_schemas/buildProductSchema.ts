@@ -1,4 +1,4 @@
-import { FacilitySchemaInput } from "./types";
+import { FacilitySchemaInput, SITE_URL } from "./types";
 
 export function buildProductSchema(
   facility: FacilitySchemaInput, 
@@ -11,11 +11,11 @@ export function buildProductSchema(
 ) {
   if (!aggregateOffer) return null;
   
-  const heroImage = facility.media?.[0]?.url || `https://www.splashdeals.rs/og-image.png`;
+  const heroImage = facility.media?.[0]?.url || `${SITE_URL}/og-image.png`;
   
   return {
     "@type": "Product",
-    "@id": `https://www.splashdeals.rs/${facilitySlug}#product`,
+    "@id": `${SITE_URL}/${facilitySlug}#product`,
     name: `${facility.name} - Digital Tickets`,
     description: `Kupi digitalne ulaznice za ${facility.name} na Splashdeals. Brza digitalna isporuka, podr\u0161ka za Apple & Google Wallet. ${ticketCount} vrsta ulaznica u ponudi.`,
     image: heroImage,

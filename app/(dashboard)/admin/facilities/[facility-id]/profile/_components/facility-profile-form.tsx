@@ -309,18 +309,6 @@ export function FacilityProfileForm({
           </div>
           
           <div className="flex items-center gap-3">
-            <Button
-              asChild
-              type="button"
-              variant="outline"
-              className="h-10 px-5 border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground font-black uppercase tracking-widest text-[9px] rounded-xl transition-all"
-            >
-              <a href={publicPreviewUrl} target="_blank" rel="noopener noreferrer">
-                <Icon name="visibility" className="size-3 mr-2 text-primary" />
-                Live Preview
-              </a>
-            </Button>
-
             <Button 
               type="submit" 
               disabled={isPending || !form.formState.isDirty} 

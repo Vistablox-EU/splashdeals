@@ -6,26 +6,26 @@
 export const CATEGORIES = {
   "akva-parkovi": {
     name: "Akva Parkovi",
-    dbValue: "Akva Park",
+    dbValues: ["Akva Park", "Waterpark"],
   },
   "bazeni": {
     name: "Bazeni",
-    dbValue: "Bazen",
+    dbValues: ["Bazen", "Public Pool", "Swimming Pool"],
   },
   "wellness-i-spa": {
     name: "Wellness i Spa",
-    dbValue: "Wellness i Spa",
+    dbValues: ["Wellness i Spa"],
   },
 } as const;
 
 export type CategorySlug = keyof typeof CATEGORIES;
 
 /**
- * Convert a URL slug to the DB category value for querying.
- * E.g. "akva-parkovi" → "Akva Park"
+ * Convert a URL slug to the first DB category value for querying.
+ * E.g. "akva-parkovi" → "Waterpark"
  */
 export function slugToDbValue(slug: string): string | undefined {
-  return CATEGORIES[slug as CategorySlug]?.dbValue;
+  return CATEGORIES[slug as CategorySlug]?.dbValues?.[0];
 }
 
 /**
@@ -38,11 +38,11 @@ export function slugToName(slug: string): string | undefined {
 
 /**
  * Convert a DB category value back to the URL slug.
- * E.g. "Akva Park" → "akva-parkovi"
+ * E.g. "Waterpark" → "akva-parkovi"
  */
 export function dbValueToSlug(dbValue: string): string | undefined {
   const entry = Object.entries(CATEGORIES).find(
-    ([, v]) => v.dbValue.toLowerCase() === dbValue.toLowerCase()
+    ([, v]) => v.dbValues.some((dv) => dv.toLowerCase() === dbValue.toLowerCase())
   );
   return entry?.[0];
 }

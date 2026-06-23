@@ -204,10 +204,6 @@ export const columns: ColumnDef<Facility>[] = [
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                <Icon name="gpp_maybe" className="mr-2 text-[16px]" />
-                Emergency Shutdown
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

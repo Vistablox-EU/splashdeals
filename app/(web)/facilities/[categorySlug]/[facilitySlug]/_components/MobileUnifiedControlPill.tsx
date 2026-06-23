@@ -3,7 +3,6 @@ import { Icon } from "@/components/ui/Icon";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatTime24h } from "@/lib/utils/date-time";
-import type { OperatingHours } from "@prisma/client";
 
 interface CurrentWeather {
   temperature: number;
@@ -17,10 +16,17 @@ export interface DailyForecastItem {
   tempLow: number;
 }
 
+interface HoursSubset {
+  dayOfWeek: number;
+  openTime: string;
+  closeTime: string;
+  isClosed: boolean;
+}
+
 interface MobileUnifiedControlPillProps {
-  weather: CurrentWeather | null;
+  weather?: CurrentWeather | null;
   dailyForecast?: DailyForecastItem[] | null;
-  hours: OperatingHours[];
+  hours: HoursSubset[];
   destLat: number;
   destLng: number;
 }
