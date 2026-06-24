@@ -5,6 +5,7 @@ import { BreadcrumbBar } from "@/components/layout/BreadcrumbBar";
 import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
 import { getDictionary } from "@/lib/dictionaries";
 import { getActiveCities } from "@/server/lib/data/discovery";
+import { prisma } from "@/server/lib/prisma";
 import dynamic from "next/dynamic";
 import { CartLoader } from "@/components/cart/CartLoader";
 
@@ -44,6 +45,15 @@ async function WebLayoutContent({
   const dict = await getDictionary();
   const cities = await getActiveCities();
 
+  // Pre-fetch facility map for client-side breadcrumb resolution
+  const facilities = await prisma.facility.findMany({
+    where: { status: "ACTIVE" },
+    select: { slug: true, name: true, category: true },
+  });
+  const facilityMap = Object.fromEntries(
+    facilities.map((f) => [f.slug, { name: f.name, category: f.category }])
+  );
+
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden font-sans">
       <GlobalAmbient />
@@ -51,7 +61,7 @@ async function WebLayoutContent({
       <Header dict={dict} cities={cities} />
 
       {/* 🧭 Breadcrumb bar — always visible just below the top nav header */}
-      <BreadcrumbBar />
+      <BreadcrumbBar facilityMap={facilityMap} />
 
       <main className="flex-grow pt-16 pb-16 sm:pb-0">
         <React.Suspense

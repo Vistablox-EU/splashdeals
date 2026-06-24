@@ -39,10 +39,8 @@ const ShowcaseAmenities = dynamic(() => import("./_components/ShowcaseAmenities"
 
 import { PartnerBranding } from "./_components/PartnerBranding"
 import { ScrollManager } from "./_components/ScrollManager"
-import { BreadcrumbInjector } from "./_components/BreadcrumbInjector"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-
 import { serialize } from "@/lib/serialize"
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { validateDiscoverySlug } from "@/server/lib/data/discovery";
@@ -135,16 +133,6 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
       
-      {/* 🧭 Breadcrumb Injector — feeds breadcrumb data into the global Header sub-row (mobile only) */}
-      <BreadcrumbInjector
-        items={[
-          { label: "Početna", href: "/" },
-          { label: categoryLabel, href: `/${categorySlug}` },
-          { label: facility.name },
-        ]}
-        backHref={`/${categorySlug}`}
-      />
-
       <section className="relative h-[60vh] md:h-screen w-full flex flex-col justify-end p-6 md:p-12 overflow-hidden">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 

@@ -1,26 +1,93 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
-import { useBreadcrumb } from "@/hooks/use-breadcrumb";
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 import { Icon } from "@/components/ui/Icon";
+
+// ── Static page labels ─────────────────────────────────────────────
+const STATIC_LABELS: Record<string, string> = {
+  "how-it-works": "Kako Funcioniše",
+  terms: "Uslovi Korišćenja",
+  privacy: "Privatnost",
+  support: "Podrška",
+  cookies: "Kolačići",
+  cart: "Korpa",
+  checkout: "Plaćanje",
+  search: "Pretraga",
+  success: "Uspešna Porudžbina",
+  blog: "Blog",
+};
+
+// ── Known category slugs → display names ───────────────────────────
+const CATEGORY_NAMES: Record<string, string> = {
+  "akva-parkovi": "Akva Parkovi",
+  bazeni: "Bazeni",
+  "wellness-i-spa": "Wellness i Spa",
+};
+
+// ── DB values → category slug lookup ───────────────────────────────
+const DB_TO_SLUG: Record<string, string> = {
+  "akva park": "akva-parkovi",
+  bazen: "bazeni",
+  "public pool": "bazeni",
+  "swimming pool": "bazeni",
+  "wellness i spa": "wellness-i-spa",
+};
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface FacilityMap {
+  [slug: string]: {
+    name: string;
+    category: string; // DB category value (e.g. "Akva Park")
+  };
+}
 
 /**
  * 🧭 BreadcrumbBar
- * Standalone full-width horizontal breadcrumb bar.
- * Fixed-positioned just below the top nav header (top-16 = 64px, same as header height).
- * Visible on ALL pages — defaults to a "Početna" home link when no page-specific
- * breadcrumbs are set via BreadcrumbInjector.
+ * Derives breadcrumb trail from the current URL pathname.
+ * Uses an embedded facility map (pre-fetched by the server) for facility lookups.
  */
-export function BreadcrumbBar() {
-  const { items, backHref } = useBreadcrumb();
-  const hasItems = items.length > 0;
+export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap }) {
+  const pathname = usePathname();
+  const segments = pathname.split("/").filter(Boolean);
 
-  // Always render at least the "Početna" (Home) breadcrumb
-  const displayItems = hasItems
-    ? items
-    : [{ label: "Početna" as const, href: "/" as const }];
-  const isLastItem = (idx: number) => idx === displayItems.length - 1;
+  const trail = useMemo<{ items: BreadcrumbItem[]; backHref?: string }>(() => {
+    const items: BreadcrumbItem[] = [{ label: "Početna", href: "/" }];
+    let backHref: string | undefined;
+
+    if (segments.length >= 1) {
+      const slug = segments[0].toLowerCase();
+
+      if (STATIC_LABELS[slug]) {
+        items.push({ label: STATIC_LABELS[slug] });
+      } else if (CATEGORY_NAMES[slug]) {
+        items.push({ label: CATEGORY_NAMES[slug] });
+      } else if (facilityMap[slug]) {
+        const fac = facilityMap[slug];
+        // Map DB category value → slug → display name
+        const catSlug = DB_TO_SLUG[fac.category.toLowerCase()];
+        const catName = catSlug ? CATEGORY_NAMES[catSlug] : fac.category;
+
+        if (catSlug) {
+          items.push({ label: catName, href: `/${catSlug}` });
+        } else {
+          items.push({ label: catName });
+        }
+        items.push({ label: fac.name });
+        backHref = catSlug ? `/${catSlug}` : "/";
+      }
+    }
+
+    return { items, backHref };
+  }, [pathname, facilityMap, segments]);
+
+  const { items, backHref } = trail;
+  const isLastItem = (idx: number) => idx === items.length - 1;
 
   return (
     <div className="w-full border-b border-white/5 bg-background/98 backdrop-blur-[40px] sticky top-16 z-[100]">
@@ -39,8 +106,8 @@ export function BreadcrumbBar() {
 
         {/* Breadcrumb trail */}
         <div className="flex items-center gap-0 overflow-x-auto no-scrollbar w-full">
-          {displayItems.map((item, idx) => (
-            <React.Fragment key={idx}>
+          {items.map((item, idx) => (
+            <div key={idx} className="flex items-center">
               {idx > 0 && (
                 <Icon name="keyboard_arrow_right" className="text-[12px] text-slate-600 shrink-0 mx-1.5" />
               )}
@@ -67,7 +134,7 @@ export function BreadcrumbBar() {
                   {item.label}
                 </span>
               )}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </div>
