@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { Icon } from "@/components/ui/Icon";
+import { Icon } from "@/components/ui/Icon"
 
 /**
- * 🖼️ Scanner visual block — shows a mock QR scan confirmation.
+ * Scanner visual block — shows a mock QR scan confirmation.
  */
 export function ScannerBlock() {
   return (
@@ -22,11 +22,11 @@ export function ScannerBlock() {
         Validirano
       </span>
     </div>
-  );
+  )
 }
 
 /**
- * 🪪 Club Card visual block — shows a mock splash club membership card.
+ * Club Card visual block — shows a mock splash club membership card.
  */
 export function ClubCardBlock() {
   return (
@@ -58,5 +58,5 @@ export function ClubCardBlock() {
         Splash Club
       </span>
     </div>
-  );
+  )
 }

@@ -1,15 +1,20 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { Icon } from "@/components/ui/Icon";
-import { NavigationMenuLink } from "@/components/ui/navigation-menu";
-import type { LinkMetadata } from "./types";
+import Link from "next/link"
+import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/Icon"
+import { NavigationMenuLink } from "@/components/ui/navigation-menu"
+import { ScannerBlock, ClubCardBlock } from "./visual-blocks"
+import type {
+  LinkMetadata,
+  NavigationMenuData,
+  NavigationMenuSectionData,
+} from "./types"
 
-// ── Helpers ────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────
 
 function BadgeChip({ badge }: { badge: LinkMetadata["badge"] }) {
-  if (!badge) return null;
+  if (!badge) return null
 
   const config: Record<string, { label: string; className: string }> = {
     new: {
@@ -33,9 +38,9 @@ function BadgeChip({ badge }: { badge: LinkMetadata["badge"] }) {
       label: badge.text || "",
       className: "bg-primary/10 text-primary border-primary/20",
     },
-  };
+  }
 
-  const cfg = config[badge.type] || config.custom;
+  const cfg = config[badge.type] || config.custom
 
   return (
     <span
@@ -43,17 +48,17 @@ function BadgeChip({ badge }: { badge: LinkMetadata["badge"] }) {
     >
       {cfg.label}
     </span>
-  );
+  )
 }
 
-// ── Components ─────────────────────────────────────────────────────
+// ── Components ────────────────────────────────────────────────────────
 
 export function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <h4 className="mb-3 font-semibold text-muted-foreground text-sm">
       {children}
     </h4>
-  );
+  )
 }
 
 export function NavItemLink({
@@ -63,17 +68,17 @@ export function NavItemLink({
   desc,
   metadata,
 }: {
-  href: string | null;
-  icon?: string | null;
-  title: string;
-  desc?: string | null;
-  metadata?: LinkMetadata | null;
+  href: string | null
+  icon?: string | null
+  title: string
+  desc?: string | null
+  metadata?: LinkMetadata | null
 }) {
-  const md = metadata || {};
-  const isFeatured = md.variant === "featured";
-  const isCta = md.variant === "cta";
-  const isExternal = !!md.external;
-  const isDisabled = !href || href === "#";
+  const md = metadata || {}
+  const isFeatured = md.variant === "featured"
+  const isCta = md.variant === "cta"
+  const isExternal = !!md.external
+  const isDisabled = !href || href === "#"
 
   const linkContent = (
     <div className="flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none group w-full">
@@ -118,7 +123,7 @@ export function NavItemLink({
         </div>
       )}
     </div>
-  );
+  )
 
   if (isDisabled) {
     return (
@@ -135,7 +140,7 @@ export function NavItemLink({
           {linkContent}
         </span>
       </li>
-    );
+    )
   }
 
   return (
@@ -158,7 +163,7 @@ export function NavItemLink({
         </Link>
       </NavigationMenuLink>
     </li>
-  );
+  )
 }
 
 export function MenuDotLink({
@@ -166,11 +171,11 @@ export function MenuDotLink({
   label,
   count,
 }: {
-  href: string;
-  label: string;
-  count?: number;
+  href: string
+  label: string
+  count?: number
 }) {
-  const isDisabled = !href || href === "#";
+  const isDisabled = !href || href === "#"
 
   const dotLinkContent = (
     <span className="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-all outline-none group w-full">
@@ -183,7 +188,7 @@ export function MenuDotLink({
         <span className="text-xs text-muted-foreground">({count})</span>
       )}
     </span>
-  );
+  )
 
   if (isDisabled) {
     return (
@@ -196,7 +201,7 @@ export function MenuDotLink({
           {dotLinkContent}
         </span>
       </li>
-    );
+    )
   }
 
   return (
@@ -212,17 +217,17 @@ export function MenuDotLink({
         </Link>
       </NavigationMenuLink>
     </li>
-  );
+  )
 }
 
 export function FooterBadge({
   heading,
   icon,
 }: {
-  heading?: string | null;
-  icon?: string;
+  heading?: string | null
+  icon?: string
 }) {
-  if (!heading) return null;
+  if (!heading) return null
   return (
     <div className="pt-4 mt-4 border-t">
       <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -230,5 +235,109 @@ export function FooterBadge({
         {heading}
       </span>
     </div>
-  );
+  )
+}
+
+// ── Section renderer (used by MegaMenu) ───────────────────────────────
+
+export function SectionRenderer({
+  section,
+  menu,
+  sortedCities,
+  loadingCities,
+}: {
+  section: NavigationMenuSectionData
+  menu: NavigationMenuData
+  sortedCities: { id: string; name: string; slug: string }[]
+  loadingCities: boolean
+}) {
+  const config = section.config as Record<string, unknown> | null
+
+  return (
+    <section
+      key={section.id}
+      aria-labelledby={section.heading ? `nav-h-${section.id}` : undefined}
+    >
+      {section.style !== "VISUAL" &&
+        section.style !== "FOOTER_BADGE" &&
+        section.heading && (
+          <SectionHeading>
+            <span id={`nav-h-${section.id}`}>{section.heading}</span>
+          </SectionHeading>
+        )}
+
+      <ul className="space-y-2" role="menu" aria-label={section.heading || menu.label}>
+        {section.style === "LINKS" &&
+          section.items.map((item) => (
+            <NavItemLink
+              key={item.id}
+              href={item.href}
+              icon={item.icon}
+              title={item.label}
+              desc={item.desc}
+              metadata={item.metadata}
+            />
+          ))}
+
+        {section.style === "DOT_LINKS" &&
+          section.items.map((item) => (
+            <MenuDotLink
+              key={item.id}
+              href={item.href || "#"}
+              label={item.label}
+              count={item.metadata?.count}
+            />
+          ))}
+
+        {section.style === "DYNAMIC_CITIES" && (
+          <>
+            {loadingCities ? (
+              <li><CitySkeleton count={(config?.maxItems as number) || 6} /></li>
+            ) : (
+              sortedCities
+                .slice(0, (config?.maxItems as number) || 10)
+                .map((city) => (
+                  <MenuDotLink
+                    key={city.id}
+                    href={`/akva-parkovi?city=${city.slug}`}
+                    label={city.name}
+                  />
+                ))
+            )}
+            {sortedCities.length > (config?.maxItems as number || 10) && (
+              <MenuDotLink
+                href="/akva-parkovi"
+                label={`+${sortedCities.length - ((config?.maxItems as number) || 10)} gradova`}
+              />
+            )}
+          </>
+        )}
+
+        {section.style === "VISUAL" && (
+          <li>
+            {config?.component === "scanner" && <ScannerBlock />}
+            {config?.component === "club_card" && <ClubCardBlock />}
+          </li>
+        )}
+
+        {section.style === "FOOTER_BADGE" && (
+          <li>
+            <FooterBadge heading={section.heading} icon={config?.icon as string | undefined} />
+          </li>
+        )}
+      </ul>
+    </section>
+  )
+}
+
+// ── Skeletons (needed by SectionRenderer) ──────────────────────────────
+
+function CitySkeleton({ count = 6 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-2 gap-1.5" aria-hidden="true">
+      {[...Array(count)].map((_, i) => (
+        <div key={i} className="h-9 rounded-sm bg-muted/50 animate-pulse" />
+      ))}
+    </div>
+  )
 }

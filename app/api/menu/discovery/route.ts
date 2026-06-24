@@ -1,10 +1,9 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/server/lib/prisma";
+import { NextResponse } from "next/server"
+import { prisma } from "@/server/lib/prisma"
 
 /**
- * 🗺️ Unified Discovery Menu API
+ * Discovery Menu API
  * Aggregates regional hubs and featured showcase facility for the desktop mega menu.
- * High-performance edge compatibility and Next.js 16 connection pooling.
  */
 export async function GET() {
   try {
@@ -12,18 +11,18 @@ export async function GET() {
     const cities = await prisma.city.findMany({
       where: {
         facilities: {
-          some: {}
-        }
+          some: {},
+        },
       },
       select: {
         id: true,
         name: true,
-        slug: true
+        slug: true,
       },
       orderBy: {
-        name: "asc"
-      }
-    });
+        name: "asc",
+      },
+    })
 
     // 2. Fetch featured showcase facility
     const featuredFacility = await prisma.facility.findFirst({
@@ -31,8 +30,8 @@ export async function GET() {
         status: "ACTIVE",
         media: {
           some: {
-            isHero: true
-          }
+            isHero: true,
+          },
         },
         ticketCategories: {
           some: {
@@ -42,20 +41,18 @@ export async function GET() {
                 isActive: true,
                 prices: {
                   some: {
-                    isActive: true
-                  }
-                }
-              }
-            }
-          }
-        }
+                    isActive: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       include: {
         media: {
-          where: {
-            isHero: true
-          },
-          take: 1
+          where: { isHero: true },
+          take: 1,
         },
         ticketCategories: {
           where: { isActive: true },
@@ -66,31 +63,28 @@ export async function GET() {
                 prices: {
                   where: { isActive: true },
                   orderBy: { price: "asc" },
-                  take: 1
-                }
+                  take: 1,
+                },
               },
-              take: 1
-            }
+              take: 1,
+            },
           },
-          take: 1
+          take: 1,
         },
         marketplaceCities: {
           include: {
-            city: true
-          }
-        }
-      }
-    });
+            city: true,
+          },
+        },
+      },
+    })
 
     // 3. Format featured facility into a clean DTO
-    let featured = null;
+    let featured = null
     if (featuredFacility) {
-      const canonicalCategory = featuredFacility.category.toLowerCase().replace(/\s+/g, '-');
-      const cheapestPrice = featuredFacility.ticketCategories?.[0]?.types?.[0]?.prices?.[0];
-      const heroImage = featuredFacility.media[0];
-      
-      // Attempt to resolve city slug, fallback to category
-      const citySlug = featuredFacility.marketplaceCities?.[0]?.city?.slug || canonicalCategory;
+      const canonicalCategory = featuredFacility.category.toLowerCase().replace(/\s+/g, "-")
+      const cheapestPrice = featuredFacility.ticketCategories?.[0]?.types?.[0]?.prices?.[0]
+      const citySlug = featuredFacility.marketplaceCities?.[0]?.city?.slug || canonicalCategory
 
       featured = {
         id: featuredFacility.id,
@@ -99,18 +93,17 @@ export async function GET() {
         category: featuredFacility.category,
         city: featuredFacility.city,
         canonicalPath: `/facilities/${citySlug}/${featuredFacility.slug}`,
-        imageUrl: heroImage?.url || "/og-image.png",
+        imageUrl: featuredFacility.media[0]?.url || "/og-image.png",
         startingPrice: cheapestPrice ? Number(cheapestPrice.price) : null,
-        description: featuredFacility.description?.slice(0, 100) || "Doživite nezaboravnu letnju avanturu na najboljim bazenima u Srbiji."
-      };
+        description:
+          featuredFacility.description?.slice(0, 100) ||
+          "Doživite nezaboravnu letnju avanturu na najboljim bazenima u Srbiji.",
+      }
     }
 
-    return NextResponse.json({
-      cities,
-      featured
-    });
+    return NextResponse.json({ cities, featured })
   } catch (error) {
-    console.error("🌋 Discovery Menu Error:", error);
-    return NextResponse.json({ error: "Failed to fetch discovery menu data" }, { status: 500 });
+    console.error("Discovery Menu Error:", error)
+    return NextResponse.json({ error: "Failed to fetch discovery menu data" }, { status: 500 })
   }
 }

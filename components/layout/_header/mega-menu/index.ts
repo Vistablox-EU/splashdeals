@@ -1,4 +1,4 @@
-export { MegaMenu } from "./MegaMenu";
+export { MegaMenu } from "./MegaMenu"
 export type {
   NavigationMenuData,
   NavigationMenuSectionData,
@@ -6,5 +6,4 @@ export type {
   LinkMetadata,
   City,
   DiscoveryMenuData,
-  MegaMenuProps,
-} from "./types";
+} from "./types"
