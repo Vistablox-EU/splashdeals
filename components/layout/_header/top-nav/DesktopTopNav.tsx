@@ -45,9 +45,7 @@ export function DesktopTopNav({
 
         {/* Left — MegaMenu on desktop */}
         <div className="flex-1">
-          <React.Suspense fallback={<DesktopNavSkeleton />}>
-            <MegaMenu />
-          </React.Suspense>
+          <MegaMenu />
         </div>
 
         {/* Right — ThemeToggle + CartButton on desktop */}
@@ -66,7 +64,3 @@ export function DesktopTopNav({
     </div>
   );
 }
-
-const DesktopNavSkeleton = () => (
-  <div className="hidden md:flex items-center bg-muted/30 border border-border/50 rounded-full h-12 w-32 animate-pulse" />
-);
