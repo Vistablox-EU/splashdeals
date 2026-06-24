@@ -5,7 +5,7 @@ import { cache } from "react";
 import { prisma } from "@/server/lib/prisma";
 import { serialize } from "@/lib/serialize";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
-import { catLabelMap, SITE_URL } from "../_schemas";
+import { catLabelMap, SITE_URL } from "./schemas";
 
 // ── Types ────────────────────────────────────────────────────────
 

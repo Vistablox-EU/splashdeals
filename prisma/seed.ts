@@ -137,7 +137,7 @@ async function main() {
     {
       name: "AquaPark Petroland",
       slug: "petroland",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Bački Petrovac",
       streetName: "Novosadski put",
       streetNumber: "bb",
@@ -159,7 +159,7 @@ async function main() {
     {
       name: "Aqua Park Izvor",
       slug: "aquapark-izvor",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Aranđelovac",
       streetName: "Mišarska",
       streetNumber: "2",
@@ -178,7 +178,7 @@ async function main() {
     {
       name: "Aqua Park Jagodina",
       slug: "aquapark-jagodina",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Jagodina",
       streetName: "Stevana Prvovenčanog",
       streetNumber: "bb",
@@ -196,7 +196,7 @@ async function main() {
     {
       name: "Hollywoodland Belgrade",
       slug: "hollywoodland",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Belgrade",
       streetName: "Jakovački kormandin",
       streetNumber: "10",
@@ -217,7 +217,7 @@ async function main() {
     {
       name: "Aqua Park Mlavske Terme",
       slug: "mlavske-terme",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Petrovac na Mlavi",
       streetName: "Banja Ždrelo",
       streetNumber: "bb",
@@ -289,7 +289,7 @@ async function main() {
     {
       name: "Aqua Park Podina",
       slug: "aquapark-podina",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Soko Banja",
       streetName: "IX Brigade",
       streetNumber: "bb",
@@ -325,7 +325,7 @@ async function main() {
     {
       name: "Banja Junaković",
       slug: "banja-junakovic",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Apatin",
       streetName: "Banjski put",
       streetNumber: "71",
@@ -380,7 +380,7 @@ async function main() {
     {
       name: "Srebrno Jezero Aquapark",
       slug: "srebrno-jezero",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Veliko Gradište",
       streetName: "Srebrno Jezero",
       streetNumber: "bb",
@@ -400,7 +400,7 @@ async function main() {
     {
       name: "Banja Vrujci Aquapark",
       slug: "banja-vrujci",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Mionica",
       streetName: "Banja Vrujci",
       streetNumber: "bb",
@@ -474,7 +474,7 @@ async function main() {
     {
       name: "Aqua Park Sunny Hill",
       slug: "sunny-hill",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Vrnjačka Banja",
       streetName: "Mare Jakovljević",
       streetNumber: "9A",

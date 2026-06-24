@@ -44,7 +44,7 @@ type TicketSeed = {
 type FacilitySeed = {
   name: string;
   slug: string;
-  category: "Waterpark" | "Swimming Pool" | "Thermal Bath" | "Resort" | "Beach";
+  category: "Akva Park" | "Swimming Pool" | "Thermal Bath" | "Resort" | "Beach";
   city: string;
   streetName: string;
   streetNumber: string;
@@ -81,7 +81,7 @@ async function main() {
     {
       name: "AquaPark Petroland",
       slug: "petroland",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Bački Petrovac",
       streetName: "Novosadski put",
       streetNumber: "bb",
@@ -220,7 +220,7 @@ async function main() {
     {
       name: "Aqua Park Izvor",
       slug: "aquapark-izvor",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Aranđelovac",
       streetName: "Mišarska",
       streetNumber: "2",
@@ -291,7 +291,7 @@ async function main() {
     {
       name: "Aqua Park Jagodina",
       slug: "aquapark-jagodina",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Jagodina",
       streetName: "Stevana Prvovenčanog",
       streetNumber: "bb",
@@ -351,7 +351,7 @@ async function main() {
     {
       name: "Aqua Park Sunny Hill",
       slug: "sunny-hill",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Vrnjačka Banja",
       streetName: "Mare Jakovljević",
       streetNumber: "9A",
@@ -411,7 +411,7 @@ async function main() {
     {
       name: "Aqua Park Podina",
       slug: "aquapark-podina",
-      category: "Waterpark",
+      category: "Akva Park",
       city: "Soko Banja",
       streetName: "IX Brigade",
       streetNumber: "bb",

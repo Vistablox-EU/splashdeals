@@ -6,7 +6,7 @@
 export const CATEGORIES = {
   "akva-parkovi": {
     name: "Akva Parkovi",
-    dbValues: ["Akva Park", "Waterpark"],
+    dbValues: ["Akva Park"],
   },
   "bazeni": {
     name: "Bazeni",

@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { connection } from "next/server";
 import { getDictionary } from "@/lib/dictionaries";
 import { FacilityGrid } from "@/app/(web)/_facility/_components/FacilityGrid";
 import { FacilityGridSkeleton } from "@/app/(web)/_facility/_components/FacilitySkeletons";
@@ -81,7 +80,6 @@ export async function getDiscoveryMetadata(categorySlug: string): Promise<Metada
  * Discovery Template — renders category grid with breadcrumbs and metadata
  */
 export async function DiscoveryTemplate({ params }: PageProps) {
-  await connection();
   const { categorySlug } = await params;
   const dict = await getDictionary();
   const dbValue = slugToDbValue(categorySlug);

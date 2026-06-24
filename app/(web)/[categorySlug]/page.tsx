@@ -1,12 +1,25 @@
 import { Metadata } from "next";
-import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate } from "@/app/(web)/_facility/page";
-import { buildFacilityMetadata } from "@/app/(web)/_facility/_metadata";
+import { buildFacilityMetadata } from "@/app/(web)/_facility/_head";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 import { resolveSlug, resolveFacilitySlug } from "@/lib/routing/resolve-slug";
-import { isKnownCategory, slugToDbValue } from "@/lib/routing/categories";
+import { isKnownCategory, slugToDbValue, getAllSlugs } from "@/lib/routing/categories";
+
+// ── ISR: Revalidate every hour for SEO freshness ────────────────────
+export const revalidate = 3600;
+
+// ── Static Paths: Pre-render all facility & category pages ──────────
+export async function generateStaticParams() {
+  const facilities = await prisma.facility.findMany({
+    where: { status: "ACTIVE" },
+    select: { slug: true },
+  });
+  const facilityPaths = facilities.map((f) => ({ slug: f.slug }));
+  const categoryPaths = getAllSlugs().map((s) => ({ slug: s }));
+  return [...facilityPaths, ...categoryPaths];
+}
 
 interface PageProps {
   params: Promise<{ categorySlug: string }>;

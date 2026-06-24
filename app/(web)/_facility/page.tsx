@@ -1,7 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
-import { notFound, permanentRedirect } from "next/navigation"
 import { Metadata } from "next"
-import { connection } from "next/server"
+import { notFound, permanentRedirect } from "next/navigation"
 import { Suspense } from "react"
 import { getDictionary } from "@/lib/dictionaries"
 
@@ -47,13 +46,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { serialize } from "@/lib/serialize"
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { validateDiscoverySlug } from "@/server/lib/data/discovery";
-import { 
+import {
   catLabelMap,
   buildFacilitySchema,
   TierEntry,
-} from "./_schemas";
-import { getFacility, buildFacilityMetadata, buildTicketGroups, flattenActivePrices } from "./_metadata";
-import type { FacilityWithIncludes } from "./_metadata";
+} from "./_head";
+import { getFacility, buildFacilityMetadata, buildTicketGroups, flattenActivePrices } from "./_head";
+import type { FacilityWithIncludes } from "./_head";
 import { getWeather } from "@/server/lib/weather";
 
 interface FacilityPageProps {
@@ -92,11 +91,10 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
   if (!facility) return notFound()
 
-  // 🛡️ PRERENDER SIGNAL: Everything below this can be dynamic (PPR)
-  await connection();
-
-  validateDiscoverySlug(categorySlug, facility);
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
+
+  // 🕵️ Validate that the URL slug matches the facility's category or city
+  validateDiscoverySlug(categorySlug, facility);
 
   // Build ticket groups and price data
   const mappedGroups = buildTicketGroups(facility);
@@ -291,7 +289,6 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
  * Unless it's a permanently deleted path — then 410 Gone.
  */
 export default async function FacilityShowcasePage({ params }: FacilityPageProps) {
-  await connection();
   const { facilitySlug } = await params
 
   // Permanently deleted legacy paths — 410 Gone

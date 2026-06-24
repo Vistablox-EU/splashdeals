@@ -2,7 +2,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { Metadata } from "next";
 import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate } from "../_facility/page";
-import { buildFacilityMetadata } from "../_facility/_metadata";
+import { buildFacilityMetadata } from "../_facility/_head";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 import { isDeletedPath, resolveSlug, resolveLegacyTarget } from "@/lib/routing/resolve-slug";
 

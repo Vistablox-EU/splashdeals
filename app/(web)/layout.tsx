@@ -26,12 +26,10 @@ export default async function WebLayout({
   return (
     <>
       <WebVitals />
-      <React.Suspense fallback={<div className="min-h-screen bg-background" />}>
-        <WebLayoutContent>
-          {children}
-          {modal}
-        </WebLayoutContent>
-      </React.Suspense>
+      <WebLayoutContent>
+        {children}
+        {modal}
+      </WebLayoutContent>
     </>
   );
 }
