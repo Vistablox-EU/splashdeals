@@ -4,7 +4,7 @@ import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate } from "@/app/(web)/_facility/page";
 import { buildFacilityMetadata } from "@/app/(web)/_facility/_head";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
-import { resolveSlug, resolveFacilitySlug } from "@/lib/routing/resolve-slug";
+import { resolveFacilitySlug } from "@/lib/routing/resolve-slug";
 import { isKnownCategory, slugToDbValue, getAllSlugs } from "@/lib/routing/categories";
 
 // ── ISR: Revalidate every hour for SEO freshness ────────────────────

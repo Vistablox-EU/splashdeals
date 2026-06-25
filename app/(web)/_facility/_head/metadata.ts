@@ -208,7 +208,7 @@ export const getFacility = cache(async (slug: string): Promise<FacilityWithInclu
 
 export async function buildFacilityMetadata(
   facilitySlug: string,
-  categorySlug: string,
+  _categorySlug: string,
 ): Promise<Metadata> {
   const facility = await getFacility(facilitySlug);
   if (!facility) notFound();
