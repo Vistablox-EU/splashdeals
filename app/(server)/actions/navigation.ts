@@ -263,3 +263,99 @@ export async function reorderItemsAction(
     return handleServerActionError(error, "navigation/reorderItems")
   }
 }
+
+// ─── Public data actions (replaces /api/menu/navigation) ────────
+
+export async function getMenusAction(): Promise<ActionResult<{ menus: unknown[] }>> {
+  try {
+    const menus = await prisma.navigationMenu.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: "asc" },
+      include: {
+        sections: {
+          where: { isActive: true },
+          orderBy: [{ column: "asc" }, { sortOrder: "asc" }],
+          include: {
+            items: {
+              where: { isActive: true },
+              orderBy: { sortOrder: "asc" },
+            },
+          },
+        },
+      },
+    })
+    return { success: true, data: { menus } }
+  } catch (error) {
+    return handleServerActionError(error, "navigation/getMenus")
+  }
+}
+
+export async function getDiscoveryAction(): Promise<ActionResult<{ cities: unknown[]; featured: unknown | null }>> {
+  try {
+    const cities = await prisma.city.findMany({
+      where: { facilities: { some: {} } },
+      select: { id: true, name: true, slug: true },
+      orderBy: { name: "asc" },
+    })
+
+    const featuredFacility = await prisma.facility.findFirst({
+      where: {
+        status: "ACTIVE",
+        media: { some: { isHero: true } },
+        ticketCategories: {
+          some: {
+            isActive: true,
+            types: {
+              some: {
+                isActive: true,
+                prices: { some: { isActive: true } },
+              },
+            },
+          },
+        },
+      },
+      include: {
+        media: { where: { isHero: true }, take: 1 },
+        ticketCategories: {
+          where: { isActive: true },
+          include: {
+            types: {
+              where: { isActive: true },
+              include: {
+                prices: { where: { isActive: true }, orderBy: { price: "asc" }, take: 1 },
+              },
+              take: 1,
+            },
+          },
+          take: 1,
+        },
+        marketplaceCities: { include: { city: true } },
+      },
+    })
+
+    let featured = null
+    if (featuredFacility) {
+      const canonicalCategory = featuredFacility.category.toLowerCase().replace(/\s+/g, "-")
+      const cheapestPrice = featuredFacility.ticketCategories?.[0]?.types?.[0]?.prices?.[0]
+      const citySlug = featuredFacility.marketplaceCities?.[0]?.city?.slug || canonicalCategory
+
+      featured = {
+        id: featuredFacility.id,
+        name: featuredFacility.name,
+        slug: featuredFacility.slug,
+        category: featuredFacility.category,
+        city: featuredFacility.city,
+        canonicalPath: `/facilities/${citySlug}/${featuredFacility.slug}`,
+        imageUrl: featuredFacility.media[0]?.url || "/og-image.png",
+        startingPrice: cheapestPrice ? Number(cheapestPrice.price) : null,
+        description:
+          featuredFacility.description?.slice(0, 100) ||
+          "Doživite nezaboravnu letnju avanturu na najboljim bazenima u Srbiji.",
+      }
+    }
+
+    return { success: true, data: { cities, featured } }
+  } catch (error) {
+    return handleServerActionError(error, "navigation/getDiscovery")
+  }
+}

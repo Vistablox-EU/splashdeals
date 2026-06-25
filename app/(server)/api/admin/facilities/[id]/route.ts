@@ -48,12 +48,9 @@ export async function PATCH(
     const { id } = await params
     const json = await request.json()
 
-    // Explicitly reject governance and sub-resource fields to guide programmatic callers
+    // Block sub-resource fields that have dedicated endpoints
     const disallowedFields = [
-      "description", "publicPhone", "publicEmail", 
-      "socialLinks", "hours", "amenities", "targetCityIds", 
-      "logoUrl", "emergencyContact", "seoArticle", "transitGuide", 
-      "lat", "lng"
+      "hours", "amenities", "targetCityIds",
     ]
     const foundDisallowed = Object.keys(json).filter(key => disallowedFields.includes(key))
     if (foundDisallowed.length > 0) {

@@ -28,6 +28,7 @@ import { LivePreview } from "./LivePreview"
 import {
   reorderMenusAction,
   reorderSectionsAction,
+  getMenusAction,
 } from "@/app/(server)/actions/navigation"
 import type { MenuWithSections, SectionWithItems, NavigationMenuItem } from "./types"
 
@@ -308,9 +309,11 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
 
   /* ─── Refresh ──────────────────────────────────── */
   const refreshMenus = useCallback(async () => {
-    const res = await fetch("/api/menu/navigation")
-    const data = await res.json()
-    if (data.menus) setMenus(data.menus)
+    const result = await getMenusAction()
+    if (result.success) {
+      const data = result.data
+      if (data?.menus) setMenus(data.menus as MenuWithSections[])
+    }
   }, [])
 
   /* ─── Callbacks ────────────────────────────────── */

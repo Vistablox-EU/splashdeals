@@ -11,6 +11,7 @@ import {
 import { Icon } from "@/components/ui/Icon"
 import { SectionRenderer } from "./sections"
 import type { NavigationMenuData, DiscoveryMenuData } from "./types"
+import { getMenusAction, getDiscoveryAction } from "@/app/(server)/actions/navigation"
 
 // ── Skeleton ─────────────────────────────────────────────────────────
 
@@ -39,14 +40,12 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [menuRes, discoveryRes] = await Promise.all([
-          fetch("/api/menu/navigation"),
-          fetch("/api/menu/discovery"),
+        const [menuResult, discoveryResult] = await Promise.all([
+          getMenusAction(),
+          getDiscoveryAction(),
         ])
-        const menuData = await menuRes.json()
-        const discoveryData = await discoveryRes.json()
-        if (menuData.menus) setMenus(menuData.menus)
-        if (discoveryData) setDiscovery(discoveryData)
+        if (menuResult.success && menuResult.data) setMenus((menuResult.data as { menus: NavigationMenuData[] }).menus)
+        if (discoveryResult.success && discoveryResult.data) setDiscovery(discoveryResult.data as unknown as DiscoveryMenuData)
       } catch (error) {
         console.error("Menu fetch failed:", error)
       } finally {

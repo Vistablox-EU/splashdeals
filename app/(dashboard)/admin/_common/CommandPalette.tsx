@@ -4,6 +4,8 @@ import { Icon } from "@/components/ui/Icon";
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import useSWR from "swr"
+import { searchAction } from "@/app/(server)/actions/search"
+import type { SearchResults } from "@/app/(server)/actions/search"
 
 import {
   CommandDialog,
@@ -16,43 +18,17 @@ import {
   CommandShortcut,
 } from "@/components/ui/command"
 
-interface FacilityResult {
-  id: string
-  name: string
-  city: string
-  category: string
-}
-
-interface TicketResult {
-  id: string
-  title: string
-  facilityId: string
-  facility: { name: string }
-  price: number
-}
-
-interface TransactionResult {
-  id: string
-  totalAmount: number
-  status: string
-}
-
-interface SearchResults {
-  facilities: FacilityResult[]
-  tickets: TicketResult[]
-  transactions: TransactionResult[]
-}
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
 export function CommandPalette() {
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
   const router = useRouter()
 
   const { data } = useSWR<SearchResults>(
-    query.length >= 2 ? `/api/admin/search?q=${encodeURIComponent(query)}` : null,
-    fetcher,
+    query.length >= 2 ? query : null,
+    async (q: string) => {
+      const result = await searchAction(q)
+      return result.success ? result.data! : { facilities: [], tickets: [], transactions: [] }
+    },
     { keepPreviousData: true }
   )
 

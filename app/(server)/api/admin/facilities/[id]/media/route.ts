@@ -7,6 +7,8 @@ import { put } from "@vercel/blob"
 import { mediaUploadSchema } from "@/server/lib/validations/media"
 import { processImageToWebP, generateThumbnail } from "@/server/lib/media"
 import { parse } from "url"
+import { writeFile, mkdir } from "fs/promises"
+import path from "path"
 
 /**
  * 🛡️ SSRF Protection: Blocks loopback and private/internal hostname patterns.
@@ -54,6 +56,9 @@ export async function POST(
     // 3. Validate Request Payload
     const json = await request.json()
     const validated = mediaUploadSchema.parse(json)
+
+    // Check mode: "review" saves locally for agent review, "publish" (default) uploads to Blob
+    const mode = new URL(request.url).searchParams.get("mode") || "publish"
 
     let buffer: Buffer | null = null
 
@@ -179,6 +184,36 @@ export async function POST(
         error: "Preuzeta datoteka nije validna slika ili je oštećena",
         code: "INVALID_IMAGE"
       }, { status: 400 })
+    }
+
+    // ── Agent review mode: save locally, skip Blob & DB ──────────────
+    if (mode === "review") {
+      const timestamp = Date.now()
+      const baseDir = path.join(process.cwd(), "public", "facility-images", facilityId)
+      const thumbDir = path.join(baseDir, "thumbnails")
+      await mkdir(thumbDir, { recursive: true })
+
+      const mainFilename = `${timestamp}-image.webp`
+      const mainPath = path.join(baseDir, mainFilename)
+      await writeFile(mainPath, processedBuffer)
+
+      let thumbnailPath: string | null = null
+      try {
+        const thumbBuffer = await generateThumbnail(buffer)
+        const thumbFilename = `${timestamp}-image.webp`
+        thumbnailPath = `/facility-images/${facilityId}/thumbnails/${thumbFilename}`
+        await writeFile(path.join(thumbDir, thumbFilename), thumbBuffer)
+      } catch (err: unknown) {
+        console.error("Failed to generate thumbnail for review (skipped):", err)
+      }
+
+      return NextResponse.json({
+        success: true,
+        path: `/facility-images/${facilityId}/${mainFilename}`,
+        thumbnailPath,
+        mode: "review",
+        originalUrl: validated.url || null,
+      }, { status: 201 })
     }
 
     // 6. Generate and upload WebP thumbnail (400x400)
