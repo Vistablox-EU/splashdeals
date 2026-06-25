@@ -44,7 +44,7 @@ type TicketSeed = {
 type FacilitySeed = {
   name: string;
   slug: string;
-  category: "Akva Park" | "Swimming Pool" | "Thermal Bath" | "Resort" | "Beach";
+  category: "Akva Park" | "Termalna Rivijera" | "Swimming Pool" | "Thermal Bath" | "Resort" | "Beach" | "Kupalište";
   city: string;
   streetName: string;
   streetNumber: string;
@@ -470,7 +470,7 @@ async function main() {
     {
       name: "Banja Vrujci Aquapark",
       slug: "banja-vrujci",
-      category: "Thermal Bath",
+      category: "Termalna Rivijera",
       city: "Mionica",
       streetName: "Banja Vrujci",
       streetNumber: "bb",
@@ -547,7 +547,7 @@ async function main() {
     {
       name: "Banja Junaković",
       slug: "banja-junakovic",
-      category: "Thermal Bath",
+      category: "Termalna Rivijera",
       city: "Apatin",
       streetName: "Banjski put",
       streetNumber: "71",

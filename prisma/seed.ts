@@ -235,7 +235,7 @@ async function main() {
     {
       name: "SRC Tašmajdan",
       slug: "tasmajdan",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Belgrade",
       streetName: "Beogradska",
       streetNumber: "71",
@@ -253,7 +253,7 @@ async function main() {
     {
       name: "SC Milan Gale Muškatirović",
       slug: "milan-gale-muskatirovic",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Belgrade",
       streetName: "Tadeuša Košćuška",
       streetNumber: "63",
@@ -271,7 +271,7 @@ async function main() {
     {
       name: "SC 11. April",
       slug: "11-april",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Belgrade",
       streetName: "Autoput",
       streetNumber: "2",
@@ -307,7 +307,7 @@ async function main() {
     {
       name: "SC Čair Niš",
       slug: "cair-nis",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Niš",
       streetName: "IX Brigade",
       streetNumber: "10",
@@ -343,7 +343,7 @@ async function main() {
     {
       name: "SRC Petnica",
       slug: "petnica",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Valjevo",
       streetName: "Petnica",
       streetNumber: "bb",
@@ -361,7 +361,7 @@ async function main() {
     {
       name: "Bazen Borkovac",
       slug: "borkovac",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Ruma",
       streetName: "Orlovićeva",
       streetNumber: "bb",
@@ -420,7 +420,7 @@ async function main() {
     {
       name: "SC Jezero Kikinda",
       slug: "jezero-kikinda",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Kikinda",
       streetName: "Branka Vujina",
       streetNumber: "bb",
@@ -438,7 +438,7 @@ async function main() {
     {
       name: "Gradski bazen Inđija",
       slug: "indjija-pool",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Inđija",
       streetName: "Novosadski put",
       streetNumber: "bb",
@@ -456,7 +456,7 @@ async function main() {
     {
       name: "Gradski bazen Stara Pazova",
       slug: "stara-pazova-pool",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Stara Pazova",
       streetName: "Staropazovački put",
       streetNumber: "bb",
@@ -492,7 +492,7 @@ async function main() {
     {
       name: "Gradski bazen Kruševac",
       slug: "krusevac-pool",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Kruševac",
       streetName: "Nikole Tesle",
       streetNumber: "bb",
@@ -510,7 +510,7 @@ async function main() {
     {
       name: "Gradski bazen Čačak",
       slug: "cacak-pool",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Čačak",
       streetName: "Bulevar Vuka Karadžića",
       streetNumber: "bb",
@@ -528,7 +528,7 @@ async function main() {
     {
       name: "SRC Dubočica Leskovac",
       slug: "dubocica",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Leskovac",
       streetName: "Kralja Petra I",
       streetNumber: "bb",
@@ -546,7 +546,7 @@ async function main() {
     {
       name: "Gradski bazen Šabac",
       slug: "sabac-pool",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Šabac",
       streetName: "Hajduk Veljkova",
       streetNumber: "bb",
@@ -564,7 +564,7 @@ async function main() {
     {
       name: "SC Olimp",
       slug: "olimp",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Belgrade",
       streetName: "Vjekoslava Kovača",
       streetNumber: "11",
@@ -582,7 +582,7 @@ async function main() {
     {
       name: "SC Banjica",
       slug: "banjica",
-      category: "Swimming Pool",
+      category: "Otvoreni Bazen",
       city: "Belgrade",
       streetName: "Crnotravska",
       streetNumber: "4",
@@ -600,7 +600,7 @@ async function main() {
     {
       name: "Ada Ciganlija",
       slug: "ada-ciganlija",
-      category: "Beach",
+      category: "Kupalište",
       city: "Belgrade",
       streetName: "Ada Ciganlija",
       streetNumber: "2",

@@ -288,7 +288,7 @@ async function main() {
 
   // 2. Run checks sequentially
   // Known category slugs that render dynamic PPR content - skip soft-404 check
-const KNOWN_CATEGORY_SLUGS = ["akva-parkovi", "bazeni", "wellness-i-spa"];
+const KNOWN_CATEGORY_SLUGS = ["akva-parkovi", "termalne-rivijere", "bazeni", "banje", "wellness-i-spa", "jezera", "plaze-i-kupalista", "vodeni-sportovi"];
 
 const criticalPages = [
     { path: "/", label: "Homepage" },

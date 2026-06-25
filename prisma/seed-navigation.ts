@@ -91,9 +91,14 @@ async function main() {
 
   const catId = await insertSection(exploreId, "Kategorije", 0, "LINKS", 1);
   await insertItem(catId, "Akva Parkovi", "/akva-parkovi", 0, { icon: "waves" });
-  await insertItem(catId, "Bazeni", "/bazeni", 1, { icon: "waves" });
-  await insertItem(catId, "Wellness & Spa", "/wellness-i-spa", 2, { icon: "auto_awesome" });
-  await insertItem(catId, "Sve Akcije", "/#deals", 3, { icon: "local_fire_department" });
+  await insertItem(catId, "Termalne Rivijere", "/termalne-rivijere", 1, { icon: "hot_tub" });
+  await insertItem(catId, "Bazeni", "/bazeni", 2, { icon: "waves" });
+  await insertItem(catId, "Banje", "/banje", 3, { icon: "spa" });
+  await insertItem(catId, "Wellness & Spa", "/wellness-i-spa", 4, { icon: "auto_awesome" });
+  await insertItem(catId, "Jezera", "/jezera", 5, { icon: "water" });
+  await insertItem(catId, "Plaže i Kupališta", "/plaze-i-kupalista", 6, { icon: "deck" });
+  await insertItem(catId, "Vodeni Sportovi", "/vodeni-sportovi", 7, { icon: "sailing" });
+  await insertItem(catId, "Sve Akcije", "/#deals", 8, { icon: "local_fire_department" });
 
   await insertSection(exploreId, "Gradovi", 1, "DYNAMIC_CITIES", 0, {
     popularSlugs: ["beograd", "novi-sad", "jagodina", "vrnjacka-banja", "subotica"],
