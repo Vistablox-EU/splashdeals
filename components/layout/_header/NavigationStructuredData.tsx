@@ -24,7 +24,7 @@ export async function NavigationStructuredData() {
     ]
   })
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://splashdeals.rs"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!
 
   const structuredData = {
     "@context": "https://schema.org",
