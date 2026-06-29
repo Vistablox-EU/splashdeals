@@ -5,12 +5,14 @@ export async function NavigationStructuredData() {
 
   if (menus.length === 0) return null
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!
+
   // Build SiteNavigationElement items
   const navItems = menus.flatMap((menu) => {
     const items = menu.sections.flatMap((section) =>
       section.items.map((item) => ({
         name: item.label,
-        url: item.href || `${process.env.NEXT_PUBLIC_SITE_URL || ""}/`,
+        url: item.href || `${siteUrl}/`,
         description: item.desc || undefined,
       }))
     )
@@ -18,13 +20,11 @@ export async function NavigationStructuredData() {
     return [
       {
         name: menu.label,
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || ""}/`,
+        url: `${siteUrl}/`,
         children: items,
       },
     ]
   })
-
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!
 
   const structuredData = {
     "@context": "https://schema.org",
