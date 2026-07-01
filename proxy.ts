@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ROUTING_CONFIG } from './lib/routing/config';
+import { isDeletedPath } from './lib/routing/deleted-paths';
 
 /**
  * 🌊 Splashdeals Proxy (Next.js 16+ Architecture)
@@ -33,6 +34,16 @@ export async function proxy(request: NextRequest) {
     }
 
     return NextResponse.redirect(canonicalUrl, { status: 301 });
+  }
+
+  // 1. 🗑️ PERMANENTLY DELETED LEGACY PATHS → 404
+  // Runs at the edge BEFORE Vercel sends 103 Early Hints, so the 404 status is preserved.
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments.length > 0 && isDeletedPath(segments)) {
+    return new Response(
+      '<!DOCTYPE html><html lang="sr"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Stranica Nije Pronađena | Splashdeals</title></head><body style="background:#020617;color:#94a3b8;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><div style="text-align:center"><div style="font-size:6rem;font-weight:900;color:#06b6d4;margin:0">404</div><p style="font-size:1.25rem;margin-top:0.5rem">Stranica nije pronađena.</p></div></body></html>',
+      { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+    );
   }
 
   // 2. 🧟 DECLARATIVE REDIRECTS (SEO & Legacy Cleanup)
