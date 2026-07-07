@@ -411,6 +411,11 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
         className="w-full flex items-center justify-between px-3 py-3 transition-colors hover:bg-muted/10 active:bg-muted/20"
       >
         <div className="flex items-center gap-2 min-w-0 flex-1 text-left">
+          {tier.imageUrl && (
+            <div className="relative w-10 h-10 shrink-0 rounded-xl overflow-hidden border border-border/50">
+              <Image src={tier.imageUrl} alt={tier.label || tier.title} fill className="object-cover" sizes="40px" />
+            </div>
+          )}
           <span className="text-sm font-bold text-foreground tracking-tight truncate">{tier.label}</span>
           {hasDiscount && (
             <span className="shrink-0 inline-flex items-center justify-center w-[22px] h-[22px] bg-secondary text-secondary-foreground font-black text-[9px] leading-none rounded-full shadow-sm">
