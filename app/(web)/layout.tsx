@@ -8,6 +8,7 @@ import { getActiveCities } from "@/server/lib/data/discovery";
 import { prisma } from "@/server/lib/prisma";
 import dynamic from "next/dynamic";
 import { CartLoader } from "@/components/cart/CartLoader";
+import { GAScript } from "@/components/analytics/GoogleAnalytics";
 
 const Footer = dynamic(
   () => import("@/components/layout/Footer").then((mod) => mod.Footer),
@@ -27,6 +28,7 @@ export default async function WebLayout({
   return (
     <>
       <WebVitals />
+      <GAScript />
       <WebLayoutContent>
         {children}
         {modal}

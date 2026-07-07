@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import { createCheckoutSessionAction } from "@/app/(server)/actions/checkout";
+import { trackBeginCheckout } from "@/lib/analytics/events";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -42,6 +43,16 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
   };
 
   const handleStartCheckout = () => {
+    trackBeginCheckout({
+      items: items.map(i => ({
+        ticketId: i.ticketId,
+        facilityName: i.facilityName || "",
+        ticketTitle: i.title,
+        price: i.price,
+        quantity: i.quantity,
+      })),
+    });
+
     if (requiresIdentity || requiresPhoto) {
       setShowIdentityDialog(true);
     } else {

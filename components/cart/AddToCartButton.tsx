@@ -5,6 +5,7 @@ import { useCart } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { trackAddToCart } from "@/lib/analytics/events";
 
 interface AddToCartButtonProps {
   ticket: {
@@ -51,6 +52,13 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
       minPeople: ticket.minPeople,
       maxPeople: ticket.maxPeople,
       imageUrl: ticket.imageUrl,
+    });
+    trackAddToCart({
+      ticketId: ticket.id,
+      facilityName: ticket.facility.name,
+      ticketTitle: ticket.title,
+      price: Number(ticket.price),
+      quantity: 1,
     });
     setAdded(true);
     openCart();
