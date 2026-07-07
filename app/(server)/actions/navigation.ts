@@ -8,7 +8,7 @@ import { z } from "zod/v4"
 
 // ─── Schemas ───────────────────────────────────────────
 
-export const menuSchema = z.object({
+const menuSchema = z.object({
   label: z.string().min(1, "Naziv je obavezan"),
   icon: z.string().min(1, "Ikona je obavezna"),
   sortOrder: z.number().int().default(0),
@@ -17,7 +17,7 @@ export const menuSchema = z.object({
 
 export type MenuFormValues = z.infer<typeof menuSchema>
 
-export const sectionSchema = z.object({
+const sectionSchema = z.object({
   menuId: z.string().uuid(),
   heading: z.string().optional().nullable(),
   column: z.number().int().min(0).max(2).default(0),
@@ -29,7 +29,7 @@ export const sectionSchema = z.object({
 
 export type SectionFormValues = z.infer<typeof sectionSchema>
 
-export const itemSchema = z.object({
+const itemSchema = z.object({
   sectionId: z.string().uuid(),
   label: z.string().min(1, "Naziv je obavezan"),
   href: z.string().optional().nullable(),
@@ -42,7 +42,7 @@ export const itemSchema = z.object({
 
 export type ItemFormValues = z.infer<typeof itemSchema>
 
-export const reorderItemSchema = z.object({
+const reorderItemSchema = z.object({
   id: z.string().uuid(),
   sortOrder: z.number().int(),
 })
