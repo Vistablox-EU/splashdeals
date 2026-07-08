@@ -12,9 +12,6 @@ export { CompactAmenitiesTable } from "../amenities/_components/facility-ameniti
 export { CompactAmenitiesTableContainer as AmenitiesSection } from "../amenities/_components";
 export { AmenitiesSkeleton } from "../amenities/_components/amenities-skeleton";
 
-// Media components
-export { MediaGallery } from "../media/_components/media-gallery";
-
 // Tickets components
 // (barrel export removed — use ticket-management-v2 directly)
 
