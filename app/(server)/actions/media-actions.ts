@@ -84,13 +84,14 @@ export async function uploadMediaAction(formData: FormData) {
     await validateFacilityAccess(facilityId)
 
     // Phase 1: Process all files outside transaction (no DB ops)
-    const processedFiles: { facilityId: string; url: string; type: MediaType; purpose: MediaPurpose }[] = [];
+    const processedFiles: { facilityId: string; url: string; type: MediaType; purpose: MediaPurpose; thumbnailUrl?: string | null }[] = [];
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const isImage = file.type.startsWith("image/");
       const isVideo = file.type.startsWith("video/");
 
       let finalUrl = "";
+      let thumbUrl: string | null = null;
       const mediaType: MediaType = isVideo ? MediaType.VIDEO : MediaType.PHOTO;
 
       if (isImage) {
@@ -102,12 +103,26 @@ export async function uploadMediaAction(formData: FormData) {
           contentType: "image/webp",
         });
         finalUrl = blob.url;
+
+        // Generate and upload 400x400 WebP thumbnail
+        try {
+          const { generateThumbnail } = await import("@/server/lib/media");
+          const thumbBuffer = await generateThumbnail(buffer);
+          const thumbFilename = `facilities/${facilityId}/photos/thumbnails/${Date.now()}-${file.name.split('.')[0]}.webp`;
+          const thumbBlob = await put(thumbFilename, thumbBuffer, {
+            access: "public",
+            contentType: "image/webp",
+          });
+          thumbUrl = thumbBlob.url;
+        } catch (err) {
+          console.error("Failed to generate thumbnail (skipped):", err);
+        }
       } else if (isVideo) {
         throw new Error("Videos must be uploaded via the high-bandwidth direct pipeline.");
       }
 
       if (finalUrl) {
-        processedFiles.push({ facilityId, url: finalUrl, type: mediaType, purpose });
+        processedFiles.push({ facilityId, url: finalUrl, type: mediaType, purpose, thumbnailUrl: thumbUrl });
       }
     }
 
