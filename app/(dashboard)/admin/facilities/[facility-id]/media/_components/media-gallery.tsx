@@ -467,8 +467,8 @@ export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalP
 
     // Optimistic update: unset other heroes, set this one
     setMedia(prev => prev.map(m => {
-      if (m.id === id) return { ...m, isHero: !m.isHero } as FacilityMedia
-      if (!item.isHero) return { ...m, isHero: false } as FacilityMedia // If we are making this hero, others must lose it
+      if (m.id === id) return { ...m, isHero: !m.isHero }
+      if (!item.isHero) return { ...m, isHero: false } // If we are making this hero, others must lose it
       return m
     }))
 
@@ -487,8 +487,8 @@ export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalP
 
     // Optimistic update
     setMedia(prev => prev.map(m => {
-      if (m.id === id) return { ...m, isCardBackground: !m.isCardBackground } as FacilityMedia
-      if (!item.isCardBackground) return { ...m, isCardBackground: false } as FacilityMedia
+      if (m.id === id) return { ...m, isCardBackground: !m.isCardBackground }
+      if (!item.isCardBackground) return { ...m, isCardBackground: false }
       return m
     }))
 
@@ -505,7 +505,7 @@ export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalP
     const item = media.find(m => m.id === id)
     if (!item) return
 
-    setMedia(prev => prev.map(m => m.id === id ? { ...m, isGalleryVisible: !m.isGalleryVisible } as FacilityMedia : m))
+    setMedia(prev => prev.map(m => m.id === id ? { ...m, isGalleryVisible: !m.isGalleryVisible } : m))
 
     const result = await toggleMediaGalleryVisibilityAction(id, facilityId)
     if (!result.success) {
@@ -647,7 +647,7 @@ export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalP
                                   const ids = Array.from(selectedIds)
                                   const res = await bulkUpdateMediaCaptionAction(ids, facilityId, val)
                                   if (res.success) {
-                                    setMedia(prev => prev.map(m => ids.includes(m.id) ? { ...m, caption: val } as FacilityMedia : m))
+                                    setMedia(prev => prev.map(m => ids.includes(m.id) ? { ...m, caption: val } : m))
                                     setSelectedIds(new Set())
                                     setIsSelectionMode(false)
                                     setBulkCaptionText("")
