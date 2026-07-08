@@ -2,12 +2,12 @@ import type { NextConfig } from "next";
 
 /**
  * Bundle analyzer integration — enabled via ANALYZE=true npm run build.
- * Uses top-level await (Node 24+) for CJS-compatible usage.
+ * Uses require() since Next.js loads config as CJS (top-level await breaks it).
  */
-const withBundleAnalyzer =
-  process.env.ANALYZE === "true"
-    ? (await import("@next/bundle-analyzer")).default({ enabled: true })
-    : (config: NextConfig) => config;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const ba = require("@next/bundle-analyzer");
+const withBundleAnalyzer: (config: NextConfig) => NextConfig =
+  process.env.ANALYZE === "true" ? ba.default({ enabled: true }) : (config: NextConfig) => config;
 
 /**
  * 🌊 Next.js 16.x Configuration
