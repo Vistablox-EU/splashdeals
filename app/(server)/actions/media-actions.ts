@@ -81,13 +81,9 @@ export async function uploadMediaAction(formData: FormData) {
     }
 
     await validateFacilityAccess(facilityId)
-    const results = [];
-    const lastMedia = await prisma.facilityMedia.findFirst({
-      where: { facilityId },
-      orderBy: { order: "desc" },
-    });
-    let currentOrder = (lastMedia?.order ?? -1) + 1;
 
+    // Phase 1: Process all files outside transaction (no DB ops)
+    const processedFiles: { facilityId: string; url: string; type: MediaType; purpose: MediaPurpose }[] = [];
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const isImage = file.type.startsWith("image/");
@@ -110,18 +106,25 @@ export async function uploadMediaAction(formData: FormData) {
       }
 
       if (finalUrl) {
-        const media = await prisma.facilityMedia.create({
-          data: {
-            facilityId,
-            url: finalUrl,
-            type: mediaType,
-            order: currentOrder++,
-            purpose,
-          },
-        });
-        results.push(media);
+        processedFiles.push({ facilityId, url: finalUrl, type: mediaType, purpose });
       }
     }
+
+    // Phase 2: Atomically assign orders and create records (inside transaction)
+    const results = await prisma.$transaction(async (tx) => {
+      const lastMedia = await tx.facilityMedia.findFirst({
+        where: { facilityId },
+        orderBy: { order: "desc" },
+        select: { order: true },
+      });
+      let order = (lastMedia?.order ?? -1) + 1;
+
+      return Promise.all(
+        processedFiles.map((data) =>
+          tx.facilityMedia.create({ data: { ...data, order: order++ } })
+        )
+      );
+    });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
     revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
