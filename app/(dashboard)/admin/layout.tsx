@@ -42,7 +42,6 @@ export default async function AdminRootLayout({
 }
 
 async function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
-  await connection();
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -58,6 +57,8 @@ async function AuthenticatedLayout({ children }: { children: React.ReactNode }) 
     console.warn(`[Security] Unauthorized access attempt by ${session.user.email} (Role: ${role})`);
     redirect("/admin/forbidden");
   }
+
+  await connection();
 
   return (
     <SidebarProvider
