@@ -35,6 +35,7 @@ const syncMediaSchema = z.object({
   facilityId: z.string().uuid(),
   blobUrl: z.string(),
   contentType: z.string(),
+  thumbnailUrl: z.string().nullable().optional(),
 })
 
 const updateMediaCaptionSchema = z.object({
@@ -294,9 +295,9 @@ export async function updateMediaOrderAction(facilityId: string, mediaIds: strin
 /**
  * 🌊 High-Bandwidth Sync (LocalDev Bridge)
  */
-export async function syncMediaAction(facilityId: string, blobUrl: string, contentType: string) {
+export async function syncMediaAction(facilityId: string, blobUrl: string, contentType: string, thumbnailUrl?: string | null) {
   try {
-    const validation = await validateAction(syncMediaSchema, { facilityId, blobUrl, contentType });
+    const validation = await validateAction(syncMediaSchema, { facilityId, blobUrl, contentType, thumbnailUrl });
     if (!validation.success) throw new Error(validation.error);
 
     await validateFacilityAccess(facilityId)
@@ -319,6 +320,7 @@ export async function syncMediaAction(facilityId: string, blobUrl: string, conte
       data: {
         facilityId,
         url: validation.data.blobUrl,
+        thumbnailUrl: validation.data.thumbnailUrl ?? null,
         type: mediaType,
         order: nextOrder,
       },

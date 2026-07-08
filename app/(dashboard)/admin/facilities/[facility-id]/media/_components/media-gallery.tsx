@@ -94,6 +94,52 @@ function filenameFromBlobUrl(url: string): string {
   }
 }
 
+/**
+ * Captures the first frame of a video file as a WebP blob.
+ * Uses HTMLVideoElement + canvas, zero external dependencies.
+ */
+async function captureVideoFrame(file: File): Promise<Blob | null> {
+  const url = URL.createObjectURL(file)
+  try {
+    const video = document.createElement("video")
+    video.muted = true
+    video.playsInline = true
+    video.crossOrigin = "anonymous"
+    video.src = url
+
+    // Wait for metadata, seek to 0.5s
+    await new Promise<void>((resolve, reject) => {
+      video.onloadedmetadata = () => {
+        video.currentTime = Math.min(0.5, video.duration || 0.5)
+        resolve()
+      }
+      video.onerror = () => reject(new Error("Video load failed"))
+      // Set a timeout in case the video is corrupt
+      setTimeout(() => reject(new Error("Video load timeout")), 10000)
+    })
+
+    // Wait for seek to complete
+    await new Promise<void>((resolve) => {
+      video.onseeked = () => resolve()
+      // If already seeked (0s video), resolve immediately
+      if (video.readyState >= 2) resolve()
+    })
+
+    const canvas = document.createElement("canvas")
+    canvas.width = 400
+    canvas.height = 225 // 16:9
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return null
+
+    ctx.drawImage(video, 0, 0, 400, 225)
+    return new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((b) => resolve(b), "image/webp", 0.7)
+    })
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+}
+
 export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalPages = 1, totalCount }: MediaGalleryProps) {
   const [media, setMedia] = useState(initialMedia)
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -210,6 +256,19 @@ export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalP
         
         try {
           if (isVideo) {
+            // Capture thumbnail frame before uploading
+            const thumbBlob = await captureVideoFrame(file)
+            let thumbUrl: string | null = null
+            if (thumbBlob) {
+              const thumbFile = new File([thumbBlob], `thumb-${file.name}.webp`, { type: "image/webp" })
+              const thumbResult = await upload(`facilities/${facilityId}/videos/thumbnails/thumb-${Date.now()}.webp`, thumbFile, {
+                access: "public",
+                handleUploadUrl: "/api/upload",
+                clientPayload: JSON.stringify({ facilityId }),
+              })
+              thumbUrl = thumbResult.url
+            }
+
             const blob = await upload(`facilities/${facilityId}/videos/${file.name}`, file, {
               access: "public",
               handleUploadUrl: "/api/upload",
@@ -219,7 +278,7 @@ export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalP
               }
             })
 
-            const syncResult = await syncMediaAction(facilityId, blob.url, file.type)
+            const syncResult = await syncMediaAction(facilityId, blob.url, file.type, thumbUrl)
 
             if (syncResult.success && "media" in syncResult) {
               setMedia(prev => [...prev, syncResult.media as FacilityMedia])
