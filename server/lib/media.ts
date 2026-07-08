@@ -1,6 +1,9 @@
 import "server-only";
 import sharp from "sharp";
 
+/** Maximum upload file size (10MB) shared across server and client */
+export const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 /**
  * Converts an image buffer to WebP format (max 2000px wide).
  * Optimized for facility gallery images.

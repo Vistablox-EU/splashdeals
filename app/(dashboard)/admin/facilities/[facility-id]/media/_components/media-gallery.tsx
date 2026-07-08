@@ -248,6 +248,14 @@ export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalP
   const processFilesUpload = useCallback(async (files: File[]) => {
     if (files.length === 0) return
 
+    // Client-side file size validation
+    const MAX_SIZE = 10 * 1024 * 1024 // 10MB — matches lib/constants
+    const oversized = files.filter(f => f.size > MAX_SIZE)
+    if (oversized.length > 0) {
+      toast.error(`Files too large: ${oversized.map(f => f.name).join(", ")} (max 10MB)`)
+      return
+    }
+
     setUploadingFiles(prev => [...prev, ...files.map(f => ({ name: f.name, type: f.type }))])
 
     startUpload(async () => {
