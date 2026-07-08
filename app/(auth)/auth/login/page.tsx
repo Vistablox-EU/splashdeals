@@ -10,6 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ErrorBanner, PasswordInput } from "../_components";
 
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Prijava | Splashdeals",
+  description: "Prijavite se na vaš Splashdeals nalog.",
+}
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
