@@ -9,12 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ErrorBanner } from "../_components";
 
-import type { Metadata } from "next"
-
-export const metadata: Metadata = {
-  title: "Zaboravljena lozinka | Splashdeals",
-  description: "Resetujte vašu lozinku za Splashdeals nalog.",
-}
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");

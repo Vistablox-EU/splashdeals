@@ -9,12 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ErrorBanner, PasswordInput } from "../_components";
 
-import type { Metadata } from "next"
-
-export const metadata: Metadata = {
-  title: "Resetovanje lozinke | Splashdeals",
-  description: "Postavite novu lozinku za vaš Splashdeals nalog.",
-}
 
 function ResetPasswordForm() {
   const router = useRouter();
