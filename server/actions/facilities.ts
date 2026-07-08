@@ -1,6 +1,7 @@
 "use server"
 
 import { prisma } from "@/server/lib/prisma"
+import { del } from "@vercel/blob"
 import { revalidateAdminFacilities } from "@/server/lib/revalidation"
 import { FacilityStatus } from "@prisma/client"
 import { facilitySchema, type FacilityFormValues } from "@/server/lib/validations/facility"
@@ -69,9 +70,20 @@ export async function deleteFacilityAction(id: string) {
       }
     }
 
-    await prisma.facility.delete({
-      where: { id },
+    // Clean up Vercel Blob files before cascade-deleting the facility
+    const mediaToDelete = await prisma.facilityMedia.findMany({
+      where: { facilityId: id },
+      select: { url: true, thumbnailUrl: true },
     })
+    
+    const urls = new Set<string>()
+    for (const m of mediaToDelete) {
+      if (m.url) urls.add(m.url)
+      if (m.thumbnailUrl) urls.add(m.thumbnailUrl)
+    }
+    await Promise.allSettled([...urls].map((url) => del(url)))
+
+    await prisma.facility.delete({ where: { id } })
 
     revalidateAdminFacilities()
     return { success: true }

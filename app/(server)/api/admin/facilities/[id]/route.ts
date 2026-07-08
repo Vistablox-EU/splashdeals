@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/server/lib/prisma"
+import { del } from "@vercel/blob"
 import { requireSuperAdmin } from "@/server/lib/auth-guards"
 import { authenticateRequest } from "@/server/lib/api-key-auth"
 import { facilitySchema } from "@/server/lib/validations/facility"
@@ -82,9 +83,19 @@ export async function DELETE(
     await authenticateRequest(request).catch(() => requireSuperAdmin())
     const { id } = await params
     
-    await prisma.facility.delete({
-      where: { id }
+    // Clean up Vercel Blob files before cascade-deleting the facility
+    const mediaToDelete = await prisma.facilityMedia.findMany({
+      where: { facilityId: id },
+      select: { url: true, thumbnailUrl: true },
     })
+    const urls = new Set<string>()
+    for (const m of mediaToDelete) {
+      if (m.url) urls.add(m.url)
+      if (m.thumbnailUrl) urls.add(m.thumbnailUrl)
+    }
+    await Promise.allSettled([...urls].map((url) => del(url)))
+    
+    await prisma.facility.delete({ where: { id } })
     
     return new NextResponse(null, { status: 204 })
   } catch (error) {
