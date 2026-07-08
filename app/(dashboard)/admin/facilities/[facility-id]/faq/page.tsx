@@ -2,6 +2,13 @@ import { prisma } from "@/server/lib/prisma"
 import { FAQSectionList } from "./_components/faq-section-list"
 import { connection } from "next/server"
 
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "FAQ | Splashdeals Admin",
+  description: "Upravljajte često postavljanim pitanjima za objekat.",
+}
+
 interface Props {
   params: Promise<{ "facility-id": string }>
 }
