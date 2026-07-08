@@ -168,9 +168,9 @@ export async function renameMediaAction(mediaId: string, facilityId: string, new
       contentType: response.headers.get("content-type") || "image/webp",
     })
 
-    // Delete old blob
-    await del(media.url).catch(() => {
-      console.warn("Failed to delete old media blob:", media.url)
+    // Delete old blob (non-blocking — rename succeeded even if cleanup fails)
+    await del(media.url).catch((err) => {
+      console.error("[renameMediaAction] Failed to delete old blob:", media.url, err)
     })
 
     // Update database
