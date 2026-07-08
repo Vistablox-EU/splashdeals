@@ -6,6 +6,7 @@ import { handleServerActionError } from "@/server/lib/server-action-error"
 import { put } from "@vercel/blob"
 import { mediaUploadSchema } from "@/server/lib/validations/media"
 import { processImageToWebP, generateThumbnail } from "@/server/lib/media"
+import { MAX_FILE_SIZE } from "@/lib/constants"
 import { parse } from "url"
 import { writeFile, mkdir } from "fs/promises"
 import path from "path"
@@ -135,7 +136,7 @@ export async function POST(
       const contentLenHeader = response.headers.get("content-length")
       if (contentLenHeader) {
         const contentLen = parseInt(contentLenHeader, 10)
-        if (contentLen > 10 * 1024 * 1024) {
+        if (contentLen > MAX_FILE_SIZE) {
           return NextResponse.json({
             success: false,
             error: "Slika prelazi maksimalnu veličinu od 10MB",
@@ -147,7 +148,7 @@ export async function POST(
       const arrayBuffer = await response.arrayBuffer()
       buffer = Buffer.from(arrayBuffer)
 
-      if (buffer.length > 10 * 1024 * 1024) {
+      if (buffer.length > MAX_FILE_SIZE) {
         return NextResponse.json({
           success: false,
           error: "Slika prelazi maksimalnu veličinu od 10MB",
@@ -157,7 +158,7 @@ export async function POST(
     } else if (validated.base64) {
       // Decode Base64 buffer
       buffer = Buffer.from(validated.base64.split(",")[1] || validated.base64, "base64")
-      if (buffer.length > 10 * 1024 * 1024) {
+      if (buffer.length > MAX_FILE_SIZE) {
         return NextResponse.json({
           success: false,
           error: "Slika prelazi maksimalnu veličinu od 10MB",
