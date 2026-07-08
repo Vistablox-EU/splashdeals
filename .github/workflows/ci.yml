@@ -1,10 +1,14 @@
-name: CI — Lint, Typecheck, Test, Build & SEO
+name: CI — Lint, Typecheck, Dead/Duplicate Code, Tests, Build, SEO, Lighthouse & Deploy
 
 on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
@@ -18,57 +22,73 @@ jobs:
           node-version-file: .node-version
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install
 
-      - name: Lint
-        run: npm run lint
+      # ─── Code quality ──────────────────────────────────────────────────
 
-      - name: Type check
+      - name: 🔍 Lint (0 errors, max 100 warnings)
+        run: npm run lint -- --max-warnings 100
+
+      - name: 🦀 Type check
         run: npx tsc --noEmit
 
-      - name: Architecture Audit
+      - name: 💀 Unused files & exports (knip)
+        run: npx knip
+
+      - name: 📋 Copy-paste detection (jscpd)
+        run: npx jscpd --min-lines 8 --min-tokens 60 --format 'ts,tsx' --threshold 3 app server lib components
+
+      - name: 🔄 Circular dependency check
+        run: node scripts/check-circular.mjs
+
+      - name: 🏗️ Architecture Audit
         run: node scripts/check-architecture.mjs
 
-      - name: Unit tests
+      - name: ✨ Prettier formatting check
+        run: npm run format:check
+
+      # ─── Tests ─────────────────────────────────────────────────────────
+
+      - name: ⚡ Unit tests
         run: npm run test:unit
 
-      - name: Build
+      # ─── Build + SEO (YAML anchor deduplicates env vars) ───────────────
+
+      - name: 🔨 Build
+        env: &build_env
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://www.splashdeals.rs' }}
         run: npm run build
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://www.splashdeals.rs' }}
 
-      - name: SEO Crawlability & Indexability Check
+      - name: 💾 Cache .next build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('**/package-lock.json') }}
+
+      - name: 🔍 SEO Crawlability & Indexability Check
+        env: *build_env
         run: node scripts/check-seo.mjs
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://www.splashdeals.rs' }}
 
-      - name: Structured Data / Rich Results Validation
+      - name: 🔎 Structured Data / Rich Results Validation
+        env: *build_env
         run: node scripts/check-structured-data.mjs
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://www.splashdeals.rs' }}
 
-      - name: Deploy to Production (Vercel)
+      # ─── Lighthouse (key pages, single run) ────────────────────────────
+
+      - name: 🚦 Lighthouse CI
+        env: *build_env
+        run: npx lhci autorun --collect.numberOfRuns=1 --collect.url=http://localhost:3000 --collect.url=http://localhost:3000/how-it-works --assert.preset=lighthouse:no-pwa --upload.target=filesystem
+
+      # ─── Deploy ────────────────────────────────────────────────────────
+
+      - name: 🚀 Deploy to Production (Vercel)
         if: github.event_name == 'push' && success()
         run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
