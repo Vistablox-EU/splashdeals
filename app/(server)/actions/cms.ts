@@ -8,7 +8,7 @@ import { z } from "zod/v4"
 
 // ─── Zod v4 šeme ───────────────────────────────────────
 
-export const blogPostSchema = z.object({
+const blogPostSchema = z.object({
   title: z.string().min(1, "Naslov je obavezan"),
   slug: z.string().min(1, "Slug je obavezan").regex(/^[a-z0-9-]+$/, "Samo mala slova, brojevi i crtice"),
   content: z.string().default(""),
@@ -31,7 +31,7 @@ export const blogPostSchema = z.object({
 
 export type BlogPostFormValues = z.infer<typeof blogPostSchema>
 
-export const pageSchema = z.object({
+const pageSchema = z.object({
   title: z.string().min(1, "Naslov je obavezan"),
   slug: z.string().min(1, "Slug je obavezan").regex(/^[a-z0-9-]+$/, "Samo mala slova, brojevi i crtice"),
   content: z.string().default(""),
@@ -53,7 +53,7 @@ export const pageSchema = z.object({
 
 export type PageFormValues = z.infer<typeof pageSchema>
 
-export const categorySchema = z.object({
+const categorySchema = z.object({
   name: z.string().min(1, "Naziv je obavezan"),
   slug: z.string().min(1, "Slug je obavezan").regex(/^[a-z0-9-]+$/, "Samo mala slova, brojevi i crtice"),
   description: z.string().optional(),
@@ -63,7 +63,7 @@ export const categorySchema = z.object({
 
 export type CategoryFormValues = z.infer<typeof categorySchema>
 
-export const tagSchema = z.object({
+const tagSchema = z.object({
   name: z.string().min(1, "Naziv je obavezan"),
   slug: z.string().min(1, "Slug je obavezan").regex(/^[a-z0-9-]+$/, "Samo mala slova, brojevi i crtice"),
 })
