@@ -1149,6 +1149,7 @@ function MediaItemCard({
           <div className="h-full w-full relative">
             <video 
               src={`${item.url}#t=0.1`} 
+              poster={item.thumbnailUrl || undefined}
               className={cn(
                 "h-full w-full object-cover transition-transform duration-500 group-hover:scale-110",
                 !item.isGalleryVisible && "opacity-40 grayscale"

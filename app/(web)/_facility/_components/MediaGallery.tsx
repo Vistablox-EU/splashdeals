@@ -60,6 +60,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                 <div className="w-full h-full relative">
                   <video 
                     src={m.url} 
+                    poster={m.thumbnailUrl || undefined}
                     muted 
                     className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
                   />
