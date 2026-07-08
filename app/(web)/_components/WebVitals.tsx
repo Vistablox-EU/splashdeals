@@ -14,7 +14,7 @@ export function WebVitals() {
 
     // Output to console in development for immediate developer feedback
     if (process.env.NODE_ENV === "development") {
-      console.log(`[Web-Vitals] ${name} (${label}):`, value, `(ID: ${id})`);
+      // console.log(`[Web-Vitals] ${name} (${label}):`, value, `(ID: ${id})`);
     }
 
     // Production tracking logic (e.g. sending to custom Analytics / GA4 / Vercel Speed Insights)

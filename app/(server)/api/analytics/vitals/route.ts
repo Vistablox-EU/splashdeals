@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Log to server console for visibility (use a structured logging service in production)
-    console.log("[Analytics] Web Vitals Received:", body);
+
 
     // This is where you would integrate with Datadog, Axiom, or your internal tracking database
     // For now, we simply acknowledge the beacon signal to keep the client non-blocking.
