@@ -81,13 +81,9 @@ export async function uploadMediaAction(formData: FormData) {
     }
 
     await validateFacilityAccess(facilityId)
-    const results = [];
-    const lastMedia = await prisma.facilityMedia.findFirst({
-      where: { facilityId },
-      orderBy: { order: "desc" },
-    });
-    let currentOrder = (lastMedia?.order ?? -1) + 1;
 
+    // Phase 1: Process all files outside transaction (no DB ops)
+    const processedFiles: { facilityId: string; url: string; type: MediaType; purpose: MediaPurpose }[] = [];
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const isImage = file.type.startsWith("image/");
@@ -110,21 +106,28 @@ export async function uploadMediaAction(formData: FormData) {
       }
 
       if (finalUrl) {
-        const media = await prisma.facilityMedia.create({
-          data: {
-            facilityId,
-            url: finalUrl,
-            type: mediaType,
-            order: currentOrder++,
-            purpose,
-          },
-        });
-        results.push(media);
+        processedFiles.push({ facilityId, url: finalUrl, type: mediaType, purpose });
       }
     }
 
-    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    // Phase 2: Atomically assign orders and create records (inside transaction)
+    const results = await prisma.$transaction(async (tx) => {
+      const lastMedia = await tx.facilityMedia.findFirst({
+        where: { facilityId },
+        orderBy: { order: "desc" },
+        select: { order: true },
+      });
+      let order = (lastMedia?.order ?? -1) + 1;
 
+      return Promise.all(
+        processedFiles.map((data) =>
+          tx.facilityMedia.create({ data: { ...data, order: order++ } })
+        )
+      );
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: results };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -180,6 +183,7 @@ export async function renameMediaAction(mediaId: string, facilityId: string, new
     })
 
     revalidatePath(`/admin/facilities/${fid}/media`)
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout")
     return { success: true, media: updated }
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -227,7 +231,7 @@ export async function updateMediaPurposeAction(mediaId: string, purpose: MediaPu
     }
 
     revalidatePath(`/admin/facilities/${media.facilityId}/media`);
-
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true, media: updated };
   } catch (error) {
@@ -321,7 +325,7 @@ export async function syncMediaAction(facilityId: string, blobUrl: string, conte
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true, media };
   } catch (error) {
@@ -360,7 +364,7 @@ export async function toggleMediaHeroAction(mediaId: string, facilityId: string)
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -398,7 +402,7 @@ export async function toggleMediaCardBackgroundAction(mediaId: string, facilityI
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -424,7 +428,7 @@ export async function toggleMediaGalleryVisibilityAction(mediaId: string, facili
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -448,7 +452,6 @@ export async function updateMediaCaptionAction(mediaId: string, facilityId: stri
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
 
-
     return { success: true, media: updated };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -471,7 +474,6 @@ export async function updateMediaFocalPointAction(mediaId: string, facilityId: s
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-
 
     return { success: true, media: updated };
   } catch (error) {
@@ -498,7 +500,6 @@ export async function bulkUpdateMediaCaptionAction(mediaIds: string[], facilityI
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-
 
     return { success: true };
   } catch (error) {
