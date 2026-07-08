@@ -35,6 +35,7 @@ const syncMediaSchema = z.object({
   facilityId: z.string().uuid(),
   blobUrl: z.string(),
   contentType: z.string(),
+  thumbnailUrl: z.string().nullable().optional(),
 })
 
 const updateMediaCaptionSchema = z.object({
@@ -83,13 +84,14 @@ export async function uploadMediaAction(formData: FormData) {
     await validateFacilityAccess(facilityId)
 
     // Phase 1: Process all files outside transaction (no DB ops)
-    const processedFiles: { facilityId: string; url: string; type: MediaType; purpose: MediaPurpose }[] = [];
+    const processedFiles: { facilityId: string; url: string; type: MediaType; purpose: MediaPurpose; thumbnailUrl?: string | null }[] = [];
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const isImage = file.type.startsWith("image/");
       const isVideo = file.type.startsWith("video/");
 
       let finalUrl = "";
+      let thumbUrl: string | null = null;
       const mediaType: MediaType = isVideo ? MediaType.VIDEO : MediaType.PHOTO;
 
       if (isImage) {
@@ -101,12 +103,26 @@ export async function uploadMediaAction(formData: FormData) {
           contentType: "image/webp",
         });
         finalUrl = blob.url;
+
+        // Generate and upload 400x400 WebP thumbnail
+        try {
+          const { generateThumbnail } = await import("@/server/lib/media");
+          const thumbBuffer = await generateThumbnail(buffer);
+          const thumbFilename = `facilities/${facilityId}/photos/thumbnails/${Date.now()}-${file.name.split('.')[0]}.webp`;
+          const thumbBlob = await put(thumbFilename, thumbBuffer, {
+            access: "public",
+            contentType: "image/webp",
+          });
+          thumbUrl = thumbBlob.url;
+        } catch (err) {
+          console.error("Failed to generate thumbnail (skipped):", err);
+        }
       } else if (isVideo) {
         throw new Error("Videos must be uploaded via the high-bandwidth direct pipeline.");
       }
 
       if (finalUrl) {
-        processedFiles.push({ facilityId, url: finalUrl, type: mediaType, purpose });
+        processedFiles.push({ facilityId, url: finalUrl, type: mediaType, purpose, thumbnailUrl: thumbUrl });
       }
     }
 
@@ -171,9 +187,9 @@ export async function renameMediaAction(mediaId: string, facilityId: string, new
       contentType: response.headers.get("content-type") || "image/webp",
     })
 
-    // Delete old blob
-    await del(media.url).catch(() => {
-      console.warn("Failed to delete old media blob:", media.url)
+    // Delete old blob (non-blocking — rename succeeded even if cleanup fails)
+    await del(media.url).catch((err) => {
+      console.error("[renameMediaAction] Failed to delete old blob:", media.url, err)
     })
 
     // Update database
@@ -294,9 +310,9 @@ export async function updateMediaOrderAction(facilityId: string, mediaIds: strin
 /**
  * 🌊 High-Bandwidth Sync (LocalDev Bridge)
  */
-export async function syncMediaAction(facilityId: string, blobUrl: string, contentType: string) {
+export async function syncMediaAction(facilityId: string, blobUrl: string, contentType: string, thumbnailUrl?: string | null) {
   try {
-    const validation = await validateAction(syncMediaSchema, { facilityId, blobUrl, contentType });
+    const validation = await validateAction(syncMediaSchema, { facilityId, blobUrl, contentType, thumbnailUrl });
     if (!validation.success) throw new Error(validation.error);
 
     await validateFacilityAccess(facilityId)
@@ -319,6 +335,7 @@ export async function syncMediaAction(facilityId: string, blobUrl: string, conte
       data: {
         facilityId,
         url: validation.data.blobUrl,
+        thumbnailUrl: validation.data.thumbnailUrl ?? null,
         type: mediaType,
         order: nextOrder,
       },

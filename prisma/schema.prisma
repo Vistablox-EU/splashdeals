@@ -230,6 +230,9 @@ model FacilityMedia {
   createdAt        DateTime     @default(now())
   facility         Facility     @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
+  @@index([facilityId, order])
+  @@index([facilityId, isHero])
+  @@index([facilityId, isGalleryVisible])
   @@schema("partners")
 }
 

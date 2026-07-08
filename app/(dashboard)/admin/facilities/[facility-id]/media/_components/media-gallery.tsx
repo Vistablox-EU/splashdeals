@@ -2,6 +2,7 @@
 
 import { Icon } from "@/components/ui/Icon";
 import Image from "next/image"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState, useTransition, useMemo, useEffect, useRef, useCallback } from "react"
 import { FacilityMedia } from "@prisma/client"
 import { 
@@ -56,6 +57,9 @@ import { cn } from "@/lib/utils"
 interface MediaGalleryProps {
   facilityId: string
   initialMedia: FacilityMedia[]
+  currentPage?: number
+  totalPages?: number
+  totalCount?: number
 }
 
 const dropAnimation: DropAnimation = {
@@ -90,7 +94,53 @@ function filenameFromBlobUrl(url: string): string {
   }
 }
 
-export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
+/**
+ * Captures the first frame of a video file as a WebP blob.
+ * Uses HTMLVideoElement + canvas, zero external dependencies.
+ */
+async function captureVideoFrame(file: File): Promise<Blob | null> {
+  const url = URL.createObjectURL(file)
+  try {
+    const video = document.createElement("video")
+    video.muted = true
+    video.playsInline = true
+    video.crossOrigin = "anonymous"
+    video.src = url
+
+    // Wait for metadata, seek to 0.5s
+    await new Promise<void>((resolve, reject) => {
+      video.onloadedmetadata = () => {
+        video.currentTime = Math.min(0.5, video.duration || 0.5)
+        resolve()
+      }
+      video.onerror = () => reject(new Error("Video load failed"))
+      // Set a timeout in case the video is corrupt
+      setTimeout(() => reject(new Error("Video load timeout")), 10000)
+    })
+
+    // Wait for seek to complete
+    await new Promise<void>((resolve) => {
+      video.onseeked = () => resolve()
+      // If already seeked (0s video), resolve immediately
+      if (video.readyState >= 2) resolve()
+    })
+
+    const canvas = document.createElement("canvas")
+    canvas.width = 400
+    canvas.height = 225 // 16:9
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return null
+
+    ctx.drawImage(video, 0, 0, 400, 225)
+    return new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((b) => resolve(b), "image/webp", 0.7)
+    })
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+}
+
+export function MediaGallery({ facilityId, initialMedia, currentPage = 1, totalPages = 1, totalCount }: MediaGalleryProps) {
   const [media, setMedia] = useState(initialMedia)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [isUploading, startUpload] = useTransition()
@@ -206,6 +256,19 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
         
         try {
           if (isVideo) {
+            // Capture thumbnail frame before uploading
+            const thumbBlob = await captureVideoFrame(file)
+            let thumbUrl: string | null = null
+            if (thumbBlob) {
+              const thumbFile = new File([thumbBlob], `thumb-${file.name}.webp`, { type: "image/webp" })
+              const thumbResult = await upload(`facilities/${facilityId}/videos/thumbnails/thumb-${Date.now()}.webp`, thumbFile, {
+                access: "public",
+                handleUploadUrl: "/api/upload",
+                clientPayload: JSON.stringify({ facilityId }),
+              })
+              thumbUrl = thumbResult.url
+            }
+
             const blob = await upload(`facilities/${facilityId}/videos/${file.name}`, file, {
               access: "public",
               handleUploadUrl: "/api/upload",
@@ -215,7 +278,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
               }
             })
 
-            const syncResult = await syncMediaAction(facilityId, blob.url, file.type)
+            const syncResult = await syncMediaAction(facilityId, blob.url, file.type, thumbUrl)
 
             if (syncResult.success && "media" in syncResult) {
               setMedia(prev => [...prev, syncResult.media as FacilityMedia])
@@ -753,7 +816,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                 focalPointMediaId={focalPointMediaId}
                 onToggleFocalPoint={() => setFocalPointMediaId(focalPointMediaId === item.id ? null : item.id)}
                 onCrop={() => setCroppingMedia({ id: item.id, url: item.url })}
-                onFocalPointSaved={(id, coords) => setMedia(prev => prev.map(m => m.id === id ? { ...m, originalUrl: coords } as FacilityMedia : m))}
+                onFocalPointSaved={(id, coords) => setMedia(prev => prev.map(m => m.id === id ? { ...m, focalPoint: coords } : m))}
                 onUnsavedEdit={setHasUnsavedEdits}
                 onRename={() => handleOpenRename(item.id, item.url)}
               />
@@ -787,6 +850,79 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
           ) : null}
         </DragOverlay>
       </DndContext>
+
+      {/* 📄 Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between gap-4 py-4 border-t border-border/50 mt-8">
+          <div className="text-[11px] font-medium text-muted-foreground">
+            {totalCount !== undefined && `${totalCount} assets total`}
+            {totalCount !== undefined && totalPages > 1 && ` · Page ${currentPage} of ${totalPages}`}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage <= 1}
+              onClick={() => {
+                const params = new URLSearchParams(window.location.search)
+                params.set("page", String(currentPage - 1))
+                window.location.search = params.toString()
+              }}
+              className="h-8 px-3 text-[10px] font-black uppercase tracking-widest"
+            >
+              <Icon name="keyboard_arrow_left" className="size-3.5 mr-1" />
+              Previous
+            </Button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                // Show window around current page
+                let pageNum: number
+                if (totalPages <= 7) {
+                  pageNum = i + 1
+                } else if (currentPage <= 4) {
+                  pageNum = i + 1
+                } else if (currentPage >= totalPages - 3) {
+                  pageNum = totalPages - 6 + i
+                } else {
+                  pageNum = currentPage - 3 + i
+                }
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={pageNum === currentPage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      const params = new URLSearchParams(window.location.search)
+                      params.set("page", String(pageNum))
+                      window.location.search = params.toString()
+                    }}
+                    className={cn(
+                      "h-8 w-8 p-0 text-[10px] font-black",
+                      pageNum === currentPage && "bg-cyan-500/20 border-cyan-500 text-cyan-400"
+                    )}
+                  >
+                    {pageNum}
+                  </Button>
+                )
+              })}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage >= totalPages}
+              onClick={() => {
+                const params = new URLSearchParams(window.location.search)
+                params.set("page", String(currentPage + 1))
+                window.location.search = params.toString()
+              }}
+              className="h-8 px-3 text-[10px] font-black uppercase tracking-widest"
+            >
+              Next
+              <Icon name="keyboard_arrow_right" className="size-3.5 ml-1" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Bulk Delete Confirmation Dialog */}
       <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
@@ -930,12 +1066,12 @@ function MediaItemCard({
         )}
       >
         {/* Render focal target dot */}
-        {item.originalUrl && item.type === "PHOTO" && (
+        {item.focalPoint && item.type === "PHOTO" && (
           <div 
             className="absolute size-5 rounded-full border-2 border-cyan-400 bg-cyan-950/70 z-30 shadow-[0_0_10px_rgba(6,182,212,0.5)] flex items-center justify-center -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             style={{ 
-              left: `${item.originalUrl.split(",")[0]}%`, 
-              top: `${item.originalUrl.split(",")[1]}%` 
+              left: `${item.focalPoint.split(",")[0]}%`, 
+              top: `${item.focalPoint.split(",")[1]}%` 
             }}
           >
             <div className="size-1.5 rounded-full bg-cyan-400" />
@@ -1013,6 +1149,7 @@ function MediaItemCard({
           <div className="h-full w-full relative">
             <video 
               src={`${item.url}#t=0.1`} 
+              poster={item.thumbnailUrl || undefined}
               className={cn(
                 "h-full w-full object-cover transition-transform duration-500 group-hover:scale-110",
                 !item.isGalleryVisible && "opacity-40 grayscale"

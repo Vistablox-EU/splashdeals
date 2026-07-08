@@ -178,7 +178,7 @@ export function FacilityProfileForm({
     }
     document.addEventListener("visibilitychange", handleSyncOnWake)
     return () => document.removeEventListener("visibilitychange", handleSyncOnWake)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-compiler/react-compiler
   }, [])
 
   useEffect(() => {

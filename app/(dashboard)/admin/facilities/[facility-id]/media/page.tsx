@@ -7,6 +7,8 @@ import { MediaPurpose } from "@prisma/client"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/Icon"
 
+const PAGE_SIZE = 50
+
 export async function generateMetadata({
   params,
 }: {
@@ -23,19 +25,33 @@ export async function generateMetadata({
   }
 }
 
-export default async function MediaPage({ params }: { params: Promise<{ 'facility-id': string }> }) {
+export default async function MediaPage({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ 'facility-id': string }>
+  searchParams: Promise<{ page?: string }>
+}) {
   const { 'facility-id': facilityId } = await params
+  const sp = await searchParams
+  const page = Math.max(1, parseInt(sp.page || "1", 10) || 1)
+  const skip = (page - 1) * PAGE_SIZE
   await connection()
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: { media: true }
-  })
-  
-  // 🛡️ Filter out any ticket-specific images from the general facility media gallery
-  const filteredMedia = (facility?.media || []).filter(
-    (item) => item.purpose !== MediaPurpose.TICKET
-  )
-  
+
+  const [mediaItems, totalCount] = await Promise.all([
+    prisma.facilityMedia.findMany({
+      where: { facilityId, purpose: { not: MediaPurpose.TICKET } },
+      orderBy: { order: "asc" },
+      skip,
+      take: PAGE_SIZE,
+    }),
+    prisma.facilityMedia.count({
+      where: { facilityId, purpose: { not: MediaPurpose.TICKET } },
+    }),
+  ])
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
+
   return (
     <div className="flex flex-col gap-4">
       <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-muted/50">
@@ -43,7 +59,13 @@ export default async function MediaPage({ params }: { params: Promise<{ 'facilit
           <Icon name="keyboard_arrow_left" className="size-4" />
         </Link>
       </Button>
-      <MediaGallery facilityId={facilityId} initialMedia={filteredMedia} />
+      <MediaGallery 
+        facilityId={facilityId} 
+        initialMedia={mediaItems}
+        currentPage={page}
+        totalPages={totalPages}
+        totalCount={totalCount}
+      />
     </div>
   )
 }
