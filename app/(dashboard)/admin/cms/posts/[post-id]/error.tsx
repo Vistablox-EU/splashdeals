@@ -11,7 +11,7 @@ export default function CMSPostEditError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[CMSPostEdit]", error);
+    console.error("[cms-posts-[post-id]]", error);
   }, [error]);
 
   return (
@@ -19,7 +19,7 @@ export default function CMSPostEditError({
       <Icon name="error" className="text-destructive size-12" />
       <h2 className="text-xl font-semibold">Došlo je do greške</h2>
       <p className="text-muted-foreground max-w-md text-center text-sm">
-        {error.message || "Neočekivana greška u uređivanju objave."}
+        {error.message || "Neočekivana greška u uredivanju objave."}
       </p>
       <button
         onClick={reset}
