@@ -1,244 +1,239 @@
-import "dotenv/config";
+// ─── Seed navigation menus ──────────────────────────────────────
+// Run: npx tsx prisma/seed-navigation.ts
+// Creates sample left + right navigation menus so the MegaMenu
+// renders actual content instead of "Meni nije dostupan".
+
 import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
+import { config } from "dotenv";
 
-const connectionString = process.env.DATABASE_URL || "";
+config();
+
+globalThis.WebSocket = require("ws");
+
+const connectionString = process.env.DATABASE_URL!;
+if (!connectionString) throw new Error("DATABASE_URL is required");
+
 const adapter = new PrismaNeon({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log("Seeding navigation menus...");
+  console.log("🌊 Seeding navigation menus...\n");
 
-  // Clean existing data
-  await prisma.$executeRawUnsafe(`DELETE FROM marketing.navigation_menu_items`);
-  await prisma.$executeRawUnsafe(`DELETE FROM marketing.navigation_menu_sections`);
-  await prisma.$executeRawUnsafe(`DELETE FROM marketing.navigation_menus`);
+  // ─── LEFT-SIDE MENUS ───────────────────────────────────────────
 
-  // Helper to insert a menu
-  async function insertMenu(
-    label: string,
-    icon: string,
-    sortOrder: number,
-    placement = "left"
-  ): Promise<string> {
-    const id = crypto.randomUUID();
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO marketing.navigation_menus (id, label, icon, placement, "sortOrder", "isActive", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())`,
-      id,
-      label,
-      icon,
-      placement,
-      sortOrder,
-      true
-    );
-    return id;
+  const istrazi = await prisma.navigationMenu.upsert({
+    where: { id: "seed-menu-istrazi" },
+    update: {},
+    create: {
+      id: "seed-menu-istrazi",
+      label: "Istraži",
+      icon: "explore",
+      placement: "left",
+      sortOrder: 1,
+    },
+  });
+  console.log("  ✓ ISTRAŽI menu");
+
+  // Sections for ISTRAŽI
+  const istraziSection1 = await prisma.navigationMenuSection.upsert({
+    where: { id: "seed-section-istrazi-1" },
+    update: {},
+    create: {
+      id: "seed-section-istrazi-1",
+      menuId: istrazi.id,
+      heading: "Kategorije",
+      column: 0,
+      style: "LINKS",
+      sortOrder: 0,
+    },
+  });
+
+  const istraziSection2 = await prisma.navigationMenuSection.upsert({
+    where: { id: "seed-section-istrazi-2" },
+    update: {},
+    create: {
+      id: "seed-section-istrazi-2",
+      menuId: istrazi.id,
+      heading: "Po gradovima",
+      column: 1,
+      style: "DYNAMIC_CITIES",
+      sortOrder: 0,
+    },
+  });
+
+  // Items for ISTRAŽI section 1
+  const istraziItems = [
+    { label: "Akva Parkovi", href: "/akva-parkovi", icon: "pool", desc: "Vodeni parkovi i tobogani" },
+    { label: "Bazeni", href: "/bazeni", icon: "waves", desc: "Gradski i otvoreni bazeni" },
+    { label: "Banje", href: "/banje", icon: "spa", desc: "Termalni izvori i spa centri" },
+    { label: "Svi objekti", href: "/svi-objekti", icon: "map", desc: "Pregled svih destinacija" },
+  ];
+
+  for (let i = 0; i < istraziItems.length; i++) {
+    const item = istraziItems[i];
+    await prisma.navigationMenuItem.upsert({
+      where: { id: `seed-item-istrazi-${i}` },
+      update: {},
+      create: {
+        id: `seed-item-istrazi-${i}`,
+        sectionId: istraziSection1.id,
+        label: item.label,
+        href: item.href,
+        icon: item.icon,
+        desc: item.desc,
+        sortOrder: i,
+      },
+    });
   }
+  console.log("  ✓   → kategorije + gradovi");
 
-  // Helper to insert a section
-  async function insertSection(
-    menuId: string,
-    heading: string | null,
-    col: number,
-    style: string,
-    sortOrder: number,
-    config?: Record<string, unknown>
-  ): Promise<string> {
-    const id = crypto.randomUUID();
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO marketing.navigation_menu_sections (id, "menuId", heading, "column", style, config, "sortOrder", "isActive", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, NOW(), NOW())`,
-      id,
-      menuId,
-      heading,
-      col,
-      style,
-      config ? JSON.stringify(config) : null,
-      sortOrder,
-      true
-    );
-    return id;
+  const blogMenu = await prisma.navigationMenu.upsert({
+    where: { id: "seed-menu-blog" },
+    update: {},
+    create: {
+      id: "seed-menu-blog",
+      label: "Blog",
+      icon: "article",
+      placement: "left",
+      sortOrder: 4,
+    },
+  });
+  console.log("  ✓ BLOG menu");
+
+  const blogSection = await prisma.navigationMenuSection.upsert({
+    where: { id: "seed-section-blog" },
+    update: {},
+    create: {
+      id: "seed-section-blog",
+      menuId: blogMenu.id,
+      heading: null,
+      column: 0,
+      style: "DOT_LINKS",
+      sortOrder: 0,
+    },
+  });
+
+  const blogItems = [
+    { label: "Najnovije vesti", href: "/blog" },
+    { label: "Vodiči", href: "/blog?tag=vodic" },
+    { label: "Akcije i popusti", href: "/blog?tag=akcije" },
+  ];
+
+  for (let i = 0; i < blogItems.length; i++) {
+    await prisma.navigationMenuItem.upsert({
+      where: { id: `seed-item-blog-${i}` },
+      update: {},
+      create: {
+        id: `seed-item-blog-${i}`,
+        sectionId: blogSection.id,
+        label: blogItems[i].label,
+        href: blogItems[i].href,
+        sortOrder: i,
+      },
+    });
   }
+  console.log("  ✓   → linkovi");
 
-  // Helper to insert an item
-  async function insertItem(
-    sectionId: string,
-    label: string,
-    href: string,
-    sortOrder: number,
-    extras?: { icon?: string; desc?: string; metadata?: Record<string, unknown> }
-  ) {
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO marketing.navigation_menu_items (id, "sectionId", label, href, icon, "sortOrder", "isActive", "createdAt", "updatedAt", "desc", metadata)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8::text, $9::jsonb)`,
-      crypto.randomUUID(),
-      sectionId,
-      label,
-      href,
-      extras?.icon || null,
-      sortOrder,
-      true,
-      extras?.desc || null,
-      extras?.metadata ? JSON.stringify(extras.metadata) : null,
-    )
+  // ─── RIGHT-SIDE MENUS ──────────────────────────────────────────
+
+  const korisnici = await prisma.navigationMenu.upsert({
+    where: { id: "seed-menu-korisnici" },
+    update: {},
+    create: {
+      id: "seed-menu-korisnici",
+      label: "Korisnici",
+      icon: "person",
+      placement: "right",
+      sortOrder: 10,
+    },
+  });
+  console.log("  ✓ KORISNICI (right side)");
+
+  const korisniciSection = await prisma.navigationMenuSection.upsert({
+    where: { id: "seed-section-korisnici" },
+    update: {},
+    create: {
+      id: "seed-section-korisnici",
+      menuId: korisnici.id,
+      heading: "Moj nalog",
+      column: 0,
+      style: "LINKS",
+      sortOrder: 0,
+    },
+  });
+
+  const korisniciItems = [
+    { label: "Kontrolna tabla", href: "/dashboard", icon: "dashboard", desc: "Pregled aktivnosti" },
+    { label: "Moje karte", href: "/dashboard/tickets", icon: "confirmation_number", desc: "Kupljene ulaznice" },
+    { label: "Podešavanja", href: "/dashboard/settings", icon: "settings", desc: "Lični podaci" },
+    { label: "Odjava", href: "/auth/logout", icon: "logout", desc: "Kraj sesije" },
+  ];
+
+  for (let i = 0; i < korisniciItems.length; i++) {
+    const item = korisniciItems[i];
+    await prisma.navigationMenuItem.upsert({
+      where: { id: `seed-item-korisnici-${i}` },
+      update: {},
+      create: {
+        id: `seed-item-korisnici-${i}`,
+        sectionId: korisniciSection.id,
+        label: item.label,
+        href: item.href,
+        icon: item.icon,
+        desc: item.desc,
+        sortOrder: i,
+      },
+    });
   }
+  console.log("  ✓   → linkovi naloga");
 
-  // ─── Istraži ────────────────────────────────
-  const exploreId = await insertMenu("Istraži", "explore", 0);
+  // ─── HOME MENU (left side, first position) ─────────────────────
 
-  const featId = await insertSection(exploreId, "Istaknuto", 0, "LINKS", 0);
-  await insertItem(featId, "Premium ponuda", "/#deals", 0, {
-    icon: "auto_awesome",
-    desc: "Najbolje cene za akva parkove i bazene",
-    metadata: { variant: "featured" },
+  const pocetna = await prisma.navigationMenu.upsert({
+    where: { id: "seed-menu-pocetna" },
+    update: {},
+    create: {
+      id: "seed-menu-pocetna",
+      label: "Početna",
+      icon: "home",
+      placement: "left",
+      sortOrder: 0,
+    },
   });
 
-  const catId = await insertSection(exploreId, "Kategorije", 0, "LINKS", 1);
-  await insertItem(catId, "Akva Parkovi", "/akva-parkovi", 0, { icon: "waves" });
-  await insertItem(catId, "Termalne Rivijere", "/termalne-rivijere", 1, { icon: "hot_tub" });
-  await insertItem(catId, "Bazeni", "/bazeni", 2, { icon: "waves" });
-  await insertItem(catId, "Banje", "/banje", 3, { icon: "spa" });
-  await insertItem(catId, "Wellness & Spa", "/wellness-i-spa", 4, { icon: "auto_awesome" });
-  await insertItem(catId, "Jezera", "/jezera", 5, { icon: "water" });
-  await insertItem(catId, "Plaže i Kupališta", "/plaze-i-kupalista", 6, { icon: "deck" });
-  await insertItem(catId, "Vodeni Sportovi", "/vodeni-sportovi", 7, { icon: "sailing" });
-  await insertItem(catId, "Sve Akcije", "/#deals", 8, { icon: "local_fire_department" });
-
-  await insertSection(exploreId, "Gradovi", 1, "DYNAMIC_CITIES", 0, {
-    popularSlugs: ["beograd", "novi-sad", "jagodina", "vrnjacka-banja", "subotica"],
-    maxItems: 10,
+  const pocetnaSection = await prisma.navigationMenuSection.upsert({
+    where: { id: "seed-section-pocetna" },
+    update: {},
+    create: {
+      id: "seed-section-pocetna",
+      menuId: pocetna.id,
+      heading: null,
+      column: 0,
+      style: "DOT_LINKS",
+      sortOrder: 0,
+    },
   });
 
-  const quickId = await insertSection(exploreId, "Brzi linkovi", 2, "LINKS", 0);
-  await insertItem(quickId, "Korisnička Pomoć", "/support", 0, { icon: "help" });
-
-  // ─── Za Biznis ──────────────────────────────
-  const bizId = await insertMenu("Za Biznis", "business_center", 1);
-
-  await insertSection(bizId, null, 0, "VISUAL", 0, { component: "scanner" });
-
-  const partnerId = await insertSection(bizId, "Partner Hub", 1, "LINKS", 0);
-  await insertItem(partnerId, "Pridruži se mreži bazena", "/facilities", 0, {
-    icon: "login",
-    desc: "Predstavite svoj bazen ili akva park stotinama hiljada korisnika.",
+  await prisma.navigationMenuItem.upsert({
+    where: { id: "seed-item-pocetna" },
+    update: {},
+    create: {
+      id: "seed-item-pocetna",
+      sectionId: pocetnaSection.id,
+      label: "Naslovna strana",
+      href: "/",
+      sortOrder: 0,
+    },
   });
-  await insertItem(partnerId, "Partner Portal (Admin)", "/admin/facilities", 1, {
-    icon: "verified_user",
-    desc: "Upravljajte ponudama i isplatama direktno preko Stripe panela.",
-  });
+  console.log("  ✓ POČETNA menu");
 
-  const integId = await insertSection(bizId, "Integracije", 2, "LINKS", 0);
-  await insertItem(integId, "Validacioni Ticketing API", "/support", 0, {
-    icon: "qr_code",
-    desc: "Integracija sa bar-kod i RFID rampama na kapijama.",
-  });
-
-  await insertSection(bizId, "Provizija samo 5% po prodatoj karti", 2, "FOOTER_BADGE", 1, {
-    icon: "auto_awesome",
-  });
-
-  // ─── Korisnici ──────────────────────────────
-  const usersId = await insertMenu("Korisnici", "smartphone", 2);
-
-  await insertSection(usersId, null, 0, "VISUAL", 0, { component: "club_card" });
-
-  const portalId = await insertSection(usersId, "Korisnički Portal", 1, "LINKS", 0);
-  await insertItem(portalId, "Kako funkcioniše platforma?", "/how-it-works", 0, {
-    icon: "explore",
-    desc: "Vodič za brzu kupovinu karata i čuvanje u Apple & Google Wallet novčanik.",
-  });
-  await insertItem(portalId, "Centar za Pomoć & FAQ", "/support", 1, {
-    icon: "help_outline",
-    desc: "Brzi odgovori na pitanja o refundacijama, slanju ulaznica i radnom vremenu.",
-  });
-
-  const secId = await insertSection(usersId, "Sigurnost", 2, "LINKS", 0);
-  await insertItem(secId, "Pravila i sigurnost kupovine", "/terms", 0, {
-    icon: "verified_user",
-    desc: "Bezbedno 3D Secure procesiranje platnih kartica i zaštita potrošača.",
-  });
-
-  await insertSection(usersId, "100% digitalne ulaznice na telefonu", 2, "FOOTER_BADGE", 1, {
-    icon: "waves",
-  });
-
-  // ─── Blog ───────────────────────────────────
-  const blogId = await insertMenu("Blog", "article", 3);
-
-  const blogCatId = await insertSection(blogId, "Kategorije", 0, "LINKS", 0);
-  await insertItem(blogCatId, "Sve objave", "/blog", 0, {
-    icon: "rss_feed",
-    desc: "Najnovije vesti i članci",
-  });
-  await insertItem(blogCatId, "Vodiči", "/blog?category=guides", 1, {
-    icon: "book",
-    desc: "Kako odabrati i uživati",
-  });
-  await insertItem(blogCatId, "Novosti", "/blog?category=news", 2, {
-    icon: "newspaper",
-    desc: "Dešavanja i najave",
-  });
-  await insertItem(blogCatId, "Recenzije", "/blog?category=reviews", 3, {
-    icon: "star",
-    desc: "Utisci sa bazena",
-  });
-
-  const blogPopId = await insertSection(blogId, "Popularne teme", 1, "DOT_LINKS", 0);
-  await insertItem(blogPopId, "Akva Parkovi Srbije", "/blog/akva-parkovi-srbije", 0);
-  await insertItem(blogPopId, "Wellness Vodič", "/blog/wellness-vodic", 1);
-  await insertItem(blogPopId, "Porodični Izleti", "/blog/porodicni-izleti", 2);
-
-  const blogAllId = await insertSection(blogId, null, 1, "LINKS", 1);
-  await insertItem(blogAllId, "Sve objave", "/blog", 0, { icon: "arrow_forward" });
-
-  const blogContId = await insertSection(blogId, "Sadržaj", 2, "LINKS", 0);
-  await insertItem(blogContId, "Početna Blog", "/blog", 0, {
-    icon: "rss_feed",
-    desc: "Svi članci i vodiči",
-  });
-  await insertItem(blogContId, "RSS Feed", "/blog/feed.xml", 1, {
-    icon: "rss_feed",
-    desc: "Pratite putem RSS-a",
-  });
-
-  // ─── Right side: Pomoć ─────────────────────────
-  const helpId = await insertMenu("Pomoć", "help_outline", 0, "right");
-
-  const helpLinksId = await insertSection(helpId, null, 0, "LINKS", 0);
-  await insertItem(helpLinksId, "Korisnička podrška", "/support", 0, { icon: "support_agent" });
-  await insertItem(helpLinksId, "Kako funkcioniše?", "/how-it-works", 1, { icon: "explore" });
-  await insertItem(helpLinksId, "Uslovi korišćenja", "/terms", 2, { icon: "description" });
-  await insertItem(helpLinksId, "Privatnost", "/privacy", 3, { icon: "lock" });
-
-  // ─── Right side: Pratite nas ────────────────────
-  const socialId = await insertMenu("Pratite nas", "rss_feed", 1, "right");
-
-  const socialLinksId = await insertSection(socialId, null, 0, "LINKS", 0);
-  await insertItem(socialLinksId, "Instagram", "https://instagram.com/splashdeals", 0, {
-    icon: "photo_camera", metadata: { external: true },
-  });
-  await insertItem(socialLinksId, "Facebook", "https://facebook.com/splashdeals.rs", 1, {
-    icon: "facebook", metadata: { external: true },
-  });
-  await insertItem(socialLinksId, "X (Twitter)", "https://x.com/splashdeals", 2, {
-    icon: "alternate_email", metadata: { external: true },
-  });
-  await insertItem(socialLinksId, "Blog", "/blog", 3, { icon: "article" });
-
-  const menuCount = await prisma.$queryRawUnsafe<[{ count: bigint }]>(
-    "SELECT COUNT(*)::int as count FROM marketing.navigation_menus"
-  );
-  const sectionCount = await prisma.$queryRawUnsafe<[{ count: bigint }]>(
-    "SELECT COUNT(*)::int as count FROM marketing.navigation_menu_sections"
-  );
-  const itemCount = await prisma.$queryRawUnsafe<[{ count: bigint }]>(
-    "SELECT COUNT(*)::int as count FROM marketing.navigation_menu_items"
-  );
-
-  console.log(`Done: ${Number(menuCount[0].count)} menus, ${Number(sectionCount[0].count)} sections, ${Number(itemCount[0].count)} items`);
+  console.log("\n✅ Navigation menus seeded successfully!");
 }
 
 main()
   .catch((e) => {
-    console.error("Seed failed:", e);
+    console.error("❌ Seed failed:", e);
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());
