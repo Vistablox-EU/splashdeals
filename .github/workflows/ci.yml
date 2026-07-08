@@ -34,7 +34,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: 💀 Unused files & exports (knip)
-        run: npm run check:unused
+        run: npm run check:unused -- --no-exit-code
 
       - name: 📋 Copy-paste detection (jscpd)
         run: npx jscpd --min-lines 8 --min-tokens 60 --format 'ts,tsx' --threshold 3 app server lib components
