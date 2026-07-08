@@ -753,7 +753,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                 focalPointMediaId={focalPointMediaId}
                 onToggleFocalPoint={() => setFocalPointMediaId(focalPointMediaId === item.id ? null : item.id)}
                 onCrop={() => setCroppingMedia({ id: item.id, url: item.url })}
-                onFocalPointSaved={(id, coords) => setMedia(prev => prev.map(m => m.id === id ? { ...m, originalUrl: coords } as FacilityMedia : m))}
+                onFocalPointSaved={(id, coords) => setMedia(prev => prev.map(m => m.id === id ? { ...m, focalPoint: coords } : m))}
                 onUnsavedEdit={setHasUnsavedEdits}
                 onRename={() => handleOpenRename(item.id, item.url)}
               />
@@ -930,12 +930,12 @@ function MediaItemCard({
         )}
       >
         {/* Render focal target dot */}
-        {item.originalUrl && item.type === "PHOTO" && (
+        {item.focalPoint && item.type === "PHOTO" && (
           <div 
             className="absolute size-5 rounded-full border-2 border-cyan-400 bg-cyan-950/70 z-30 shadow-[0_0_10px_rgba(6,182,212,0.5)] flex items-center justify-center -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             style={{ 
-              left: `${item.originalUrl.split(",")[0]}%`, 
-              top: `${item.originalUrl.split(",")[1]}%` 
+              left: `${item.focalPoint.split(",")[0]}%`, 
+              top: `${item.focalPoint.split(",")[1]}%` 
             }}
           >
             <div className="size-1.5 rounded-full bg-cyan-400" />

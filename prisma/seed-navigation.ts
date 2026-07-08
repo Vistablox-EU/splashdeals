@@ -27,7 +27,7 @@ async function main() {
   // ─── LEFT-SIDE MENUS ───────────────────────────────────────────
 
   // 1. POČETNA — simple dot-links menu
-  const pocetna = await prisma.navigationMenu.create({
+  await prisma.navigationMenu.create({
     data: {
       id: "seed-menu-pocetna",
       label: "Početna",
@@ -55,7 +55,7 @@ async function main() {
   console.log("  ✓ POČETNA (left)");
 
   // 2. ISTRAŽI — category links + dynamic cities
-  const istrazi = await prisma.navigationMenu.create({
+  await prisma.navigationMenu.create({
     data: {
       id: "seed-menu-istrazi",
       label: "Istraži",
@@ -93,7 +93,7 @@ async function main() {
   console.log("  ✓ ISTRAŽI (left)");
 
   // 3. ZA BIZNIS — simple DOT_LINKS
-  const biznis = await prisma.navigationMenu.create({
+  await prisma.navigationMenu.create({
     data: {
       id: "seed-menu-biznis",
       label: "Za Biznis",
@@ -123,7 +123,7 @@ async function main() {
   console.log("  ✓ ZA BIZNIS (left)");
 
   // 4. BLOG — DOT_LINKS
-  const blog = await prisma.navigationMenu.create({
+  await prisma.navigationMenu.create({
     data: {
       id: "seed-menu-blog",
       label: "Blog",
@@ -155,7 +155,7 @@ async function main() {
   // ─── RIGHT-SIDE MENUS ──────────────────────────────────────────
 
   // KORISNICI — user account dropdown (right side of logo)
-  const korisnici = await prisma.navigationMenu.create({
+  await prisma.navigationMenu.create({
     data: {
       id: "seed-menu-korisnici",
       label: "Korisnici",
