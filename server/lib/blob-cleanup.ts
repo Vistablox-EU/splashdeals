@@ -1,5 +1,4 @@
 import { prisma } from "./prisma"
-import { del } from "@vercel/blob"
 
 /**
  * Find and delete orphaned blobs in storage
