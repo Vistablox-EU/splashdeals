@@ -111,15 +111,15 @@ function Toolbar({ editor }: { editor: Editor }) {
       const file = input.files?.[0]
       if (!file) return
 
-      // Upload via /api/upload
+      // Upload via server action
       const formData = new FormData()
       formData.append("file", file)
 
       try {
-        const res = await fetch("/api/upload", { method: "POST", body: formData })
-        const data = (await res.json()) as { url?: string; error?: string }
-        if (data.url) {
-          editor.chain().focus().setImage({ src: data.url }).run()
+        const { uploadImageAction } = await import("@/app/(server)/actions/upload")
+        const res = await uploadImageAction(formData)
+        if (res.success && res.url) {
+          editor.chain().focus().setImage({ src: res.url }).run()
         }
       } catch (err) {
         console.error("[CMS Image Upload]", err)

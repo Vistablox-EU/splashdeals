@@ -61,18 +61,12 @@ async function uploadAndInsert(editor: Editor, file: File) {
     const formData = new FormData()
     formData.append("file", file)
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    })
+    const { uploadImageAction } = await import("@/app/(server)/actions/upload")
+    const result = await uploadImageAction(formData)
 
-    if (!res.ok) throw new Error(`Upload failed: ${res.status}`)
+    if (!result.success) throw new Error(result.error || "Upload failed")
 
-    const data = (await res.json()) as { url?: string; error?: string }
-    if (!data.url) throw new Error(data.error || "No URL returned")
-
-    // Replace placeholder with actual image
-    editor.chain().focus().setImage({ src: data.url }).run()
+    editor.chain().focus().setImage({ src: result.url! }).run()
   } catch (err) {
     console.error("[CMS Image Upload]", err)
     // Remove the failed placeholder
