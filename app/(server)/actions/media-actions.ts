@@ -180,6 +180,7 @@ export async function renameMediaAction(mediaId: string, facilityId: string, new
     })
 
     revalidatePath(`/admin/facilities/${fid}/media`)
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout")
     return { success: true, media: updated }
   } catch (error) {
     return handleServerActionError(error, "media-actions")
