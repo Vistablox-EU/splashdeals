@@ -21,6 +21,7 @@
     "check:unused": "knip",
     "check:duplicate": "jscpd --min-lines 8 --min-tokens 60 --format 'ts,tsx' --threshold 4 app server lib components",
     "check:circular": "node scripts/check-circular.mjs",
+    "check:sitemap": "node scripts/check-sitemap.mjs",
     "prepare": "husky",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
