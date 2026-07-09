@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
-function CropModal({
+export function CropModal({
   media,
   onClose,
   onSave,
@@ -297,4 +297,3 @@ function CropModal({
   );
 }
 
-export default CropModal;

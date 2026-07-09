@@ -80,7 +80,7 @@ const dropAnimation: DropAnimation = {
 import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer";
 import { MediaItemCard } from "./media-item-card";
 import { SortableMediaItem } from "./sortable-media-item";
-import CropModal from "./crop-modal";
+import { CropModal } from "./crop-modal";
 
 /**
  * Extracts the display filename (without extension) from a Vercel Blob URL.
