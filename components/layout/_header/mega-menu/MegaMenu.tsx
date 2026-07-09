@@ -182,7 +182,6 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
                                 section={section}
                                 menu={menu}
                                 sortedCities={sortedCities}
-                                loadingCities={false}
                               />
                             ))}
                           </div>
