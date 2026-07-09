@@ -115,8 +115,8 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {tickets.map((ticket, idx) => {
         const cardImage = ticket.facility.media?.[0]?.url || ticket.imageUrl;
-        const badgeLabel =
-          slugToName(dbValueToSlug(ticket.facility.category)) ?? ticket.facility.category;
+        const dbSlug = dbValueToSlug(ticket.facility.category ?? "");
+        const badgeLabel = (dbSlug ? slugToName(dbSlug) : null) ?? ticket.facility.category;
 
         return (
           <article key={ticket.id} className="h-full transition-all duration-700">
