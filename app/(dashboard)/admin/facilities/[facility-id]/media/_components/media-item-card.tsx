@@ -11,19 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-
-/**
- * Extracts the display filename (without extension) from a Vercel Blob URL.
- */
-function filenameFromBlobUrl(url: string): string {
-  try {
-    const segments = new URL(url).pathname.split("/");
-    const last = segments[segments.length - 1] ?? "fajl";
-    return last.replace(/^\d+-/, "").replace(/\.[^.]+$/, "");
-  } catch {
-    return "fajl";
-  }
-}
+import { filenameFromBlobUrl } from "./_lib/media-utils";
 
 function MediaItemCard({
   item,
@@ -400,4 +388,4 @@ function MediaItemCard({
   );
 }
 
-export { MediaItemCard, filenameFromBlobUrl };
+export { MediaItemCard };

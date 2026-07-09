@@ -72,22 +72,10 @@ const dropAnimation: DropAnimation = {
  * before upload, preventing Vercel's strict 4.5MB serverless payload limit from blocking the request.
  */
 import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer";
+import { filenameFromBlobUrl } from "./_lib/media-utils";
 import { MediaItemCard } from "./media-item-card";
 import { SortableMediaItem } from "./sortable-media-item";
 import CropModal from "./crop-modal";
-
-/**
- * Extracts the display filename (without extension) from a Vercel Blob URL.
- */
-function filenameFromBlobUrl(url: string): string {
-  try {
-    const segments = new URL(url).pathname.split("/");
-    const last = segments[segments.length - 1] ?? "fajl";
-    return last.replace(/^\d+-/, "").replace(/\.[^.]+$/, "");
-  } catch {
-    return "fajl";
-  }
-}
 
 /**
  * Captures the first frame of a video file as a WebP blob.
