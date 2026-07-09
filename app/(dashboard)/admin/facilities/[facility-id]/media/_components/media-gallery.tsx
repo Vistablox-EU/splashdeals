@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
+import { useRouter } from "next/navigation";
 import { useState, useTransition, useMemo, useEffect, useRef, useCallback } from "react";
 import { FacilityMedia } from "@prisma/client";
 import {
@@ -130,6 +131,7 @@ export function MediaGallery({
   totalPages = 1,
   totalCount,
 }: MediaGalleryProps) {
+  const router = useRouter();
   const [media, setMedia] = useState(initialMedia);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isUploading, startUpload] = useTransition();
