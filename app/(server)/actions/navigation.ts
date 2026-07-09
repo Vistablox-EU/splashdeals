@@ -337,9 +337,7 @@ export async function getDiscoveryAction(): Promise<
 
     let featured = null;
     if (featuredFacility) {
-      const canonicalCategory = featuredFacility.category.toLowerCase().replace(/\s+/g, "-");
       const cheapestPrice = featuredFacility.ticketCategories?.[0]?.types?.[0]?.prices?.[0];
-      const citySlug = featuredFacility.marketplaceCities?.[0]?.city?.slug || canonicalCategory;
 
       featured = {
         id: featuredFacility.id,
@@ -347,7 +345,7 @@ export async function getDiscoveryAction(): Promise<
         slug: featuredFacility.slug,
         category: featuredFacility.category,
         city: featuredFacility.city,
-        canonicalPath: `/facilities/${citySlug}/${featuredFacility.slug}`,
+        canonicalPath: `/${featuredFacility.slug}`,
         imageUrl: featuredFacility.media[0]?.url || "/og-image.png",
         startingPrice: cheapestPrice ? Number(cheapestPrice.price) : null,
         description:
