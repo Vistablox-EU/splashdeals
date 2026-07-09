@@ -131,7 +131,7 @@ export function NavItemLink({
           href={href}
           className={cn("flex", isFeatured && "bg-accent/30", isCta && "text-primary font-medium")}
           {...(isExternal ? { target: "_blank", rel: "noopener noreferrer nofollow" } : {})}
-          prefetch={false}
+          prefetch={true}
           title={desc || title}
         >
           {linkContent}
@@ -175,7 +175,7 @@ export function MenuDotLink({
   return (
     <li role="none">
       <NavigationMenuLink asChild>
-        <Link href={href} className="flex" prefetch={false} title={label}>
+        <Link href={href} className="flex" prefetch={true} title={label}>
           {dotLinkContent}
         </Link>
       </NavigationMenuLink>
