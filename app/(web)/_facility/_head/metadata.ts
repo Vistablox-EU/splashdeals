@@ -270,22 +270,6 @@ export async function buildFacilityMetadata(
     ? baseDescription
     : `${baseDescription}${priceHint}${ticketHint}`;
 
-  // OG image
-  const ogImage =
-    facility.media.find(
-      (m: { isHero?: boolean; isCardBackground?: boolean; type?: string; url?: string }) =>
-        m.type === "PHOTO" && m.isHero,
-    )?.url ??
-    facility.media.find(
-      (m: { isHero?: boolean; isCardBackground?: boolean; type?: string; url?: string }) =>
-        m.type === "PHOTO" && m.isCardBackground,
-    )?.url ??
-    facility.media.find(
-      (m: { isHero?: boolean; isCardBackground?: boolean; type?: string; url?: string }) =>
-        m.type === "PHOTO",
-    )?.url ??
-    "/og-image.png";
-
   // Canonical URL
   const canonicalUrl = `${SITE_URL}/${facilitySlug}`;
 
@@ -306,7 +290,9 @@ export async function buildFacilityMetadata(
       description: finalDescription,
       url: canonicalUrl,
       siteName: "SplashDeals",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: facility.name }],
+      images: [
+        { url: `${SITE_URL}/api/og/${facilitySlug}`, width: 1200, height: 630, alt: facility.name },
+      ],
       locale: "sr_RS",
       type: "website",
     },
@@ -314,7 +300,7 @@ export async function buildFacilityMetadata(
       card: "summary_large_image",
       title,
       description: finalDescription,
-      images: [ogImage],
+      images: [`${SITE_URL}/api/og/${facilitySlug}`],
     },
   };
 }
