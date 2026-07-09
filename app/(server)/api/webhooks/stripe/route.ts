@@ -140,7 +140,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
         where: { transactionId: transaction.id },
       });
       if (existingTickets > 0) {
-        console.log(`[FULFILLMENT] Tickets already exist for session ${session.id}. Skipping.`);
+        console.info(`[FULFILLMENT] Tickets already exist for session ${session.id}. Skipping.`);
         return null;
       }
 
@@ -221,7 +221,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
       );
     }
 
-    console.log(`[FULFILLMENT SUCCESS] Processed session ${session.id}`);
+    console.info(`[FULFILLMENT SUCCESS] Processed session ${session.id}`);
   } catch (error) {
     console.error(`[FULFILLMENT CRITICAL ERROR] session ${session.id}:`, error);
   }
