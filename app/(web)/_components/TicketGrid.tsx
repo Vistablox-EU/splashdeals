@@ -45,60 +45,59 @@ async function getTickets() {
         },
       },
     },
-    orderBy: { displayOrder: "asc" },
+    orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
   });
 
-  return data.map((ticketPrice) => {
-    const facility = ticketPrice.ticketType?.category?.facility || null;
-    const ticketType = ticketPrice.ticketType;
+  return data
+    .map((ticketPrice) => {
+      const facility = ticketPrice.ticketType?.category?.facility ?? null;
+      const ticketType = ticketPrice.ticketType;
 
-    return {
-      id: ticketPrice.id,
-      title: ticketType?.title || "Ulaznica",
-      type: null,
-      price: Number(ticketPrice.price),
-      originalPrice: ticketPrice.originalPrice ? Number(ticketPrice.originalPrice) : null,
-      currency: "RSD",
-      validityType: ticketType?.validityType || "FLEXIBLE_30_DAY",
-      isActive: ticketPrice.isActive,
-      isFeatured: false,
-      displayOrder: ticketPrice.displayOrder,
-      description: ticketType?.description || null,
-      slug: ticketType?.slug || null,
-      imageUrl: ticketType?.imageUrl || null,
-      finePrint: null,
-      requiresIdentity: ticketType?.requiresIdentity || false,
-      requiresPhoto: ticketType?.requiresPhoto || false,
-      dayType: ticketPrice.dayType,
-      timeSlot: ticketPrice.timeSlot,
-      isSeasonPass: ticketType?.isSeasonPass || false,
-      minPeople: ticketType?.minPeople || 1,
-      maxPeople: ticketType?.maxPeople || null,
-      saleStart: ticketPrice.saleStart,
-      saleEnd: ticketPrice.saleEnd,
-      createdAt: ticketPrice.createdAt,
-      updatedAt: ticketPrice.updatedAt,
-      facility: {
-        id: facility.id,
-        name: facility.name,
-        slug: facility.slug,
-        category: facility.category,
-        cityId: facility.cityId,
-        media: facility.media.map((m) => ({
-          id: m.id,
-          url: m.url,
-          thumbnailUrl: m.thumbnailUrl,
-          type: m.type,
-          isHero: m.isHero,
-          isCardBackground: m.isCardBackground,
-          caption: m.caption,
-          order: m.order,
-        })),
-      },
-      categorySlug:
-        dbValueToSlug(facility.category) ?? facility.category.toLowerCase().replace(/\s+/g, "-"),
-    };
-  });
+      if (!facility || !ticketType) return null;
+
+      return {
+        id: ticketPrice.id,
+        title: ticketType.title || "Ulaznica",
+        price: Number(ticketPrice.price),
+        originalPrice: ticketPrice.originalPrice ? Number(ticketPrice.originalPrice) : null,
+        currency: "RSD",
+        validityType: ticketType.validityType || "FLEXIBLE_30_DAY",
+        displayOrder: ticketPrice.displayOrder,
+        description: ticketType.description || null,
+        slug: ticketType.slug || null,
+        imageUrl: ticketType.imageUrl || null,
+        finePrint: null,
+        requiresIdentity: ticketType.requiresIdentity || false,
+        requiresPhoto: ticketType.requiresPhoto || false,
+        dayType: ticketPrice.dayType,
+        timeSlot: ticketPrice.timeSlot,
+        isSeasonPass: ticketType.isSeasonPass || false,
+        minPeople: ticketType.minPeople || 1,
+        maxPeople: ticketType.maxPeople || null,
+        saleStart: ticketPrice.saleStart,
+        saleEnd: ticketPrice.saleEnd,
+        createdAt: ticketPrice.createdAt,
+        updatedAt: ticketPrice.updatedAt,
+        facility: {
+          id: facility.id,
+          name: facility.name,
+          slug: facility.slug,
+          category: facility.category,
+          cityId: facility.cityId,
+          media: facility.media.map((m) => ({
+            id: m.id,
+            url: m.url,
+            thumbnailUrl: m.thumbnailUrl,
+            type: m.type,
+            isHero: m.isHero,
+            isCardBackground: m.isCardBackground,
+            caption: m.caption,
+            order: m.order,
+          })),
+        },
+      };
+    })
+    .filter((t): t is NonNullable<typeof t> => t !== null);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,9 +106,20 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
   // Limit to max 4 cards as per user request for a single compact row
   const tickets = allTickets.slice(0, 4);
 
+  if (tickets.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <Icon name="auto_awesome" className="text-muted-foreground mb-4 text-[48px]" />
+        <p className="text-muted-foreground text-sm font-medium">{dict.home.default_ticket_desc}</p>
+      </div>
+    );
+  }
+
   // Fill density if inventory is low (Marketplace SLA)
   const fillerCount = Math.max(0, 4 - tickets.length);
   const fillers = Array(fillerCount).fill(null);
+
+  const priceFormat = new Intl.NumberFormat("sr-RS");
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -119,14 +129,15 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
         const badgeLabel = (dbSlug ? slugToName(dbSlug) : null) ?? ticket.facility.category;
 
         return (
-          <article key={ticket.id} className="h-full transition-all duration-700">
+          <article key={ticket.id} className="group relative h-full transition-all duration-700">
+            {/* Single overlay link covering the entire card */}
+            <Link
+              href={`/${ticket.facility.slug}#deals`}
+              className="focus-visible:ring-primary absolute inset-0 z-20 rounded-xl focus-visible:ring-2"
+              aria-label={`${ticket.facility.name} — ${ticket.title}`}
+            />
             <Card className="group border-border hover:border-primary/30 flex h-full flex-col transition-all duration-500 hover:-translate-y-2">
               <div className="relative h-40 w-full overflow-hidden rounded-t-[1.5rem] sm:h-52">
-                <Link
-                  href={`/${ticket.facility.slug}#deals`}
-                  className="absolute inset-0 z-20"
-                  aria-label={`View details for ${ticket.title}`}
-                />
                 <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950/90 to-transparent" />
                 {cardImage ? (
                   <Image
@@ -145,7 +156,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                   </div>
                 )}
 
-                <div className="pointer-events-none absolute bottom-4 left-4 z-20">
+                <div className="pointer-events-none absolute bottom-4 left-4 z-30">
                   <div className="mb-1 flex items-center gap-2">
                     <Badge className="bg-primary border-none px-2 py-0.5 text-[8px] font-black tracking-widest text-slate-950 uppercase ring-0">
                       {badgeLabel}
@@ -158,13 +169,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                 </div>
               </div>
 
-              <div className="relative flex flex-grow flex-col p-4 sm:p-6">
-                <Link
-                  href={`/${ticket.facility.slug}#deals`}
-                  className="absolute inset-0 z-10 box-border"
-                  aria-hidden="true"
-                  tabIndex={-1}
-                />
+              <div className="flex flex-grow flex-col p-4 sm:p-6">
                 <h3 className="group-hover:text-primary mb-3 text-xl leading-tight font-black tracking-tight uppercase transition-colors">
                   {ticket.title}
                 </h3>
@@ -172,7 +177,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                   {ticket.description || dict.home.default_ticket_desc}
                 </p>
 
-                <div className="border-border group-hover:border-border relative z-20 mt-auto flex items-end justify-between border-t pt-6 transition-colors">
+                <div className="border-border group-hover:border-border relative z-30 mt-auto flex items-end justify-between border-t pt-6 transition-colors">
                   <div className="flex flex-col">
                     <span className="mb-0.5 text-[9px] font-black tracking-[0.2em] text-slate-600 uppercase">
                       {ticket.currency}
@@ -181,7 +186,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                       value={ticket.price}
                       className="text-2xl font-black tracking-tighter text-white italic sm:text-3xl"
                     >
-                      {ticket.price}
+                      {priceFormat.format(ticket.price)}
                     </data>
                   </div>
 
@@ -196,9 +201,9 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                       requiresPhoto: ticket.requiresPhoto,
                       imageUrl: cardImage,
                       facility: {
-                        id: ticket.facility!.id,
-                        name: ticket.facility!.name,
-                        category: ticket.facility!.category,
+                        id: ticket.facility.id,
+                        name: ticket.facility.name,
+                        category: ticket.facility.category,
                       },
                     }}
                   />
