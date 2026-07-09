@@ -27,7 +27,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
   const handleBlur = (field: string) => {
     const value = links[field as keyof typeof links];
     if (value && !value.startsWith("http://") && !value.startsWith("https://")) {
-      toast.error("Please enter a valid URL starting with http:// or https://");
+      toast.error("Unesite validan URL koji počinje sa http:// ili https://");
       return;
     }
     startTransition(async () => {
@@ -39,7 +39,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
         }, 2000);
         toast.success("Sačuvano");
       } else {
-        toast.error("Failed to save " + field);
+        toast.error("Greška pri čuvanju " + field);
       }
     });
   };

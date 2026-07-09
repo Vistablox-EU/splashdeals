@@ -1,6 +1,7 @@
 import { prisma } from "@/server/lib/prisma";
 import { FAQSectionList } from "./_components/faq-section-list";
 import { connection } from "next/server";
+import { notFound } from "next/navigation";
 
 import type { Metadata } from "next";
 
@@ -16,6 +17,12 @@ interface Props {
 export default async function FAQPage({ params }: Props) {
   await connection();
   const { "facility-id": facilityId } = await params;
+
+  const facility = await prisma.facility.findUnique({
+    where: { id: facilityId },
+    select: { id: true },
+  });
+  if (!facility) notFound();
 
   const faqs = await prisma.facilityFAQ.findMany({
     where: { facilityId },
