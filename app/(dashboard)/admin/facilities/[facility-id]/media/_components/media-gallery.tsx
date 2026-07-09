@@ -633,6 +633,15 @@ export function MediaGallery({
       <div className="bg-background/60 border-border/50 sticky top-0 z-40 -mx-4 flex items-center justify-between gap-4 border-b p-4 shadow-2xl backdrop-blur-md">
         <div className="flex items-center gap-3">
           <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push(`/admin/facilities/${facilityId}`)}
+            className="h-9 w-9 rounded-xl p-0"
+            aria-label="Nazad na objekat"
+          >
+            <Icon name="keyboard_arrow_left" className="size-4" />
+          </Button>
+          <Button
             variant="outline"
             size="sm"
             onClick={() => {
@@ -1124,4 +1133,3 @@ export function MediaGallery({
     </div>
   );
 }
-
