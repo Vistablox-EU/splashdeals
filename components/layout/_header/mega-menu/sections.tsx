@@ -273,13 +273,11 @@ export function SectionRenderer({
             {config?.component === "club_card" && <ClubCardBlock />}
           </li>
         )}
-
-        {section.style === "FOOTER_BADGE" && (
-          <li>
-            <FooterBadge heading={section.heading} icon={config?.icon as string | undefined} />
-          </li>
-        )}
       </ul>
+
+      {section.style === "FOOTER_BADGE" && (
+        <FooterBadge heading={section.heading} icon={config?.icon as string | undefined} />
+      )}
     </section>
   );
 }
