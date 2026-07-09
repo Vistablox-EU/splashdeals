@@ -5,6 +5,7 @@ import { requireAdmin, requireSuperAdmin } from "@/server/lib/auth-guards";
 import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
 import { revalidatePath } from "next/cache";
 import { z } from "zod/v4";
+import type { City, DiscoveryMenuData } from "@/components/layout/_header/mega-menu/types";
 
 // ─── Schemas ───────────────────────────────────────────
 
@@ -290,9 +291,7 @@ export async function getMenusAction(): Promise<ActionResult<{ menus: unknown[] 
   }
 }
 
-export async function getDiscoveryAction(): Promise<
-  ActionResult<{ cities: unknown[]; featured: unknown | null }>
-> {
+export async function getDiscoveryAction(): Promise<ActionResult<DiscoveryMenuData>> {
   try {
     const cities = await prisma.city.findMany({
       where: { facilities: { some: {} } },
@@ -342,11 +341,7 @@ export async function getDiscoveryAction(): Promise<
       featured = {
         id: featuredFacility.id,
         name: featuredFacility.name,
-        slug: featuredFacility.slug,
-        category: featuredFacility.category,
-        city: featuredFacility.city,
         canonicalPath: `/${featuredFacility.slug}`,
-        imageUrl: featuredFacility.media[0]?.url || "/og-image.png",
         startingPrice: cheapestPrice ? Number(cheapestPrice.price) : null,
         description:
           featuredFacility.description?.slice(0, 100) ||

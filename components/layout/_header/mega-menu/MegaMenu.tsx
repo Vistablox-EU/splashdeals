@@ -57,7 +57,7 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
         if (menuResult.success && menuResult.data)
           setMenus((menuResult.data as { menus: NavigationMenuData[] }).menus);
         if (discoveryResult.success && discoveryResult.data)
-          setDiscovery(discoveryResult.data as unknown as DiscoveryMenuData);
+          setDiscovery(discoveryResult.data as DiscoveryMenuData);
         if (!menuResult.success || !discoveryResult.success) {
           setError("Failed to load navigation data");
         }
@@ -90,7 +90,7 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
         if (menuResult.success && menuResult.data)
           setMenus((menuResult.data as { menus: NavigationMenuData[] }).menus);
         if (discoveryResult.success && discoveryResult.data)
-          setDiscovery(discoveryResult.data as unknown as DiscoveryMenuData);
+          setDiscovery(discoveryResult.data as DiscoveryMenuData);
         if (!menuResult.success || !discoveryResult.success) {
           setError("Failed to load navigation data");
         }
