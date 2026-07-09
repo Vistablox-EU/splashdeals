@@ -33,7 +33,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
         setTimeout(() => setSaveStatus((prev) => ({ ...prev, [field]: false })), 2000);
         toast.success("Sačuvano");
       } else {
-        toast.error("Failed to save " + field);
+        toast.error("Greška pri čuvanju " + field);
       }
     });
   };

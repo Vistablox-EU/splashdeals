@@ -235,6 +235,7 @@ export function CropModal({
                 value={zoom}
                 onChange={(e) => setZoom(parseFloat(e.target.value))}
                 className="bg-background h-1 w-full cursor-pointer appearance-none rounded-lg accent-cyan-500"
+                aria-label="Uvećanje (Zoom)"
               />
             </div>
 
@@ -252,6 +253,7 @@ export function CropModal({
                 value={offsetX}
                 onChange={(e) => setOffsetX(parseInt(e.target.value))}
                 className="bg-background h-1 w-full cursor-pointer appearance-none rounded-lg accent-cyan-500"
+                aria-label="Vodoravno pomeranje (X osa)"
               />
             </div>
 
@@ -269,6 +271,7 @@ export function CropModal({
                 value={offsetY}
                 onChange={(e) => setOffsetY(parseInt(e.target.value))}
                 className="bg-background h-1 w-full cursor-pointer appearance-none rounded-lg accent-cyan-500"
+                aria-label="Uspravno pomeranje (Y osa)"
               />
             </div>
           </div>
