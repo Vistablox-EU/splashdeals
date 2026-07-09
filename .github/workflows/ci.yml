@@ -21,7 +21,7 @@ jobs:
           cache: npm
       - run: npm install
         env:
-          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          DATABASE_URL: postgresql://dummy:***@localhost:5432/dummy
       - run: npm run lint
       - run: npx tsc --noEmit
       - run: npm run format:check
@@ -29,3 +29,12 @@ jobs:
       - run: node scripts/check-circular.mjs
       - run: npm run check:unused -- --no-exit-code 2>&1
       - run: npx jscpd --min-lines 8 --min-tokens 60 --format "ts,tsx" --threshold 4 app server lib components
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: quality
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Deploy to Vercel
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
