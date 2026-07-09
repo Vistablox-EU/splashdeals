@@ -1,10 +1,7 @@
 "use client";
-import { Icon } from "@/components/ui/Icon";
-import { Button } from "@/components/ui/button";
 
 import { useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import Link from "next/link";
+import { Icon } from "@/components/ui/Icon";
 
 export default function NewFacilityError({
   error,
@@ -14,48 +11,23 @@ export default function NewFacilityError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("New Facility Error:", error);
+    console.error("[NewFacility]", error);
   }, [error]);
 
   return (
-    <div className="bg-background text-foreground relative flex min-h-screen items-center justify-center p-6">
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-10">
-        <div className="bg-muted/10 absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]" />
-      </div>
-      <Card className="border-border/50 bg-background/50 relative z-10 w-full max-w-xl space-y-8 p-8 text-center md:p-12">
-        <div className="bg-muted/50 border-border text-muted-foreground relative inline-flex h-20 w-20 items-center justify-center rounded-full border">
-          <Icon name="gpp_maybe" className="stroke-[1.5] text-[40px]" />
-        </div>
-        <div className="space-y-3">
-          <h1 className="text-foreground text-3xl leading-none font-black tracking-tighter uppercase italic">
-            Facility <br />
-            <span className="text-muted-foreground">Greška prilikom kreiranja</span>
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-sm text-sm leading-relaxed">
-            Došlo je do greške prilikom registracije novog objekta. Molimo pokušajte ponovo.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 pt-4">
-          <Button
-            onClick={reset}
-            variant="outline"
-            className="bg-muted/30 hover:bg-muted/50 border-border/50 flex w-full items-center justify-center gap-2 rounded-xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
-          >
-            <Icon name="refresh" className="text-[16px]" />
-            Pokušaj ponovo
-          </Button>
-          <Button
-            asChild
-            variant="secondary"
-            className="bg-muted/80 hover:bg-foreground/10 text-foreground flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
-          >
-            <Link href="/admin/facilities">
-              <Icon name="arrow_back" className="text-[16px]" />
-              Nazad na objekte
-            </Link>
-          </Button>
-        </div>
-      </Card>
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
+      <Icon name="error" className="text-destructive size-12" />
+      <h2 className="text-xl font-semibold">Došlo je do greške</h2>
+      <p className="text-muted-foreground max-w-md text-center text-sm">
+        {error.message || "Neočekivana greška prilikom kreiranja objekta."}
+      </p>
+      <button
+        onClick={reset}
+        className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium"
+      >
+        <Icon name="refresh" className="size-4" />
+        Pokušaj ponovo
+      </button>
     </div>
   );
 }
