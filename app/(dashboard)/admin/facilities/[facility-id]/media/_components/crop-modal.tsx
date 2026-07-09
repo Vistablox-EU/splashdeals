@@ -24,6 +24,17 @@ export function CropModal({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
+  // Load image programmatically — no <img> tag needed for canvas operations
+  useEffect(() => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      imageRef.current = img;
+      setZoom(1.0001); // Trigger re-render to draw preview
+    };
+    img.src = media.url;
+  }, [media.url]);
+
   // Redraw preview canvas whenever sliders or aspect ratio changes
   useEffect(() => {
     const img = imageRef.current;
@@ -148,20 +159,6 @@ export function CropModal({
 
   return (
     <div className="bg-background/80 animate-in fade-in fixed inset-0 z-[999] flex items-center justify-center p-4 backdrop-blur-md duration-300">
-      {/* Hidden raw image for canvas extraction */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        ref={imageRef}
-        src={media.url}
-        alt="Raw crop src"
-        className="hidden"
-        crossOrigin="anonymous"
-        onLoad={() => {
-          // Trigger render effect
-          setZoom(1.0001);
-        }}
-      />
-
       <div className="bg-muted/90 border-border animate-in zoom-in-95 flex w-full max-w-lg flex-col gap-6 rounded-3xl border p-6 shadow-[0_0_50px_rgba(6,182,212,0.15)] duration-300">
         <div className="border-border/50 flex items-center justify-between border-b pb-4">
           <div>
