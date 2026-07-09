@@ -1,0 +1,27 @@
+name: 🚀 Deploy to Production
+
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    uses: ./.github/workflows/reusable-quality.yml
+    secrets: inherit
+
+  test:
+    needs: [quality]
+    uses: ./.github/workflows/reusable-test.yml
+    secrets: inherit
+
+  deploy:
+    needs: [test]
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Deploy to Vercel
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
