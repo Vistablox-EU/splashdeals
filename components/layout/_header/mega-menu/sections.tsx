@@ -253,14 +253,14 @@ export function SectionRenderer({
                 .map((city) => (
                   <MenuDotLink
                     key={city.id}
-                    href={`/akva-parkovi?city=${city.slug}`}
+                    href={`${(config?.basePath as string) || "/akva-parkovi"}?city=${city.slug}`}
                     label={city.name}
                   />
                 ))
             )}
             {sortedCities.length > ((config?.maxItems as number) || 10) && (
               <MenuDotLink
-                href="/akva-parkovi"
+                href={(config?.basePath as string) || "/akva-parkovi"}
                 label={`+${sortedCities.length - ((config?.maxItems as number) || 10)} gradova`}
               />
             )}
