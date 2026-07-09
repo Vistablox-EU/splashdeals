@@ -5,10 +5,27 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { Badge } from "@/components/ui/badge";
+import { dbValueToSlug, slugToName } from "@/lib/routing/categories";
 
 async function getTickets() {
+  const now = new Date();
+
   const data = await prisma.ticketPrice.findMany({
-    where: { isActive: true },
+    where: {
+      isActive: true,
+      // Sale window: ticket must be within its valid sale period
+      AND: [
+        { OR: [{ saleStart: null }, { saleStart: { lte: now } }] },
+        { OR: [{ saleEnd: null }, { saleEnd: { gte: now } }] },
+      ],
+      ticketType: {
+        isActive: true,
+        category: {
+          isActive: true,
+          facility: { status: "ACTIVE" },
+        },
+      },
+    },
     include: {
       ticketType: {
         include: {
@@ -34,6 +51,7 @@ async function getTickets() {
   return data.map((ticketPrice) => {
     const facility = ticketPrice.ticketType?.category?.facility || null;
     const ticketType = ticketPrice.ticketType;
+
     return {
       id: ticketPrice.id,
       title: ticketType?.title || "Ulaznica",
@@ -45,9 +63,9 @@ async function getTickets() {
       isActive: ticketPrice.isActive,
       isFeatured: false,
       displayOrder: ticketPrice.displayOrder,
-      description: null,
-      slug: null,
-      imageUrl: null,
+      description: ticketType?.description || null,
+      slug: ticketType?.slug || null,
+      imageUrl: ticketType?.imageUrl || null,
       finePrint: null,
       requiresIdentity: ticketType?.requiresIdentity || false,
       requiresPhoto: ticketType?.requiresPhoto || false,
@@ -56,8 +74,8 @@ async function getTickets() {
       isSeasonPass: ticketType?.isSeasonPass || false,
       minPeople: ticketType?.minPeople || 1,
       maxPeople: ticketType?.maxPeople || null,
-      saleStart: null,
-      saleEnd: null,
+      saleStart: ticketPrice.saleStart,
+      saleEnd: ticketPrice.saleEnd,
       createdAt: ticketPrice.createdAt,
       updatedAt: ticketPrice.updatedAt,
       facility: {
@@ -77,7 +95,8 @@ async function getTickets() {
           order: m.order,
         })),
       },
-      categorySlug: facility.category.toLowerCase().replace(/\s+/g, "-"),
+      categorySlug:
+        dbValueToSlug(facility.category) ?? facility.category.toLowerCase().replace(/\s+/g, "-"),
     };
   });
 }
@@ -94,16 +113,17 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {tickets.map((ticket) => {
-        const ticketUrl = `/facilities/${ticket.categorySlug}/${ticket.facility.slug}#deals`;
-        const cardImage = ticket.imageUrl || ticket.facility.media?.[0]?.url;
+      {tickets.map((ticket, idx) => {
+        const cardImage = ticket.facility.media?.[0]?.url || ticket.imageUrl;
+        const dbSlug = dbValueToSlug(ticket.facility.category ?? "");
+        const badgeLabel = (dbSlug ? slugToName(dbSlug) : null) ?? ticket.facility.category;
 
         return (
           <article key={ticket.id} className="h-full transition-all duration-700">
             <Card className="group border-border hover:border-primary/30 flex h-full flex-col transition-all duration-500 hover:-translate-y-2">
               <div className="relative h-40 w-full overflow-hidden rounded-t-[1.5rem] sm:h-52">
                 <Link
-                  href={ticketUrl}
+                  href={`/${ticket.facility.slug}#deals`}
                   className="absolute inset-0 z-20"
                   aria-label={`View details for ${ticket.title}`}
                 />
@@ -113,9 +133,9 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                     src={cardImage}
                     alt={`${ticket.facility.name} - ${ticket.title}`}
                     fill
-                    priority={true}
-                    loading="eager"
-                    fetchPriority="high"
+                    priority={idx < 2}
+                    loading={idx < 2 ? "eager" : "lazy"}
+                    fetchPriority={idx < 2 ? "high" : "auto"}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
@@ -128,9 +148,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                 <div className="pointer-events-none absolute bottom-4 left-4 z-20">
                   <div className="mb-1 flex items-center gap-2">
                     <Badge className="bg-primary border-none px-2 py-0.5 text-[8px] font-black tracking-widest text-slate-950 uppercase ring-0">
-                      {(dict?.categories as Record<string, string>)?.[
-                        ticket.facility.category.toLowerCase()
-                      ] || ticket.facility.category}
+                      {badgeLabel}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-1.5 text-base font-black tracking-tight text-white uppercase italic">
@@ -142,7 +160,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
 
               <div className="relative flex flex-grow flex-col p-4 sm:p-6">
                 <Link
-                  href={ticketUrl}
+                  href={`/${ticket.facility.slug}#deals`}
                   className="absolute inset-0 z-10 box-border"
                   aria-hidden="true"
                   tabIndex={-1}
