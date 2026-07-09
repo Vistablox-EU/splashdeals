@@ -4,7 +4,6 @@ import { FacilityMedia } from "@prisma/client";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { MediaItemCard } from "./media-item-card";
-import type { ReactNode } from "react";
 
 interface SortableMediaItemProps {
   item: FacilityMedia;

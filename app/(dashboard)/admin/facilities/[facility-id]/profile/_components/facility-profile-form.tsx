@@ -187,7 +187,7 @@ export function FacilityProfileForm({
     };
     document.addEventListener("visibilitychange", handleSyncOnWake);
     return () => document.removeEventListener("visibilitychange", handleSyncOnWake);
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     const handlePreventLoss = (e: BeforeUnloadEvent) => {
