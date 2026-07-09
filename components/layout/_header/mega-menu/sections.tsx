@@ -213,6 +213,11 @@ export function SectionRenderer({
 }) {
   const config = section.config as Record<string, unknown> | null;
 
+  // Skip empty list-style sections — they'd render unwanted vertical spacing
+  if ((section.style === "LINKS" || section.style === "DOT_LINKS") && section.items.length === 0) {
+    return null;
+  }
+
   return (
     <section key={section.id} aria-labelledby={section.heading ? `nav-h-${section.id}` : undefined}>
       {section.style !== "VISUAL" && section.style !== "FOOTER_BADGE" && section.heading && (
