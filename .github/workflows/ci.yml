@@ -1,8 +1,10 @@
-name: CI — Quality (PR → dev)
+name: CI
 
 on:
   pull_request:
-    branches: [dev]
+    branches: [master]
+  push:
+    branches: [master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,5 +12,20 @@ concurrency:
 
 jobs:
   quality:
-    uses: ./.github/workflows/reusable-quality.yml
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm install
+        env:
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm run format:check
+      - run: node scripts/check-architecture.mjs
+      - run: node scripts/check-circular.mjs
+      - run: npm run check:unused -- --no-exit-code 2>&1
+      - run: npx jscpd --min-lines 8 --min-tokens 60 --format "ts,tsx" --threshold 4 app server lib components
