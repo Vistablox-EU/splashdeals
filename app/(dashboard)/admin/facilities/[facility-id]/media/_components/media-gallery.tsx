@@ -75,7 +75,7 @@ import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer";
 import { filenameFromBlobUrl } from "./_lib/media-utils";
 import { MediaItemCard } from "./media-item-card";
 import { SortableMediaItem } from "./sortable-media-item";
-import CropModal from "./crop-modal";
+import { CropModal } from "./crop-modal";
 
 /**
  * Captures the first frame of a video file as a WebP blob.

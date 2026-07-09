@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-function CropModal({
+export function CropModal({
   media,
   onClose,
   onSave,
@@ -310,4 +310,3 @@ function CropModal({
   );
 }
 
-export default CropModal;
