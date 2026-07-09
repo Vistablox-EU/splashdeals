@@ -3,13 +3,13 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/server/lib/prisma";
 import { MediaType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/server/lib/auth-guards";
+import { MAX_FILE_SIZE } from "@/lib/constants";
 
 /**
  * 🌊 High-Bandwidth Media Gateway (Agent Protocol)
  * Handles direct-to-storage client uploads for 4K videos and high-res assets.
  * Bypasses standard Next.js body size limits (1MB/10MB).
- *
- * This route is housed in app/api according to project routing protocols.
  */
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
@@ -19,17 +19,27 @@ export async function POST(request: Request): Promise<NextResponse> {
       body,
       request,
       onBeforeGenerateToken: async (pathname, clientPayload) => {
-        /**
-         * Auth Check: Only authorized users should be able to upload.
-         * In a production environment, check the session here.
-         * We extract facilityId from clientPayload.
-         */
         const payload = clientPayload ? JSON.parse(clientPayload) : {};
         const facilityId = payload.facilityId;
         const uploadType = payload.uploadType || "MEDIA";
 
         if (!facilityId) {
           throw new Error("Facility ID is required for upload authorization");
+        }
+
+        // Verify admin session
+        await requireAdmin();
+
+        // Rate limiting: max 50 uploads per facility per hour
+        const oneHourAgo = new Date(Date.now() - 3600000);
+        const recentUploads = await prisma.facilityMedia.count({
+          where: {
+            facilityId,
+            createdAt: { gte: oneHourAgo },
+          },
+        });
+        if (recentUploads >= 50) {
+          throw new Error("Upload limit reached for this facility (max 50/hour)");
         }
 
         return {
@@ -43,6 +53,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             "video/quicktime",
             "video/webm",
           ],
+          maximumSizeInBytes: MAX_FILE_SIZE,
           addRandomSuffix: uploadType !== "LOGO",
           allowOverwrite: true,
           tokenPayload: JSON.stringify({
@@ -52,24 +63,16 @@ export async function POST(request: Request): Promise<NextResponse> {
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
-        /**
-         * 🏁 Finalization Logic
-         * Triggered once the file is successfully streamed from browser to storage.
-         * We sync the resulting URL to the Prisma database.
-         */
         try {
           const { facilityId, uploadType } = JSON.parse(tokenPayload!);
 
           if (uploadType === "TICKET" || uploadType === "LOGO") {
-            // For tickets and logos, we do not insert into FacilityMedia table
             return;
           }
 
-          // Determine media type
           const isVideo = blob.contentType.startsWith("video/");
           const mediaType = isVideo ? MediaType.VIDEO : MediaType.PHOTO;
 
-          // Get the current max order
           const lastMedia = await prisma.facilityMedia.findFirst({
             where: { facilityId },
             orderBy: { order: "desc" },
@@ -85,7 +88,6 @@ export async function POST(request: Request): Promise<NextResponse> {
             },
           });
 
-          // Revalidate the media gallery path for full cache freshness
           revalidatePath(`/admin/facilities/${facilityId}/media`);
         } catch (error) {
           console.error("Failed to sync media to database:", error);
