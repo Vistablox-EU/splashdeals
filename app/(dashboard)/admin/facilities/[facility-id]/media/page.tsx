@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { MediaGallery } from "./_components/media-gallery";
 import { prisma } from "@/server/lib/prisma";
 import { connection } from "next/server";
@@ -34,6 +36,12 @@ export default async function MediaPage({
   const page = Math.max(1, parseInt(sp.page || "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
   await connection();
+
+  const facility = await prisma.facility.findUnique({
+    where: { id: facilityId },
+    select: { id: true },
+  });
+  if (!facility) notFound();
 
   const [mediaItems, totalCount] = await Promise.all([
     prisma.facilityMedia.findMany({

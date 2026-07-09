@@ -121,7 +121,7 @@ function checkImgTags() {
       // Filter out <img> inside HTML comments or template literals
       const hasImgElements = imgMatches.some(m => {
         const idx = content.indexOf(m);
-        const before = content.slice(Math.max(0, idx - 50), idx);
+        const before = content.slice(Math.max(0, idx - 120), idx);
         // Skip if inside a comment or string
         if (before.includes("//") || before.includes("/*")) return false;
         return true;

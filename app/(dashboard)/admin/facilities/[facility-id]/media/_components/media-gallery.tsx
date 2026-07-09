@@ -492,52 +492,65 @@ export function MediaGallery({
   }, [renamingMedia, renameValue, facilityId]);
 
   const handleToggleHero = async (id: string) => {
-    const item = media.find((m) => m.id === id);
-    if (!item) return;
+    // Capture current state inside a ref to avoid stale closure on rollback
+    const prevItem = media.find((m) => m.id === id);
+    const wasHero = prevItem?.isHero ?? false;
 
     // Optimistic update: unset other heroes, set this one
     setMedia((prev) =>
       prev.map((m) => {
-        if (m.id === id) return { ...m, isHero: !m.isHero };
-        if (!item.isHero) return { ...m, isHero: false }; // If we are making this hero, others must lose it
+        if (m.id === id) return { ...m, isHero: !wasHero };
+        if (!wasHero) return { ...m, isHero: false };
         return m;
       }),
     );
 
     const result = await toggleMediaHeroAction(id, facilityId);
     if (!result.success) {
-      setMedia((prev) => prev.map((m) => (m.id === id ? item : m))); // Rollback
+      setMedia((prev) =>
+        prev.map((m) => {
+          if (m.id === id) return { ...m, isHero: wasHero };
+          if (!wasHero) return { ...m, isHero: false };
+          return m;
+        }),
+      );
       toast.error("Failed to update Hero status");
     } else {
-      toast.success(item.isHero ? "Hero status removed" : "Set as Facility Hero");
+      toast.success(wasHero ? "Hero status removed" : "Set as Facility Hero");
     }
   };
 
   const handleToggleCardBackground = async (id: string) => {
-    const item = media.find((m) => m.id === id);
-    if (!item) return;
+    const prevItem = media.find((m) => m.id === id);
+    const wasCardBg = prevItem?.isCardBackground ?? false;
 
     // Optimistic update
     setMedia((prev) =>
       prev.map((m) => {
-        if (m.id === id) return { ...m, isCardBackground: !m.isCardBackground };
-        if (!item.isCardBackground) return { ...m, isCardBackground: false };
+        if (m.id === id) return { ...m, isCardBackground: !wasCardBg };
+        if (!wasCardBg) return { ...m, isCardBackground: false };
         return m;
       }),
     );
 
     const result = await toggleMediaCardBackgroundAction(id, facilityId);
     if (!result.success) {
-      setMedia((prev) => prev.map((m) => (m.id === id ? item : m)));
+      setMedia((prev) =>
+        prev.map((m) => {
+          if (m.id === id) return { ...m, isCardBackground: wasCardBg };
+          if (!wasCardBg) return { ...m, isCardBackground: false };
+          return m;
+        }),
+      );
       toast.error("Failed to update Card Background");
     } else {
-      toast.success(item.isCardBackground ? "Background removed" : "Set as Card Background");
+      toast.success(wasCardBg ? "Background removed" : "Set as Card Background");
     }
   };
 
   const handleToggleVisibility = async (id: string) => {
-    const item = media.find((m) => m.id === id);
-    if (!item) return;
+    const prevItem = media.find((m) => m.id === id);
+    if (!prevItem) return;
 
     setMedia((prev) =>
       prev.map((m) => (m.id === id ? { ...m, isGalleryVisible: !m.isGalleryVisible } : m)),
@@ -545,7 +558,12 @@ export function MediaGallery({
 
     const result = await toggleMediaGalleryVisibilityAction(id, facilityId);
     if (!result.success) {
-      setMedia((prev) => prev.map((m) => (m.id === id ? item : m)));
+      setMedia((prev) =>
+        prev.map((m) => {
+          if (m.id === id) return { ...m, isGalleryVisible: prevItem.isGalleryVisible };
+          return m;
+        }),
+      );
       toast.error("Visibility toggle failed");
     }
   };
@@ -955,7 +973,7 @@ export function MediaGallery({
               onClick={() => {
                 const params = new URLSearchParams(window.location.search);
                 params.set("page", String(currentPage - 1));
-                window.location.search = params.toString();
+                router.push(`?${params.toString()}`);
               }}
               className="h-8 px-3 text-[10px] font-black tracking-widest uppercase"
             >
@@ -983,7 +1001,7 @@ export function MediaGallery({
                     onClick={() => {
                       const params = new URLSearchParams(window.location.search);
                       params.set("page", String(pageNum));
-                      window.location.search = params.toString();
+                      router.push(`?${params.toString()}`);
                     }}
                     className={cn(
                       "h-8 w-8 p-0 text-[10px] font-black",
@@ -1002,7 +1020,7 @@ export function MediaGallery({
               onClick={() => {
                 const params = new URLSearchParams(window.location.search);
                 params.set("page", String(currentPage + 1));
-                window.location.search = params.toString();
+                router.push(`?${params.toString()}`);
               }}
               className="h-8 px-3 text-[10px] font-black tracking-widest uppercase"
             >
@@ -1115,4 +1133,3 @@ export function MediaGallery({
     </div>
   );
 }
-
