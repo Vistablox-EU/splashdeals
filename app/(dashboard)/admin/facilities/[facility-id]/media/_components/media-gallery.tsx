@@ -238,7 +238,36 @@ export function MediaGallery({
 
   const [isDragActive, setIsDragActive] = useState(false);
   const dragCounterRef = useRef(0);
-  const [uploadingFiles, setUploadingFiles] = useState<{ name: string; type: string }[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState<
+    { name: string; type: string; status: "uploading" | "failed" | "done"; errorMessage?: string }[]
+  >([]);
+  const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+
+  const markDone = useCallback((fileName: string) => {
+    setUploadingFiles((prev) =>
+      prev.map((f) => (f.name === fileName ? { ...f, status: "done" as const } : f)),
+    );
+    setTimeout(() => {
+      setUploadingFiles((prev) => prev.filter((f) => f.name !== fileName));
+    }, 2000);
+  }, []);
+
+  const markFailed = useCallback((fileName: string, errorMessage: string) => {
+    setUploadingFiles((prev) =>
+      prev.map((f) =>
+        f.name === fileName ? { ...f, status: "failed" as const, errorMessage } : f,
+      ),
+    );
+  }, []);
+
+  const cancelUpload = useCallback((fileName: string) => {
+    abortControllersRef.current.get(fileName)?.abort();
+  }, []);
+
+  const retryUpload = useCallback(async (fileName: string) => {
+    setUploadingFiles((prev) => prev.filter((f) => f.name !== fileName));
+    toast.info(`Please re-select "${fileName}" to retry`);
+  }, []);
 
   const processFilesUpload = useCallback(
     async (files: File[]) => {
@@ -251,15 +280,30 @@ export function MediaGallery({
         return;
       }
 
-      setUploadingFiles((prev) => [...prev, ...files.map((f) => ({ name: f.name, type: f.type }))]);
+      const fileEntries = files.map((f) => ({
+        name: f.name,
+        type: f.type,
+        status: "uploading" as const,
+      }));
+      setUploadingFiles((prev) => [...prev, ...fileEntries]);
+
+      // Create AbortControllers for these files
+      for (const file of files) {
+        abortControllersRef.current.set(file.name, new AbortController());
+      }
 
       startUpload(async () => {
         for (const file of files) {
+          const abortController = abortControllersRef.current.get(file.name);
+          if (abortController?.signal.aborted) {
+            markFailed(file.name, "Upload cancelled");
+            continue;
+          }
+
           const isVideo = file.type.startsWith("video/");
 
           try {
             if (isVideo) {
-              // Capture thumbnail frame before uploading
               const thumbBlob = await captureVideoFrame(file);
               let thumbUrl: string | null = null;
               if (thumbBlob) {
@@ -291,21 +335,26 @@ export function MediaGallery({
 
               if (syncResult.success && "media" in syncResult) {
                 setMedia((prev) => [...prev, syncResult.media as FacilityMedia]);
-                toast.success(`Video recorded: ${file.name}`);
+                markDone(file.name);
               } else {
-                toast.error(
+                const msg =
                   ("error" in syncResult ? syncResult.error : null) ||
-                    `Sync failed for ${file.name}`,
-                );
+                  `Sync failed for ${file.name}`;
+                markFailed(file.name, msg);
               }
             } else {
-              // Pre-process images on the client to avoid hitting the 4.5MB Serverless Function payload size limit
               const optimizedBlob = await optimizeImageOnClient(file, {
                 mode: "fit",
                 maxWidth: 2000,
                 maxHeight: 2000,
                 quality: 0.85,
               }).catch(() => file);
+
+              if (abortController?.signal.aborted) {
+                markFailed(file.name, "Upload cancelled");
+                continue;
+              }
+
               const optimizedFile =
                 optimizedBlob instanceof File
                   ? optimizedBlob
@@ -320,23 +369,27 @@ export function MediaGallery({
               const result = await uploadMediaAction(formData);
               if (result.success && "media" in result) {
                 setMedia((prev) => [...prev, ...(result.media as FacilityMedia[])]);
-                toast.success(`Photo uploaded: ${file.name}`);
+                markDone(file.name);
               } else {
-                toast.error(
-                  ("error" in result ? result.error : null) || `Failed to optimize ${file.name}`,
-                );
+                const msg =
+                  ("error" in result ? result.error : null) || `Upload failed for ${file.name}`;
+                markFailed(file.name, msg);
               }
             }
           } catch (error) {
-            console.error("Upload failed for:", file.name, error);
-            toast.error(`Fatal error uploading ${file.name}`);
+            if (error instanceof DOMException && error.name === "AbortError") {
+              markFailed(file.name, "Upload cancelled");
+            } else {
+              const msg = error instanceof Error ? error.message : "Unknown upload error";
+              markFailed(file.name, msg);
+            }
           } finally {
+            abortControllersRef.current.delete(file.name);
             setUploadProgress((prev) => {
               const next = { ...prev };
               delete next[file.name];
               return next;
             });
-            setUploadingFiles((prev) => prev.filter((f) => f.name !== file.name));
           }
         }
       });
@@ -928,20 +981,70 @@ export function MediaGallery({
             {uploadingFiles.map((file, idx) => (
               <div
                 key={`transiting-${idx}-${file.name}`}
-                className="bg-muted/40 relative flex aspect-video animate-pulse flex-col items-center justify-center overflow-hidden rounded-2xl border border-cyan-500/20 p-4 shadow-[0_0_20px_rgba(6,182,212,0.05)]"
+                className={cn(
+                  "relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-2xl border p-4",
+                  file.status === "failed"
+                    ? "border-red-500/40 bg-red-950/20"
+                    : file.status === "done"
+                      ? "border-emerald-500/40 bg-emerald-950/20"
+                      : "bg-muted/40 animate-pulse border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.05)]",
+                )}
               >
-                <Icon
-                  name="progress_activity"
-                  className="mb-2 animate-spin text-[24px] text-cyan-500"
-                />
+                {file.status === "failed" ? (
+                  <Icon name="error" className="mb-2 text-[24px] text-red-400" />
+                ) : file.status === "done" ? (
+                  <Icon name="check_circle" className="mb-2 text-[24px] text-emerald-400" />
+                ) : (
+                  <Icon
+                    name="progress_activity"
+                    className="mb-2 animate-spin text-[24px] text-cyan-500"
+                  />
+                )}
                 <span className="text-muted-foreground max-w-full truncate px-2 text-[10px] font-black tracking-wider uppercase">
                   {file.name}
                 </span>
-                <span className="mt-1 text-[8px] font-bold tracking-widest text-cyan-400 uppercase">
-                  {uploadProgress[file.name] !== undefined
-                    ? `Uploading ${uploadProgress[file.name].toFixed(0)}%`
-                    : "Optimizing..."}
+                <span
+                  className={cn(
+                    "mt-1 text-[8px] font-bold tracking-widest uppercase",
+                    file.status === "failed"
+                      ? "text-red-400"
+                      : file.status === "done"
+                        ? "text-emerald-400"
+                        : "text-cyan-400",
+                  )}
+                >
+                  {file.status === "failed"
+                    ? file.errorMessage || "Upload failed"
+                    : file.status === "done"
+                      ? "Uploaded"
+                      : uploadProgress[file.name] !== undefined
+                        ? `Uploading ${uploadProgress[file.name].toFixed(0)}%`
+                        : "Optimizing..."}
                 </span>
+                {file.status === "uploading" && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      cancelUpload(file.name);
+                    }}
+                    className="absolute top-2 right-2 z-40 flex size-6 items-center justify-center rounded-md bg-black/60 text-white/70 transition-colors hover:bg-red-500/80 hover:text-white"
+                    aria-label={`Cancel upload: ${file.name}`}
+                  >
+                    <Icon name="close" className="size-3.5" />
+                  </button>
+                )}
+                {file.status === "failed" && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      retryUpload(file.name);
+                    }}
+                    className="absolute top-2 right-2 z-40 flex size-6 items-center justify-center rounded-md bg-black/60 text-white/70 transition-colors hover:bg-cyan-500/80 hover:text-white"
+                    aria-label={`Retry upload: ${file.name}`}
+                  >
+                    <Icon name="refresh" className="size-3.5" />
+                  </button>
+                )}
               </div>
             ))}
           </div>
