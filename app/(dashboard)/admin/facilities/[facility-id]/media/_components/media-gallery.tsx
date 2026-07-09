@@ -77,6 +77,7 @@ import { filenameFromBlobUrl } from "./_lib/media-utils";
 import { MediaItemCard } from "./media-item-card";
 import { SortableMediaItem } from "./sortable-media-item";
 import { CropModal } from "./crop-modal";
+import { MAX_FILE_SIZE } from "@/lib/constants";
 
 /**
  * Captures the first frame of a video file as a WebP blob.
@@ -244,10 +245,9 @@ export function MediaGallery({
       if (files.length === 0) return;
 
       // Client-side file size validation
-      const MAX_SIZE = 10 * 1024 * 1024; // 10MB — matches lib/constants
-      const oversized = files.filter((f) => f.size > MAX_SIZE);
+      const oversized = files.filter((f) => f.size > MAX_FILE_SIZE);
       if (oversized.length > 0) {
-        toast.error(`Files too large: ${oversized.map((f) => f.name).join(", ")} (max 10MB)`);
+        toast.error(`Preveliki fajlovi: ${oversized.map((f) => f.name).join(", ")} (maks 25MB)`);
         return;
       }
 

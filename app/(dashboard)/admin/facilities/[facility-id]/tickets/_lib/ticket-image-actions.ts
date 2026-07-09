@@ -1,9 +1,9 @@
 "use server";
 
 import { processImageToWebP } from "@/server/lib/media";
+import { MAX_FILE_SIZE } from "@/lib/constants";
 import { prisma } from "@/server/lib/prisma";
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
 const ALLOWED_TYPES = [
   "image/jpeg",
   "image/png",

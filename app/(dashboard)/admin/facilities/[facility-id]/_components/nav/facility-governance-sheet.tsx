@@ -74,11 +74,11 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
       const result = await updateFacilityStatusAction(values);
 
       if (result.success) {
-        toast.success("Operational status updated");
+        toast.success("Status operativnosti ažuriran");
         setIsOpen(false);
         router.refresh();
       } else {
-        toast.error(result.error || "Failed to update status");
+        toast.error(result.error || "Greška pri ažuriranju statusa");
       }
     });
   }
