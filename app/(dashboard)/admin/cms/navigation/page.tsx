@@ -24,5 +24,7 @@ export default async function NavigationPage() {
     },
   });
 
-  return <NavigationManager initialMenus={JSON.parse(JSON.stringify(menus)) as MenuWithSections[]} />;
+  return (
+    <NavigationManager initialMenus={JSON.parse(JSON.stringify(menus)) as MenuWithSections[]} />
+  );
 }

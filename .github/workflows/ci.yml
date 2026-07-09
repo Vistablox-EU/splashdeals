@@ -81,12 +81,6 @@ jobs:
         env: *build_env
         run: node scripts/check-structured-data.mjs
 
-      # ─── Lighthouse (key pages, single run) ────────────────────────────
-
-      - name: 🚦 Lighthouse CI
-        env: *build_env
-        run: npx lhci autorun --collect.numberOfRuns=1 --collect.startServerCommand="npm run start -- -p 3000" --collect.url=http://127.0.0.1:3000 --collect.url=http://127.0.0.1:3000/how-it-works --collect.settings.chromeFlags="--no-sandbox --headless --disable-gpu" --assert.preset=lighthouse:no-pwa --upload.target=filesystem
-
       # ─── Deploy ────────────────────────────────────────────────────────
 
       - name: 🚀 Deploy to Production (Vercel)

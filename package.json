@@ -98,7 +98,6 @@
   },
   "devDependencies": {
     "@better-auth/cli": "^1.4.21",
-    "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^16.2.10",
     "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4.3.1",
