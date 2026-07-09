@@ -5,6 +5,7 @@ import { PostEditor } from "../_components/post-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Izmeni objavu | CMS | Splashdeals",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 
 export default async function EditPostPage({ params }: { params: Promise<{ "post-id": string }> }) {
   await requireAdmin();
+  await connection();
   const { "post-id": postId } = await params;
 
   const post = await prisma.blogPost.findUnique({

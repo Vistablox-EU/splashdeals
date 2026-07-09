@@ -4,6 +4,7 @@ import { PagesListClient } from "./_components/pages-list-client";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Strane | CMS | Splashdeals",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default async function PagesPage() {
   await requireAdmin();
+  await connection();
 
   const pages = await prisma.page.findMany({
     orderBy: { createdAt: "desc" },

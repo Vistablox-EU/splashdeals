@@ -5,6 +5,7 @@ import { PageEditor } from "../_components/page-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Izmeni stranu | CMS | Splashdeals",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 
 export default async function EditPagePage({ params }: { params: Promise<{ "page-id": string }> }) {
   await requireAdmin();
+  await connection();
   const { "page-id": pageId } = await params;
 
   const page = await prisma.page.findUnique({ where: { id: pageId } });

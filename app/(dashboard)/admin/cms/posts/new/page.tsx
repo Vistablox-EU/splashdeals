@@ -4,6 +4,7 @@ import { PostEditor } from "../_components/post-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Nova objava | CMS | Splashdeals",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default async function NewPostPage() {
   await requireAdmin();
+  await connection();
 
   const categories = await prisma.blogCategory.findMany({
     orderBy: { displayOrder: "asc" },

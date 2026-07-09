@@ -3,6 +3,7 @@ import { PageEditor } from "../_components/page-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Nova strana | CMS | Splashdeals",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 
 export default async function NewPagePage() {
   await requireAdmin();
+  await connection();
 
   return (
     <div className="space-y-6">

@@ -2,6 +2,7 @@ import { requireAdmin } from "@/server/lib/auth-guards";
 import { prisma } from "@/server/lib/prisma";
 import { TagsManager } from "./_components/tags-manager";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Tagovi | CMS | Splashdeals",
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 
 export default async function TagsPage() {
   await requireAdmin();
+  await connection();
 
   const tags = await prisma.blogTag.findMany({
     orderBy: { name: "asc" },

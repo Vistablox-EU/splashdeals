@@ -4,6 +4,7 @@ import { PostsListClient } from "./_components/posts-list-client";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Blog objave | CMS | Splashdeals",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default async function PostsPage() {
   await requireAdmin();
+  await connection();
 
   const posts = await prisma.blogPost.findMany({
     orderBy: { createdAt: "desc" },

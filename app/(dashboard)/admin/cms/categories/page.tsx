@@ -2,6 +2,7 @@ import { requireAdmin } from "@/server/lib/auth-guards";
 import { prisma } from "@/server/lib/prisma";
 import { CategoriesManager } from "./_components/categories-manager";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Kategorije | CMS | Splashdeals",
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 
 export default async function CategoriesPage() {
   await requireAdmin();
+  await connection();
 
   const categories = await prisma.blogCategory.findMany({
     orderBy: { displayOrder: "asc" },
