@@ -1,8 +1,6 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition, useMemo, useEffect, useRef, useCallback } from "react";
 import { FacilityMedia } from "@prisma/client";
 import {
@@ -13,8 +11,6 @@ import {
   toggleMediaHeroAction,
   toggleMediaCardBackgroundAction,
   toggleMediaGalleryVisibilityAction,
-  updateMediaCaptionAction,
-  updateMediaFocalPointAction,
   bulkUpdateMediaCaptionAction,
   renameMediaAction,
 } from "@/server/actions/media-actions";
@@ -49,8 +45,6 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { upload } from "@vercel/blob/client";
 import { cn } from "@/lib/utils";
 
