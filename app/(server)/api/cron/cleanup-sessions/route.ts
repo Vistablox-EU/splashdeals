@@ -35,7 +35,7 @@ export async function GET(request: Request) {
       take: 100, // Process in batches
     });
 
-    console.log(`[CRON] Found ${abandonedTransactions.length} abandoned sessions.`);
+    console.info(`[CRON] Found ${abandonedTransactions.length} abandoned sessions.`);
 
     let successCount = 0;
     for (const tx of abandonedTransactions) {

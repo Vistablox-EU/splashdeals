@@ -128,6 +128,8 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
         const dbSlug = dbValueToSlug(ticket.facility.category ?? "");
         const badgeLabel = (dbSlug ? slugToName(dbSlug) : null) ?? ticket.facility.category;
 
+        const hasDiscount = ticket.originalPrice && ticket.originalPrice > ticket.price;
+
         return (
           <article key={ticket.id} className="group relative h-full transition-all duration-700">
             {/* Single overlay link covering the entire card */}
@@ -137,7 +139,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
               aria-label={`${ticket.facility.name} — ${ticket.title}`}
             />
             <Card className="group border-border hover:border-primary/30 flex h-full flex-col transition-all duration-500 hover:-translate-y-2">
-              <div className="relative h-40 w-full overflow-hidden rounded-t-[1.5rem] sm:h-52">
+              <div className="relative h-40 w-full overflow-hidden sm:h-52">
                 <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950/90 to-transparent" />
                 {cardImage ? (
                   <Image
@@ -152,13 +154,13 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                   />
                 ) : (
                   <div className="bg-muted flex h-full w-full items-center justify-center">
-                    <Icon name="auto_awesome" className="text-[40px] text-slate-800" />
+                    <Icon name="auto_awesome" className="text-muted-foreground/50 text-[40px]" />
                   </div>
                 )}
 
                 <div className="pointer-events-none absolute bottom-4 left-4 z-30">
                   <div className="mb-1 flex items-center gap-2">
-                    <Badge className="bg-primary border-none px-2 py-0.5 text-[8px] font-black tracking-widest text-slate-950 uppercase ring-0">
+                    <Badge className="bg-primary border-none px-2 py-0.5 text-[10px] font-black tracking-widest uppercase ring-0">
                       {badgeLabel}
                     </Badge>
                   </div>
@@ -173,21 +175,45 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                 <h3 className="group-hover:text-primary mb-3 text-xl leading-tight font-black tracking-tight uppercase transition-colors">
                   {ticket.title}
                 </h3>
-                <p className="mb-6 line-clamp-2 text-xs leading-relaxed font-medium text-slate-400">
+
+                {/* ✨ Metadata badges */}
+                {(ticket.isSeasonPass || ticket.minPeople > 1) && (
+                  <div className="mb-2 flex flex-wrap gap-1.5">
+                    {ticket.isSeasonPass && (
+                      <span className="text-primary/70 text-[10px] font-bold tracking-wider uppercase">
+                        Sezonska
+                      </span>
+                    )}
+                    {ticket.minPeople > 1 && (
+                      <span className="text-primary/70 text-[10px] font-bold tracking-wider uppercase">
+                        od {ticket.minPeople} osobe
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <p className="text-muted-foreground mb-6 line-clamp-2 text-xs leading-relaxed font-medium">
                   {ticket.description || dict.home.default_ticket_desc}
                 </p>
 
                 <div className="border-border group-hover:border-border relative z-30 mt-auto flex items-end justify-between border-t pt-6 transition-colors">
                   <div className="flex flex-col">
-                    <span className="mb-0.5 text-[9px] font-black tracking-[0.2em] text-slate-600 uppercase">
+                    <span className="text-muted-foreground/60 mb-0.5 text-[9px] font-black tracking-[0.2em] uppercase">
                       {ticket.currency}
                     </span>
-                    <data
-                      value={ticket.price}
-                      className="text-2xl font-black tracking-tighter text-white italic sm:text-3xl"
-                    >
-                      {priceFormat.format(ticket.price)}
-                    </data>
+                    <div className="flex items-baseline gap-2">
+                      {hasDiscount && (
+                        <span className="text-muted-foreground/40 text-sm font-medium line-through">
+                          {priceFormat.format(ticket.originalPrice!)}
+                        </span>
+                      )}
+                      <data
+                        value={ticket.price}
+                        className="text-foreground text-2xl font-black tracking-tighter italic sm:text-3xl"
+                      >
+                        {priceFormat.format(ticket.price)}
+                      </data>
+                    </div>
                   </div>
 
                   <AddToCartButton
@@ -221,7 +247,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
         >
           <Card className="border-border flex h-full flex-col border-dashed opacity-50">
             <div className="bg-muted/50 flex h-52 w-full items-center justify-center">
-              <Icon name="auto_awesome" className="text-[40px] text-slate-800" />
+              <Icon name="auto_awesome" className="text-muted-foreground/30 text-[40px]" />
             </div>
             <div className="flex flex-grow flex-col p-6">
               <div className="bg-muted mb-3 h-5 w-24 rounded-md" />
