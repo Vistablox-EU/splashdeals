@@ -73,7 +73,7 @@ export const adminNavData = {
     },
     {
       title: "Bezbednost i operacije",
-      url: "/admin/users",
+      url: "/admin/",
       icon: "security",
       items: [
         {
