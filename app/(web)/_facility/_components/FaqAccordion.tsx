@@ -99,7 +99,7 @@ export function FaqAccordion({ faqs }: Props) {
         Niste pronašli odgovor?{" "}
         <Link
           href="/podrska"
-          className="text-primary font-bold underline underline-offset-2 transition-colors hover:text-primary/80"
+          className="text-primary hover:text-primary/80 font-bold underline underline-offset-2 transition-colors"
         >
           Kontaktirajte nas
         </Link>

@@ -40,7 +40,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           <Icon name="photo_camera" className="text-[16px]" />
           {dict?.media_gallery?.eyebrow || "Galerija"}
         </div>
-        <h2 className="text-3xl leading-none font-black tracking-tighter text-primary-foreground uppercase italic md:text-5xl">
+        <h2 className="text-primary-foreground text-3xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
           {(() => {
             const fullTitle = dict?.media_gallery?.title || "Doživite Atmosferu";
             const words = fullTitle.split(" ");
@@ -77,7 +77,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                   preload="none"
                   className="h-full w-full object-cover transition-all duration-1000 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-background/20">
+                <div className="bg-background/20 absolute inset-0 flex items-center justify-center">
                   <Icon
                     name="play_arrow"
                     className="border-border/20 rounded-full border fill-white/20 p-3 text-[48px] text-white/80 backdrop-blur-sm"
@@ -106,10 +106,10 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                     : dict?.media_gallery?.expand_view || "Prikaži Veće"}
                 </div>
               </div>
-              <div className="absolute top-6 right-6 scale-75 rounded-full bg-muted/20 p-3 opacity-0 backdrop-blur-md transition-all group-hover:scale-100 group-hover:opacity-100">
+              <div className="bg-muted/20 absolute top-6 right-6 scale-75 rounded-full p-3 opacity-0 backdrop-blur-md transition-all group-hover:scale-100 group-hover:opacity-100">
                 <Icon
                   name="favorite"
-                  className="cursor-pointer text-[20px] text-primary-foreground transition-colors hover:text-destructive"
+                  className="text-primary-foreground hover:text-destructive cursor-pointer text-[20px] transition-colors"
                 />
               </div>
             </div>
@@ -126,7 +126,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="border-border absolute top-8 right-8 z-[2010] rounded-full border bg-muted/20 text-muted-foreground hover:bg-muted/30"
+            className="border-border bg-muted/20 text-muted-foreground hover:bg-muted/30 absolute top-8 right-8 z-[2010] rounded-full border"
             onClick={() => setSelectedIdx(null)}
             aria-label="Zatvori galeriju"
           >
@@ -134,7 +134,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           </Button>
 
           <div
-            className="border-border animate-scale-in relative aspect-video w-full max-w-6xl overflow-hidden rounded-[3rem] border bg-background shadow-2xl"
+            className="border-border animate-scale-in bg-background relative aspect-video w-full max-w-6xl overflow-hidden rounded-[3rem] border shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {galleryMedia[selectedIdx].type === "VIDEO" ? (

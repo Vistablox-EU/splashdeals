@@ -214,7 +214,9 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
                 <Label htmlFor="status">Status</Label>
                 <Select
                   value={watch("status") || "DRAFT"}
-                  onValueChange={(value) => setValue("status", value as "DRAFT" | "PUBLISHED" | "ARCHIVED")}
+                  onValueChange={(value) =>
+                    setValue("status", value as "DRAFT" | "PUBLISHED" | "ARCHIVED")
+                  }
                 >
                   <SelectTrigger id="status" aria-label="Status" className="w-full">
                     <SelectValue placeholder="Izaberi status" />

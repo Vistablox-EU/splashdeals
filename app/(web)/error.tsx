@@ -45,22 +45,22 @@ export default function GlobalWebError({
   }
 
   return (
-    <div className="bg-background selection:bg-primary/20 relative flex min-h-screen items-center justify-center overflow-hidden p-6 text-foreground md:p-12">
+    <div className="bg-background selection:bg-primary/20 text-foreground relative flex min-h-screen items-center justify-center overflow-hidden p-6 md:p-12">
       {/* 🌊 Atmospheric Background Particles */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-20">
         <div className="bg-primary/10 absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <Icon name="waves" className="h-[80vw] w-[80vw] stroke-[0.1] text-foreground/5" />
+          <Icon name="waves" className="text-foreground/5 h-[80vw] w-[80vw] stroke-[0.1]" />
         </div>
       </div>
 
-      <Card className="bg-muted/50 relative z-10 w-full max-w-xl border-primary/10">
+      <Card className="bg-muted/50 border-primary/10 relative z-10 w-full max-w-xl">
         <CardHeader className="items-center gap-6 p-8 pb-0 text-center md:p-16 md:pb-0">
-          <div className="bg-primary/10 text-primary relative inline-flex h-24 w-24 items-center justify-center rounded-full border border-primary/20">
+          <div className="bg-primary/10 text-primary border-primary/20 relative inline-flex h-24 w-24 items-center justify-center rounded-full border">
             <Icon name="error" className="stroke-[1.5] text-[48px]" />
           </div>
           <div className="space-y-4">
-            <CardTitle className="text-4xl leading-none font-black tracking-tighter text-foreground uppercase italic md:text-5xl">
+            <CardTitle className="text-foreground text-4xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
               {(dict as Record<string, unknown>)?.errors ? (
                 <>
                   {t("errors", "title")} <br />

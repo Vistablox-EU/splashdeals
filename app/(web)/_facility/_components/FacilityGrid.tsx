@@ -113,7 +113,7 @@ export async function FacilityGrid({
           <span className="text-muted-foreground text-xs font-black tracking-[0.3em] uppercase">
             {noFacilitiesLabel}
           </span>
-          <span className="max-w-xs text-[10px] leading-relaxed font-bold tracking-widest text-muted-foreground uppercase">
+          <span className="text-muted-foreground max-w-xs text-[10px] leading-relaxed font-bold tracking-widest uppercase">
             {dict?.facilities?.no_results_hint ||
               "Pokušajte da prilagodite filtere ili istražite druge kategorije."}
           </span>

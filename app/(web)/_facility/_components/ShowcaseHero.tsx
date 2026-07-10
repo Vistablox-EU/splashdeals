@@ -154,18 +154,18 @@ export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
   if (!weather) return null;
 
   const getWeatherIcon = (code: number) => {
-    if (code === 0) return <Icon name="light_mode" className="text-[20px] text-primary" />;
-    if (code < 4) return <Icon name="cloud" className="text-[20px] text-muted-foreground" />;
+    if (code === 0) return <Icon name="light_mode" className="text-primary text-[20px]" />;
+    if (code < 4) return <Icon name="cloud" className="text-muted-foreground text-[20px]" />;
     return <Icon name="rainy" className="text-primary text-[20px]" />;
   };
 
   return (
     <div className="glass-frost border-border flex items-center gap-3 rounded-full px-4 py-2 shadow-xl">
       {getWeatherIcon(weather.weathercode)}
-      <span className="text-sm font-black whitespace-nowrap text-primary-foreground">
+      <span className="text-primary-foreground text-sm font-black whitespace-nowrap">
         {Math.round(weather.temperature)}°C
       </span>
-      <div className="hidden h-4 w-px bg-border md:block" />
+      <div className="bg-border hidden h-4 w-px md:block" />
       <span className="text-muted-foreground hidden text-xs font-bold tracking-widest uppercase md:inline">
         Idealno za kupanje
       </span>

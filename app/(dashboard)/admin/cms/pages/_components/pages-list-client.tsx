@@ -83,7 +83,7 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
       cell: ({ row }) => (
         <Button
           variant="link"
-          className="text-left text-sm font-medium h-auto p-0"
+          className="h-auto p-0 text-left text-sm font-medium"
           onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
         >
           {row.original.title}

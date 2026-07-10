@@ -688,13 +688,13 @@ function SingleTierCard({
         <div className="flex items-center justify-between gap-4 md:hidden">
           {tier.originalPrice && Number(tier.originalPrice) > Number(tier.price) ? (
             <div className="flex w-full items-center justify-between gap-2">
-              <div className="flex min-w-[100px] flex-1 flex-col items-center justify-center rounded-xl border border-destructive/20 bg-destructive/20 px-3 py-1.5">
-                <span className="mb-1 text-[8px] leading-none font-black tracking-widest text-destructive uppercase">
+              <div className="border-destructive/20 bg-destructive/20 flex min-w-[100px] flex-1 flex-col items-center justify-center rounded-xl border px-3 py-1.5">
+                <span className="text-destructive mb-1 text-[8px] leading-none font-black tracking-widest uppercase">
                   {main} cene
                 </span>
                 <span className="text-muted-foreground relative text-sm leading-none font-bold">
                   {tier.originalPrice} <span className="text-muted-foreground text-[9px]">RSD</span>
-                  <span className="pointer-events-none absolute top-1/2 right-[-2px] left-[-2px] h-[1.5px] -rotate-12 bg-destructive" />
+                  <span className="bg-destructive pointer-events-none absolute top-1/2 right-[-2px] left-[-2px] h-[1.5px] -rotate-12" />
                 </span>
               </div>
               <div className="bg-primary/10 border-primary/30 flex min-w-[110px] flex-1 flex-col items-center justify-center rounded-xl border px-3 py-1.5 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
@@ -737,7 +737,7 @@ function SingleTierCard({
                     RSD
                   </span>
                   <span
-                    className="pointer-events-none absolute top-1/2 right-[-4px] left-[-4px] h-[3px] origin-center -rotate-12 bg-destructive shadow-[0_0_8px_hsl(var(--destructive)/0.6)]"
+                    className="bg-destructive pointer-events-none absolute top-1/2 right-[-4px] left-[-4px] h-[3px] origin-center -rotate-12 shadow-[0_0_8px_hsl(var(--destructive)/0.6)]"
                     aria-hidden="true"
                   />
                 </div>
@@ -769,7 +769,7 @@ function SingleTierCard({
           )}
         </div>
 
-        <div className="border-border flex items-center justify-between rounded-2xl border bg-muted/40 p-2">
+        <div className="border-border bg-muted/40 flex items-center justify-between rounded-2xl border p-2">
           <Button
             variant="ghost"
             size="icon"
@@ -794,7 +794,7 @@ function SingleTierCard({
         <Button
           onClick={onAdd}
           size="lg"
-          className="bg-primary hover:bg-primary/90 w-full rounded-full text-xs font-black tracking-[0.2em] text-primary-foreground uppercase"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground w-full rounded-full text-xs font-black tracking-[0.2em] uppercase"
         >
           Dodaj u korpu
         </Button>
@@ -883,7 +883,7 @@ function TierList({
               </div>
             </div>
 
-            <div className="border-border flex items-center gap-1 rounded-lg border bg-muted/40 p-1">
+            <div className="border-border bg-muted/40 flex items-center gap-1 rounded-lg border p-1">
               <Button
                 variant="ghost"
                 size="icon"
@@ -915,7 +915,7 @@ function TierList({
             <Button
               onClick={() => onAdd(tier)}
               size="lg"
-              className="bg-primary hover:bg-primary/90 shrink-0 rounded-lg px-4 text-[9px] font-black tracking-widest text-primary-foreground uppercase"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0 rounded-lg px-4 text-[9px] font-black tracking-widest uppercase"
             >
               Dodaj
             </Button>
@@ -973,7 +973,7 @@ function TierGrid({
               </span>
               <span className="text-primary text-[10px] font-bold uppercase">RSD</span>
             </div>
-            <div className="border-border flex items-center gap-1 rounded-lg border bg-muted/40 p-1">
+            <div className="border-border bg-muted/40 flex items-center gap-1 rounded-lg border p-1">
               <Button
                 variant="ghost"
                 size="icon"
@@ -1003,7 +1003,7 @@ function TierGrid({
             </div>
             <Button
               onClick={() => onAdd(tier)}
-              className="bg-primary hover:bg-primary/90 w-full rounded-lg text-[9px] font-black tracking-widest text-primary-foreground uppercase"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground w-full rounded-lg text-[9px] font-black tracking-widest uppercase"
             >
               Dodaj
             </Button>

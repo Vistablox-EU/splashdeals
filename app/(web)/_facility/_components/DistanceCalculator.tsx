@@ -115,7 +115,7 @@ export function DistanceCalculator({ destLat, destLng }: DistanceCalculatorProps
         <>
           <Icon
             name="navigation"
-            className="group-hover:text-primary text-[16px] text-muted-foreground transition-colors"
+            className="group-hover:text-primary text-muted-foreground text-[16px] transition-colors"
           />
           <span className="hidden md:inline">Prikaži Udaljenost</span>
         </>

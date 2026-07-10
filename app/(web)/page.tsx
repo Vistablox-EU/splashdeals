@@ -127,7 +127,10 @@ export default async function LandingPage({
             </p>
 
             <div className="flex cursor-pointer flex-col items-center gap-6 transition-all duration-800 sm:flex-row">
-              <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[240px] rounded-full px-12 py-6">
+              <Button
+                asChild
+                className="bg-primary text-primary-foreground hover:bg-primary/90 min-w-[240px] rounded-full px-12 py-6"
+              >
                 <Link
                   href="#inventory"
                   className="flex h-full w-full items-center justify-center gap-2"
@@ -183,9 +186,27 @@ export default async function LandingPage({
               />
             </defs>
             <g className="wave-layer">
-              <use href="#gentle-wave" x="48" y="0" fill="currentColor" className="text-primary/20" />
-              <use href="#gentle-wave" x="48" y="3" fill="currentColor" className="text-primary/30" />
-              <use href="#gentle-wave" x="48" y="5" fill="currentColor" className="text-primary/50" />
+              <use
+                href="#gentle-wave"
+                x="48"
+                y="0"
+                fill="currentColor"
+                className="text-primary/20"
+              />
+              <use
+                href="#gentle-wave"
+                x="48"
+                y="3"
+                fill="currentColor"
+                className="text-primary/30"
+              />
+              <use
+                href="#gentle-wave"
+                x="48"
+                y="5"
+                fill="currentColor"
+                className="text-primary/50"
+              />
               <use href="#gentle-wave" x="48" y="7" fill="currentColor" className="text-primary" />
             </g>
           </svg>

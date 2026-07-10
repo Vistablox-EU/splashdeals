@@ -140,7 +140,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
             />
             <Card className="group border-border hover:border-primary/30 flex h-full flex-col transition-all duration-500 hover:-translate-y-2">
               <div className="relative h-40 w-full overflow-hidden sm:h-52">
-                <div className="absolute inset-0 z-10 bg-gradient-to-t from-background/90 to-transparent" />
+                <div className="from-background/90 absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
                 {cardImage ? (
                   <Image
                     src={cardImage}

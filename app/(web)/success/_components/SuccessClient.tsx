@@ -143,21 +143,23 @@ export function SuccessClient({
       {/* 🌟 Header Section */}
       <div className="animate-fade-in-up space-y-6 text-center">
         <div className="relative inline-block">
-          <div className="animate-scale-in relative z-10 inline-flex h-24 w-24 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-primary">
+          <div className="animate-scale-in border-primary/20 bg-primary/10 text-primary relative z-10 inline-flex h-24 w-24 items-center justify-center rounded-full border">
             <Icon name="check_circle" className="text-[56px]" />
           </div>
           <div className="bg-primary/20 absolute -top-4 -right-4 h-12 w-12 animate-pulse rounded-full blur-2xl" />
-          <div className="absolute -bottom-4 -left-4 h-12 w-12 animate-pulse rounded-full bg-primary/20 blur-2xl delay-700" />
+          <div className="bg-primary/20 absolute -bottom-4 -left-4 h-12 w-12 animate-pulse rounded-full blur-2xl delay-700" />
         </div>
 
         <div className="space-y-3">
           <h1 className="text-foreground text-4xl leading-tight font-black tracking-tighter uppercase italic md:text-6xl">
             {dict.header.title}{" "}
-            <span className="bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
+            <span className="from-primary to-primary-dark bg-gradient-to-r bg-clip-text text-transparent">
               {dict.header.status}
             </span>
           </h1>
-          <p className="text-muted-foreground mx-auto max-w-xl text-lg">{dict.header.description}</p>
+          <p className="text-muted-foreground mx-auto max-w-xl text-lg">
+            {dict.header.description}
+          </p>
         </div>
       </div>
 
@@ -170,10 +172,10 @@ export function SuccessClient({
               className="animate-fade-in-up"
               style={{ animationDelay: `${0.2 + index * 0.1}s` }}
             >
-              <Card className="group border-border/5 bg-card/40 flex flex-col overflow-hidden p-0 transition-colors duration-500 hover:border-primary/30 md:flex-row">
+              <Card className="group border-border/5 bg-card/40 hover:border-primary/30 flex flex-col overflow-hidden p-0 transition-colors duration-500 md:flex-row">
                 {/* QR Code Wing */}
-                <div className="relative flex min-w-[240px] items-center justify-center bg-background p-10">
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+                <div className="bg-background relative flex min-w-[240px] items-center justify-center p-10">
+                  <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
                   <div className="relative">
                     <QRCodeSVG
                       value={issuedTicket.qrHash}
@@ -183,8 +185,8 @@ export function SuccessClient({
                       className="drop-shadow-2xl grayscale transition-all duration-700 group-hover:grayscale-0"
                     />
                     {/* Corner Accents */}
-                    <div className="absolute -top-2 -left-2 h-4 w-4 border-t-2 border-l-2 border-muted-foreground/10" />
-                    <div className="absolute -right-2 -bottom-2 h-4 w-4 border-r-2 border-b-2 border-muted-foreground/10" />
+                    <div className="border-muted-foreground/10 absolute -top-2 -left-2 h-4 w-4 border-t-2 border-l-2" />
+                    <div className="border-muted-foreground/10 absolute -right-2 -bottom-2 h-4 w-4 border-r-2 border-b-2" />
                   </div>
                 </div>
 
@@ -274,9 +276,9 @@ export function SuccessClient({
           <Button
             onClick={() => window.print()}
             size="lg"
-            className="bg-primary hover:bg-primary/90 h-16 w-full rounded-full px-10 text-primary-foreground shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:w-auto"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground h-16 w-full rounded-full px-10 shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:w-auto"
           >
-            <Icon name="download" className="mr-3 text-[20px] text-primary-foreground" />
+            <Icon name="download" className="text-primary-foreground mr-3 text-[20px]" />
             {dict.actions.download}
           </Button>
         </div>

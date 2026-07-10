@@ -65,7 +65,7 @@ function SortableMenuTab({
         size="sm"
         {...attributes}
         {...listeners}
-        className="text-muted-foreground/40 hover:text-foreground shrink-0 h-auto w-auto cursor-grab p-0"
+        className="text-muted-foreground/40 hover:text-foreground h-auto w-auto shrink-0 cursor-grab p-0"
         onClick={(e) => e.stopPropagation()}
         aria-label="Prevuci meni"
       >
@@ -116,7 +116,7 @@ function SortableSection({
           size="sm"
           {...attributes}
           {...listeners}
-          className="text-muted-foreground/30 hover:text-foreground shrink-0 h-auto w-auto cursor-grab p-0"
+          className="text-muted-foreground/30 hover:text-foreground h-auto w-auto shrink-0 cursor-grab p-0"
           aria-label="Prevuci sekciju"
         >
           <Icon name="drag_indicator" className="size-3.5" />
@@ -171,7 +171,7 @@ function SortableItem({
         size="sm"
         {...attributes}
         {...listeners}
-        className="text-muted-foreground/20 group-hover:text-muted-foreground shrink-0 h-auto w-auto cursor-grab p-0"
+        className="text-muted-foreground/20 group-hover:text-muted-foreground h-auto w-auto shrink-0 cursor-grab p-0"
         aria-label="Prevuci stavku"
       >
         <Icon name="drag_indicator" className="size-3" />
@@ -517,12 +517,9 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
                     <div
                       className={cn(
                         "flex items-center justify-between border-b px-3 py-2 text-xs font-semibold tracking-wider uppercase",
-                        column === 0 &&
-                          "border-primary/10 bg-primary/10 text-primary",
-                        column === 1 &&
-                          "border-primary/10 bg-primary/10 text-primary",
-                        column === 2 &&
-                          "border-primary/10 bg-primary/10 text-primary",
+                        column === 0 && "border-primary/10 bg-primary/10 text-primary",
+                        column === 1 && "border-primary/10 bg-primary/10 text-primary",
+                        column === 2 && "border-primary/10 bg-primary/10 text-primary",
                       )}
                     >
                       <span>Kolona {column + 1}</span>
@@ -569,15 +566,15 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => openEditSection(section)}
-                                        className="text-muted-foreground bg-accent/30 hover:bg-accent hover:text-foreground h-auto gap-1 rounded px-2 py-1 text-[11px] font-medium"
-                                        aria-label="Opcije sekcije"
-                                      >
-                                        <Icon name="settings" className="size-3.5" />
-                                        Opcije
-                                      </Button>
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => openEditSection(section)}
+                                      className="text-muted-foreground bg-accent/30 hover:bg-accent hover:text-foreground h-auto gap-1 rounded px-2 py-1 text-[11px] font-medium"
+                                      aria-label="Opcije sekcije"
+                                    >
+                                      <Icon name="settings" className="size-3.5" />
+                                      Opcije
+                                    </Button>
                                   </TooltipTrigger>
                                   <TooltipContent side="bottom">
                                     Izmeni sekciju (naziv, kolonu, stil)

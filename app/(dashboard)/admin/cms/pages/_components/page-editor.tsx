@@ -14,7 +14,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { RichTextEditor } from "../../_components/rich-text-editor";
 import { SEOPanel } from "../../_components/seo-panel";
@@ -170,7 +176,9 @@ export function PageEditor({ page }: PageEditorProps) {
                 <Label htmlFor="status">Status</Label>
                 <Select
                   value={watch("status") || "DRAFT"}
-                  onValueChange={(value) => setValue("status", value as "DRAFT" | "PUBLISHED" | "ARCHIVED")}
+                  onValueChange={(value) =>
+                    setValue("status", value as "DRAFT" | "PUBLISHED" | "ARCHIVED")
+                  }
                 >
                   <SelectTrigger id="status" aria-label="Status" className="w-full">
                     <SelectValue placeholder="Izaberi status" />

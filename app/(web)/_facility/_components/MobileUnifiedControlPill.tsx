@@ -118,13 +118,15 @@ export function MobileUnifiedControlPill({
           <div className="relative shrink-0">
             <Icon name="schedule" className="text-muted-foreground text-[22px]" />
             {isOpen === true && (
-              <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary shadow-[0_0_6px_hsl(var(--primary)/0.6)]" />
+              <span className="bg-primary absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full shadow-[0_0_6px_hsl(var(--primary)/0.6)]" />
             )}
           </div>
           <div className="flex flex-col items-start -space-y-0.5 leading-tight">
             {todayHours ? (
               todayHours.isClosed ? (
-                <span className="text-sm font-black tracking-tight text-destructive">Zatvoreno</span>
+                <span className="text-destructive text-sm font-black tracking-tight">
+                  Zatvoreno
+                </span>
               ) : (
                 <>
                   <span className="text-foreground text-sm font-black tracking-tight">

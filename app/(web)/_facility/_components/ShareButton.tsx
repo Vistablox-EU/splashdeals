@@ -67,13 +67,13 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
     >
       {copied ? (
         <div key="check" className="animate-scale-in">
-          <Icon name="check" className="h-[14px] w-[14px] text-primary" />
+          <Icon name="check" className="text-primary h-[14px] w-[14px]" />
         </div>
       ) : (
         <div key="share" className="animate-scale-in">
           <Icon
             name="share"
-            className="h-[14px] w-[14px] text-muted-foreground transition-colors group-hover:text-primary"
+            className="text-muted-foreground group-hover:text-primary h-[14px] w-[14px] transition-colors"
           />
         </div>
       )}

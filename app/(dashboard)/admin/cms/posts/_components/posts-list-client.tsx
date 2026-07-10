@@ -88,12 +88,10 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Button variant="ghost" asChild className="text-left text-sm font-medium">
-            <Link href={`/admin/cms/posts/${row.original.id}`}>
-              {row.original.title}
-            </Link>
+            <Link href={`/admin/cms/posts/${row.original.id}`}>{row.original.title}</Link>
           </Button>
           {row.original.isFeatured && (
-            <Icon name="star" className="size-3.5 shrink-0 fill-warning text-warning" />
+            <Icon name="star" className="fill-warning text-warning size-3.5 shrink-0" />
           )}
         </div>
       ),

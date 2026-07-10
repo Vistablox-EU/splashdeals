@@ -16,7 +16,7 @@ export function CategoryOrbSkeleton() {
 
       {/* Decorative filter icon ghost */}
       <div className="absolute top-0 right-0 p-2 opacity-5">
-        <div className="h-12 w-12 rounded-full bg-foreground/10" />
+        <div className="bg-foreground/10 h-12 w-12 rounded-full" />
       </div>
     </Card>
   );

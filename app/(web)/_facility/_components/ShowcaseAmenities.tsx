@@ -138,16 +138,16 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
               className="group border-border bg-card/40 hover:border-primary/30 hover:bg-muted/20 relative flex min-h-[76px] cursor-default flex-row items-center gap-3 overflow-hidden rounded-2xl border p-4 backdrop-blur-md transition-all duration-500 sm:min-h-[170px] sm:flex-col sm:items-center sm:justify-center sm:p-8 sm:text-center"
             >
               {/* 🔮 Glow Hover Effect */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="from-primary/[0.02] pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
               {/* 🧿 Icon Container (Neon Glassmorphism) */}
-              <div className="text-primary border-border relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border bg-muted/10 shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:mb-4 sm:h-14 sm:w-14 sm:rounded-2xl">
+              <div className="text-primary border-border bg-muted/10 relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:mb-4 sm:h-14 sm:w-14 sm:rounded-2xl">
                 <Icon name={iconName} className="text-primary text-[20px] sm:text-[24px]" />
               </div>
 
               {/* 🏷️ Info Container */}
               <div className="relative z-10 flex flex-col justify-center space-y-1 text-left sm:items-center sm:text-center">
-                <h4 className="xs:text-xs text-foreground/80 line-clamp-2 max-w-[130px] text-[11px] leading-snug font-black tracking-wider uppercase transition-colors group-hover:text-foreground sm:line-clamp-none sm:max-w-[180px]">
+                <h4 className="xs:text-xs text-foreground/80 group-hover:text-foreground line-clamp-2 max-w-[130px] text-[11px] leading-snug font-black tracking-wider uppercase transition-colors sm:line-clamp-none sm:max-w-[180px]">
                   {getTranslatedName(fa.amenity.name)}
                 </h4>
 
@@ -156,7 +156,7 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
                     className={cn(
                       "xs:text-[10px] line-clamp-1 text-[9px] tracking-widest uppercase",
                       fa.amenity.type === "TEXT" && fa.value.length > 20
-                        ? "mt-1 text-left text-[11px] leading-relaxed font-medium tracking-normal text-muted-foreground normal-case sm:text-center"
+                        ? "text-muted-foreground mt-1 text-left text-[11px] leading-relaxed font-medium tracking-normal normal-case sm:text-center"
                         : "text-primary font-bold",
                     )}
                   >
@@ -167,7 +167,7 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
                 {/* Glowing availability badge */}
                 <div className="mt-0.5 flex items-center gap-1.5 opacity-60 transition-opacity group-hover:opacity-100 sm:mt-2 sm:justify-center">
                   <div className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full shadow-[0_0_8px_hsl(var(--primary)/0.6)]" />
-                  <span className="xs:text-[9px] text-[8px] font-black tracking-widest text-muted-foreground uppercase">
+                  <span className="xs:text-[9px] text-muted-foreground text-[8px] font-black tracking-widest uppercase">
                     {dict?.amenities?.available || "Dostupno"}
                   </span>
                 </div>

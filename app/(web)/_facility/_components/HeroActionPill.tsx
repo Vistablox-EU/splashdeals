@@ -69,9 +69,9 @@ export function HeroActionPill({
       </div>
 
       {/* 🏙️ HERO INFO ROW */}
-      <div className="flex w-full flex-wrap items-center gap-6 pb-4 font-bold text-muted-foreground">
+      <div className="text-muted-foreground flex w-full flex-wrap items-center gap-6 pb-4 font-bold">
         <div className="bg-muted/50 border-border hidden items-center gap-2 rounded-2xl border px-5 py-2.5 backdrop-blur-md md:flex">
-          <Icon name="location_on" className="text-[16px] text-primary" />
+          <Icon name="location_on" className="text-primary text-[16px]" />
           <span className="text-sm font-medium tracking-tight opacity-80">
             {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
           </span>

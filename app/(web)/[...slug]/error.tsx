@@ -19,8 +19,8 @@ export default function CatchAllError({
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="max-w-md space-y-6 text-center">
-        <Icon name="TriangleAlert" className="mx-auto h-16 w-16 text-warning" />
-        <h1 className="text-3xl font-black text-foreground uppercase italic">Neočekivani talas</h1>
+        <Icon name="TriangleAlert" className="text-warning mx-auto h-16 w-16" />
+        <h1 className="text-foreground text-3xl font-black uppercase italic">Neočekivani talas</h1>
         <p className="text-muted-foreground">Došlo je do greške prilikom učitavanja stranice.</p>
         <div className="flex justify-center gap-4">
           <Button onClick={reset} variant="default">

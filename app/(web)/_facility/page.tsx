@@ -252,7 +252,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                       "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
                   </span>
                   {facility.amenities && facility.amenities.length > 0 && (
-                    <span className="border-border/30 mt-4 block border-t pt-4 text-base font-medium text-muted-foreground not-italic md:hidden">
+                    <span className="border-border/30 text-muted-foreground mt-4 block border-t pt-4 text-base font-medium not-italic md:hidden">
                       Sadržaji:{" "}
                       {facility.amenities
                         .map((fa: { amenity: { name: string } }) => fa.amenity.name)
@@ -267,7 +267,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             {facility.transitGuide && (
               <Card className="border-l-primary bg-muted/50 mt-8 border-l-4">
                 <CardHeader className="gap-3 p-8 pb-0">
-                  <div className="flex items-center gap-3 text-xs font-black tracking-widest text-primary uppercase">
+                  <div className="text-primary flex items-center gap-3 text-xs font-black tracking-widest uppercase">
                     <Icon name="location_on" className="text-[16px]" /> Kako stići
                   </div>
                 </CardHeader>
@@ -311,7 +311,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
             {/* Operational Portal — hidden on mobile (already in MobileUnifiedControlPill) */}
             <div className="hidden md:block">
-              <Suspense fallback={<Skeleton className="h-[600px] rounded-[3rem] bg-muted/20" />}>
+              <Suspense fallback={<Skeleton className="bg-muted/20 h-[600px] rounded-[3rem]" />}>
                 <OperationalPortal hours={facility.hours} />
               </Suspense>
             </div>

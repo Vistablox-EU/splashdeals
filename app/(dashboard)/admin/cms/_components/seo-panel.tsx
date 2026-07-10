@@ -34,10 +34,8 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
           Google SERP Preview
         </h4>
         <div className="bg-card space-y-1 rounded-lg border p-3">
-          <p className="truncate text-xs text-primary">
-            {previewUrl || "splashdeals.rs/blog/..."}
-          </p>
-          <p className="truncate text-sm leading-tight font-medium text-primary">
+          <p className="text-primary truncate text-xs">{previewUrl || "splashdeals.rs/blog/..."}</p>
+          <p className="text-primary truncate text-sm leading-tight font-medium">
             {serpTitle.length > 60 ? serpTitle.slice(0, 57) + "..." : serpTitle}
           </p>
           <p className="text-muted-foreground line-clamp-2 text-xs leading-tight">
