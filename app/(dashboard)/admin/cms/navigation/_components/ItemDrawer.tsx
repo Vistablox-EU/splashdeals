@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Icon } from "@/components/ui/Icon";
@@ -70,37 +70,41 @@ export function ItemDrawer({ sectionId, item, open, onClose, onSaved }: ItemDraw
   const [saving, setSaving] = useState(false);
 
   // Initialise from item metadata when opening
-  useState(() => {
+  useEffect(() => {
     if (open && item) {
-      setLabel(item.label);
-      setHref(item.href || "");
-      setIcon(item.icon || "");
-      setDesc(item.desc || "");
+      requestAnimationFrame(() => {
+        setLabel(item.label);
+        setHref(item.href || "");
+        setIcon(item.icon || "");
+        setDesc(item.desc || "");
 
-      const md = (item.metadata as LinkMetadata | null) || {};
-      setBadgeType(md.badge?.type || "");
-      setBadgeText(md.badge?.text || "");
-      setPrice(md.price || "");
-      setVariant(md.variant || "default");
-      setImageUrl(md.imageUrl || "");
-      setCount(md.count || 0);
-      setAccentColor(md.accentColor || "");
-      setExternal(md.external || false);
+        const md = (item.metadata as LinkMetadata | null) || {};
+        setBadgeType(md.badge?.type || "");
+        setBadgeText(md.badge?.text || "");
+        setPrice(md.price || "");
+        setVariant(md.variant || "default");
+        setImageUrl(md.imageUrl || "");
+        setCount(md.count || 0);
+        setAccentColor(md.accentColor || "");
+        setExternal(md.external || false);
+      });
     } else if (open && !item) {
-      setLabel("");
-      setHref("");
-      setIcon("");
-      setDesc("");
-      setBadgeType("");
-      setBadgeText("");
-      setPrice("");
-      setVariant("default");
-      setImageUrl("");
-      setCount(0);
-      setAccentColor("");
-      setExternal(false);
+      requestAnimationFrame(() => {
+        setLabel("");
+        setHref("");
+        setIcon("");
+        setDesc("");
+        setBadgeType("");
+        setBadgeText("");
+        setPrice("");
+        setVariant("default");
+        setImageUrl("");
+        setCount(0);
+        setAccentColor("");
+        setExternal(false);
+      });
     }
-  });
+  }, [open, item]);
 
   const buildMetadata = useCallback((): LinkMetadata | null => {
     const hasRich =
