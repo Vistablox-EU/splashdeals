@@ -19,9 +19,8 @@ import {
 import Link from "next/link";
 import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle";
 
-// Using a static wrapper component for rendering cells that might trigger non-deterministic behavior
 function ClientCell({ children }: { children: React.ReactNode }) {
-  return <div suppressHydrationWarning>{children}</div>;
+  return <div>{children}</div>;
 }
 
 export const columns: ColumnDef<Facility>[] = [
