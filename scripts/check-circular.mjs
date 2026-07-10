@@ -14,8 +14,15 @@ import { join, resolve, relative, dirname } from "path";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const IGNORE_DIRS = new Set([
-  "node_modules", ".next", "out", "build", ".git",
-  "playwright-report", "scratch", "public", "__tests__",
+  "node_modules",
+  ".next",
+  "out",
+  "build",
+  ".git",
+  "playwright-report",
+  "scratch",
+  "public",
+  "__tests__",
 ]);
 
 const srcDirs = ["app", "server", "lib", "components"];
@@ -31,7 +38,9 @@ function walk(dir, files = []) {
       if (entry.isDirectory()) walk(fullPath, files);
       else if (entry.isFile() && /\.(ts|tsx)$/.test(entry.name)) files.push(fullPath);
     }
-  } catch { /* skip unreadable */ }
+  } catch {
+    /* skip unreadable */
+  }
   return files;
 }
 
@@ -116,8 +125,8 @@ const depMap = new Map();
 for (const file of allFiles) {
   const imports = getImports(file);
   const resolved = imports
-    .map(spec => resolveImport(file, spec))
-    .filter(p => p !== null && allFiles.includes(p));
+    .map((spec) => resolveImport(file, spec))
+    .filter((p) => p !== null && allFiles.includes(p));
   depMap.set(file, resolved);
 }
 
@@ -132,10 +141,15 @@ const seen = new Set();
 const uniqueCycles = [];
 for (const cycle of cycles) {
   const key = cycle.slice(0, -1).sort().join("→");
-  if (!seen.has(key)) { seen.add(key); uniqueCycles.push(cycle); }
+  if (!seen.has(key)) {
+    seen.add(key);
+    uniqueCycles.push(cycle);
+  }
 }
 
-console.log(`\n❌ Found ${uniqueCycles.length} circular dependenc${uniqueCycles.length > 1 ? "ies" : "y"}:\n`);
+console.log(
+  `\n❌ Found ${uniqueCycles.length} circular dependenc${uniqueCycles.length > 1 ? "ies" : "y"}:\n`,
+);
 for (const cycle of uniqueCycles) {
   console.log("  ⭕ Cycle:");
   for (const file of cycle) console.log(`     ${relative(ROOT, file)}`);

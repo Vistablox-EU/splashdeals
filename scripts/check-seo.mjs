@@ -20,14 +20,24 @@ const BASE = `http://localhost:${PORT}`;
 const STARTUP_TIMEOUT = 30_000; // 30s for next start to be ready
 const SITEMAP_CRAWL_TIMEOUT = 5000;
 const REQUEST_TIMEOUT = 15_000; // 15s per HTTP request
-const CHECK_TIMEOUT = 120_000;  // 120s max for the whole script
+const CHECK_TIMEOUT = 120_000; // 120s max for the whole script
 
 // Static routes that have their own page.tsx — never flag as soft-404
-const KNOWN_STATIC_PAGES = ["/", "/how-it-works", "/terms", "/privacy", "/support", "/cookies", "/search", "/success", "/robots.txt"];
+const KNOWN_STATIC_PAGES = [
+  "/",
+  "/how-it-works",
+  "/terms",
+  "/privacy",
+  "/support",
+  "/cookies",
+  "/search",
+  "/success",
+  "/robots.txt",
+];
 
 const SEVERE = "🔴 SEVERE";
-const WARN   = "🟡 WARN";
-const PASS   = "✅ PASS";
+const WARN = "🟡 WARN";
+const PASS = "✅ PASS";
 
 const failures = [];
 const warnings = [];
@@ -35,9 +45,13 @@ const passCount = { count: 0 };
 const startTime = Date.now();
 
 // ── Utilities ──────────────────────────────────────────────────────────────
-function elapsed() { return ((Date.now() - startTime) / 1000).toFixed(1) + "s"; }
+function elapsed() {
+  return ((Date.now() - startTime) / 1000).toFixed(1) + "s";
+}
 
-function log(...args) { console.log(`[${elapsed()}]`, ...args); }
+function log(...args) {
+  console.log(`[${elapsed()}]`, ...args);
+}
 
 function fail(severity, category, page, message) {
   const icon = severity === SEVERE ? "🔴" : "🟡";
@@ -56,7 +70,11 @@ async function httpFetch(url, opts = {}) {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), opts.timeout || REQUEST_TIMEOUT);
   try {
-    const res = await globalThis.fetch(url, { ...opts, signal: ac.signal, redirect: opts.redirect ?? "manual" });
+    const res = await globalThis.fetch(url, {
+      ...opts,
+      signal: ac.signal,
+      redirect: opts.redirect ?? "manual",
+    });
     return res;
   } finally {
     clearTimeout(timer);
@@ -93,7 +111,10 @@ async function startServer() {
 
     server.stdout.on("data", onData);
     server.stderr.on("data", onData);
-    server.on("error", (err) => { clearTimeout(timeout); reject(err); });
+    server.on("error", (err) => {
+      clearTimeout(timeout);
+      reject(err);
+    });
     server.on("exit", (code) => {
       if (!started) {
         clearTimeout(timeout);
@@ -109,8 +130,10 @@ async function checkRobotsTxt() {
     const res = await httpFetch(`${BASE}/robots.txt`);
     const text = await res.text();
     if (res.status !== 200) return fail(SEVERE, "Transport", "/robots.txt", `HTTP ${res.status}`);
-    if (!text.includes("Sitemap:")) fail(WARN, "Transport", "/robots.txt", "Missing Sitemap directive");
-    if (/^Disallow: \/$/m.test(text)) fail(WARN, "Transport", "/robots.txt", "Has Disallow: / — may block all crawling");
+    if (!text.includes("Sitemap:"))
+      fail(WARN, "Transport", "/robots.txt", "Missing Sitemap directive");
+    if (/^Disallow: \/$/m.test(text))
+      fail(WARN, "Transport", "/robots.txt", "Has Disallow: / — may block all crawling");
     pass("Transport", "/robots.txt", `OK (${text.split("\n").length} lines)`);
   } catch (err) {
     fail(SEVERE, "Transport", "/robots.txt", `Unreachable: ${err.message}`);
@@ -127,7 +150,8 @@ async function checkSitemap() {
     if (res.status !== 200) return fail(SEVERE, "Transport", "/sitemap.xml", `HTTP ${res.status}`);
     // Count <loc> entries
     const locs = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)];
-    if (locs.length === 0) return fail(SEVERE, "Transport", "/sitemap.xml", "No <loc> entries found");
+    if (locs.length === 0)
+      return fail(SEVERE, "Transport", "/sitemap.xml", "No <loc> entries found");
     urls = locs.map((m) => m[1]);
     pass("Transport", "/sitemap.xml", `${urls.length} URLs listed`);
   } catch (err) {
@@ -138,7 +162,7 @@ async function checkSitemap() {
   // ── Extended sitemap validation ─────────────────────────────────────
 
   // XML structure
-  if (!xml.includes('<?xml')) warn("Sitemap", "/sitemap.xml", "Missing <?xml declaration");
+  if (!xml.includes("<?xml")) warn("Sitemap", "/sitemap.xml", "Missing <?xml declaration");
   else pass("Sitemap", "/sitemap.xml", "Has XML declaration");
 
   const isIndex = xml.includes("<sitemapindex");
@@ -159,26 +183,37 @@ async function checkSitemap() {
   // lastmod coverage
   const mods = [...xml.matchAll(/<lastmod[^>]*>([\s\S]*?)<\/lastmod>/gi)];
   const pct = urls.length > 0 ? Math.round((mods.length / urls.length) * 100) : 0;
-  if (pct < 50) warn("Sitemap", "", `Only ${pct}% of URLs have <lastmod> (${mods.length}/${urls.length})`);
+  if (pct < 50)
+    warn("Sitemap", "", `Only ${pct}% of URLs have <lastmod> (${mods.length}/${urls.length})`);
   else if (pct < 100) warn("Sitemap", "", `${pct}% have <lastmod> — consider adding to all`);
   else pass("Sitemap", "", `All URLs have <lastmod>`);
 
   // URL format validity
   let invalidUrls = 0;
   for (const url of urls) {
-    try { new URL(url); } catch { invalidUrls++; }
+    try {
+      new URL(url);
+    } catch {
+      invalidUrls++;
+    }
   }
   if (invalidUrls > 0) return fail(SEVERE, "Sitemap", "", `${invalidUrls} malformed URL(s)`);
 
   // Protocol consistency
-  const protos = new Set(urls.map(u => u.startsWith("https") ? "https" : "http"));
+  const protos = new Set(urls.map((u) => (u.startsWith("https") ? "https" : "http")));
   if (protos.size > 1) warn("Sitemap", "", `Mixed protocols: ${[...protos].join(", ")}`);
   else pass("Sitemap", "", `All URLs use ${[...protos][0]}`);
 
   // Host consistency
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.splashdeals.rs";
   const siteHost = new URL(siteUrl).host;
-  const wrongHost = urls.filter(u => { try { return new URL(u).host !== siteHost; } catch { return false; } });
+  const wrongHost = urls.filter((u) => {
+    try {
+      return new URL(u).host !== siteHost;
+    } catch {
+      return false;
+    }
+  });
   if (wrongHost.length > 0) {
     warn("Sitemap", "", `${wrongHost.length} URL(s) don't match host "${siteHost}"`);
     for (const w of wrongHost.slice(0, 3)) warn("Sitemap", "", `  ${w}`);
@@ -187,23 +222,37 @@ async function checkSitemap() {
   // Lightweight crawl of first 50 URLs
   const MAX_CRAWL = 50;
   const toCrawl = urls.slice(0, MAX_CRAWL);
-  if (urls.length > MAX_CRAWL) warn("Sitemap", "", `Crawling first ${MAX_CRAWL}/${urls.length} URLs`);
+  if (urls.length > MAX_CRAWL)
+    warn("Sitemap", "", `Crawling first ${MAX_CRAWL}/${urls.length} URLs`);
 
-  let ok = 0, notFound = 0, errors = 0;
+  let ok = 0,
+    notFound = 0,
+    errors = 0;
   for (let i = 0; i < toCrawl.length; i++) {
     const url = toCrawl[i];
     let path;
-    try { path = new URL(url).pathname; } catch { path = url; }
+    try {
+      path = new URL(url).pathname;
+    } catch {
+      path = url;
+    }
     if (KNOWN_STATIC_PAGES.includes(path) || path.startsWith("/_")) continue;
     const cr = await httpFetch(url, SITEMAP_CRAWL_TIMEOUT);
     if (cr.status === 200) {
       ok++;
-      if (cr.text && cr.text.includes('content="noindex')) warn("Sitemap", path, "200 with noindex (soft-404?)");
-    } else if (cr.status === 404) { notFound++; fail(SEVERE, "Sitemap", path, "404 in sitemap"); }
-    else errors++;
+      if (cr.text && cr.text.includes('content="noindex'))
+        warn("Sitemap", path, "200 with noindex (soft-404?)");
+    } else if (cr.status === 404) {
+      notFound++;
+      fail(SEVERE, "Sitemap", path, "404 in sitemap");
+    } else errors++;
   }
 
-  pass("Sitemap", "", `Crawl: ${ok} OK, ${notFound} 404, ${errors} errors (${toCrawl.length} checked)`);
+  pass(
+    "Sitemap",
+    "",
+    `Crawl: ${ok} OK, ${notFound} 404, ${errors} errors (${toCrawl.length} checked)`,
+  );
 
   return urls;
 }
@@ -227,9 +276,15 @@ async function checkPage(path, label) {
   }
   // Static routes that have their own page.tsx — never flag as soft-404
   if (KNOWN_STATIC_PAGES.includes(path)) return;
-  
+
   // Soft-404 detection: 200 but content suggests 404
-  if (status === 200 && (html.includes("Nije Pronađena") || html.includes("Page Not Found") || html.includes("Page Deleted") || html.includes("404"))) {
+  if (
+    status === 200 &&
+    (html.includes("Nije Pronađena") ||
+      html.includes("Page Not Found") ||
+      html.includes("Page Deleted") ||
+      html.includes("404"))
+  ) {
     // Check for noindex — if noindex is set, it's a managed soft-404
     if (html.includes('content="noindex') || html.includes('name="robots" content="noindex')) {
       fail(WARN, "Status", path, `Soft-404 (200 with noindex) — ${label}`);
@@ -241,8 +296,9 @@ async function checkPage(path, label) {
   pass("Status", path, `HTTP ${status}`);
 
   // Skip all meta/content checks for noindex pages
-  const noindexRegex = /<meta[^>]*(?:name=["']robots["'][^>]*content=["']noindex|content=["']noindex[^>]*name=["']robots["'])[^>]*>/i;
-  const isNoindex = noindexRegex.test(html) || html.includes('noindex');
+  const noindexRegex =
+    /<meta[^>]*(?:name=["']robots["'][^>]*content=["']noindex|content=["']noindex[^>]*name=["']robots["'])[^>]*>/i;
+  const isNoindex = noindexRegex.test(html) || html.includes("noindex");
   if (isNoindex) {
     pass("Meta", path, "noindex page — skipping content checks");
     return;
@@ -250,13 +306,15 @@ async function checkPage(path, label) {
 
   // 2. <title>
   const titleMatch = html.match(/<title>([^<]*)<\/title>/);
-  const isNoindexPage = html.includes('noindex') || html.includes('robots');
+  const isNoindexPage = html.includes("noindex") || html.includes("robots");
   if (!titleMatch || !titleMatch[1].trim()) {
     fail(isNoindexPage ? WARN : SEVERE, "Meta", path, "Missing <title> tag");
   } else {
     const title = titleMatch[1].trim();
-    if (title.length < 15) fail(WARN, "Meta", path, `Title too short (${title.length} chars): "${title}"`);
-    if (title.length > 65) fail(WARN, "Meta", path, `Title too long (${title.length} chars) — may be truncated in SERP`);
+    if (title.length < 15)
+      fail(WARN, "Meta", path, `Title too short (${title.length} chars): "${title}"`);
+    if (title.length > 65)
+      fail(WARN, "Meta", path, `Title too long (${title.length} chars) — may be truncated in SERP`);
     // Check for double brand (template adds " | Splashdeals")
     if ((title.match(/\| Splashdeals/g) || []).length > 1) {
       fail(WARN, "Meta", path, `Duplicate brand suffix in title: "${title}"`);
@@ -284,7 +342,10 @@ async function checkPage(path, label) {
     // Should be self-referencing
     const expectedUrl = `${BASE}${path}`;
     // Just check it's not pointing elsewhere on the same domain
-    if (canon.includes("splashdeals.rs") && !canon.includes(new URL(url).pathname.replace(/\/$/, ""))) {
+    if (
+      canon.includes("splashdeals.rs") &&
+      !canon.includes(new URL(url).pathname.replace(/\/$/, ""))
+    ) {
       const canonPath = new URL(canon).pathname;
       if (canonPath !== path && canonPath !== path + "/") {
         fail(WARN, "Meta", path, `Canonical points to different path: "${canon}"`);
@@ -318,7 +379,9 @@ async function checkPage(path, label) {
   }
 
   // 8. JSON-LD structured data
-  const jsonldBlocks = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)];
+  const jsonldBlocks = [
+    ...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs),
+  ];
   if (jsonldBlocks.length === 0) {
     // Not every page needs JSON-LD — only warn for public pages
     if (!path.startsWith("/admin")) {
@@ -365,11 +428,18 @@ async function main() {
 
   // 2. Run checks sequentially
   // Known category slugs that render dynamic PPR content - skip soft-404 check
-const KNOWN_CATEGORY_SLUGS = ["akva-parkovi", "termalne-rivijere", "bazeni", "banje", "wellness-i-spa", "jezera", "plaze-i-kupalista", "vodeni-sportovi"];
-
-const criticalPages = [
-    { path: "/", label: "Homepage" },
+  const KNOWN_CATEGORY_SLUGS = [
+    "akva-parkovi",
+    "termalne-rivijere",
+    "bazeni",
+    "banje",
+    "wellness-i-spa",
+    "jezera",
+    "plaze-i-kupalista",
+    "vodeni-sportovi",
   ];
+
+  const criticalPages = [{ path: "/", label: "Homepage" }];
 
   try {
     log("─── Transport Layer ──────────────────────────");
@@ -386,7 +456,9 @@ const criticalPages = [
         try {
           const p = new URL(loc).pathname;
           if (p !== "/") criticalPages.push({ path: p, label: loc.substring(0, 60) });
-        } catch { /* skip invalid */ }
+        } catch {
+          /* skip invalid */
+        }
       }
     }
 
@@ -404,7 +476,9 @@ const criticalPages = [
   // 4. Report
   console.log("\n" + "=".repeat(60));
   log("📊 SEO CHECK RESULTS");
-  log(`   Pages checked: ${passCount.count} checks on ${new Set(criticalPages.map(p => p.path)).size} pages`);
+  log(
+    `   Pages checked: ${passCount.count} checks on ${new Set(criticalPages.map((p) => p.path)).size} pages`,
+  );
   if (failures.length > 0) log(`   ${SEVERE}: ${failures.length}`);
   if (warnings.length > 0) log(`   ${WARN}: ${warnings.length}`);
   log("=".repeat(60) + "\n");
