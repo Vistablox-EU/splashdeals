@@ -13,7 +13,7 @@ export default function FacilityLoading() {
   return (
     <div className="bg-background text-foreground selection:bg-primary/30 relative min-h-screen overflow-x-hidden font-sans">
       {/* 🏙️ HERO SKELETON */}
-      <section className="bg-muted/40 relative flex h-[90vh] w-full flex-col justify-end overflow-hidden p-6 md:h-screen md:p-12">
+      <section className="bg-muted/40 relative flex h-[90vh] w-full flex-col justify-end overflow-hidden p-6 md:min-h-[calc(100dvh-104px)] md:p-12">
         <div className="absolute inset-0 flex items-center justify-center opacity-10">
           <Icon name="waves" className="text-primary h-48 w-48 animate-pulse" />
         </div>

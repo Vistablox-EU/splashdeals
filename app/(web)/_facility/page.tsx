@@ -170,7 +170,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     <div className="text-foreground selection:bg-primary/30 relative min-h-screen font-sans">
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
-      <section className="relative flex h-[60vh] w-full flex-col justify-end overflow-hidden p-6 md:h-screen md:p-12">
+      <section className="relative flex h-[60vh] w-full flex-col justify-end overflow-hidden p-6 md:min-h-[calc(100dvh-104px)] md:p-12">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
         <div className="relative z-10 mx-auto mb-12 grid w-full max-w-7xl grid-cols-1 items-end gap-8 md:grid-cols-12">
@@ -203,7 +203,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         </div>
       </section>
 
-      <main className="relative z-20 mx-auto -mt-16 max-w-7xl space-y-12 px-6 pb-24 sm:space-y-32 sm:pb-48 md:mt-20 md:px-12">
+      <main className="relative z-20 mx-auto -mt-16 max-w-7xl space-y-12 px-6 pb-24 sm:space-y-32 sm:pb-48 md:-mt-40 md:px-12">
         <div id="deals" className="scroll-mt-32 space-y-8 sm:space-y-12">
           <div className="mb-8 flex flex-col items-center space-y-4 text-center sm:mb-16">
             <div className="brand-divider mb-2 w-16" />
