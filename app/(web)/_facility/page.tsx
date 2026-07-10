@@ -193,11 +193,18 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             />
 
             <h1 className="py-2 text-4xl leading-[0.8] font-black tracking-tighter text-white italic md:text-7xl">
-              {facility.name.split(" ").map((word: string, i: number) => (
-                <span key={i} className={i === 1 ? "text-splash" : ""}>
-                  {word}{" "}
-                </span>
-              ))}
+              {(() => {
+                const words = facility.name.split(" ");
+                if (words.length === 1) {
+                  return <span className="text-splash">{words[0]}</span>;
+                }
+                const last = words.length - 1;
+                return words.map((word, i) => (
+                  <span key={i} className={i === last ? "text-splash" : ""}>
+                    {word}{" "}
+                  </span>
+                ));
+              })()}
             </h1>
           </div>
         </div>
