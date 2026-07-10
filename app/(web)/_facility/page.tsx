@@ -192,7 +192,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               weather={weather}
             />
 
-            <h1 className="py-2 text-4xl leading-[0.8] font-black tracking-tighter text-white italic md:text-7xl">
+            <h1 className="text-primary-foreground py-2 text-4xl leading-[0.8] font-black tracking-tighter italic md:text-7xl">
               {facility.name.split(" ").map((word: string, i: number) => (
                 <span key={i} className={i === 1 ? "text-splash" : ""}>
                   {word}{" "}
