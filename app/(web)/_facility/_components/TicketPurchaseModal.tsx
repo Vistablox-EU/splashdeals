@@ -243,32 +243,6 @@ export function TicketPurchaseModal({
     openCart();
   };
 
-  const handleCheckout = () => {
-    if (!activePrice || !activeProduct || !facility) return;
-
-    addItem({
-      ticketId: activePrice.id,
-      facilityId: facility.id,
-      facilityName: facility.name,
-      category: facility.category,
-      quantity,
-      title: `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`,
-      price: activePrice.price,
-      currency: "RSD",
-      requiresIdentity: activeProduct.requiresIdentity,
-      requiresPhoto: activeProduct.requiresPhoto,
-      validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
-      minPeople: activeProduct.minPeople,
-      maxPeople: activeProduct.maxPeople,
-      imageUrl: activeProduct.imageUrl || null,
-    });
-
-    onClose();
-    router.push("/cart");
-  };
-
-  // ─── Shared Content ──────────────────────────────────────────────
-
   const renderLoading = () => (
     <div className="flex items-center justify-center py-16">
       <SpinnerLg />
@@ -463,15 +437,6 @@ export function TicketPurchaseModal({
 
       {/* CTA Buttons */}
       <div className="flex w-full flex-col gap-3.5">
-        <Button
-          onClick={handleCheckout}
-          disabled={isAdding || isAdded || !activePrice}
-          className="shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 hidden h-14 w-full items-center justify-center gap-2 rounded-full text-xs font-black tracking-[0.2em] uppercase shadow-lg md:flex"
-        >
-          <span>Kupi Odmah (1-Klik)</span>
-          <Icon name="bolt" className="animate-pulse fill-current text-[16px]" />
-        </Button>
-
         <button
           onClick={handleAddToCart}
           disabled={isAdding || isAdded || !activePrice}
