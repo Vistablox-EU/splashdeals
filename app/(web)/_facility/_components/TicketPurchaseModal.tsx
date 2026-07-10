@@ -198,7 +198,7 @@ export function TicketPurchaseModal({
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [isOpen]);
+  }, [isOpen, selectedCategory, selectedProduct, loading]);
 
   // Derive current selections
   const activeCategory = categories.find((c) => c.id === selectedCategory);
