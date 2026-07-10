@@ -196,6 +196,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                     className="bg-background/40 border-border/50 h-9 text-[11px] font-bold focus-visible:ring-cyan-500/50"
                     {...field}
                     value={field.value || ""}
+                    maxLength={60}
                   />
                 </FormControl>
                 <FormMessage />
@@ -226,6 +227,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                     className="bg-background/40 border-border/50 h-9 text-[11px] font-bold focus-visible:ring-cyan-500/50"
                     {...field}
                     value={field.value || ""}
+                    maxLength={160}
                   />
                 </FormControl>
                 <FormMessage />
