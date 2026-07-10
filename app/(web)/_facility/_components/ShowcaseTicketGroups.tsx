@@ -815,7 +815,7 @@ function SingleTierCard({
           </button>
           <span className="text-foreground text-2xl font-black">{quantity}</span>
           <button
-            onClick={() => setQuantity(quantity + 1)}
+            onClick={() => setQuantity(Math.min(MAX_QUANTITY_PER_ITEM, quantity + 1))}
             className="hover:bg-muted/50 text-muted-foreground flex h-12 w-12 items-center justify-center rounded-xl transition-colors"
           >
             <Icon name="add" className="text-[20px]" />
@@ -924,7 +924,12 @@ function TierList({
                 {quantities[tier.id] || 0}
               </span>
               <button
-                onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) + 1)}
+                onClick={() =>
+                  setQuantity(
+                    tier.id,
+                    Math.min(MAX_QUANTITY_PER_ITEM, (quantities[tier.id] || 0) + 1),
+                  )
+                }
                 className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors active:scale-90"
               >
                 <Icon name="add" className="text-[14px]" />
@@ -1003,7 +1008,12 @@ function TierGrid({
                 {quantities[tier.id] || 0}
               </span>
               <button
-                onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) + 1)}
+                onClick={() =>
+                  setQuantity(
+                    tier.id,
+                    Math.min(MAX_QUANTITY_PER_ITEM, (quantities[tier.id] || 0) + 1),
+                  )
+                }
                 className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors"
               >
                 <Icon name="add" className="text-[14px]" />
