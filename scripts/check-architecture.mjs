@@ -19,7 +19,15 @@ import { readFileSync, readdirSync, statSync, existsSync } from "fs";
 import { join, relative, resolve } from "path";
 
 const ROOT = resolve(import.meta.dirname, "..");
-const IGNORE_DIRS = new Set(["node_modules", ".next", "out", "build", ".git", "playwright-report", "scratch"]);
+const IGNORE_DIRS = new Set([
+  "node_modules",
+  ".next",
+  "out",
+  "build",
+  ".git",
+  "playwright-report",
+  "scratch",
+]);
 const IGNORE_FILES = new Set(["next-env.d.ts", "package-lock.json"]);
 
 let errors = [];
@@ -35,13 +43,17 @@ function walk(dir, fn, prefix = "") {
       if (entry.isDirectory()) walk(fullPath, fn, join(prefix, entry.name));
       else if (entry.isFile()) fn(fullPath, prefix);
     }
-  } catch { /* permission denied, skip */ }
+  } catch {
+    /* permission denied, skip */
+  }
 }
 
 function readFile(path) {
   try {
     return readFileSync(path, "utf-8");
-  } catch { return ""; }
+  } catch {
+    return "";
+  }
 }
 
 // ─── 1. Check for duplicate files ─────────────────────────────────────────
@@ -52,8 +64,8 @@ function checkDuplicates() {
 
   if (!existsSync(serverActions) || !existsSync(appServerActions)) return;
 
-  const serverFiles = new Set(readdirSync(serverActions).filter(f => f.endsWith(".ts")));
-  const appFiles = readdirSync(appServerActions).filter(f => f.endsWith(".ts"));
+  const serverFiles = new Set(readdirSync(serverActions).filter((f) => f.endsWith(".ts")));
+  const appFiles = readdirSync(appServerActions).filter((f) => f.endsWith(".ts"));
 
   for (const file of appFiles) {
     if (!serverFiles.has(file)) continue; // only in app, no conflict
@@ -62,7 +74,9 @@ function checkDuplicates() {
     const appContent = readFileSync(join(appServerActions, file), "utf-8");
 
     if (serverContent === appContent) {
-      warnings.push(`Duplicate identical file: app/(server)/actions/${file} == server/actions/${file}`);
+      warnings.push(
+        `Duplicate identical file: app/(server)/actions/${file} == server/actions/${file}`,
+      );
     }
   }
 }
@@ -70,10 +84,7 @@ function checkDuplicates() {
 // ─── 2. Check "use server" files for non-function exports ────────────────
 
 function checkUseServerFiles() {
-  const searchDirs = [
-    "app/(server)/actions",
-    "server/actions",
-  ];
+  const searchDirs = ["app/(server)/actions", "server/actions"];
 
   for (const dir of searchDirs) {
     const fullPath = join(ROOT, dir);
@@ -96,7 +107,7 @@ function checkUseServerFiles() {
           if (match) {
             warnings.push(
               `${dir}/${file}: exported non-function '${match[2]}' in a "use server" file ` +
-              `— will crash at runtime if not a type-only export. Move to a shared lib.`
+                `— will crash at runtime if not a type-only export. Move to a shared lib.`,
             );
           }
         }
@@ -114,12 +125,12 @@ function checkImgTags() {
     if (!content) return;
 
     // Match <img ...> or <img .../> but NOT inside comments or strings
-    const imgMatches = content.match(/<(?!img\s)/g) === null ? [] : 
-      content.match(/<img[\s>][^>]*\/?>/g) || [];
+    const imgMatches =
+      content.match(/<(?!img\s)/g) === null ? [] : content.match(/<img[\s>][^>]*\/?>/g) || [];
 
     if (imgMatches.length > 0) {
       // Filter out <img> inside HTML comments or template literals
-      const hasImgElements = imgMatches.some(m => {
+      const hasImgElements = imgMatches.some((m) => {
         const idx = content.indexOf(m);
         const before = content.slice(Math.max(0, idx - 120), idx);
         // Skip if inside a comment or string
@@ -129,7 +140,9 @@ function checkImgTags() {
 
       if (hasImgElements) {
         const rel = relative(ROOT, filePath);
-        warnings.push(`${rel}: uses plain <img> — should use next/image with fill + sized container`);
+        warnings.push(
+          `${rel}: uses plain <img> — should use next/image with fill + sized container`,
+        );
       }
     }
   });
@@ -139,7 +152,7 @@ function checkImgTags() {
 
 function checkConsoleLog() {
   const excludeDirs = ["node_modules", ".next", "scripts", "prisma"];
-  
+
   walk(join(ROOT, "app"), (filePath) => {
     if (!filePath.endsWith(".ts") && !filePath.endsWith(".tsx")) return;
     const content = readFile(filePath);
@@ -180,8 +193,11 @@ function checkStaleBarrelExports() {
     for (const exp of exports) {
       const inner = exp.replace(/export\s+\{\s*/, "").replace(/\s*\}/, "");
       // Handle "as" aliases and simple exports
-      inner.split(",").forEach(p => {
-        const name = p.trim().split(/\s+as\s+/)[0].trim();
+      inner.split(",").forEach((p) => {
+        const name = p
+          .trim()
+          .split(/\s+as\s+/)[0]
+          .trim();
         if (name && !name.startsWith(".")) exportNames.add(name);
       });
     }
@@ -238,6 +254,7 @@ if (warnings.length > 0) {
 }
 
 const exitCode = errors.length > 0 ? 2 : 0;
-const label = errors.length > 0 ? "FAILED" : warnings.length > 0 ? "PASSED (with warnings)" : "PASSED";
+const label =
+  errors.length > 0 ? "FAILED" : warnings.length > 0 ? "PASSED (with warnings)" : "PASSED";
 console.log(`📋 Result: ${label} (${errors.length} errors, ${warnings.length} warnings)\n`);
 process.exit(exitCode);

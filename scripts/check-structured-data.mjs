@@ -18,14 +18,18 @@ const STARTUP_TIMEOUT = 30_000;
 const REQUEST_TIMEOUT = 15_000;
 
 const SEVERE = "🔴 SEVERE";
-const WARN   = "🟡 WARN";
+const WARN = "🟡 WARN";
 
 const failures = [];
 const warnings = [];
 const startTime = Date.now();
 
-function elapsed() { return ((Date.now() - startTime) / 1000).toFixed(1) + "s"; }
-function log(...args) { console.log(`[${elapsed()}]`, ...args); }
+function elapsed() {
+  return ((Date.now() - startTime) / 1000).toFixed(1) + "s";
+}
+function log(...args) {
+  console.log(`[${elapsed()}]`, ...args);
+}
 
 function fail(severity, page, schemaType, message) {
   const icon = severity === SEVERE ? "🔴" : "🟡";
@@ -39,7 +43,9 @@ async function httpFetch(url, opts = {}) {
   const timer = setTimeout(() => ac.abort(), opts.timeout || REQUEST_TIMEOUT);
   try {
     return await globalThis.fetch(url, { ...opts, signal: ac.signal, redirect: "manual" });
-  } finally { clearTimeout(timer); }
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // ── Start production server ────────────────────────────────────────────────
@@ -53,16 +59,31 @@ async function startServer() {
     });
     let started = false;
     const timeout = setTimeout(() => {
-      if (!started) { server.kill(); reject(new Error(`Server didn't start within ${STARTUP_TIMEOUT / 1000}s`)); }
+      if (!started) {
+        server.kill();
+        reject(new Error(`Server didn't start within ${STARTUP_TIMEOUT / 1000}s`));
+      }
     }, STARTUP_TIMEOUT);
     const onData = (chunk) => {
       const text = chunk.toString();
-      if (text.includes("localhost:" + PORT)) { started = true; clearTimeout(timeout); resolve(server); }
+      if (text.includes("localhost:" + PORT)) {
+        started = true;
+        clearTimeout(timeout);
+        resolve(server);
+      }
     };
     server.stdout.on("data", onData);
     server.stderr.on("data", onData);
-    server.on("error", (err) => { clearTimeout(timeout); reject(err); });
-    server.on("exit", (code) => { if (!started) { clearTimeout(timeout); reject(new Error(`Server exited with code ${code}`)); } });
+    server.on("error", (err) => {
+      clearTimeout(timeout);
+      reject(err);
+    });
+    server.on("exit", (code) => {
+      if (!started) {
+        clearTimeout(timeout);
+        reject(new Error(`Server exited with code ${code}`));
+      }
+    });
   });
 }
 
@@ -75,8 +96,9 @@ const SCHEMA_RULES = [
     validate: (data, page) => {
       const a = data.potentialAction;
       if (a?.["@type"] !== "SearchAction") return;
-      if (!a.target?.urlTemplate) fail(WARN, page, "WebSite", "SearchAction missing target.urlTemplate");
-    }
+      if (!a.target?.urlTemplate)
+        fail(WARN, page, "WebSite", "SearchAction missing target.urlTemplate");
+    },
   },
   {
     types: ["Organization"],
@@ -91,7 +113,7 @@ const SCHEMA_RULES = [
       const o = data.offers;
       if (o?.["@type"] === "AggregateOffer" && (o.lowPrice == null || o.priceCurrency == null))
         fail(WARN, page, "Product", "AggregateOffer missing lowPrice or priceCurrency");
-    }
+    },
   },
   {
     types: ["FAQPage"],
@@ -100,23 +122,27 @@ const SCHEMA_RULES = [
     validate: (data, page) => {
       const items = Array.isArray(data.mainEntity) ? data.mainEntity : [data.mainEntity];
       for (const q of items) {
-        if (q["@type"] !== "Question") fail(WARN, page, "FAQPage", "mainEntity item should be Question");
+        if (q["@type"] !== "Question")
+          fail(WARN, page, "FAQPage", "mainEntity item should be Question");
         if (!q.name) fail(SEVERE, page, "FAQPage", "Question missing 'name'");
-        if (!q.acceptedAnswer?.text) fail(SEVERE, page, "FAQPage", "Question missing acceptedAnswer.text");
+        if (!q.acceptedAnswer?.text)
+          fail(SEVERE, page, "FAQPage", "Question missing acceptedAnswer.text");
       }
-    }
+    },
   },
   {
     types: ["BreadcrumbList"],
     required: ["itemListElement"],
     richResult: "Breadcrumb",
     validate: (data, page) => {
-      const items = Array.isArray(data.itemListElement) ? data.itemListElement : [data.itemListElement];
+      const items = Array.isArray(data.itemListElement)
+        ? data.itemListElement
+        : [data.itemListElement];
       for (const item of items) {
         if (!item.name && !item.item?.name) fail(WARN, page, "BreadcrumbList", "Item missing name");
         if (!item.position) fail(WARN, page, "BreadcrumbList", "Item missing position");
       }
-    }
+    },
   },
   {
     types: ["HowTo"],
@@ -128,7 +154,7 @@ const SCHEMA_RULES = [
         if (s["@type"] !== "HowToStep") fail(WARN, page, "HowTo", "Step should be HowToStep");
         if (!s.text && !s.name) fail(WARN, page, "HowTo", "Step missing text or name");
       }
-    }
+    },
   },
   {
     types: ["VideoObject"],
@@ -156,12 +182,15 @@ function validateSchema(data, page, reported) {
     return;
   }
   const raw = data["@type"];
-  if (!raw) { fail(SEVERE, page, "(unknown)", "Schema block missing @type"); return; }
+  if (!raw) {
+    fail(SEVERE, page, "(unknown)", "Schema block missing @type");
+    return;
+  }
   const types = Array.isArray(raw) ? raw : [raw];
   for (const t of types) reported.add(t);
 
   for (const t of types) {
-    const rule = SCHEMA_RULES.find(r => r.types.includes(t));
+    const rule = SCHEMA_RULES.find((r) => r.types.includes(t));
     if (!rule) continue;
 
     for (const field of rule.required) {
@@ -169,8 +198,10 @@ function validateSchema(data, page, reported) {
     }
     if (rule.validate) rule.validate(data, page);
     if (rule.richResult) {
-      const ok = rule.required.every(f => data[f] != null);
-      console.log(`  ${ok ? "✅" : "⬜"} [${page}] ${t} → ${ok ? "eligible" : "not eligible"} for "${rule.richResult}"`);
+      const ok = rule.required.every((f) => data[f] != null);
+      console.log(
+        `  ${ok ? "✅" : "⬜"} [${page}] ${t} → ${ok ? "eligible" : "not eligible"} for "${rule.richResult}"`,
+      );
     }
   }
 }
@@ -197,12 +228,23 @@ async function main() {
     log("📄 Fetching sitemap...");
     const sitemapRes = await httpFetch(`${BASE}/sitemap.xml`);
     const sitemapText = await sitemapRes.text();
-    const sitemapUrls = [...sitemapText.matchAll(/<loc>(.*?)<\/loc>/g)].map(m => m[1]);
+    const sitemapUrls = [...sitemapText.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
     log(`  Found ${sitemapUrls.length} URLs\n`);
 
-    allPaths = [...new Set(["/", ...sitemapUrls.map(u => {
-      try { return new URL(u).pathname; } catch { return null; }
-    }).filter(Boolean)])];
+    allPaths = [
+      ...new Set([
+        "/",
+        ...sitemapUrls
+          .map((u) => {
+            try {
+              return new URL(u).pathname;
+            } catch {
+              return null;
+            }
+          })
+          .filter(Boolean),
+      ]),
+    ];
     log(`─── Validating ${allPaths.length} pages ──────────────────\n`);
 
     for (const path of allPaths) {
@@ -211,9 +253,13 @@ async function main() {
         res = await httpFetch(`${BASE}${path}`);
         if (res.status >= 300 && res.status < 400) continue;
         html = await res.text();
-      } catch { continue; }
+      } catch {
+        continue;
+      }
 
-      const blocks = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)];
+      const blocks = [
+        ...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs),
+      ];
       if (blocks.length === 0) {
         fail(WARN, path, "(none)", "No JSON-LD found");
         continue;
@@ -221,8 +267,9 @@ async function main() {
 
       const reported = new Set();
       for (const b of blocks) {
-        try { validateSchema(JSON.parse(b[1]), path, reported); }
-        catch {
+        try {
+          validateSchema(JSON.parse(b[1]), path, reported);
+        } catch {
           const id = b[0]?.match(/id="([^"]+)"/)?.[1] || "(block)";
           fail(SEVERE, path, id, "Unparseable JSON-LD");
         }
@@ -255,4 +302,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch(e => { console.error("Unhandled:", e); process.exit(2); });
+main().catch((e) => {
+  console.error("Unhandled:", e);
+  process.exit(2);
+});

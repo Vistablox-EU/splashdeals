@@ -8,11 +8,14 @@ export default [
   {
     plugins: { import: importX },
     rules: {
-      "import-x/order": ["warn", {
-        groups: ["builtin", "external", "internal", ["parent", "sibling", "index"]],
-        "newlines-between": "always",
-        alphabetize: { order: "asc", caseInsensitive: true },
-      }],
+      "import-x/order": [
+        "warn",
+        {
+          groups: ["builtin", "external", "internal", ["parent", "sibling", "index"]],
+          "newlines-between": "always",
+          alphabetize: { order: "asc", caseInsensitive: true },
+        },
+      ],
     },
     settings: {
       "import-x/resolver": {
