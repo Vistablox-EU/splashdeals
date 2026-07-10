@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -335,10 +336,12 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
             </span>
           </div>
 
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="text-sidebar-foreground/50 shrink-0 rounded-lg p-2 transition-all hover:bg-red-500/10 hover:text-red-400"
+            className="text-sidebar-foreground/50 shrink-0 rounded-lg hover:bg-red-500/10 hover:text-red-400"
             title="Sign Out"
           >
             {isLoggingOut ? (
@@ -346,7 +349,7 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
             ) : (
               <Icon name="logout" className="size-3.5" />
             )}
-          </button>
+          </Button>
         </div>
 
         <div className="text-sidebar-foreground/50 flex items-center justify-between px-2 py-1.5 font-mono text-xs tracking-tight uppercase">

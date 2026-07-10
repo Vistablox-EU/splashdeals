@@ -47,7 +47,7 @@ const ShowcaseAmenities = dynamic(
 );
 
 import { PartnerBranding } from "./_components/PartnerBranding";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { serialize } from "@/lib/serialize";
 import { JsonLd } from "@/components/SEO/JsonLd";
@@ -235,39 +235,47 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <div id="overview" className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
           <div className="space-y-8 lg:col-span-8">
             {/* Main Text Card */}
-            <Card className="brand-card flex min-h-0 flex-col justify-center space-y-8 p-6 sm:p-12 md:p-16">
-              <div className="text-primary hidden items-center gap-3 text-xs font-black tracking-[0.2em] uppercase md:flex">
-                <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
-              </div>
-              <div className="brand-divider mb-4 hidden w-24 md:block" />
-              <h2 className="text-foreground hidden text-2xl leading-tight font-black tracking-tighter uppercase italic md:block md:text-5xl">
-                Zabava <span className="text-splash">Otključana.</span>
-              </h2>
-              <p className="text-muted-foreground max-w-2xl space-y-4 text-sm leading-relaxed font-medium italic opacity-90 md:text-xl">
-                <span>
-                  {facility.description ||
-                    "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
-                </span>
-                {facility.amenities && facility.amenities.length > 0 && (
-                  <span className="border-border/30 mt-4 block border-t pt-4 text-base font-medium text-slate-400 not-italic md:hidden">
-                    Sadržaji:{" "}
-                    {facility.amenities
-                      .map((fa: { amenity: { name: string } }) => fa.amenity.name)
-                      .join(", ")}
-                    .
+            <Card className="brand-card flex min-h-0 flex-col justify-center">
+              <CardHeader className="gap-6 p-6 pb-0 sm:p-12 sm:pb-0 md:p-16 md:pb-0">
+                <div className="text-primary hidden items-center gap-3 text-xs font-black tracking-[0.2em] uppercase md:flex">
+                  <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
+                </div>
+                <div className="brand-divider mb-4 hidden w-24 md:block" />
+                <CardTitle className="text-foreground hidden text-2xl leading-tight font-black tracking-tighter uppercase italic md:block md:text-5xl">
+                  Zabava <span className="text-splash">Otključana.</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 sm:p-12 md:p-16">
+                <p className="text-muted-foreground max-w-2xl space-y-4 text-sm leading-relaxed font-medium italic opacity-90 md:text-xl">
+                  <span>
+                    {facility.description ||
+                      "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
                   </span>
-                )}
-              </p>
+                  {facility.amenities && facility.amenities.length > 0 && (
+                    <span className="border-border/30 mt-4 block border-t pt-4 text-base font-medium text-slate-400 not-italic md:hidden">
+                      Sadržaji:{" "}
+                      {facility.amenities
+                        .map((fa: { amenity: { name: string } }) => fa.amenity.name)
+                        .join(", ")}
+                      .
+                    </span>
+                  )}
+                </p>
+              </CardContent>
             </Card>
 
             {facility.transitGuide && (
-              <Card className="border-l-primary bg-muted/50 mt-8 border-l-4 p-8">
-                <div className="mb-4 flex items-center gap-3 text-xs font-black tracking-widest text-cyan-400 uppercase">
-                  <Icon name="location_on" className="text-[16px]" /> Kako stići
-                </div>
-                <p className="text-muted-foreground text-sm leading-relaxed font-medium whitespace-pre-line">
-                  {facility.transitGuide}
-                </p>
+              <Card className="border-l-primary bg-muted/50 mt-8 border-l-4">
+                <CardHeader className="gap-3 p-8 pb-0">
+                  <div className="flex items-center gap-3 text-xs font-black tracking-widest text-cyan-400 uppercase">
+                    <Icon name="location_on" className="text-[16px]" /> Kako stići
+                  </div>
+                </CardHeader>
+                <CardContent className="p-8 pt-4">
+                  <p className="text-muted-foreground text-sm leading-relaxed font-medium whitespace-pre-line">
+                    {facility.transitGuide}
+                  </p>
+                </CardContent>
               </Card>
             )}
 

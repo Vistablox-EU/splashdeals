@@ -8,7 +8,6 @@ import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { TicketPurchaseModal } from "./TicketPurchaseModal";
-import { Spinner } from "@/components/ui/spinner";
 
 interface TicketTier {
   id: string;
@@ -431,11 +430,7 @@ function MobileTicketAccordion({
               {discountPercent}
             </span>
           )}
-          {isHighlighted && (
-            <span className="bg-primary/15 text-primary shrink-0 rounded-full px-1.5 py-0.5 text-[7px] leading-none font-black tracking-widest uppercase">
-              Najpopularnije
-            </span>
-          )}
+          {isHighlighted && <Badge variant="secondary">Najpopularnije</Badge>}
           {cartCount > 0 && (
             <span className="bg-primary text-primary-foreground inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-black">
               {cartCount}
@@ -463,7 +458,7 @@ function MobileTicketAccordion({
         <div className="animate-fade-in px-3 pb-4">
           {loadingPrices ? (
             <div className="flex items-center justify-center py-8">
-              <Spinner />
+              <Icon name="refresh" className="text-primary size-5 animate-spin" />
             </div>
           ) : !activeProduct || activeProduct.prices.length === 0 ? (
             <p className="text-muted-foreground py-4 text-center text-xs italic">
@@ -513,9 +508,7 @@ function MobileTicketAccordion({
                             <span className="text-muted-foreground flex items-center gap-1 text-[9px]">
                               Ušteda {discPct}%
                               {p.id === bestDealId && (
-                                <span className="bg-secondary/20 text-secondary rounded-full px-1 py-[1px] text-[7px] leading-none font-black tracking-widest uppercase">
-                                  Najbolja ponuda
-                                </span>
+                                <Badge variant="secondary">Najbolja ponuda</Badge>
                               )}
                             </span>
                           )}
@@ -598,7 +591,7 @@ function MobileTicketAccordion({
                   </>
                 ) : isAdding ? (
                   <>
-                    <Spinner className="mr-2 inline" style={{ width: "1rem", height: "1rem" }} />
+                    <Icon name="refresh" className="mr-2 inline size-4 animate-spin" />
                     <span>Dodavanje...</span>
                   </>
                 ) : (
@@ -788,7 +781,8 @@ function SingleTierCard({
 
         <Button
           onClick={onAdd}
-          className="bg-primary hover:bg-primary/90 h-16 w-full rounded-full text-xs font-black tracking-[0.2em] text-black uppercase"
+          size="lg"
+          className="bg-primary hover:bg-primary/90 w-full rounded-full text-xs font-black tracking-[0.2em] text-black uppercase"
         >
           Dodaj u korpu
         </Button>
@@ -902,8 +896,8 @@ function TierList({
 
             <Button
               onClick={() => onAdd(tier)}
-              size="sm"
-              className="bg-primary hover:bg-primary/90 h-9 shrink-0 rounded-lg px-4 text-[9px] font-black tracking-widest text-black uppercase"
+              size="lg"
+              className="bg-primary hover:bg-primary/90 shrink-0 rounded-lg px-4 text-[9px] font-black tracking-widest text-black uppercase"
             >
               Dodaj
             </Button>
@@ -985,7 +979,7 @@ function TierGrid({
             </div>
             <Button
               onClick={() => onAdd(tier)}
-              className="bg-primary hover:bg-primary/90 h-10 w-full rounded-lg text-[9px] font-black tracking-widest text-black uppercase"
+              className="bg-primary hover:bg-primary/90 w-full rounded-lg text-[9px] font-black tracking-widest text-black uppercase"
             >
               Dodaj
             </Button>

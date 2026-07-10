@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 
@@ -53,43 +53,46 @@ export default function GlobalWebError({
         </div>
       </div>
 
-      <Card className="bg-muted/50 relative z-10 w-full max-w-xl space-y-8 border-cyan-500/10 p-8 text-center md:p-16">
-        <div className="bg-primary/10 text-primary relative inline-flex h-24 w-24 items-center justify-center rounded-full border border-cyan-500/20">
-          <Icon name="error" className="stroke-[1.5] text-[48px]" />
-        </div>
+      <Card className="bg-muted/50 relative z-10 w-full max-w-xl border-cyan-500/10">
+        <CardHeader className="items-center gap-6 p-8 pb-0 text-center md:p-16 md:pb-0">
+          <div className="bg-primary/10 text-primary relative inline-flex h-24 w-24 items-center justify-center rounded-full border border-cyan-500/20">
+            <Icon name="error" className="stroke-[1.5] text-[48px]" />
+          </div>
+          <div className="space-y-4">
+            <CardTitle className="text-4xl leading-none font-black tracking-tighter text-slate-100 uppercase italic md:text-5xl">
+              {(dict as Record<string, unknown>)?.errors ? (
+                <>
+                  {t("errors", "title")} <br />
+                  <span className="text-primary">{t("errors", "highlight")}</span>
+                </>
+              ) : (
+                ""
+              )}
+            </CardTitle>
+            <p className="text-muted-foreground mx-auto max-w-sm text-lg leading-relaxed">
+              {t("errors", "subtitle")}
+            </p>
+          </div>
+        </CardHeader>
 
-        <div className="space-y-4">
-          <h1 className="text-4xl leading-none font-black tracking-tighter text-slate-100 uppercase italic md:text-5xl">
-            {(dict as Record<string, unknown>)?.errors ? (
-              <>
-                {t("errors", "title")} <br />
-                <span className="text-primary">{t("errors", "highlight")}</span>
-              </>
-            ) : (
-              ""
-            )}
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-sm text-lg leading-relaxed">
-            {t("errors", "subtitle")}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
-          <button
-            onClick={reset}
-            className="border-border group flex items-center justify-center gap-2 rounded-2xl border bg-white/10 px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all hover:bg-white/15"
-          >
-            <Icon name="refresh" className="text-[16px]" />
-            {t("errors", "try_again")}
-          </button>
-          <Link
-            href="/"
-            className="bg-primary hover:bg-primary/90 text-background shadow-primary/10 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[10px] font-black tracking-widest uppercase shadow-2xl transition-all"
-          >
-            <Icon name="home" className="text-[16px]" />
-            {t("errors", "back_home")}
-          </Link>
-        </div>
+        <CardContent className="p-8 pt-4 text-center md:p-16 md:pt-4">
+          <div className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
+            <button
+              onClick={reset}
+              className="border-border group flex items-center justify-center gap-2 rounded-2xl border bg-white/10 px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all hover:bg-white/15"
+            >
+              <Icon name="refresh" className="text-[16px]" />
+              {t("errors", "try_again")}
+            </button>
+            <Link
+              href="/"
+              className="bg-primary hover:bg-primary/90 text-background shadow-primary/10 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[10px] font-black tracking-widest uppercase shadow-2xl transition-all"
+            >
+              <Icon name="home" className="text-[16px]" />
+              {t("errors", "back_home")}
+            </Link>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

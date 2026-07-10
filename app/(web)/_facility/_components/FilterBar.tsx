@@ -113,7 +113,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             defaultValue={searchParams.get("minPrice") || ""}
             key={`min-${searchParams.get("minPrice") || ""}`}
             onBlur={(e) => updateParams({ minPrice: e.target.value })}
-            className="bg-muted/50 border-border text-foreground focus:border-ring placeholder:text-muted-foreground/60 h-12 w-full pl-8 text-[10px] font-bold tracking-widest uppercase transition-all sm:h-10 sm:w-28"
+            className="bg-muted/50 border-border text-foreground focus:border-ring placeholder:text-muted-foreground/60 h-12 pl-8 text-[10px] font-bold tracking-widest uppercase transition-colors sm:h-10 sm:w-28"
           />
         </div>
         <span className="text-foreground font-bold">-</span>
@@ -132,7 +132,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             defaultValue={searchParams.get("maxPrice") || ""}
             key={`max-${searchParams.get("maxPrice") || ""}`}
             onBlur={(e) => updateParams({ maxPrice: e.target.value })}
-            className="bg-muted/50 border-border text-foreground focus:border-ring placeholder:text-muted-foreground/60 h-12 w-full pl-8 text-[10px] font-bold tracking-widest uppercase transition-all sm:h-10 sm:w-28"
+            className="bg-muted/50 border-border text-foreground focus:border-ring placeholder:text-muted-foreground/60 h-12 pl-8 text-[10px] font-bold tracking-widest uppercase transition-colors sm:h-10 sm:w-28"
           />
         </div>
       </div>

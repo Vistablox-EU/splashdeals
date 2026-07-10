@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 
@@ -43,38 +43,41 @@ export default function FacilityError({
         </div>
       </div>
 
-      <Card className="bg-card/50 relative z-10 w-full max-w-xl space-y-8 border-red-500/10 p-8 text-center md:p-16">
-        <div className="group relative inline-flex h-24 w-24 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 text-red-400">
-          <Icon name="error" className="stroke-[1.5] text-[48px]" />
-        </div>
+      <Card className="bg-card/50 relative z-10 w-full max-w-xl border-red-500/10">
+        <CardHeader className="items-center gap-6 p-8 pb-0 text-center md:p-16 md:pb-0">
+          <div className="group relative inline-flex h-24 w-24 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 text-red-400">
+            <Icon name="error" className="stroke-[1.5] text-[48px]" />
+          </div>
+          <div className="space-y-4">
+            <CardTitle className="text-foreground text-4xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
+              Turbulencije <br />
+              <span className="text-red-400">Pod Vodom</span>
+            </CardTitle>
+            <p className="text-muted-foreground mx-auto max-w-sm text-lg leading-relaxed">
+              Došlo je do neočekivanog talasa prilikom učitavanja ove destinacije. Naš tim ga već
+              smiruje.
+            </p>
+          </div>
+        </CardHeader>
 
-        <div className="space-y-4">
-          <h1 className="text-foreground text-4xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
-            Turbulencije <br />
-            <span className="text-red-400">Pod Vodom</span>
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-sm text-lg leading-relaxed">
-            Došlo je do neočekivanog talasa prilikom učitavanja ove destinacije. Naš tim ga već
-            smiruje.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
-          <button
-            onClick={reset}
-            className="bg-muted/50 hover:bg-muted border-border group flex items-center justify-center gap-2 rounded-2xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
-          >
-            <Icon name="refresh" className="text-[16px]" />
-            {dict.errors.try_again}
-          </button>
-          <Link
-            href="/"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[10px] font-black tracking-widest uppercase shadow-2xl transition-all"
-          >
-            <Icon name="home" className="text-[16px]" />
-            {dict.errors.back_home}
-          </Link>
-        </div>
+        <CardContent className="p-8 pt-4 text-center md:p-16 md:pt-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <button
+              onClick={reset}
+              className="bg-muted/50 hover:bg-muted border-border group flex items-center justify-center gap-2 rounded-2xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
+            >
+              <Icon name="refresh" className="text-[16px]" />
+              {dict.errors.try_again}
+            </button>
+            <Link
+              href="/"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[10px] font-black tracking-widest uppercase shadow-2xl transition-all"
+            >
+              <Icon name="home" className="text-[16px]" />
+              {dict.errors.back_home}
+            </Link>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

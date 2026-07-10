@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -66,11 +67,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
             <Icon name={value} className="size-4" />
           </div>
         )}
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          className="border-input text-muted-foreground hover:bg-accent flex h-9 flex-1 items-center gap-2 rounded-md border bg-transparent px-3 py-1 text-sm"
-        >
+        <Button type="button" onClick={() => setOpen(!open)} variant="outline" className="flex-1">
           {value ? (
             <span className="flex items-center gap-2">
               <Icon name={value} className="size-4" />
@@ -79,7 +76,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
           ) : (
             "Izaberite ikonu..."
           )}
-        </button>
+        </Button>
       </div>
 
       {open && (
@@ -96,21 +93,20 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
             <ScrollArea className="h-48">
               <div className="grid grid-cols-6 gap-1">
                 {filtered.map((name) => (
-                  <button
+                  <Button
                     key={name}
                     type="button"
+                    variant="ghost"
                     onClick={() => {
                       onChange(name);
                       setOpen(false);
                       setSearch("");
                     }}
-                    className={`hover:bg-accent flex items-center justify-center rounded-md p-1.5 transition-colors ${
-                      value === name ? "bg-accent ring-primary ring-1" : ""
-                    }`}
+                    className={`p-1.5 ${value === name ? "bg-accent ring-primary ring-1" : ""}`}
                     title={name}
                   >
                     <Icon name={name} className="size-4" />
-                  </button>
+                  </Button>
                 ))}
                 {filtered.length === 0 && (
                   <div className="text-muted-foreground col-span-6 py-4 text-center text-xs">

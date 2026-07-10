@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
-import { Spinner, SpinnerLg } from "@/components/ui/spinner";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -245,7 +244,7 @@ export function TicketPurchaseModal({
 
   const renderLoading = () => (
     <div className="flex items-center justify-center py-16">
-      <SpinnerLg />
+      <Icon name="refresh" className="text-primary size-6 animate-spin" />
     </div>
   );
 
@@ -455,7 +454,7 @@ export function TicketPurchaseModal({
             </>
           ) : isAdding ? (
             <>
-              <Spinner className="mr-2 inline" style={{ width: "1rem", height: "1rem" }} />
+              <Icon name="refresh" className="mr-2 inline size-4 animate-spin" />
               <span>Dodavanje...</span>
             </>
           ) : (
