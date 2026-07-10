@@ -318,7 +318,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <MediaGallery media={facility.media} dict={dict} />
 
         {facility.seoArticle && (
-          <article className="text-muted-foreground border-border mx-auto mt-24 max-w-5xl border-t px-6 py-12 text-center text-xs">
+          <article className="text-muted-foreground border-border mx-auto mt-24 max-w-5xl border-t px-6 py-12 text-center text-xs md:text-sm">
             <div className="leading-relaxed whitespace-pre-line">{facility.seoArticle}</div>
           </article>
         )}
