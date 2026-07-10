@@ -242,7 +242,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                     "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
                 </span>
                 {facility.amenities && facility.amenities.length > 0 && (
-                  <span className="border-border/30 mt-4 block border-t pt-4 text-base font-medium text-slate-400 not-italic">
+                  <span className="border-border/30 mt-4 block border-t pt-4 text-base font-medium text-slate-400 not-italic md:hidden">
                     Sadržaji:{" "}
                     {facility.amenities
                       .map((fa: { amenity: { name: string } }) => fa.amenity.name)
