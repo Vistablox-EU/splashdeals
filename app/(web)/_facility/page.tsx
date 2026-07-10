@@ -258,7 +258,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 <div className="mb-4 flex items-center gap-3 text-xs font-black tracking-widest text-cyan-400 uppercase">
                   <Icon name="location_on" className="text-[16px]" /> Kako stići
                 </div>
-                <p className="text-sm leading-relaxed font-medium whitespace-pre-line text-slate-300">
+                <p className="text-muted-foreground text-sm leading-relaxed font-medium whitespace-pre-line">
                   {facility.transitGuide}
                 </p>
               </Card>

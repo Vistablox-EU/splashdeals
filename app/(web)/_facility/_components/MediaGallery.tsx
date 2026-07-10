@@ -94,7 +94,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
             )}
             <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-[#020617]/90 via-transparent to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100">
               <div className="translate-y-4 space-y-2 transition-transform duration-500 group-hover:translate-y-0">
-                <p className="text-lg font-bold text-white">
+                <p className="text-primary-foreground text-lg font-bold">
                   {m.caption || dict?.media_gallery?.fallback_caption || "Letnji Užitak"}
                 </p>
                 <div className="text-primary flex items-center gap-2 text-xs font-black tracking-widest uppercase">
@@ -150,7 +150,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
             )}
             {galleryMedia[selectedIdx].caption && (
               <div className="from-background/80 absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent p-8">
-                <p className="text-2xl font-black tracking-tighter text-white uppercase italic">
+                <p className="text-primary-foreground text-2xl font-black tracking-tighter uppercase italic">
                   {galleryMedia[selectedIdx].caption}
                 </p>
               </div>
