@@ -20,6 +20,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { updateUserRoleAction, deleteUserAction } from "@/server/actions/users";
 import { toast } from "sonner";
@@ -49,6 +57,8 @@ interface UsersTableProps {
  */
 export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: UsersTableProps) {
   const [users, setUsers] = useState<User[]>(initialUsers);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const router = useRouter();
 
   const handleRoleUpdate = async (userId: string, role: UserRole) => {
@@ -61,16 +71,18 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
     }
   };
 
-  const handleDelete = async (userId: string) => {
-    if (!confirm("Are you sure you want to revoke all access for this user?")) return;
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
 
-    const result = await deleteUserAction(userId);
+    const result = await deleteUserAction(userToDelete);
     if (result.success) {
-      setUsers((prev) => prev.filter((u) => u.id !== userId));
+      setUsers((prev) => prev.filter((u) => u.id !== userToDelete));
       toast.success("Access revoked");
     } else {
       toast.error(result.error || "Failed to delete user");
     }
+    setIsDeleteDialogOpen(false);
+    setUserToDelete(null);
   };
 
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -195,7 +207,10 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
                       </DropdownMenuItem>
                       <DropdownMenuSeparator className="bg-muted/30" />
                       <DropdownMenuItem
-                        onClick={() => handleDelete(user.id)}
+                        onClick={() => {
+                          setUserToDelete(user.id);
+                          setIsDeleteDialogOpen(true);
+                        }}
                         className="cursor-pointer gap-2 text-xs text-red-400 focus:bg-red-500/10 focus:text-red-400"
                       >
                         <Icon name="delete" className="text-[14px]" />
@@ -247,6 +262,37 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
           </Button>
         </div>
       </div>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="bg-background border-border text-foreground">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-black tracking-tight text-red-500 uppercase">
+              Revoke All Access
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground font-mono text-xs leading-relaxed">
+              Are you sure you want to revoke all access for this user? This action is irreversible.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setIsDeleteDialogOpen(false);
+                setUserToDelete(null);
+              }}
+              className="text-xs font-black uppercase"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDelete}
+              className="text-foreground bg-red-600 text-xs font-black uppercase hover:bg-red-700"
+            >
+              Revoke Access
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
