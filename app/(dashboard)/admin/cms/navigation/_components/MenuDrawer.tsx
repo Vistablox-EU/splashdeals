@@ -31,8 +31,10 @@ export function MenuDrawer({ menu, open, onClose, onSaved }: MenuDrawerProps) {
   // Reset form when menu changes
   useEffect(() => {
     if (open) {
-      setLabel(menu?.label || "");
-      setIcon(menu?.icon || "menu_book");
+      requestAnimationFrame(() => {
+        setLabel(menu?.label || "");
+        setIcon(menu?.icon || "menu_book");
+      });
     }
   }, [open, menu]);
 

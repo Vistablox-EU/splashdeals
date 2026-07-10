@@ -53,9 +53,11 @@ export function SectionDrawer({ menuId, section, open, onClose, onSaved }: Secti
   // Reset on open
   useEffect(() => {
     if (open) {
-      setHeading(section?.heading || "");
-      setColumn(section?.column ?? 0);
-      setStyle(section?.style || "LINKS");
+      requestAnimationFrame(() => {
+        setHeading(section?.heading || "");
+        setColumn(section?.column ?? 0);
+        setStyle(section?.style || "LINKS");
+      });
     }
   }, [open, section]);
 
