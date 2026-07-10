@@ -278,8 +278,6 @@ export function FacilityProfileForm({
               />
             </section>
           </div>
-
-          <div className="space-y-6 xl:col-span-4"></div>
         </div>
 
         {/* 💾 Global Save Bar (Floating Command Center) */}

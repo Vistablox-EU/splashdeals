@@ -170,7 +170,7 @@ export function CropModal({
 
   return (
     <div className="bg-background/80 animate-in fade-in fixed inset-0 z-[999] flex items-center justify-center p-4 backdrop-blur-md duration-300">
-      <div className="bg-muted/90 border-border animate-in zoom-in-95 flex w-full max-w-lg flex-col gap-6 rounded-3xl border p-6 shadow-[0_0_50px_rgba(6,182,212,0.15)] duration-300">
+      <div className="bg-muted/90 border-border animate-in zoom-in-95 flex w-full max-w-lg flex-col gap-6 rounded-3xl border p-6 shadow-[0_0_50px_hsl(var(--primary)/0.15)] duration-300">
         <div className="border-border/50 flex items-center justify-between border-b pb-4">
           <div>
             <h3 className="text-foreground text-lg font-black tracking-tighter uppercase">
@@ -305,12 +305,15 @@ export function CropModal({
           >
             {isSaving ? (
               <>
-                <Icon name="progress_activity" className="size-3 animate-spin text-slate-950" />
+                <Icon
+                  name="progress_activity"
+                  className="text-primary-foreground size-3 animate-spin"
+                />
                 Sečenje...
               </>
             ) : (
               <>
-                <Icon name="crop" className="size-3 text-slate-950" />
+                <Icon name="crop" className="text-primary-foreground size-3" />
                 Sačuvaj i Otpremi
               </>
             )}

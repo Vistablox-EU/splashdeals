@@ -63,7 +63,7 @@ function MediaItemCard({
       className={cn(
         "group bg-muted/40 border-border/50 flex flex-col overflow-hidden rounded-2xl border transition-all duration-300",
         isSelected &&
-          "ring-primary ring-offset-background shadow-[0_0_30px_rgba(6,182,212,0.3)] ring-2 ring-offset-2",
+          "ring-primary ring-offset-background shadow-[0_0_30px_hsl(var(--primary)/0.3)] ring-2 ring-offset-2",
         isOverlay && "scale-105 opacity-90 shadow-2xl",
       )}
     >
@@ -78,7 +78,7 @@ function MediaItemCard({
         {/* Render focal target dot */}
         {item.focalPoint && item.type === "PHOTO" && (
           <div
-            className="border-primary bg-muted/70 pointer-events-none absolute z-30 flex size-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+            className="border-primary bg-muted/70 pointer-events-none absolute z-30 flex size-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 shadow-[0_0_10px_hsl(var(--primary)/0.5)]"
             style={{
               left: `${item.focalPoint.split(",")[0]}%`,
               top: `${item.focalPoint.split(",")[1]}%`,
@@ -124,16 +124,18 @@ function MediaItemCard({
             <span className="text-primary/60 mt-0.5 max-w-[120px] text-[8px] leading-tight font-medium tracking-widest uppercase">
               Klikni bilo gde za pozicioniranje
             </span>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleFocalPoint?.();
               }}
-              className="bg-muted/50 text-foreground absolute right-2 bottom-2 flex size-5 items-center justify-center rounded-md hover:bg-white/20"
+              className="bg-muted/50 text-foreground absolute right-2 bottom-2 size-5 rounded-md hover:bg-white/20"
               aria-label="Close focal point"
             >
               <Icon name="close" className="size-3" />
-            </button>
+            </Button>
           </div>
         )}
 
@@ -210,7 +212,9 @@ function MediaItemCard({
                 isSelected ? "bg-primary border-primary" : "border-border bg-black/40",
               )}
             >
-              {isSelected && <Icon name="security" className="size-4 stroke-[3] text-slate-950" />}
+              {isSelected && (
+                <Icon name="security" className="text-primary-foreground size-4 stroke-[3]" />
+              )}
             </div>
           </div>
         )}
@@ -286,7 +290,7 @@ function MediaItemCard({
             onClick={onToggleVisibility}
             className={cn(
               "hover:bg-primary/10 flex h-auto flex-col gap-1 py-2 text-[9px] font-black tracking-tighter uppercase",
-              item.isGalleryVisible ? "text-emerald-500" : "text-muted-foreground",
+              item.isGalleryVisible ? "text-primary" : "text-muted-foreground",
             )}
           >
             {item.isGalleryVisible ? (

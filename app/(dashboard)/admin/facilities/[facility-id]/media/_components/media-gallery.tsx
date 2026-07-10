@@ -712,7 +712,7 @@ export function MediaGallery({
       {/* 🌌 High-fidelity Glassmorphic Full-Screen Drag Overlay */}
       {isDragActive && (
         <div className="bg-background/80 animate-in fade-in pointer-events-none fixed inset-0 z-[999] flex flex-col items-center justify-center text-center backdrop-blur-xl duration-300">
-          <div className="bg-muted/10 border-primary/30 animate-in zoom-in-95 mx-4 flex max-w-md flex-col items-center rounded-3xl border p-12 shadow-[0_0_50px_rgba(6,182,212,0.15)] duration-500">
+          <div className="bg-muted/10 border-primary/30 animate-in zoom-in-95 mx-4 flex max-w-md flex-col items-center rounded-3xl border p-12 shadow-[0_0_50px_hsl(var(--primary)/0.15)] duration-500">
             <div className="bg-primary/10 border-primary/20 mb-8 animate-bounce rounded-3xl border p-6">
               <Icon name="upload" className="text-primary h-16 w-16" />
             </div>
@@ -797,7 +797,7 @@ export function MediaGallery({
                   <div className="bg-muted/50 mx-2 h-4 w-[1px]" />
 
                   <div className="border-border/50 animate-in fade-in flex items-center gap-1.5 rounded-lg border bg-black/40 px-2 py-0.5 duration-300">
-                    <input
+                    <Input
                       type="text"
                       placeholder="Bulk Alt tag..."
                       aria-label="Bulk caption"
@@ -836,7 +836,7 @@ export function MediaGallery({
                         });
                       }}
                       disabled={isUploading}
-                      className="h-7 gap-1 px-2 text-[9px] font-black tracking-widest text-cyan-400 uppercase hover:bg-cyan-500/10 hover:text-cyan-300"
+                      className="text-primary hover:bg-primary/10 hover:text-primary-foreground h-7 gap-1 px-2 text-[9px] font-black tracking-widest uppercase"
                     >
                       <Icon name="check" className="size-3" />
                       Apply
@@ -863,7 +863,7 @@ export function MediaGallery({
             name="search"
             className="text-muted-foreground absolute top-1/2 left-3.5 size-4 -translate-y-1/2"
           />
-          <input
+          <Input
             type="text"
             placeholder="Pretraži medije po ALT oznaci ili nazivu..."
             value={searchQuery}
@@ -871,13 +871,15 @@ export function MediaGallery({
             className="border-border/50 text-foreground/90 placeholder:text-muted-foreground/80 focus:border-ring w-full rounded-xl border bg-black/40 py-2 pr-4 pl-10 text-xs font-medium transition-colors focus:outline-none"
           />
           {searchQuery && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setSearchQuery("")}
-              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3.5 -translate-y-1/2 transition-colors"
+              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3.5 size-7 -translate-y-1/2 rounded-full transition-colors"
               aria-label="Clear search"
             >
               <Icon name="close" className="size-3.5" />
-            </button>
+            </Button>
           )}
         </div>
 
@@ -902,7 +904,7 @@ export function MediaGallery({
               className={cn(
                 "h-7 rounded-lg px-3 text-[9px] font-black tracking-widest uppercase transition-all",
                 activeFilter === filt.id
-                  ? "border border-cyan-500 bg-cyan-500/20 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+                  ? "border-primary bg-primary/20 text-primary border shadow-[0_0_15px_hsl(var(--primary)/0.15)]"
                   : "bg-muted/10 border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/30 border",
               )}
             >
@@ -1035,20 +1037,20 @@ export function MediaGallery({
                 className={cn(
                   "relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-2xl border p-4",
                   file.status === "failed"
-                    ? "border-red-500/40 bg-red-950/20"
+                    ? "border-destructive/40 bg-destructive/20"
                     : file.status === "done"
-                      ? "border-emerald-500/40 bg-emerald-950/20"
-                      : "bg-muted/40 animate-pulse border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.05)]",
+                      ? "border-primary/40 bg-primary/20"
+                      : "bg-muted/40 border-primary/20 animate-pulse shadow-[0_0_20px_hsl(var(--primary)/0.05)]",
                 )}
               >
                 {file.status === "failed" ? (
-                  <Icon name="error" className="mb-2 text-[24px] text-red-400" />
+                  <Icon name="error" className="text-destructive mb-2 text-[24px]" />
                 ) : file.status === "done" ? (
-                  <Icon name="check_circle" className="mb-2 text-[24px] text-emerald-400" />
+                  <Icon name="check_circle" className="text-primary mb-2 text-[24px]" />
                 ) : (
                   <Icon
                     name="progress_activity"
-                    className="mb-2 animate-spin text-[24px] text-cyan-500"
+                    className="text-primary mb-2 animate-spin text-[24px]"
                   />
                 )}
                 <span className="text-muted-foreground max-w-full truncate px-2 text-[10px] font-black tracking-wider uppercase">
@@ -1058,10 +1060,10 @@ export function MediaGallery({
                   className={cn(
                     "mt-1 text-[8px] font-bold tracking-widest uppercase",
                     file.status === "failed"
-                      ? "text-red-400"
+                      ? "text-destructive"
                       : file.status === "done"
-                        ? "text-emerald-400"
-                        : "text-cyan-400",
+                        ? "text-primary"
+                        : "text-primary",
                   )}
                 >
                   {file.status === "failed"
@@ -1073,28 +1075,32 @@ export function MediaGallery({
                         : "Optimizing..."}
                 </span>
                 {file.status === "uploading" && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={(e) => {
                       e.stopPropagation();
                       cancelUpload(file.name);
                     }}
-                    className="absolute top-2 right-2 z-40 flex size-6 items-center justify-center rounded-md bg-black/60 text-white/70 transition-colors hover:bg-red-500/80 hover:text-white"
+                    className="hover:bg-destructive/80 absolute top-2 right-2 z-40 size-6 rounded-md bg-black/60 text-white/70 transition-colors hover:text-white"
                     aria-label={`Cancel upload: ${file.name}`}
                   >
                     <Icon name="close" className="size-3.5" />
-                  </button>
+                  </Button>
                 )}
                 {file.status === "failed" && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={(e) => {
                       e.stopPropagation();
                       retryUpload(file.name);
                     }}
-                    className="absolute top-2 right-2 z-40 flex size-6 items-center justify-center rounded-md bg-black/60 text-white/70 transition-colors hover:bg-cyan-500/80 hover:text-white"
+                    className="hover:bg-primary/80 absolute top-2 right-2 z-40 size-6 rounded-md bg-black/60 text-white/70 transition-colors hover:text-white"
                     aria-label={`Retry upload: ${file.name}`}
                   >
                     <Icon name="refresh" className="size-3.5" />
-                  </button>
+                  </Button>
                 )}
               </div>
             ))}
@@ -1159,7 +1165,7 @@ export function MediaGallery({
                     }}
                     className={cn(
                       "h-8 w-8 p-0 text-[10px] font-black",
-                      pageNum === currentPage && "border-cyan-500 bg-cyan-500/20 text-cyan-400",
+                      pageNum === currentPage && "border-primary bg-primary/20 text-primary",
                     )}
                   >
                     {pageNum}

@@ -9,6 +9,13 @@ import type { Metadata } from "next";
 import { FacilityLayoutContextHandler } from "./_components/facility-layout-context-handler";
 import { FacilityProvider } from "./_components/facility-context";
 
+interface FacilityLayoutData {
+  id: string;
+  socialLinks?: Record<string, string | undefined>;
+  publicPhone?: string | null;
+  publicEmail?: string | null;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -104,16 +111,7 @@ export default async function FacilityManagementLayout({
 
             <aside className="sticky top-8 hidden xl:col-span-3 xl:block">
               <Suspense fallback={<FacilityActionSidebarSkeleton />}>
-                <FacilityActionSidebar
-                  facility={
-                    facility as {
-                      id: string;
-                      socialLinks?: Record<string, string | undefined>;
-                      publicPhone?: string | null;
-                      publicEmail?: string | null;
-                    }
-                  }
-                />
+                <FacilityActionSidebar facility={facility as FacilityLayoutData} />
               </Suspense>
             </aside>
           </div>

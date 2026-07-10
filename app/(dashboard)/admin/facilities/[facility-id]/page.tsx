@@ -65,14 +65,14 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
       label: "Sadržaji",
       value: facility._count.amenities,
       icon: "auto_awesome",
-      color: "text-emerald-400",
+      color: "text-primary",
       href: `/admin/facilities/${facilityId}/amenities`,
     },
     {
       label: "Mediji",
       value: facility._count.media,
       icon: "photo_library",
-      color: "text-amber-400",
+      color: "text-warning",
       href: `/admin/facilities/${facilityId}/media`,
     },
   ];

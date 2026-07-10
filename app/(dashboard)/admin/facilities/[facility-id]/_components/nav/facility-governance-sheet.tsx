@@ -128,7 +128,10 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
                         <SelectItem value="DRAFT">Draft</SelectItem>
                         <SelectItem value="ACTIVE">Active</SelectItem>
                         <SelectItem value="CLOSED">Closed</SelectItem>
-                        <SelectItem value="EMERGENCY_SHUTDOWN" className="font-bold text-red-500">
+                        <SelectItem
+                          value="EMERGENCY_SHUTDOWN"
+                          className="text-destructive font-bold"
+                        >
                           Emergency Shutdown
                         </SelectItem>
                       </SelectContent>

@@ -68,7 +68,7 @@ export default async function FacilityOperationsPage({ params }: OperationsPageP
             Adjust entry availability for {facility.name}
           </p>
         </div>
-        <div className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-1.5">
+        <div className="border-primary/20 bg-primary/10 rounded-full border px-4 py-1.5">
           <span className="text-primary text-[10px] font-black tracking-widest uppercase">
             Live Editor
           </span>

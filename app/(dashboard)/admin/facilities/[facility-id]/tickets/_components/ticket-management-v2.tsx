@@ -446,12 +446,12 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               )}
               <div className="flex flex-wrap gap-1">
                 {prod.requiresPhoto && (
-                  <span className="rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold text-amber-400">
+                  <span className="text-warning rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold">
                     📸
                   </span>
                 )}
                 {prod.requiresIdentity && (
-                  <span className="rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold text-amber-400">
+                  <span className="text-warning rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold">
                     🆔
                   </span>
                 )}
@@ -567,11 +567,13 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       {/* Mobile nav dots */}
       <div className="bg-background/80 border-border/50 fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 gap-1.5 rounded-full border px-3 py-2 shadow-lg backdrop-blur-md lg:hidden">
         {(["cats", "prods", "prices"] as const).map((v, _i) => (
-          <button
+          <Button
             key={v}
+            variant="ghost"
+            size="sm"
             onClick={() => setMobileView(v)}
             className={cn(
-              "h-2 w-2 rounded-full transition-all",
+              "h-2 w-2 rounded-full p-0 transition-all",
               mobileView === v ? "bg-primary w-6" : "bg-muted-foreground/30",
             )}
             aria-label={v === "cats" ? "Kategorije" : v === "prods" ? "Tipovi" : "Cene"}

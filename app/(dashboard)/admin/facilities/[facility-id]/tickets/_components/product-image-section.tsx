@@ -3,6 +3,7 @@
 import NextImage from "next/image";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
 import { toast } from "sonner";
 
@@ -113,7 +114,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
                 size="icon"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="text-foreground h-8 w-8 rounded-full bg-white/90 transition-all hover:bg-white"
+                className="text-foreground bg-background/90 h-8 w-8 rounded-full transition-all hover:bg-white"
                 aria-label="Replace image"
               >
                 <Icon name="refresh" className="text-[14px]" />
@@ -122,7 +123,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
                 variant="ghost"
                 size="icon"
                 onClick={handleDelete}
-                className="text-destructive h-8 w-8 rounded-full bg-white/90 transition-all hover:bg-white"
+                className="text-destructive bg-background/90 h-8 w-8 rounded-full transition-all hover:bg-white"
                 aria-label="Delete image"
               >
                 <Icon name="delete" className="text-[14px]" />
@@ -130,7 +131,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <input
+            <Input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Novi naziv fajla..."

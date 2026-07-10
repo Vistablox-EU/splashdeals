@@ -109,7 +109,7 @@ function OperationsTableInner({
     <Card className="border-border/50 bg-background/40 space-y-4 p-4">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Icon name="schedule" className="size-3.5 text-amber-400" />
+          <Icon name="schedule" className="text-warning size-3.5" />
           <h3 className="text-foreground/70 text-[10px] font-black tracking-widest uppercase">
             Institutional Availability Patterns
           </h3>

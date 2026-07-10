@@ -1,7 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -11,11 +10,7 @@ interface SlotErrorProps {
   title?: string;
 }
 
-export function SlotError({ error, reset, title = "Segment nije učitan" }: SlotErrorProps) {
-  useEffect(() => {
-    // Error is expected by the consumer — no runtime logging needed
-  }, [error, title]);
-
+export function SlotError({ reset, title = "Segment nije učitan" }: SlotErrorProps) {
   return (
     <div className="border-destructive/10 bg-destructive/5 flex flex-col items-center justify-center space-y-4 rounded-2xl border p-8">
       <div className="bg-destructive/10 rounded-full p-3">
