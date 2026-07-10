@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import type { DraggableAttributes, DraggableSyntheticListeners } from "@dnd-kit/core";
 import { filenameFromBlobUrl } from "./_lib/media-utils";
 
 function MediaItemCard({
@@ -38,10 +39,8 @@ function MediaItemCard({
   isSelected?: boolean;
   isSelectionMode?: boolean;
   onSelect?: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  listeners?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attributes?: any;
+  listeners?: DraggableSyntheticListeners;
+  attributes?: DraggableAttributes;
   onToggleHero?: () => void;
   onToggleCardBG?: () => void;
   onToggleVisibility?: () => void;
