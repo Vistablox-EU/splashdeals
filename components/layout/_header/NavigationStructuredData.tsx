@@ -50,24 +50,6 @@ export async function NavigationStructuredData() {
         })),
       },
       {
-        "@type": "BreadcrumbList",
-        "@id": `${siteUrl}/#breadcrumb`,
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Početna",
-            item: siteUrl,
-          },
-          ...navItems.map((item, index) => ({
-            "@type": "ListItem",
-            position: index + 2,
-            name: item.name,
-            item: `${siteUrl}/#${item.name.toLowerCase().replace(/\s+/g, "-")}`,
-          })),
-        ],
-      },
-      {
         "@type": "WebSite",
         "@id": `${siteUrl}/#website`,
         url: siteUrl,
