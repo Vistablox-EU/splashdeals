@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/server/lib/prisma";
 
 export async function searchPlaces(query: string) {
@@ -26,22 +27,35 @@ export async function addLabel(facilityId: string, placeId: string) {
     where: { facilityId_placeId: { facilityId, placeId } },
   });
   if (exists) return exists;
-  return prisma.facilityLabel.create({
+  const label = await prisma.facilityLabel.create({
     data: { facilityId, placeId },
     include: { place: true },
   });
+  revalidatePath(`/admin/facilities/${facilityId}/profile`);
+  return label;
 }
 
 export async function removeLabel(id: string) {
-  return prisma.facilityLabel.delete({ where: { id } });
+  const label = await prisma.facilityLabel.findUniqueOrThrow({
+    where: { id },
+    select: { facilityId: true },
+  });
+  await prisma.facilityLabel.delete({ where: { id } });
+  revalidatePath(`/admin/facilities/${label.facilityId}/profile`);
 }
 
 export async function updateLabel(id: string, data: { label?: string; isPrimary?: boolean }) {
-  return prisma.facilityLabel.update({
+  const label = await prisma.facilityLabel.findUniqueOrThrow({
+    where: { id },
+    select: { facilityId: true },
+  });
+  const updated = await prisma.facilityLabel.update({
     where: { id },
     data,
     include: { place: true },
   });
+  revalidatePath(`/admin/facilities/${label.facilityId}/profile`);
+  return updated;
 }
 
 export async function setPrimaryLabel(facilityId: string, labelId: string) {
@@ -50,9 +64,11 @@ export async function setPrimaryLabel(facilityId: string, labelId: string) {
     where: { facilityId, isPrimary: true },
     data: { isPrimary: false },
   });
-  return prisma.facilityLabel.update({
+  const result = await prisma.facilityLabel.update({
     where: { id: labelId },
     data: { isPrimary: true },
     include: { place: true },
   });
+  revalidatePath(`/admin/facilities/${facilityId}/profile`);
+  return result;
 }
