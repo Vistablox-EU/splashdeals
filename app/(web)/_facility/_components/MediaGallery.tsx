@@ -73,6 +73,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                   src={m.url}
                   poster={m.thumbnailUrl || undefined}
                   muted
+                  preload="none"
                   className="h-full w-full object-cover transition-all duration-1000 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20">
