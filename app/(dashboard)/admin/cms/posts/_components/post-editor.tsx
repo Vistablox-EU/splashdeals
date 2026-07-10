@@ -66,7 +66,7 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
       coverImage: (post?.coverImage as string) || "",
       featuredImage: (post?.featuredImage as string) || "",
       author: (post?.author as string) || "",
-      status: (post?.status as string) || "DRAFT",
+      status: (post?.status as "DRAFT" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
       categoryId: (post?.categoryId as string) || "",
       isFeatured: (post?.isFeatured as boolean) || false,
       metaTitle: (post?.metaTitle as string) || "",

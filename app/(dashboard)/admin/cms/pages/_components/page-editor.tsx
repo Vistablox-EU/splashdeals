@@ -62,7 +62,7 @@ export function PageEditor({ page }: PageEditorProps) {
       template: (page?.template as string) || "default",
       showHeader: (page?.showHeader as boolean) ?? true,
       showFooter: (page?.showFooter as boolean) ?? true,
-      status: (page?.status as string) || "DRAFT",
+      status: (page?.status as "DRAFT" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
       metaTitle: (page?.metaTitle as string) || "",
       metaDescription: (page?.metaDescription as string) || "",
       ogTitle: (page?.ogTitle as string) || "",
