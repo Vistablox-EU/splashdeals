@@ -343,25 +343,10 @@ export default async function FacilityShowcasePage({ params }: FacilityPageProps
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </head>
-        <body
-          style={{
-            background: "#020617",
-            color: "#94a3b8",
-            fontFamily: "sans-serif",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100vh",
-            margin: 0,
-          }}
-        >
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "6rem", fontWeight: 900, color: "#06b6d4", margin: 0 }}>
-              410
-            </div>
-            <p style={{ fontSize: "1.25rem", marginTop: "0.5rem" }}>
-              This page has been permanently deleted.
-            </p>
+        <body className="bg-background text-muted-foreground m-0 flex min-h-screen items-center justify-center font-sans">
+          <div className="text-center">
+            <div className="text-primary m-0 text-[6rem] font-black">410</div>
+            <p className="mt-2 text-lg">This page has been permanently deleted.</p>
           </div>
         </body>
       </html>
