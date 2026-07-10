@@ -57,6 +57,13 @@ async function WebLayoutContent({
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden font-sans">
+      {/* ♿ Skip to content — first focusable element for keyboard users */}
+      <a
+        href="#main-content"
+        className="focus:bg-primary focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[9999] focus:rounded-xl focus:px-4 focus:py-3 focus:text-xs focus:font-black focus:tracking-widest focus:uppercase focus:shadow-lg focus:outline-none"
+      >
+        Preskoči na sadržaj
+      </a>
       <GlobalAmbient />
       <NavigationStructuredData />
       <Header dict={dict} cities={cities} />
@@ -64,7 +71,7 @@ async function WebLayoutContent({
       {/* 🧭 Breadcrumb bar — always visible just below the top nav header */}
       <BreadcrumbBar facilityMap={facilityMap} />
 
-      <main className="flex-grow pt-16 pb-16 sm:pb-0">
+      <main id="main-content" className="flex-grow pt-16 pb-16 sm:pb-0">
         <React.Suspense
           fallback={
             <div className="bg-muted flex flex-1 animate-pulse items-center justify-center p-20" />
