@@ -3,6 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 /**
  * 🛡️ Aquastream Admin Control Error Boundary
@@ -43,20 +44,24 @@ export default function AdminError({
         </div>
 
         <div className="flex flex-col gap-3 pt-4">
-          <button
+          <Button
             onClick={reset}
-            className="bg-muted/30 hover:bg-muted/50 border-border/50 flex w-full items-center justify-center gap-2 rounded-xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
+            variant="outline"
+            className="w-full rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase"
           >
             <Icon name="refresh" className="text-[16px]" />
             Pokušaj ponovo
-          </button>
-          <Link
-            href="/admin"
-            className="bg-muted/80 hover:bg-foreground/10 text-foreground flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            className="bg-muted/80 hover:bg-foreground/10 text-foreground w-full rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase"
           >
-            <Icon name="home" className="text-[16px]" />
-            Kontrolna tabla
-          </Link>
+            <Link href="/admin">
+              <Icon name="home" className="text-[16px]" />
+              Kontrolna tabla
+            </Link>
+          </Button>
         </div>
       </Card>
     </div>
