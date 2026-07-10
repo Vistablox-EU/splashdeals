@@ -228,7 +228,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <div id="overview" className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
           <div className="space-y-8 lg:col-span-8">
             {/* Main Text Card */}
-            <Card className="brand-card flex min-h-0 flex-col justify-center space-y-8 p-6 sm:p-12 md:min-h-[400px] md:p-16">
+            <Card className="brand-card flex min-h-0 flex-col justify-center space-y-8 p-6 sm:p-12 md:p-16">
               <div className="text-primary hidden items-center gap-3 text-xs font-black tracking-[0.2em] uppercase md:flex">
                 <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
               </div>
