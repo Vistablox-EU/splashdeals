@@ -133,7 +133,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   return (
     <div className="bg-background absolute inset-0 z-0">
       {renderMedia()}
-      <div className="from-background via-background/20 absolute inset-0 bg-gradient-to-t to-transparent shadow-[inset_0_-100px_100px_rgba(2,6,23,0.8)]" />
+      <div className="from-background via-background/20 absolute inset-0 bg-gradient-to-t to-transparent" />
       <div className="splash-gradient pointer-events-none absolute inset-x-0 bottom-0 h-[20%] opacity-20 blur-3xl" />
     </div>
   );
