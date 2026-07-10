@@ -36,11 +36,15 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
   });
 
   const handleSave = async () => {
+    const parsedPrice = parseFloat(form.price);
+    const parsedOriginal = form.originalPrice ? parseFloat(form.originalPrice) : null;
+    if (isNaN(parsedPrice) || parsedPrice < 0) return;
+    if (parsedOriginal !== null && (isNaN(parsedOriginal) || parsedOriginal < 0)) return;
     const { updatePrice } = await import("../_lib/ticket-admin-actions");
     await updatePrice(price.id, facilityId, {
       label: form.label || null,
-      price: parseFloat(form.price) || 0,
-      originalPrice: form.originalPrice ? parseFloat(form.originalPrice) : null,
+      price: parsedPrice,
+      originalPrice: parsedOriginal,
       dayType: form.dayType,
       timeSlot: form.timeSlot,
     });
@@ -79,6 +83,7 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
                 onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
                 className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
                 type="number"
+                min="0"
               />
             </div>
             <div>
@@ -90,6 +95,7 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
                 onChange={(e) => setForm((f) => ({ ...f, originalPrice: e.target.value }))}
                 className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
                 type="number"
+                min="0"
               />
             </div>
           </div>
