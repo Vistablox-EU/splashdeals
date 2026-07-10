@@ -1,7 +1,7 @@
 "use client";
 // @ts-nocheck - react-hook-form + zod v4 resolver type chain mismatch, runtime is correct
 
-import { useCallback, useTransition, useState } from "react";
+import { useCallback, useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -81,6 +81,11 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
   });
 
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(initialTagIds || []);
+
+  // Sync tag selection when initialTagIds changes (e.g., navigating between posts to edit)
+  useEffect(() => {
+    setSelectedTagIds(initialTagIds || []);
+  }, [initialTagIds]);
 
   const {
     register,
