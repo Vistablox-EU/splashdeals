@@ -25,7 +25,7 @@ const HUMANIZED_LABELS: Record<string, string> = {
 export function Breadcrumbs() {
   const rawPathname = usePathname() || "";
   const { overrides } = useBreadcrumbs();
-  const pathname = rawPathname.replace(/^\/(en|rs)/, "") || "/";
+  const pathname = rawPathname || "/";
 
   const segments = pathname.split("/").filter(Boolean);
 
