@@ -164,7 +164,7 @@ export function DataTable<TData, TValue>({
               className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2 text-[14px]"
             />
             <Input
-              placeholder="Search registry..."
+              placeholder="Pretraži registar..."
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
               className="bg-background/40 border-border/50 focus-visible:ring-primary/30 placeholder:text-muted-foreground h-9 pl-9 text-xs font-semibold focus-visible:ring-1"
@@ -188,8 +188,8 @@ export function DataTable<TData, TValue>({
                 </Badge>
               </SelectTrigger>
               <SelectContent className="bg-muted border-border">
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="ACTIVE">Active</SelectItem>
+                <SelectItem value="all">Svi statusi</SelectItem>
+                <SelectItem value="ACTIVE">Aktivni</SelectItem>
                 <SelectItem value="DRAFT">Draft</SelectItem>
                 <SelectItem value="CLOSED">Closed</SelectItem>
                 <SelectItem value="EMERGENCY_SHUTDOWN">Shutdown</SelectItem>
@@ -220,7 +220,7 @@ export function DataTable<TData, TValue>({
         {selectedIds.length > 0 && (
           <div className="bg-primary/10 border-primary/20 flex items-center gap-2 rounded-lg border p-1 px-3">
             <span className="text-primary mr-2 text-[9px] font-black tracking-[0.2em] uppercase">
-              {selectedIds.length} Selected
+              {selectedIds.length} Izabrano
             </span>
             <div className="bg-primary/20 mx-1 h-4 w-px" />
             <Button
@@ -235,7 +235,7 @@ export function DataTable<TData, TValue>({
               ) : (
                 <Icon name="check_circle" className="mr-1 text-[12px]" />
               )}
-              Activate
+              Aktiviraj
             </Button>
             <Button
               variant="ghost"
@@ -249,7 +249,7 @@ export function DataTable<TData, TValue>({
               ) : (
                 <Icon name="archive" className="mr-1 text-[12px]" />
               )}
-              Archive
+              Arhiviraj
             </Button>
             <Button
               variant="ghost"
@@ -257,7 +257,7 @@ export function DataTable<TData, TValue>({
               className="hover:bg-muted/50 h-7 w-7 p-0"
               onClick={() => setRowSelection({})}
               disabled={isPending}
-              aria-label="Clear selection"
+              aria-label="Obriši izbor"
             >
               <Icon name="cancel" className="text-muted-foreground text-[14px]" />
             </Button>
