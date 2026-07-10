@@ -6,6 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
+import {
+  createCategory,
+  createProduct,
+  deleteCategory,
+  updateCategory,
+  updateProduct,
+  deleteProduct,
+  createPrice,
+  getTicketHierarchy,
+} from "../_lib/ticket-admin-actions";
 import { ProductImageSection } from "./product-image-section";
 import { PriceCard } from "./price-card";
 
@@ -49,7 +59,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleAddCategory = async () => {
     if (!newCatTitle.trim()) return;
-    const { createCategory } = await import("../_lib/ticket-admin-actions");
     const cat = await createCategory(facilityId, newCatTitle);
     setCategories((prev) => [
       ...prev,
@@ -197,7 +206,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     const { createPrice } = await import("../_lib/ticket-admin-actions");
     await createPrice(productId, facilityId, { price: 0 });
     // Refresh categories to get the new price
-    const { getTicketHierarchy } = await import("../_lib/ticket-admin-actions");
     const fresh = await getTicketHierarchy(facilityId);
     setCategories(fresh);
   };
@@ -285,7 +293,10 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   onClick={(e) => e.stopPropagation()}
                 />
               ) : (
-                <span className="flex-1 text-left">📁 {cat.title}</span>
+                <span className="flex-1 text-left">
+                  <Icon name="folder" className="mr-1" />
+                  {cat.title}
+                </span>
               )}
               <div className="flex items-center gap-0.5 opacity-0 transition-all group-hover:opacity-100">
                 <button

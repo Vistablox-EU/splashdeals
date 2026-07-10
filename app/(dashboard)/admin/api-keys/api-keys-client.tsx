@@ -39,7 +39,7 @@ interface ApiKey {
 }
 
 export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
-  const [keys] = useState<ApiKey[]>(initialKeys);
+  const [keys, setKeys] = useState<ApiKey[]>(initialKeys);
   const [newKeyName, setNewKeyName] = useState("");
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const [hasCopied, setHasCopied] = useState(false);
@@ -60,10 +60,15 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
     },
   );
 
-  const { execute: handleDelete } = useAction((id: string) => deleteApiKeyAction(id), {
-    successMessage: "API key revoked",
-    refresh: true,
-  });
+  const handleDelete = async (id: string) => {
+    const result = await deleteApiKeyAction(id);
+    if (result.success) {
+      setKeys((prev) => prev.filter((k) => k.id !== id));
+      toast.success("API key revoked");
+    } else {
+      toast.error(result.error || "Failed to revoke API key");
+    }
+  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);

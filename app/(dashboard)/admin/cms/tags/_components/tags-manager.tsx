@@ -22,7 +22,7 @@ interface TagRow {
   id: string;
   name: string;
   slug: string;
-  _count?: { posts: number };
+  postCount: number;
 }
 
 export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) {
@@ -149,7 +149,7 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary" className="text-xs">
-                      {tag._count?.posts || 0}
+                      {tag.postCount ?? 0}
                     </Badge>
                   </TableCell>
                   <TableCell>

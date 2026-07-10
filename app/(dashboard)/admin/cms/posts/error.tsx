@@ -11,15 +11,21 @@ export default function PostsError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[Posts Error]", error);
+    console.error("[cms-posts]", error);
   }, [error]);
 
   return (
-    <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4">
-      <Icon name="error" className="text-destructive size-10" />
-      <h2 className="text-lg font-semibold">Greška</h2>
-      <p className="text-muted-foreground text-sm">{error.message || "Neočekivana greška."}</p>
-      <button onClick={reset} className="text-primary text-sm hover:underline">
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
+      <Icon name="error" className="text-destructive size-12" />
+      <h2 className="text-xl font-semibold">Došlo je do greške</h2>
+      <p className="text-muted-foreground max-w-md text-center text-sm">
+        {error.message || "Neočekivana greška u objavama."}
+      </p>
+      <button
+        onClick={reset}
+        className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium"
+      >
+        <Icon name="refresh" className="size-4" />
         Pokušaj ponovo
       </button>
     </div>

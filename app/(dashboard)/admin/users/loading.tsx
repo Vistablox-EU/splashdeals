@@ -1,23 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { AdminSkeleton } from "@/app/(dashboard)/admin/_common/AdminSkeleton";
 
 export default function UsersLoading() {
-  return (
-    <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6 p-6 md:p-10">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div className="space-y-2">
-          <Skeleton className="h-10 w-48" />
-          <Skeleton className="h-4 w-64" />
-        </div>
-        <Skeleton className="h-12 w-40" />
-      </div>
-      <div className="mt-8 space-y-4">
-        <Skeleton className="h-10 w-full" />
-        <div className="space-y-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-16 w-full" />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  return <AdminSkeleton />;
 }

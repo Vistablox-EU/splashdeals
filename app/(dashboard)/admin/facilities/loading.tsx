@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function FacilitiesLoading() {
   return (
-    <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6 p-6 md:p-10">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-6 lg:p-10">
       {/* Metric cards */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (

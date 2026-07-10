@@ -56,13 +56,13 @@ export function SectionCards({ stats }: SectionCardsProps) {
       {displayStats.map((item, index) => (
         <div
           key={index}
-          className="group relative rounded-2xl border border-white/5 bg-slate-900/40 p-4 transition-all duration-300 outline-none focus-within:ring-2 focus-within:ring-cyan-500/20 hover:border-white/10 hover:bg-white/[0.05]"
+          className="group border-border bg-card hover:border-border/80 hover:bg-muted/50 relative rounded-2xl border p-4 transition-all duration-300 outline-none focus-within:ring-2 focus-within:ring-cyan-500/20"
         >
           <div className="mb-2 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[9px] font-bold tracking-widest text-slate-500 uppercase">
+            <div className="text-muted-foreground flex items-center gap-2 text-[9px] font-bold tracking-widest uppercase">
               <div
                 className={cn(
-                  "rounded-lg border border-white/5 bg-white/[0.03] p-1.5 transition-colors duration-300",
+                  "border-border/50 bg-muted/20 rounded-lg border p-1.5 transition-colors duration-300",
                   item.color === "cyan" && "text-cyan-400 group-hover:text-cyan-300",
                   item.color === "emerald" && "text-emerald-400 group-hover:text-emerald-300",
                   item.color === "sky" && "text-sky-400 group-hover:text-sky-300",
@@ -75,21 +75,21 @@ export function SectionCards({ stats }: SectionCardsProps) {
             </div>
             <Badge
               variant="outline"
-              className="h-4 border-white/5 bg-white/5 px-1.5 text-[8px] font-bold tracking-tighter text-cyan-400 uppercase transition-all"
+              className="border-border bg-muted/50 h-4 px-1.5 text-[8px] font-bold tracking-tighter text-cyan-400 uppercase transition-all"
             >
               {item.trend}
             </Badge>
           </div>
 
           <div className="flex items-baseline justify-between">
-            <div className="font-mono text-xl font-bold tracking-tight text-white">
+            <div className="text-foreground font-mono text-xl font-bold tracking-tight">
               {item.value}
             </div>
-            <div className="flex items-center gap-1.5 text-[9px] font-bold tracking-tighter text-slate-500 uppercase opacity-60">
+            <div className="text-muted-foreground flex items-center gap-1.5 text-[9px] font-bold tracking-tighter uppercase opacity-60">
               <span>{item.subtext}</span>
             </div>
           </div>
-          <div className="mt-1 truncate text-[10px] font-bold tracking-wide text-slate-500 uppercase transition-colors group-hover:text-slate-400">
+          <div className="text-muted-foreground group-hover:text-foreground/80 mt-1 truncate text-[10px] font-bold tracking-wide uppercase transition-colors">
             {item.title}
           </div>
         </div>

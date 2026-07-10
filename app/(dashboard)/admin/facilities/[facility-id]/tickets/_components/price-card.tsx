@@ -4,6 +4,7 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
+import { updatePrice, getTicketHierarchy, deletePrice } from "../_lib/ticket-admin-actions";
 
 const DAY_LABELS: Record<string, string> = {
   ALL: "Svi dani",
@@ -44,7 +45,6 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
       timeSlot: form.timeSlot,
     });
     // Reload
-    const { getTicketHierarchy } = await import("../_lib/ticket-admin-actions");
     await getTicketHierarchy(facilityId);
     // Find and update
     setEditing(false);

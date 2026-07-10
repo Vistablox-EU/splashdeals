@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Icon } from "@/components/ui/Icon";
@@ -51,13 +51,15 @@ export function SectionDrawer({ menuId, section, open, onClose, onSaved }: Secti
   const [saving, setSaving] = useState(false);
 
   // Reset on open
-  useState(() => {
+  useEffect(() => {
     if (open) {
-      setHeading(section?.heading || "");
-      setColumn(section?.column ?? 0);
-      setStyle(section?.style || "LINKS");
+      requestAnimationFrame(() => {
+        setHeading(section?.heading || "");
+        setColumn(section?.column ?? 0);
+        setStyle(section?.style || "LINKS");
+      });
     }
-  });
+  }, [open, section]);
 
   const handleSave = useCallback(async () => {
     setSaving(true);

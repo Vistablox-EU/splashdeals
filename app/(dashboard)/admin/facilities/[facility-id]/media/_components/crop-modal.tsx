@@ -137,9 +137,20 @@ export function CropModal({
 
       ctx.drawImage(img, x, y, drawW, drawH);
 
-      const blob = await new Promise<Blob | null>((resolve) => {
+      let blob = await new Promise<Blob | null>((resolve) => {
         canvas.toBlob(resolve, "image/webp", 0.85);
       });
+
+      let mimeType = "image/webp";
+      let ext = "webp";
+
+      if (!blob) {
+        blob = await new Promise<Blob | null>((resolve) => {
+          canvas.toBlob(resolve, "image/png");
+        });
+        mimeType = "image/png";
+        ext = "png";
+      }
 
       if (!blob) {
         toast.error("Greška pri kreiranju slike.");
@@ -147,7 +158,7 @@ export function CropModal({
         return;
       }
 
-      const file = new File([blob], `cropped-${Date.now()}.webp`, { type: "image/webp" });
+      const file = new File([blob], `cropped-${Date.now()}.${ext}`, { type: mimeType });
       await onSave(file);
     } catch (err) {
       console.error("[CropModal]", err);

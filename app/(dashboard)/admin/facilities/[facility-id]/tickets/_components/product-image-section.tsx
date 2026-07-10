@@ -4,6 +4,7 @@ import NextImage from "next/image";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
+import { toast } from "sonner";
 
 interface Props {
   productId: string;
@@ -35,6 +36,8 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
       const result = await uploadProductImage(productId, formData);
       if (result.success && result.url) {
         onImageChange(result.url);
+      } else {
+        toast.error(result.error || "Upload failed");
       }
     } finally {
       setUploading(false);
@@ -47,6 +50,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
     const { deleteProductImage } = await import("../_lib/ticket-image-actions");
     const result = await deleteProductImage(productId, imageUrl);
     if (result.success) onImageChange(null);
+    else toast.error(result.error || "Delete failed");
   };
 
   const handleRename = async () => {
@@ -58,6 +62,8 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
       if (result.success && result.url) {
         onImageChange(result.url);
         setNewName("");
+      } else {
+        toast.error(result.error || "Rename failed");
       }
     } finally {
       setRenaming(false);

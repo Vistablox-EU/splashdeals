@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Icon } from "@/components/ui/Icon";
@@ -29,12 +29,14 @@ export function MenuDrawer({ menu, open, onClose, onSaved }: MenuDrawerProps) {
   const [saving, setSaving] = useState(false);
 
   // Reset form when menu changes
-  useState(() => {
+  useEffect(() => {
     if (open) {
-      setLabel(menu?.label || "");
-      setIcon(menu?.icon || "menu_book");
+      requestAnimationFrame(() => {
+        setLabel(menu?.label || "");
+        setIcon(menu?.icon || "menu_book");
+      });
     }
-  });
+  }, [open, menu]);
 
   const handleSave = useCallback(async () => {
     if (!label.trim()) return;

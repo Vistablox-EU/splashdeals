@@ -29,7 +29,25 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export const description = "An interactive area chart";
 
-const chartData = [
+/**
+ * 🚧 Demo / Placeholder Data
+ *
+ * These hardcoded visitor statistics are placeholder data used for UI development
+ * only. No real visitor-tracking infrastructure (pageviews, sessions, device
+ * analytics) is connected yet.
+ *
+ * To connect real data:
+ * 1. Add a analytics/pageview model to the Prisma schema
+ * 2. Create a server-side data function in lib/data/admin.ts
+ * 3. Pass the data as props from the dashboard page (see page.tsx for pattern)
+ * 4. Replace this demo flag and the array below with the fetched data
+ *
+ * Until then, the "DEMO" badge in the chart header makes the nature of this
+ * data visually unambiguous to all admins.
+ */
+const IS_DEMO_CHART = true;
+
+const demoChartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
   { date: "2024-04-02", desktop: 97, mobile: 180 },
   { date: "2024-04-03", desktop: 167, mobile: 120 },
@@ -152,7 +170,7 @@ export function ChartAreaInteractive() {
     return () => cancelAnimationFrame(timer);
   }, [isMobile]);
 
-  const filteredData = chartData.filter((item) => {
+  const filteredData = demoChartData.filter((item) => {
     const date = new Date(item.date);
     const referenceDate = new Date("2024-06-30");
     let daysToSubtract = 90;
@@ -190,9 +208,21 @@ export function ChartAreaInteractive() {
     <Card className="border-border/50 bg-card/40 @container/card h-full backdrop-blur-md">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 py-3 sm:px-6">
         <div className="flex flex-col gap-0 @[540px]/card:flex-row @[540px]/card:items-baseline @[540px]/card:gap-2">
-          <CardTitle className="text-foreground text-base">Total Visitors</CardTitle>
+          <CardTitle className="text-foreground inline-flex items-center gap-2 text-base">
+            Total Visitors
+            {IS_DEMO_CHART && (
+              <span className="bg-muted text-muted-foreground inline-flex items-center rounded border px-1.5 py-0.5 text-[9px] font-black tracking-[0.15em] uppercase">
+                DEMO
+              </span>
+            )}
+          </CardTitle>
           <CardDescription className="text-muted-foreground text-[10px] font-bold tracking-wider uppercase opacity-70">
             Last {timeRange === "90d" ? "3 Months" : timeRange === "30d" ? "30 Days" : "7 Days"}
+            {IS_DEMO_CHART && (
+              <span className="ml-2 font-mono text-[9px] font-normal normal-case italic opacity-60">
+                — placeholder data
+              </span>
+            )}
           </CardDescription>
         </div>
         <CardAction>

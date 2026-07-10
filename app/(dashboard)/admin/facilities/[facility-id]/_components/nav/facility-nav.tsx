@@ -104,9 +104,15 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
             {facility.name}
           </span>
           <div
-            className="size-1.5 shrink-0 rounded-full bg-emerald-500"
+            className={cn(
+              "size-1.5 shrink-0 rounded-full",
+              facility.status === "ACTIVE" && "bg-emerald-500",
+              facility.status === "DRAFT" && "bg-yellow-500",
+              (facility.status === "CLOSED" || facility.status === "EMERGENCY_SHUTDOWN") &&
+                "bg-red-500",
+            )}
             role="status"
-            aria-label="Facility online"
+            aria-label={`Facility ${facility.status.toLowerCase().replace("_", " ")}`}
           />
         </div>
 

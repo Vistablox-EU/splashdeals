@@ -25,6 +25,8 @@ import {
   reorderMenusAction,
   reorderSectionsAction,
   getMenusAction,
+  deleteSectionAction,
+  deleteItemAction,
 } from "@/app/(server)/actions/navigation";
 import type { MenuWithSections, SectionWithItems, NavigationMenuItem } from "./types";
 
@@ -369,7 +371,6 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
   /* ─── Delete helpers ───────────────────────────── */
   const handleDeleteSection = useCallback(
     async (section: SectionWithItems) => {
-      const { deleteSectionAction } = await import("@/app/(server)/actions/navigation");
       if (!confirm(`Obrisati sekciju "${section.heading || "bez naslova"}"?`)) return;
       const result = await deleteSectionAction(section.id);
       if (result.success) {
@@ -385,7 +386,6 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
 
   const handleDeleteItem = useCallback(
     async (item: NavigationMenuItem) => {
-      const { deleteItemAction } = await import("@/app/(server)/actions/navigation");
       if (!confirm(`Obrisati stavku "${item.label}"?`)) return;
       const result = await deleteItemAction(item.id);
       if (result.success) {

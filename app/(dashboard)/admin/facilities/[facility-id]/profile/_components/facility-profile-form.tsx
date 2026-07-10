@@ -84,29 +84,11 @@ export function FacilityProfileForm({
   const [logoPortalTarget, setLogoPortalTarget] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    // 🔍 Query the DOM for both portal targets and update state if they have changed
-    const updateTargets = () => {
-      const loc = document.getElementById("location-portal-target");
-      const logo = document.getElementById("logo-portal-target");
-
-      setPortalTarget((prev) => (prev !== loc ? loc : prev));
-      setLogoPortalTarget((prev) => (prev !== logo ? logo : prev));
-    };
-
-    // ⚡ Sync immediately on client mount
-    updateTargets();
-
-    // 🔄 Set up a MutationObserver to re-sync whenever DOM mutations happen (e.g. hydration, Suspense state changes)
-    const observer = new MutationObserver(() => {
-      updateTargets();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
-    return () => observer.disconnect();
+    // 🔍 Query the DOM for both portal targets on mount (portals rendered by parent)
+    const loc = document.getElementById("location-portal-target");
+    const logo = document.getElementById("logo-portal-target");
+    if (loc) requestAnimationFrame(() => setPortalTarget(loc));
+    if (logo) requestAnimationFrame(() => setLogoPortalTarget(logo));
   }, []);
 
   const initialHours = (facility.hours || [])
