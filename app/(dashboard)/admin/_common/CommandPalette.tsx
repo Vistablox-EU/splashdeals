@@ -117,7 +117,7 @@ export function CommandPalette() {
             {transactions.map((tr) => (
               <CommandItem
                 key={tr.id}
-                onSelect={() => runCommand(() => router.push(`/admin/support`))}
+                onSelect={() => runCommand(() => router.push(`/admin/dashboard`))}
                 className="flex items-center gap-3 py-3 font-mono"
               >
                 <Icon name="credit_card" className="text-[16px] text-amber-400" />
@@ -145,7 +145,7 @@ export function CommandPalette() {
             <span className="text-xs font-bold">Facilities Registry</span>
             <CommandShortcut className="text-[10px]">G F</CommandShortcut>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => router.push("/admin/support"))}>
+          <CommandItem onSelect={() => runCommand(() => router.push("/admin/dashboard"))}>
             <Icon name="history" className="text-muted-foreground mr-2 text-[16px]" />
             <span className="text-xs font-bold">System Activity Logs</span>
           </CommandItem>
