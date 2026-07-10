@@ -90,6 +90,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 className="h-full w-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:rotate-1"
                 alt={m.caption || "Facility media"}
+                loading="lazy"
               />
             )}
             <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-[#020617]/90 via-transparent to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100">
