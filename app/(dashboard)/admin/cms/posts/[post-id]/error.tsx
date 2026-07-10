@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
 
 export default function CMSPostEditError({
   error,
@@ -21,13 +22,10 @@ export default function CMSPostEditError({
       <p className="text-muted-foreground max-w-md text-center text-sm">
         {error.message || "Neočekivana greška u uredivanju objave."}
       </p>
-      <button
-        onClick={reset}
-        className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium"
-      >
+      <Button onClick={reset}>
         <Icon name="refresh" className="size-4" />
         Pokušaj ponovo
-      </button>
+      </Button>
     </div>
   );
 }
