@@ -36,7 +36,7 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
 
   const handleSave = async () => {
     const { updatePrice } = await import("../_lib/ticket-admin-actions");
-    await updatePrice(price.id, {
+    await updatePrice(price.id, facilityId, {
       label: form.label || null,
       price: parseFloat(form.price) || 0,
       originalPrice: form.originalPrice ? parseFloat(form.originalPrice) : null,
@@ -166,7 +166,7 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
               <button
                 onClick={async () => {
                   const { deletePrice } = await import("../_lib/ticket-admin-actions");
-                  await deletePrice(price.id);
+                  await deletePrice(price.id, facilityId);
                   onDeleted();
                 }}
                 className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 flex h-7 w-7 items-center justify-center rounded-lg transition-all"
