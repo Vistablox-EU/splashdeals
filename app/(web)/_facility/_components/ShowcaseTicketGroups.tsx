@@ -201,8 +201,8 @@ export function ShowcaseTicketGroups({
     <div className="mx-auto w-full max-w-6xl space-y-8 pb-24 md:pb-0">
       {/* Scrollable glass pill tabs container */}
       <div className="relative mb-8 w-full">
-        <div className="from-background via-background/60 pointer-events-none absolute top-0 right-[-24px] bottom-0 z-10 w-16 bg-gradient-to-l to-transparent md:hidden" />
-        <div className="no-scrollbar md:bg-muted/50 md:border-border -mx-6 flex gap-2 overflow-x-auto scroll-smooth rounded-none border-none bg-transparent px-6 pt-1 pb-2 md:mx-0 md:rounded-full md:border md:px-1 md:py-1 md:backdrop-blur-md">
+        <div className="from-background via-background/60 pointer-events-none absolute top-0 right-[-24px] bottom-0 z-10 w-16 bg-gradient-to-l to-transparent lg:hidden" />
+        <div className="no-scrollbar lg:bg-muted/50 lg:border-border -mx-6 flex gap-2 overflow-x-auto scroll-smooth rounded-none border-none bg-transparent px-6 pt-1 pb-2 lg:mx-0 lg:rounded-full lg:border lg:px-1 lg:py-1 lg:backdrop-blur-md">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
