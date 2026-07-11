@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { MediaGrid } from "./media-grid";
 import { MediaSearch } from "./media-search";
@@ -23,14 +23,26 @@ interface MediaLibraryContentProps {
   dict: Record<string, unknown>;
   onSelect: (url: string, altText?: string) => void;
   actionLabel?: string;
+  onUploadsActiveChange?: (active: boolean) => void;
 }
 
-export function MediaLibraryContent({ dict, onSelect, actionLabel }: MediaLibraryContentProps) {
+export function MediaLibraryContent({
+  dict,
+  onSelect,
+  actionLabel,
+  onUploadsActiveChange,
+}: MediaLibraryContentProps) {
   const ml = dict as Record<string, unknown>;
   const [uploads, setUploads] = useState<UploadItem[]>([]);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
+
+  // Notify parent about upload state (sheet guard)
+  const hasActiveUploads = uploads.some((u) => u.status === "uploading");
+  useEffect(() => {
+    onUploadsActiveChange?.(hasActiveUploads);
+  }, [hasActiveUploads, onUploadsActiveChange]);
   const [sort, setSort] = useState("newest");
   const [typeFilter, setTypeFilter] = useState("all");
   const [dateRange, setDateRange] = useState("all");

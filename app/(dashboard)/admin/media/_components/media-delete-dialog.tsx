@@ -13,7 +13,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { checkMediaReferencesAction, deleteMediaAction } from "@/app/(server)/actions/cms-media";
+import {
+  checkMediaReferencesAction,
+  deleteMediaAction,
+  restoreMediaAction,
+} from "@/app/(server)/actions/cms-media";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
@@ -83,15 +87,33 @@ export function MediaDeleteDialog({
     };
   }, [open, mediaUrl]);
 
-  // Soft delete
+  // Soft delete with undo
   const handleSoftDelete = async () => {
     setIsDeleting(true);
     try {
       const result = await deleteMediaAction(mediaId);
 
       if (result.success && result.data?.deleted) {
-        toast.success(`"${mediaFilename}" je obrisana.`);
-        onDeleted();
+        setIsDeleting(false);
+        onOpenChange(false);
+        const undoId = setTimeout(() => {
+          onDeleted();
+        }, 5000);
+        toast(`${mediaFilename} obrisana.`, {
+          action: {
+            label: "Undo",
+            onClick: () => {
+              clearTimeout(undoId);
+              restoreMediaAction(mediaId).then((r) => {
+                if (r.success) {
+                  toast.success(`"${mediaFilename}" vraćena.`);
+                  onDeleted();
+                }
+              });
+            },
+          },
+          duration: 5000,
+        });
       } else if (result.success && result.data?.references) {
         toast.warning(
           dict.in_use_warning.replace("{count}", String(result.data.references.length)),
