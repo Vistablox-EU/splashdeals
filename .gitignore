@@ -107,6 +107,9 @@ memory/
 # Junk / Temp / Scratch
 # ──────────────────────────────────────────────
 
+# Docker dev environment
+docker/
+
 # Root junk
 P
 <loc>
