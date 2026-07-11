@@ -240,6 +240,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
               <Label>Sadržaj</Label>
               {}
               <RichTextEditor
+                source="blog"
                 content={watch("content") || ""}
                 onChange={(html) => setValue("content", html)}
                 placeholder="Počni da pišeš blog objavu..."

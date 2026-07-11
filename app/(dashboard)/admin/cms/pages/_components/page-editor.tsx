@@ -181,6 +181,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
               <Label>Sadržaj</Label>
               {}
               <RichTextEditor
+                source="stranica"
                 content={watch("content") || ""}
                 onChange={(html) => setValue("content", html)}
                 placeholder="Počni da pišeš sadržaj strane..."

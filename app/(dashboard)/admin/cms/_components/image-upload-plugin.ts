@@ -2,15 +2,16 @@
 
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import type { Editor } from "@tiptap/react";
+import { toast } from "sonner";
 
 const imageUploadKey = new PluginKey("image-upload");
 
 /**
- * Custom TiP tap plugin that intercepts pasted/dropped images,
- * uploads them via the existing /api/upload endpoint,
+ * Custom Tiptap plugin that intercepts pasted/dropped images,
+ * uploads them via the media library action (WebP + resize + cache),
  * and inserts the returned URL into the editor.
  */
-export function createImageUploadPlugin(_editor: Editor): Plugin {
+export function createImageUploadPlugin(_editor: Editor, source?: "blog" | "stranica"): Plugin {
   return new Plugin({
     key: imageUploadKey,
 
@@ -23,7 +24,7 @@ export function createImageUploadPlugin(_editor: Editor): Plugin {
           if (item.type.startsWith("image/")) {
             event.preventDefault();
             const file = item.getAsFile();
-            if (file) uploadAndInsert(_editor, file);
+            if (file) uploadAndInsert(_editor, file, source);
             return true;
           }
         }
@@ -37,7 +38,7 @@ export function createImageUploadPlugin(_editor: Editor): Plugin {
         for (const file of Array.from(files)) {
           if (file.type.startsWith("image/")) {
             event.preventDefault();
-            uploadAndInsert(_editor, file);
+            uploadAndInsert(_editor, file, source);
             return true;
           }
         }
@@ -49,23 +50,27 @@ export function createImageUploadPlugin(_editor: Editor): Plugin {
 
 export { imageUploadKey };
 
-async function uploadAndInsert(editor: Editor, file: File) {
-  // Show a loading placeholder
-  editor.chain().focus().setImage({ src: "", alt: "Učitavanje..." }).run();
+async function uploadAndInsert(editor: Editor, file: File, source?: "blog" | "stranica") {
+  const toastId = toast.loading("Otpremanje slike...");
 
   try {
     const formData = new FormData();
     formData.append("file", file);
+    if (source) formData.append("collection", source === "blog" ? "Blog" : "Stranica");
 
-    const { uploadImageAction } = await import("@/app/(server)/actions/upload");
-    const result = await uploadImageAction(formData);
+    const { uploadMediaAction } = await import("@/app/(server)/actions/cms-media");
+    const result = await uploadMediaAction(formData);
 
-    if (!result.success) throw new Error(result.error || "Upload failed");
+    if (!result.success || !result.data?.url) {
+      throw new Error(result.error || "Upload failed");
+    }
 
-    editor.chain().focus().setImage({ src: result.url! }).run();
+    editor.chain().focus().setImage({ src: result.data.url }).run();
+    toast.dismiss(toastId);
+    toast.success("Slika je otpremljena.");
   } catch (err) {
+    toast.dismiss(toastId);
+    toast.error("Greška pri otpremanju slike.");
     console.error("[CMS Image Upload]", err);
-    // Remove the failed placeholder
-    editor.chain().focus().undo().run();
   }
 }

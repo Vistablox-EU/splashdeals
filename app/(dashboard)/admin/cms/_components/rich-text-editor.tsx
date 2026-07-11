@@ -15,12 +15,15 @@ import { Toggle } from "@/components/ui/toggle";
 import { Separator } from "@/components/ui/separator";
 import { createImageUploadPlugin } from "./image-upload-plugin";
 import { MediaLibraryDialog } from "@/app/(dashboard)/admin/media/_components/media-library-dialog";
+import { ImageBubbleMenu } from "./image-bubble-menu";
+import { toast } from "sonner";
 
 interface RichTextEditorProps {
   content: string;
   onChange: (html: string) => void;
   placeholder?: string;
   minHeight?: number;
+  source?: "blog" | "stranica";
   dict?: Record<string, unknown>;
 }
 
@@ -29,6 +32,7 @@ export function RichTextEditor({
   onChange,
   placeholder = "Počni da pišeš...",
   minHeight = 400,
+  source,
   dict,
 }: RichTextEditorProps) {
   const editor = useEditor({
@@ -65,29 +69,38 @@ export function RichTextEditor({
     immediatelyRender: false,
   });
 
-  // Register image upload plugin (drag-drop / paste)
+  // Register image upload plugin (drag-drop / paste) — pass source for collection tagging
   useEffect(() => {
     if (!editor) return;
-    const plugin = createImageUploadPlugin(editor);
+    const plugin = createImageUploadPlugin(editor, source);
     editor.registerPlugin(plugin);
     return () => {
       try {
         editor.unregisterPlugin("image-upload");
       } catch {}
     };
-  }, [editor]);
+  }, [editor, source]);
 
   if (!editor) return null;
 
   return (
     <div className="overflow-hidden rounded-lg border">
-      <Toolbar editor={editor} dict={dict} />
+      <Toolbar editor={editor} dict={dict} source={source} />
+      <ImageBubbleMenu editor={editor} dict={dict} />
       <EditorContent editor={editor} />
     </div>
   );
 }
 
-function Toolbar({ editor, dict }: { editor: Editor; dict?: Record<string, unknown> }) {
+function Toolbar({
+  editor,
+  dict,
+  source,
+}: {
+  editor: Editor;
+  dict?: Record<string, unknown>;
+  source?: "blog" | "stranica";
+}) {
   const linkUrlRef = useRef<HTMLInputElement>(null);
 
   const setLink = useCallback(() => {
@@ -107,22 +120,31 @@ function Toolbar({ editor, dict }: { editor: Editor; dict?: Record<string, unkno
       const file = input.files?.[0];
       if (!file) return;
 
-      // Upload via server action
+      // Upload via media library action (WebP + resize + cache)
       const formData = new FormData();
       formData.append("file", file);
+      if (source) formData.append("collection", source === "blog" ? "Blog" : "Stranica");
 
+      const toastId = toast.loading("Otpremanje slike...");
       try {
-        const { uploadImageAction } = await import("@/app/(server)/actions/upload");
-        const res = await uploadImageAction(formData);
-        if (res.success && res.url) {
-          editor.chain().focus().setImage({ src: res.url }).run();
+        const { uploadMediaAction } = await import("@/app/(server)/actions/cms-media");
+        const res = await uploadMediaAction(formData);
+        if (res.success && res.data?.url) {
+          editor.chain().focus().setImage({ src: res.data.url }).run();
+          toast.dismiss(toastId);
+          toast.success("Slika je otpremljena.");
+        } else {
+          toast.dismiss(toastId);
+          toast.error(res.error || "Greška pri otpremanju slike.");
         }
       } catch (err) {
+        toast.dismiss(toastId);
+        toast.error("Greška pri otpremanju slike.");
         console.error("[CMS Image Upload]", err);
       }
     };
     input.click();
-  }, [editor]);
+  }, [editor, source]);
 
   return (
     <TooltipProvider>
