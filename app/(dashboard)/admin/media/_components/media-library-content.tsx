@@ -60,7 +60,6 @@ export function MediaLibraryContent({ dict, onSelect, actionLabel }: MediaLibrar
         ) {
           try {
             const canvas = document.createElement("canvas");
-            const img = new Image();
             const bitmap = await createImageBitmap(file);
             canvas.width = bitmap.width;
             canvas.height = bitmap.height;
