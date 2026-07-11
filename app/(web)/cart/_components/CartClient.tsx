@@ -203,7 +203,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                         }}
                         variant="ghost"
                         size="icon"
-                        className="h-10 w-10 rounded-xl"
+                        className="h-11 w-11 rounded-xl"
                         aria-label="Smanji količinu"
                       >
                         <Icon name="remove" className="text-[16px]" />
@@ -224,7 +224,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                         }}
                         variant="ghost"
                         size="icon"
-                        className="h-10 w-10 rounded-xl"
+                        className="h-11 w-11 rounded-xl"
                         aria-label="Povećaj količinu"
                       >
                         <Icon name="add" className="text-[16px]" />
@@ -245,8 +245,8 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                           removeItem(item.id);
                         }}
                         variant="ghost"
-                        size="sm"
-                        className="text-destructive/60 hover:text-destructive flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase"
+                        size="default"
+                        className="text-destructive/60 hover:text-destructive flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase h-11"
                         aria-label="Ukloni stavku"
                       >
                         <Icon name="delete" className="text-[14px]" />

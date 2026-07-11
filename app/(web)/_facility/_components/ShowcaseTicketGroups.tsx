@@ -541,7 +541,7 @@ function MobileTicketAccordion({
                     size="icon"
                     onClick={() => setQty(Math.max(activeProduct.minPeople || 1, qty - 1))}
                     disabled={isAdding || isAdded || qty <= (activeProduct.minPeople || 1)}
-                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-8 w-8 rounded-xl active:scale-90"
+                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-11 w-11 rounded-xl active:scale-90"
                     aria-label="Smanji količinu"
                   >
                     <Icon name="remove" className="text-[12px]" />
@@ -560,7 +560,7 @@ function MobileTicketAccordion({
                       isAdded ||
                       qty >= (activeProduct.maxPeople ?? MAX_QUANTITY_PER_ITEM)
                     }
-                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-8 w-8 rounded-xl active:scale-90"
+                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-11 w-11 rounded-xl active:scale-90"
                     aria-label="Povećaj količinu"
                   >
                     <Icon name="add" className="text-[12px]" />
@@ -888,7 +888,7 @@ function TierList({
                 variant="ghost"
                 size="icon"
                 onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) - 1)}
-                className="hover:bg-muted/50 text-muted-foreground h-8 w-8 rounded-md active:scale-90"
+                className="hover:bg-muted/50 text-muted-foreground h-11 w-11 rounded-md active:scale-90"
                 aria-label="Smanji količinu"
               >
                 <Icon name="remove" className="text-[14px]" />
@@ -905,7 +905,7 @@ function TierList({
                     Math.min(MAX_QUANTITY_PER_ITEM, (quantities[tier.id] || 0) + 1),
                   )
                 }
-                className="hover:bg-muted/50 text-muted-foreground h-8 w-8 rounded-md active:scale-90"
+                className="hover:bg-muted/50 text-muted-foreground h-11 w-11 rounded-md active:scale-90"
                 aria-label="Povećaj količinu"
               >
                 <Icon name="add" className="text-[14px]" />
@@ -978,7 +978,7 @@ function TierGrid({
                 variant="ghost"
                 size="icon"
                 onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) - 1)}
-                className="hover:bg-muted/50 text-muted-foreground h-8 w-8 rounded-md"
+                className="hover:bg-muted/50 text-muted-foreground h-11 w-11 rounded-md"
                 aria-label="Smanji količinu"
               >
                 <Icon name="remove" className="text-[14px]" />
@@ -995,7 +995,7 @@ function TierGrid({
                     Math.min(MAX_QUANTITY_PER_ITEM, (quantities[tier.id] || 0) + 1),
                   )
                 }
-                className="hover:bg-muted/50 text-muted-foreground h-8 w-8 rounded-md"
+                className="hover:bg-muted/50 text-muted-foreground h-11 w-11 rounded-md"
                 aria-label="Povećaj količinu"
               >
                 <Icon name="add" className="text-[14px]" />

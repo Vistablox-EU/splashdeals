@@ -510,7 +510,7 @@ export function TicketPurchaseModal({
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="bg-muted/20 border-border text-muted-foreground hover:text-foreground h-8 w-8 rounded-full border"
+              className="bg-muted/20 border-border text-muted-foreground hover:text-foreground h-11 w-11 rounded-full border"
               aria-label="Zatvori"
             >
               <Icon name="close" className="text-[16px]" />
@@ -539,7 +539,7 @@ export function TicketPurchaseModal({
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="bg-muted/10 border-border text-muted-foreground hover:text-foreground hover:bg-muted/20 absolute top-6 right-6 z-30 h-9 w-9 rounded-full border shadow-sm active:scale-90"
+              className="bg-muted/10 border-border text-muted-foreground hover:text-foreground hover:bg-muted/20 absolute top-6 right-6 z-30 h-11 w-11 rounded-full border shadow-sm active:scale-90"
               aria-label="Zatvori"
             >
               <Icon name="close" className="text-[18px]" />

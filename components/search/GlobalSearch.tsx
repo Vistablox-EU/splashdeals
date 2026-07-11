@@ -115,7 +115,7 @@ export function GlobalSearch() {
                     <button
                       key={s}
                       onClick={() => setQuery(s)}
-                      className="hover:text-navy-deep rounded-full border border-white/5 bg-white/5 px-4 py-2 text-[10px] font-black uppercase transition-all hover:bg-cyan-500"
+                      className="hover:text-navy-deep rounded-full border border-white/5 bg-white/5 px-4 py-3 text-[10px] font-black uppercase transition-all hover:bg-cyan-500 min-h-[44px]"
                     >
                       {s}
                     </button>

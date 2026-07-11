@@ -47,7 +47,7 @@ export function MobileOverlay({
               <Link
                 href={navLinks[0].href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-foreground uppercase italic transition-colors"
+                className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-foreground uppercase italic transition-colors py-2"
               >
                 <Icon name="search" className="text-primary text-[32px]" />
                 {navLinks[0].name}
@@ -73,7 +73,7 @@ export function MobileOverlay({
                 <Link
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-foreground uppercase italic transition-colors"
+                  className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-foreground uppercase italic transition-colors py-2"
                 >
                   <Icon name={link.icon} className="text-primary text-[32px]" />
                   {link.name}

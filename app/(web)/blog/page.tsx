@@ -135,11 +135,11 @@ export default async function BlogPage({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <nav className="mt-12 flex items-center justify-center gap-2" aria-label="Blog pagination">
+        <nav className="mt-12 flex items-center justify-center gap-3" aria-label="Blog pagination">
           {currentPage > 1 && (
             <Link
               href={`/blog?page=${currentPage - 1}`}
-              className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
+              className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm min-h-[44px] transition-colors"
             >
               <Icon name="chevron_left" className="size-4" />
               Prethodna
@@ -151,7 +151,7 @@ export default async function BlogPage({
           {currentPage < totalPages && (
             <Link
               href={`/blog?page=${currentPage + 1}`}
-              className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
+              className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm min-h-[44px] transition-colors"
             >
               Sledeća
               <Icon name="chevron_right" className="size-4" />

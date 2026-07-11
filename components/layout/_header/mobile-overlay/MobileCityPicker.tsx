@@ -49,7 +49,7 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
                 href={`/search?q=${encodeURIComponent(city.name)}`}
                 onClick={onCitySelect}
                 className={cn(
-                  "flex h-10 shrink-0 items-center justify-center rounded-full border px-4 text-[10px] font-black tracking-widest uppercase transition-all duration-300 active:scale-95",
+                  "flex h-11 shrink-0 items-center justify-center rounded-full border px-4 text-[10px] font-black tracking-widest uppercase transition-all duration-300 active:scale-95",
                   isPopular
                     ? "bg-primary/10 border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/40 shadow-[0_0_12px_hsl(var(--primary)/0.05)]"
                     : "border-border/10 bg-muted/10 text-muted-foreground hover:border-border/20 hover:bg-muted/20 hover:text-foreground",
@@ -65,7 +65,7 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
           <Link
             href={`/`}
             onClick={onCitySelect}
-            className="text-primary/80 hover:text-primary hover:border-primary/30 flex h-10 shrink-0 items-center justify-center rounded-full border border-dashed border-border/20 bg-white/5 px-5 text-[10px] font-black tracking-widest uppercase transition-all active:scale-95"
+            className="text-primary/80 hover:text-primary hover:border-primary/30 flex h-11 shrink-0 items-center justify-center rounded-full border border-dashed border-border/20 bg-white/5 px-5 text-[10px] font-black tracking-widest uppercase transition-all active:scale-95"
           >
             {dict.nav.all_regions || "Sve Regije"}
           </Link>

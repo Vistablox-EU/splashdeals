@@ -81,14 +81,14 @@ export default function GlobalWebError({
             <Button
               onClick={reset}
               variant="outline"
-              className="group flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[10px] font-black tracking-widest uppercase"
+              className="group flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-xs font-black tracking-widest uppercase"
             >
               <Icon name="refresh" className="text-[16px]" />
               {t("errors", "try_again")}
             </Button>
             <Link
               href="/"
-              className="bg-primary hover:bg-primary/90 text-background shadow-primary/10 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[10px] font-black tracking-widest uppercase shadow-2xl transition-all"
+              className="bg-primary hover:bg-primary/90 text-background shadow-primary/10 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-xs font-black tracking-widest uppercase shadow-2xl transition-all"
             >
               <Icon name="home" className="text-[16px]" />
               {t("errors", "back_home")}
