@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -28,12 +28,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { deletePageAction, markAsReviewedAction } from "@/app/(server)/actions/cms";
+import {
+  deletePageAction,
+  markAsReviewedAction,
+  approvePostAction,
+  rejectPostAction,
+} from "@/app/(server)/actions/cms";
 
 const statusLabels: Record<string, string> = {
   DRAFT: "Nacrt",
   PUBLISHED: "Objavljeno",
   ARCHIVED: "Arhivirano",
+  REVIEW: "Na pregledu",
 };
 
 interface PageRow {
@@ -52,9 +58,11 @@ interface PageRow {
 export function PagesListClient({
   pages,
   isStaleFilter,
+  isReviewFilter = false,
 }: {
   pages: Array<Record<string, unknown>>;
   isStaleFilter: boolean;
+  isReviewFilter: boolean;
 }) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
@@ -66,6 +74,8 @@ export function PagesListClient({
       case "PUBLISHED":
         return "default";
       case "DRAFT":
+        return "secondary";
+      case "REVIEW":
         return "secondary";
       case "ARCHIVED":
         return "outline";
@@ -98,6 +108,36 @@ export function PagesListClient({
       } else {
         toast.error(result.error || "Greška");
       }
+    },
+    [router],
+  );
+
+  const handleApprove = useCallback(
+    (id: string) => {
+      startTransition(async () => {
+        const result = await approvePostAction(id, "page");
+        if (result.success) {
+          toast.success("Strana odobrena i objavljena");
+          router.refresh();
+        } else {
+          toast.error(result.error || "Greška pri odobravanju");
+        }
+      });
+    },
+    [router],
+  );
+
+  const handleReject = useCallback(
+    (id: string) => {
+      startTransition(async () => {
+        const result = await rejectPostAction(id, "page");
+        if (result.success) {
+          toast.success("Strana vraćena na doradu");
+          router.refresh();
+        } else {
+          toast.error(result.error || "Greška pri vraćanju na doradu");
+        }
+      });
     },
     [router],
   );
@@ -159,6 +199,11 @@ export function PagesListClient({
               Starija od 12 meseci
             </Badge>
           )}
+          {row.original.status === "REVIEW" && (
+            <Badge variant="secondary" className="bg-amber-500/10 text-xs text-amber-600">
+              Čeka pregled
+            </Badge>
+          )}
         </div>
       ),
     },
@@ -199,34 +244,57 @@ export function PagesListClient({
       id: "actions",
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-1">
-          {row.original.isStale && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-xs"
-              onClick={() => handleMarkReviewed([row.original.id])}
-            >
-              I dalje je aktuelno
-            </Button>
+          {row.original.status === "REVIEW" ? (
+            <>
+              <Button
+                variant="default"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                onClick={() => handleApprove(row.original.id)}
+              >
+                Odobri
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                onClick={() => handleReject(row.original.id)}
+              >
+                Vrati na doradu
+              </Button>
+            </>
+          ) : (
+            <>
+              {row.original.isStale && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={() => handleMarkReviewed([row.original.id])}
+                >
+                  I dalje je aktuelno
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                aria-label={`Izmeni stranu ${row.original.title}`}
+                onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
+              >
+                <Icon name="edit" className="size-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                aria-label={`Obriši stranu ${row.original.title}`}
+                onClick={() => handleDelete(row.original.id)}
+              >
+                <Icon name="delete" className="size-4" />
+              </Button>
+            </>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0"
-            aria-label={`Izmeni stranu ${row.original.title}`}
-            onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
-          >
-            <Icon name="edit" className="size-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive hover:text-destructive h-8 w-8 p-0"
-            aria-label={`Obriši stranu ${row.original.title}`}
-            onClick={() => handleDelete(row.original.id)}
-          >
-            <Icon name="delete" className="size-4" />
-          </Button>
         </div>
       ),
     },
@@ -263,6 +331,12 @@ export function PagesListClient({
           <Link href={isStaleFilter ? "/admin/cms/pages" : "/admin/cms/pages?stale=true"}>
             <Icon name="clock" className="size-3.5" />
             {isStaleFilter ? "Sve strane" : "Stare strane"}
+          </Link>
+        </Button>
+        <Button variant={isReviewFilter ? "default" : "outline"} size="sm" asChild>
+          <Link href={isReviewFilter ? "/admin/cms/pages" : "/admin/cms/pages?status=review"}>
+            <Icon name="eye" className="size-3.5" />
+            Na pregledu
           </Link>
         </Button>
       </div>

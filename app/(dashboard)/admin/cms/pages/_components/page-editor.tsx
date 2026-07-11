@@ -26,7 +26,13 @@ import { RichTextEditor } from "../../_components/rich-text-editor";
 import { SEOPanel } from "../../_components/seo-panel";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
-import { createPageAction, updatePageAction } from "@/app/(server)/actions/cms";
+import {
+  createPageAction,
+  updatePageAction,
+  submitForReviewAction,
+  approvePostAction,
+  rejectPostAction,
+} from "@/app/(server)/actions/cms";
 import { useCmsAutosave, AutosaveData } from "@/hooks/use-cms-autosave";
 
 function countImagesWithoutAlt(html: string): number {
@@ -55,7 +61,7 @@ const pageFormSchema = z.object({
   template: z.string().optional(),
   showHeader: z.boolean().optional(),
   showFooter: z.boolean().optional(),
-  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
+  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED"]).optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   ogTitle: z.string().optional(),
@@ -87,7 +93,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
       template: (page?.template as string) || "default",
       showHeader: (page?.showHeader as boolean) ?? true,
       showFooter: (page?.showFooter as boolean) ?? true,
-      status: (page?.status as "DRAFT" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
+      status: (page?.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
       metaTitle: (page?.metaTitle as string) || "",
       metaDescription: (page?.metaDescription as string) || "",
       ogTitle: (page?.ogTitle as string) || "",
@@ -255,6 +261,52 @@ export function PageEditor({ page, dict }: PageEditorProps) {
             </div>
           </div>
         )}
+        {/* REVIEW status banner */}
+        {isEditing && watch("status") === "REVIEW" && (
+          <div className="mb-4 rounded-lg border border-yellow-400 bg-yellow-50 p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-yellow-800">Ova strana čeka pregled</p>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="default"
+                  className="bg-green-600 text-white hover:bg-green-700"
+                  onClick={async () => {
+                    const result = await approvePostAction(page!.id as string, "page");
+                    if (result.success) {
+                      toast.success("Strana odobrena");
+                      router.push("/admin/cms/pages");
+                      router.refresh();
+                    } else {
+                      toast.error(result.error || "Greška pri odobravanju");
+                    }
+                  }}
+                >
+                  Odobri
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="border-red-300 text-red-700 hover:bg-red-50"
+                  onClick={async () => {
+                    const result = await rejectPostAction(page!.id as string, "page");
+                    if (result.success) {
+                      toast.success("Strana vraćena na doradu");
+                      router.push("/admin/cms/pages");
+                      router.refresh();
+                    } else {
+                      toast.error(result.error || "Greška pri vraćanju");
+                    }
+                  }}
+                >
+                  Vrati na doradu
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_380px]">
           <div className="space-y-6">
             <div className="space-y-2">
@@ -329,7 +381,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
                 <Select
                   value={watch("status") || "DRAFT"}
                   onValueChange={(value) =>
-                    setValue("status", value as "DRAFT" | "PUBLISHED" | "ARCHIVED")
+                    setValue("status", value as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED")
                   }
                 >
                   <SelectTrigger id="status" aria-label="Status" className="w-full">
@@ -337,6 +389,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="DRAFT">Nacrt</SelectItem>
+                    <SelectItem value="REVIEW">Na pregledu</SelectItem>
                     <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
                     <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
                   </SelectContent>
@@ -435,6 +488,26 @@ export function PageEditor({ page, dict }: PageEditorProps) {
                     {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
                   </Button>
                 </div>
+                {isEditing && watch("status") === "DRAFT" && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={isPending}
+                    onClick={async () => {
+                      const result = await submitForReviewAction(page!.id as string, "page");
+                      if (result.success) {
+                        toast.success("Strana poslata na pregled");
+                        router.push("/admin/cms/pages");
+                        router.refresh();
+                      } else {
+                        toast.error(result.error || "Greška pri slanju na pregled");
+                      }
+                    }}
+                  >
+                    <Icon name="rate_review" className="size-4" />
+                    Pošalji na pregled
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="outline"

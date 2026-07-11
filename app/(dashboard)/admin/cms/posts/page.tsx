@@ -14,19 +14,29 @@ export const metadata: Metadata = {
 export default async function PostsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ stale?: string }>;
+  searchParams: Promise<{ stale?: string; status?: string }>;
 }) {
   await requireAdmin();
   await connection();
 
   const params = await searchParams;
   const isStaleFilter = params.stale === "true";
+  const isReviewFilter = params.status === "review";
 
   const staleThreshold = new Date();
   staleThreshold.setFullYear(staleThreshold.getFullYear() - 1);
 
   let posts;
-  if (isStaleFilter) {
+  if (isReviewFilter) {
+    posts = await prisma.blogPost.findMany({
+      where: { status: "REVIEW" },
+      orderBy: { updatedAt: "desc" },
+      include: {
+        category: { select: { id: true, name: true, slug: true, color: true } },
+        _count: { select: { tags: true } },
+      },
+    });
+  } else if (isStaleFilter) {
     posts = await prisma.blogPost.findMany({
       where: {
         status: "PUBLISHED",
@@ -86,6 +96,7 @@ export default async function PostsPage({
       <PostsListClient
         posts={serialized as unknown as Array<Record<string, unknown>>}
         isStaleFilter={isStaleFilter}
+        isReviewFilter={isReviewFilter}
       />
     </div>
   );

@@ -620,6 +620,7 @@ model CmsMedia {
 
 enum PostStatus {
   DRAFT
+  REVIEW
   PUBLISHED
   ARCHIVED
 

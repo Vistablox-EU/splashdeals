@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -35,12 +35,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { deleteBlogPostAction, markAsReviewedAction } from "@/app/(server)/actions/cms";
+import {
+  deleteBlogPostAction,
+  markAsReviewedAction,
+  approvePostAction,
+  rejectPostAction,
+} from "@/app/(server)/actions/cms";
 
 const statusLabels: Record<string, string> = {
   DRAFT: "Nacrt",
   PUBLISHED: "Objavljeno",
   ARCHIVED: "Arhivirano",
+  REVIEW: "Na pregledu",
 };
 
 const statusBadgeVariant = (status: string): "default" | "secondary" | "outline" => {
@@ -48,6 +54,8 @@ const statusBadgeVariant = (status: string): "default" | "secondary" | "outline"
     case "PUBLISHED":
       return "default";
     case "DRAFT":
+      return "secondary";
+    case "REVIEW":
       return "secondary";
     default:
       return "outline";
@@ -73,9 +81,11 @@ interface PostRow {
 export function PostsListClient({
   posts,
   isStaleFilter,
+  isReviewFilter = false,
 }: {
   posts: Array<Record<string, unknown>>;
   isStaleFilter: boolean;
+  isReviewFilter: boolean;
 }) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
@@ -106,6 +116,36 @@ export function PostsListClient({
       } else {
         toast.error(result.error || "Greška");
       }
+    },
+    [router],
+  );
+
+  const handleApprove = useCallback(
+    (id: string) => {
+      startTransition(async () => {
+        const result = await approvePostAction(id, "post");
+        if (result.success) {
+          toast.success("Objava odobrena i objavljena");
+          router.refresh();
+        } else {
+          toast.error(result.error || "Greška pri odobravanju");
+        }
+      });
+    },
+    [router],
+  );
+
+  const handleReject = useCallback(
+    (id: string) => {
+      startTransition(async () => {
+        const result = await rejectPostAction(id, "post");
+        if (result.success) {
+          toast.success("Objava vraćena na doradu");
+          router.refresh();
+        } else {
+          toast.error(result.error || "Greška pri vraćanju na doradu");
+        }
+      });
     },
     [router],
   );
@@ -166,6 +206,11 @@ export function PostsListClient({
               Starija od 12 meseci
             </Badge>
           )}
+          {row.original.status === "REVIEW" && (
+            <Badge variant="secondary" className="bg-amber-500/10 text-xs text-amber-600">
+              Čeka pregled
+            </Badge>
+          )}
         </div>
       ),
     },
@@ -218,34 +263,57 @@ export function PostsListClient({
       id: "actions",
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-1">
-          {row.original.isStale && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-xs"
-              onClick={() => handleMarkReviewed([row.original.id])}
-            >
-              I dalje je aktuelno
-            </Button>
+          {row.original.status === "REVIEW" ? (
+            <>
+              <Button
+                variant="default"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                onClick={() => handleApprove(row.original.id)}
+              >
+                Odobri
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                onClick={() => handleReject(row.original.id)}
+              >
+                Vrati na doradu
+              </Button>
+            </>
+          ) : (
+            <>
+              {row.original.isStale && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={() => handleMarkReviewed([row.original.id])}
+                >
+                  I dalje je aktuelno
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={() => router.push(`/admin/cms/posts/${row.original.id}`)}
+                aria-label="Uredi objavu"
+              >
+                <Icon name="edit" className="size-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                onClick={() => handleDelete(row.original.id)}
+                aria-label="Obriši objavu"
+              >
+                <Icon name="delete" className="size-4" />
+              </Button>
+            </>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0"
-            onClick={() => router.push(`/admin/cms/posts/${row.original.id}`)}
-            aria-label="Uredi objavu"
-          >
-            <Icon name="edit" className="size-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive hover:text-destructive h-8 w-8 p-0"
-            onClick={() => handleDelete(row.original.id)}
-            aria-label="Obriši objavu"
-          >
-            <Icon name="delete" className="size-4" />
-          </Button>
         </div>
       ),
     },
@@ -295,6 +363,7 @@ export function PostsListClient({
           <SelectContent>
             <SelectItem value="all">Svi statusi</SelectItem>
             <SelectItem value="DRAFT">Nacrt</SelectItem>
+            <SelectItem value="REVIEW">Na pregledu</SelectItem>
             <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
             <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
           </SelectContent>
@@ -303,6 +372,12 @@ export function PostsListClient({
           <Link href={isStaleFilter ? "/admin/cms/posts" : "/admin/cms/posts?stale=true"}>
             <Icon name="clock" className="size-3.5" />
             {isStaleFilter ? "Sve objave" : "Stare objave"}
+          </Link>
+        </Button>
+        <Button variant={isReviewFilter ? "default" : "outline"} size="sm" asChild>
+          <Link href={isReviewFilter ? "/admin/cms/posts" : "/admin/cms/posts?status=review"}>
+            <Icon name="eye" className="size-3.5" />
+            Na pregledu
           </Link>
         </Button>
       </div>

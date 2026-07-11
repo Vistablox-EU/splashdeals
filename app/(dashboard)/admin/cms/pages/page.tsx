@@ -14,19 +14,25 @@ export const metadata: Metadata = {
 export default async function PagesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ stale?: string }>;
+  searchParams: Promise<{ stale?: string; status?: string }>;
 }) {
   await requireAdmin();
   await connection();
 
   const params = await searchParams;
   const isStaleFilter = params.stale === "true";
+  const isReviewFilter = params.status === "review";
 
   const staleThreshold = new Date();
   staleThreshold.setFullYear(staleThreshold.getFullYear() - 1);
 
   let pages;
-  if (isStaleFilter) {
+  if (isReviewFilter) {
+    pages = await prisma.page.findMany({
+      where: { status: "REVIEW" },
+      orderBy: { updatedAt: "desc" },
+    });
+  } else if (isStaleFilter) {
     pages = await prisma.page.findMany({
       where: {
         status: "PUBLISHED",
@@ -77,6 +83,7 @@ export default async function PagesPage({
       <PagesListClient
         pages={serialized as unknown as Array<Record<string, unknown>>}
         isStaleFilter={isStaleFilter}
+        isReviewFilter={isReviewFilter}
       />
     </div>
   );

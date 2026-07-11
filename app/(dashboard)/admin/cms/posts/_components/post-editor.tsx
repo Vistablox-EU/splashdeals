@@ -26,7 +26,13 @@ import { RichTextEditor } from "../../_components/rich-text-editor";
 import { SEOPanel } from "../../_components/seo-panel";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
-import { createBlogPostAction, updateBlogPostAction } from "@/app/(server)/actions/cms";
+import {
+  createBlogPostAction,
+  updateBlogPostAction,
+  submitForReviewAction,
+  approvePostAction,
+  rejectPostAction,
+} from "@/app/(server)/actions/cms";
 import { useCmsAutosave, AutosaveData } from "@/hooks/use-cms-autosave";
 
 function countImagesWithoutAlt(html: string): number {
@@ -55,7 +61,7 @@ const postFormSchema = z.object({
   coverImage: z.string().optional(),
   featuredImage: z.string().optional(),
   author: z.string().optional(),
-  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
+  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED"]).optional(),
   categoryId: z.string().optional(),
   isFeatured: z.boolean().optional(),
   metaTitle: z.string().optional(),
@@ -116,7 +122,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
       coverImage: (post?.coverImage as string) || "",
       featuredImage: (post?.featuredImage as string) || "",
       author: (post?.author as string) || "",
-      status: (post?.status as "DRAFT" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
+      status: (post?.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
       categoryId: (post?.categoryId as string) || "",
       isFeatured: (post?.isFeatured as boolean) || false,
       metaTitle: (post?.metaTitle as string) || "",
@@ -295,7 +301,8 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                   setValue("featuredImage", pendingAutosave.featuredImage || "");
                   setValue(
                     "status",
-                    (pendingAutosave.status as "DRAFT" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
+                    (pendingAutosave.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED") ||
+                      "DRAFT",
                   );
                   setValue("categoryId", pendingAutosave.categoryId || "");
                   setValue("metaTitle", pendingAutosave.metaTitle || "");
@@ -318,6 +325,52 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
               >
                 Odbaci
               </Button>
+            </div>
+          </div>
+        )}
+        {/* REVIEW status banner */}
+        {isEditing && watch("status") === "REVIEW" && (
+          <div className="mb-4 rounded-lg border border-yellow-400 bg-yellow-50 p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-yellow-800">Ova objava čeka pregled</p>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="default"
+                  className="bg-green-600 text-white hover:bg-green-700"
+                  onClick={async () => {
+                    const result = await approvePostAction(post!.id as string, "post");
+                    if (result.success) {
+                      toast.success("Objava odobrena");
+                      router.push("/admin/cms/posts");
+                      router.refresh();
+                    } else {
+                      toast.error(result.error || "Greška pri odobravanju");
+                    }
+                  }}
+                >
+                  Odobri
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="border-red-300 text-red-700 hover:bg-red-50"
+                  onClick={async () => {
+                    const result = await rejectPostAction(post!.id as string, "post");
+                    if (result.success) {
+                      toast.success("Objava vraćena na doradu");
+                      router.push("/admin/cms/posts");
+                      router.refresh();
+                    } else {
+                      toast.error(result.error || "Greška pri vraćanju");
+                    }
+                  }}
+                >
+                  Vrati na doradu
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -420,7 +473,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                 <Select
                   value={watch("status") || "DRAFT"}
                   onValueChange={(value) =>
-                    setValue("status", value as "DRAFT" | "PUBLISHED" | "ARCHIVED")
+                    setValue("status", value as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED")
                   }
                 >
                   <SelectTrigger id="status" aria-label="Status" className="w-full">
@@ -428,6 +481,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="DRAFT">Nacrt</SelectItem>
+                    <SelectItem value="REVIEW">Na pregledu</SelectItem>
                     <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
                     <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
                   </SelectContent>
@@ -531,6 +585,26 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                     {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
                   </Button>
                 </div>
+                {isEditing && watch("status") === "DRAFT" && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={isPending}
+                    onClick={async () => {
+                      const result = await submitForReviewAction(post!.id as string, "post");
+                      if (result.success) {
+                        toast.success("Objava poslata na pregled");
+                        router.push("/admin/cms/posts");
+                        router.refresh();
+                      } else {
+                        toast.error(result.error || "Greška pri slanju na pregled");
+                      }
+                    }}
+                  >
+                    <Icon name="rate_review" className="size-4" />
+                    Pošalji na pregled
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="outline"

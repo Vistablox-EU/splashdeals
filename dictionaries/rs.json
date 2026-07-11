@@ -439,5 +439,16 @@
     "restore_draft": "Vrati ih",
     "discard_draft": "Odbaci",
     "restored_success": "Nesačuvane izmene su vraćene."
+  },
+  "review": {
+    "submit": "Pošalji na pregled",
+    "approve": "Odobri",
+    "reject": "Vrati na doradu",
+    "pending_badge": "Čeka pregled",
+    "title": "Na pregledu",
+    "pending_title": "Čekaju pregled",
+    "submitted": "Poslato na pregled",
+    "approved": "Objavljeno",
+    "readonly_notice": "Ova objava čeka pregled"
   }
 }

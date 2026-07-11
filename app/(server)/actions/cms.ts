@@ -19,7 +19,7 @@ const blogPostSchema = z.object({
   coverImage: z.string().optional(),
   featuredImage: z.string().optional(),
   author: z.string().optional(),
-  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).default("DRAFT"),
+  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED"]).default("DRAFT"),
   categoryId: z.string().optional(),
   isFeatured: z.boolean().default(false),
   metaTitle: z.string().optional(),
@@ -46,7 +46,7 @@ const pageSchema = z.object({
   template: z.string().default("default"),
   showHeader: z.boolean().default(true),
   showFooter: z.boolean().default(true),
-  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).default("DRAFT"),
+  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED"]).default("DRAFT"),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   ogTitle: z.string().optional(),
@@ -92,6 +92,9 @@ export async function createBlogPostAction(
     await requireAdmin();
     const validated = blogPostSchema.parse(data);
 
+    // REVIEW status resets to DRAFT — items must go through approval flow
+    if (validated.status === "REVIEW") validated.status = "DRAFT";
+
     const post = await prisma.blogPost.create({
       data: {
         ...validated,
@@ -133,6 +136,9 @@ export async function updateBlogPostAction(
   try {
     await requireAdmin();
     const validated = blogPostSchema.parse(data);
+
+    // REVIEW status resets to DRAFT — items must go through approval flow
+    if (validated.status === "REVIEW") validated.status = "DRAFT";
 
     const post = await prisma.blogPost.update({
       where: { id },
@@ -232,6 +238,9 @@ export async function createPageAction(
     await requireAdmin();
     const validated = pageSchema.parse(data);
 
+    // REVIEW status resets to DRAFT — items must go through approval flow
+    if (validated.status === "REVIEW") validated.status = "DRAFT";
+
     const page = await prisma.page.create({
       data: {
         ...validated,
@@ -257,6 +266,9 @@ export async function updatePageAction(
   try {
     await requireAdmin();
     const validated = pageSchema.parse(data);
+
+    // REVIEW status resets to DRAFT — items must go through approval flow
+    if (validated.status === "REVIEW") validated.status = "DRAFT";
 
     const page = await prisma.page.update({
       where: { id },
@@ -423,7 +435,7 @@ export async function listTagsAction(): Promise<ActionResult<Array<Record<string
 
 export async function bulkUpdateBlogPostsAction(
   ids: string[],
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED",
+  status: "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED",
 ): Promise<ActionResult<{ count: number }>> {
   try {
     await requireSuperAdmin();
@@ -482,6 +494,70 @@ export async function markAsReviewedAction(
     return { success: true, data: { updated: result.count } };
   } catch (error) {
     return handleServerActionError(error, "cms/markAsReviewed");
+  }
+}
+
+// ─── Review Workflow ────────────────────────────────
+
+export async function submitForReviewAction(
+  id: string,
+  type: "post" | "page",
+): Promise<ActionResult<{ status: "REVIEW" }>> {
+  try {
+    await requireAdmin();
+    const model = type === "post" ? (prisma as any).blogPost : (prisma as any).page;
+    await model.update({
+      where: { id },
+      data: { status: "REVIEW" },
+    });
+    revalidatePath("/admin/cms/posts");
+    revalidatePath("/admin/cms/pages");
+    return { success: true, data: { status: "REVIEW" } };
+  } catch (error) {
+    return handleServerActionError(error, "cms/submitForReview");
+  }
+}
+
+export async function approvePostAction(
+  id: string,
+  type: "post" | "page",
+): Promise<ActionResult<{ status: "PUBLISHED" }>> {
+  try {
+    await requireAdmin();
+    const model = type === "post" ? (prisma as any).blogPost : (prisma as any).page;
+    const existing = await model.findUnique({ where: { id } });
+    await model.update({
+      where: { id },
+      data: {
+        status: "PUBLISHED",
+        publishedAt: existing?.publishedAt ?? new Date(),
+        reviewedAt: new Date(),
+      },
+    });
+    revalidatePath("/admin/cms/posts");
+    revalidatePath("/admin/cms/pages");
+    return { success: true, data: { status: "PUBLISHED" } };
+  } catch (error) {
+    return handleServerActionError(error, "cms/approvePost");
+  }
+}
+
+export async function rejectPostAction(
+  id: string,
+  type: "post" | "page",
+): Promise<ActionResult<{ status: "DRAFT" }>> {
+  try {
+    await requireAdmin();
+    const model = type === "post" ? (prisma as any).blogPost : (prisma as any).page;
+    await model.update({
+      where: { id },
+      data: { status: "DRAFT" },
+    });
+    revalidatePath("/admin/cms/posts");
+    revalidatePath("/admin/cms/pages");
+    return { success: true, data: { status: "DRAFT" } };
+  } catch (error) {
+    return handleServerActionError(error, "cms/rejectPost");
   }
 }
 
