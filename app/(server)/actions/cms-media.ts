@@ -171,7 +171,6 @@ export async function uploadMediaAction(
       }
     }
 
-    const ext = useOriginal ? file.name.split(".").pop() || "bin" : "webp";
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     const pathname = `cms/${Date.now()}-${safeName}`;
 
