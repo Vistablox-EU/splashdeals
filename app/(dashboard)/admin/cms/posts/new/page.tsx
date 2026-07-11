@@ -4,6 +4,7 @@ import { PostEditor } from "../_components/post-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 
@@ -30,6 +31,8 @@ export default async function NewPostPage() {
     ...t,
   })) as unknown as Array<Record<string, unknown>>;
 
+  const dict = await getDictionary();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -46,7 +49,7 @@ export default async function NewPostPage() {
         </div>
       </div>
 
-      <PostEditor categories={serializedCategories} tags={serializedTags} />
+      <PostEditor categories={serializedCategories} tags={serializedTags} dict={dict} />
     </div>
   );
 }

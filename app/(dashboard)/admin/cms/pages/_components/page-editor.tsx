@@ -25,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import { RichTextEditor } from "../../_components/rich-text-editor";
 import { SEOPanel } from "../../_components/seo-panel";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import { createPageAction, updatePageAction } from "@/app/(server)/actions/cms";
 
 const pageFormSchema = z.object({
@@ -51,9 +52,10 @@ const pageFormSchema = z.object({
 
 interface PageEditorProps {
   page?: Record<string, unknown>;
+  dict?: Record<string, unknown>;
 }
 
-export function PageEditor({ page }: PageEditorProps) {
+export function PageEditor({ page, dict }: PageEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!page;
@@ -155,7 +157,24 @@ export function PageEditor({ page }: PageEditorProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="coverImage">Cover slika (URL)</Label>
-              <Input id="coverImage" {...register("coverImage")} placeholder="https://..." />
+              <div className="flex gap-2">
+                <Input
+                  id="coverImage"
+                  {...register("coverImage")}
+                  placeholder="https://..."
+                  className="flex-1"
+                />
+                <MediaLibrarySheet
+                  dict={(dict?.media_library as Record<string, unknown>) || {}}
+                  onSelect={(url) => setValue("coverImage", url)}
+                  trigger={
+                    <Button type="button" variant="outline" size="sm" className="shrink-0 gap-1.5">
+                      <Icon name="photo_library" className="size-4" />
+                      Pregledaj
+                    </Button>
+                  }
+                />
+              </div>
             </div>
             <Separator />
             <div className="space-y-2">

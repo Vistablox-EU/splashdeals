@@ -322,5 +322,96 @@
     "fallback_caption": "Letnji Užitak",
     "play_video": "Pusti Video",
     "expand_view": "Prikaži Veće"
+  },
+  "media_library": {
+    "title": "Media biblioteka",
+    "search_placeholder": "Pretraži medije...",
+    "upload": "Upload media",
+    "paste_url": "Nalepi URL",
+    "paste_url_placeholder": "https://primer.com/slika.jpg",
+    "paste_url_button": "Uvezi",
+    "all": "Svi",
+    "last_7_days": "7 dana",
+    "last_30_days": "30 dana",
+    "filter_types": {
+      "all": "Svi formati",
+      "jpg": "JPEG",
+      "png": "PNG",
+      "webp": "WebP",
+      "gif": "GIF",
+      "svg": "SVG"
+    },
+    "sort": {
+      "newest": "Najnovije",
+      "oldest": "Najstarije",
+      "name_asc": "A-Z",
+      "name_desc": "Z-A",
+      "largest": "Najveće",
+      "smallest": "Najmanje"
+    },
+    "view_grid": "Prikaz kao mreža",
+    "view_list": "Prikaz kao lista",
+    "size_small": "Mala",
+    "size_medium": "Srednja",
+    "size_large": "Velika",
+    "details": {
+      "title": "Detalji",
+      "name": "Ime",
+      "size": "Veličina",
+      "dimensions": "Dimenzije",
+      "type": "Tip",
+      "uploaded_at": "Postavljeno",
+      "alt_text": "Alt tekst",
+      "used_in": "Koristi se u",
+      "posts": "objava",
+      "pages": "strana",
+      "close": "Zatvori"
+    },
+    "actions": {
+      "select": "Izaberi",
+      "insert": "Ubaci",
+      "delete": "Obriši",
+      "permanent_delete": "Trajno obriši",
+      "delete_selected": "Obriši izabrano",
+      "copy_url": "Kopiraj URL",
+      "copy_urls": "Kopiraj URL-ove",
+      "cancel": "Otkaži",
+      "close": "Zatvori",
+      "retry": "Pokušaj ponovo",
+      "undo": "Undo"
+    },
+    "upload_progress": {
+      "uploading": "Upload u toku...",
+      "done": "Upload završen",
+      "error": "Greška pri uploadu",
+      "file_too_large": "Datoteka je prevelika. Maksimalna veličina je 25MB.",
+      "invalid_format": "Nepodržan format. Dozvoljeni: JPG, PNG, WebP, GIF, SVG."
+    },
+    "empty": {
+      "title": "Media biblioteka je prazna",
+      "description": "Prevucite slike ovde ili kliknite na Upload da dodate prvu sliku u biblioteku.",
+      "formats_hint": "Dozvoljeni formati: JPG, PNG, WebP, GIF, SVG",
+      "size_hint": "Maksimalna veličina: 25MB po datoteci"
+    },
+    "delete_confirm": {
+      "title": "Obriši mediju",
+      "description": "Da li ste sigurni da želite da obrišete ovu mediju?",
+      "in_use_warning": "Ova medija se koristi u {count} objava/strana. Ako je obrišete, reference će biti prekinute.",
+      "confirm": "Obriši",
+      "cancel": "Otkaži",
+      "permanently": "Trajno obriši"
+    },
+    "unsaved_upload": {
+      "title": "Upload je u toku",
+      "description": "Upload datoteka još uvek traje. Da li ste sigurni da želite da zatvorite?"
+    },
+    "recent_section": "Upravo dodato",
+    "items_shown": "Prikazano {shown} medija",
+    "items_selected": "{count} izabrano",
+    "loading_more": "Učitavanje još...",
+    "error_loading": "Greška pri učitavanju medija. Pokušajte ponovo.",
+    "duplicate_warning": "Datoteka \"{filename}\" već postoji u biblioteci. Da li želite da je dodate ponovo?",
+    "duplicate_upload_anyway": "Ipak dodaj",
+    "duplicate_cancel": "Otkaži"
   }
 }

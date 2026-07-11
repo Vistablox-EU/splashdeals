@@ -5,6 +5,7 @@ import { PageEditor } from "../_components/page-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 
@@ -27,6 +28,8 @@ export default async function EditPagePage({ params }: { params: Promise<{ "page
     publishedAt: page.publishedAt?.toISOString() ?? null,
   };
 
+  const dict = await getDictionary();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -40,7 +43,7 @@ export default async function EditPagePage({ params }: { params: Promise<{ "page
           <p className="text-muted-foreground mt-1 text-sm">Uredi {pageData.title}</p>
         </div>
       </div>
-      <PageEditor page={pageData as unknown as Record<string, unknown>} />
+      <PageEditor page={pageData as unknown as Record<string, unknown>} dict={dict} />
     </div>
   );
 }

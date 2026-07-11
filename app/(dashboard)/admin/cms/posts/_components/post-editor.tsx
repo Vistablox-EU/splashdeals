@@ -25,6 +25,7 @@ import {
 import { RichTextEditor } from "../../_components/rich-text-editor";
 import { SEOPanel } from "../../_components/seo-panel";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import { createBlogPostAction, updateBlogPostAction } from "@/app/(server)/actions/cms";
 
 const postFormSchema = z.object({
@@ -56,9 +57,10 @@ interface PostEditorProps {
   initialTagIds?: string[];
   categories: Array<Record<string, unknown>>;
   tags: Array<Record<string, unknown>>;
+  dict?: Record<string, unknown>;
 }
 
-export function PostEditor({ post, initialTagIds, categories, tags }: PostEditorProps) {
+export function PostEditor({ post, initialTagIds, categories, tags, dict }: PostEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!post;
@@ -189,7 +191,45 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
             </div>
             <div className="space-y-2">
               <Label htmlFor="coverImage">Cover slika (URL)</Label>
-              <Input id="coverImage" {...register("coverImage")} placeholder="https://..." />
+              <div className="flex gap-2">
+                <Input
+                  id="coverImage"
+                  {...register("coverImage")}
+                  placeholder="https://..."
+                  className="flex-1"
+                />
+                <MediaLibrarySheet
+                  dict={(dict?.media_library as Record<string, unknown>) || {}}
+                  onSelect={(url) => setValue("coverImage", url)}
+                  trigger={
+                    <Button type="button" variant="outline" size="sm" className="shrink-0 gap-1.5">
+                      <Icon name="photo_library" className="size-4" />
+                      Pregledaj
+                    </Button>
+                  }
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="featuredImage">Istaknuta slika (URL)</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="featuredImage"
+                  {...register("featuredImage")}
+                  placeholder="https://..."
+                  className="flex-1"
+                />
+                <MediaLibrarySheet
+                  dict={(dict?.media_library as Record<string, unknown>) || {}}
+                  onSelect={(url) => setValue("featuredImage", url)}
+                  trigger={
+                    <Button type="button" variant="outline" size="sm" className="shrink-0 gap-1.5">
+                      <Icon name="photo_library" className="size-4" />
+                      Pregledaj
+                    </Button>
+                  }
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="author">Autor</Label>

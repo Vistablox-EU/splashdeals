@@ -5,6 +5,7 @@ import { PostEditor } from "../_components/post-editor";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 
@@ -42,6 +43,8 @@ export default async function EditPostPage({ params }: { params: Promise<{ "post
 
   const postTagIds = post.tags.map((t) => t.tagId);
 
+  const dict = await getDictionary();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -63,6 +66,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ "post
         initialTagIds={postTagIds}
         categories={categories as unknown as Array<Record<string, unknown>>}
         tags={tags as unknown as Array<Record<string, unknown>>}
+        dict={dict}
       />
     </div>
   );

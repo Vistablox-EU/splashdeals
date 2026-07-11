@@ -14,12 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { Separator } from "@/components/ui/separator";
 import { createImageUploadPlugin } from "./image-upload-plugin";
+import { MediaLibraryDialog } from "@/app/(dashboard)/admin/media/_components/media-library-dialog";
 
 interface RichTextEditorProps {
   content: string;
   onChange: (html: string) => void;
   placeholder?: string;
   minHeight?: number;
+  dict?: Record<string, unknown>;
 }
 
 export function RichTextEditor({
@@ -27,6 +29,7 @@ export function RichTextEditor({
   onChange,
   placeholder = "Počni da pišeš...",
   minHeight = 400,
+  dict,
 }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
@@ -78,13 +81,13 @@ export function RichTextEditor({
 
   return (
     <div className="overflow-hidden rounded-lg border">
-      <Toolbar editor={editor} />
+      <Toolbar editor={editor} dict={dict} />
       <EditorContent editor={editor} />
     </div>
   );
 }
 
-function Toolbar({ editor }: { editor: Editor }) {
+function Toolbar({ editor, dict }: { editor: Editor; dict?: Record<string, unknown> }) {
   const linkUrlRef = useRef<HTMLInputElement>(null);
 
   const setLink = useCallback(() => {
@@ -258,6 +261,21 @@ function Toolbar({ editor }: { editor: Editor }) {
 
         {/* Image — opens file picker */}
         <ToolbarButton onClick={addImage} icon="image" label="Slike" />
+
+        {/* Media Library — opens dialog */}
+        <MediaLibraryDialog
+          dict={(dict?.media_library as Record<string, unknown>) || {}}
+          onInsert={(url, altText) => {
+            editor
+              .chain()
+              .focus()
+              .setImage({ src: url, alt: altText || "" })
+              .run();
+          }}
+          trigger={
+            <ToolbarButton onClick={() => {}} icon="photo_library" label="Media biblioteka" />
+          }
+        />
       </div>
     </TooltipProvider>
   );

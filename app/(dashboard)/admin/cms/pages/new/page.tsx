@@ -3,6 +3,7 @@ import { PageEditor } from "../_components/page-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getDictionary } from "@/lib/dictionaries";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
 export default async function NewPagePage() {
   await requireAdmin();
   await connection();
+
+  const dict = await getDictionary();
 
   return (
     <div className="space-y-6">
@@ -29,7 +32,7 @@ export default async function NewPagePage() {
           </p>
         </div>
       </div>
-      <PageEditor />
+      <PageEditor dict={dict} />
     </div>
   );
 }
