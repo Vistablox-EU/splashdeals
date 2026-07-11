@@ -20,6 +20,7 @@ export function CropModal({
   const [offsetX, setOffsetX] = useState(0);
   const [offsetY, setOffsetY] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -30,12 +31,12 @@ export function CropModal({
     img.crossOrigin = "anonymous";
     img.onload = () => {
       imageRef.current = img;
-      setZoom(1.0001); // Trigger re-render to draw preview
+      setImageLoaded(true);
     };
     img.src = media.url;
   }, [media.url]);
 
-  // Redraw preview canvas whenever sliders or aspect ratio changes
+  // Redraw preview canvas whenever sliders, aspect ratio, or image load changes
   useEffect(() => {
     const img = imageRef.current;
     const canvas = canvasRef.current;
@@ -82,7 +83,7 @@ export function CropModal({
     const y = (targetH - drawH) / 2 + (offsetY * targetH) / 100;
 
     ctx.drawImage(img, x, y, drawW, drawH);
-  }, [aspectRatio, zoom, offsetX, offsetY]);
+  }, [aspectRatio, zoom, offsetX, offsetY, imageLoaded]);
 
   const handleSave = async () => {
     const img = imageRef.current;

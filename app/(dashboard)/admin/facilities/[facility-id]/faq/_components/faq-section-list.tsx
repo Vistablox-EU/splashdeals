@@ -7,6 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface SerializedFAQ {
   id: string;
@@ -29,6 +38,7 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
   } | null>(null);
   const [editValue, setEditValue] = useState("");
   const [dragId, setDragId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; question: string } | null>(null);
 
   // ─── Toggle collapse ────────────────────────────
   const toggleExpand = useCallback((id: string) => {
@@ -48,6 +58,10 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
     // Start editing question immediately
     setEditingField({ id: faq.id, field: "question" });
     setEditValue("");
+    toast.success("Pitanje dodato", {
+      description: "Novo FAQ pitanje je kreirano.",
+      duration: 2000,
+    });
   }, [facilityId]);
 
   // ─── Start inline edit ───────────────────────────
@@ -76,10 +90,21 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
   }, []);
 
   // ─── Delete ──────────────────────────────────────
-  const handleDelete = useCallback(async (id: string) => {
+  const handleDelete = useCallback((id: string, question: string) => {
+    setDeleteTarget({ id, question: question || "Novo pitanje" });
+  }, []);
+
+  const confirmDelete = useCallback(async () => {
+    if (!deleteTarget) return;
+    const { id, question } = deleteTarget;
+    setDeleteTarget(null);
     await deleteFaq(id);
     setFaqs((prev) => prev.filter((f) => f.id !== id));
-  }, []);
+    toast.success("Pitanje obrisano", {
+      description: `Pitanje "${question.length > 40 ? question.slice(0, 40) + "..." : question}" je obrisano.`,
+      duration: 2000,
+    });
+  }, [deleteTarget]);
 
   // ─── Drag & Drop ─────────────────────────────────
   const handleDragStart = useCallback((e: React.DragEvent, id: string) => {
@@ -207,7 +232,7 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
                 size="icon"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDelete(faq.id);
+                  handleDelete(faq.id, faq.question);
                 }}
                 className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 shrink-0 rounded-lg transition-all"
                 aria-label="Obriši"
@@ -256,6 +281,26 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
         <Icon name="add" className="mr-1 size-4" />
         Dodaj pitanje
       </Button>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteTarget !== null} onOpenChange={() => setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Obriši pitanje</DialogTitle>
+            <DialogDescription>
+              Da li ste sigurni da želite da obrišete ovo pitanje? Ova radnja je nepovratna.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+              Otkaži
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Obriši
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

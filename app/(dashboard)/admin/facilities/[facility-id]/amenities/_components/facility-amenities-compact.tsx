@@ -143,61 +143,65 @@ export function CompactAmenitiesTable({
   });
   const [isCreating, setIsCreating] = useState(false);
 
-  // 🔄 Save specific amenity helper (Instant background transaction)
-  const saveAmenity = async (updatedItem: AmenityItem) => {
-    startTransition(async () => {
-      try {
-        const payload = [
-          {
-            amenityId: updatedItem.id,
-            checked: updatedItem.checked,
-            value: updatedItem.value,
-            isFeatured: updatedItem.isFeatured,
-            displayOrder: updatedItem.displayOrder,
-            name: updatedItem.name,
-            icon: updatedItem.icon,
-            type: updatedItem.type,
-          },
-        ];
+  // 🟡 Dirty tracking — items with unsaved local changes
+  const [dirtyIds, setDirtyIds] = useState<Set<string>>(new Set());
+  const [isBatchSaving, setIsBatchSaving] = useState(false);
 
-        const result = await updateFacilityAmenitiesAction(facilityId, payload);
+  // 🔄 Mark item as dirty (local change, not yet persisted)
+  const markDirty = (id: string) => {
+    setDirtyIds((prev) => new Set(prev).add(id));
+  };
 
-        if (result && !result.success) {
-          throw new Error("Registry reject");
-        }
+  // 💾 Batch save all dirty changes
+  const handleBatchSave = async () => {
+    if (dirtyIds.size === 0) return;
+    setIsBatchSaving(true);
+    const dirtyItems = items.filter((i) => dirtyIds.has(i.id));
+    const payload = dirtyItems.map((item) => ({
+      amenityId: item.id,
+      checked: item.checked,
+      value: item.value,
+      isFeatured: item.isFeatured,
+      displayOrder: item.displayOrder,
+      name: item.name,
+      icon: item.icon,
+      type: item.type,
+    }));
 
-        toast.success(`Updated ${updatedItem.name}`, {
-          description: updatedItem.checked
-            ? "Amenity is registered live."
-            : "Amenity removed from registry.",
-          duration: 1500,
-        });
-        router.refresh();
-      } catch (error) {
-        console.error("Failed to save amenities", error);
-        toast.error("Auto-sync Failed", {
-          description: "Failed to persist changes to the infrastructure grid.",
-        });
-        // Rollback local state logic can go here if needed
+    try {
+      const result = await updateFacilityAmenitiesAction(facilityId, payload);
+      if (result && !result.success) {
+        throw new Error("Batch save rejected");
       }
-    });
+      setDirtyIds(new Set());
+      toast.success("Promene sačuvane", {
+        description: `${payload.length} izmena je sačuvano za amenitije.`,
+        duration: 2000,
+      });
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to batch save amenities", error);
+      toast.error("Greška pri čuvanju", {
+        description: "Došlo je do greške prilikom čuvanja promena.",
+      });
+    } finally {
+      setIsBatchSaving(false);
+    }
   };
 
   // 🖱️ Event Handlers
   const handleToggleActive = (id: string, checked: boolean) => {
-    const target = items.find((i) => i.id === id);
-    if (!target) return;
-    const updated = { ...target, checked };
-    setItems((prev) => prev.map((item) => (item.id === id ? updated : item)));
-    saveAmenity(updated);
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, checked } : item)));
+    markDirty(id);
   };
 
   const handleToggleFeatured = (id: string) => {
-    const target = items.find((i) => i.id === id);
-    if (!target) return;
-    const updated = { ...target, isFeatured: !target.isFeatured };
-    setItems((prev) => prev.map((item) => (item.id === id ? updated : item)));
-    saveAmenity(updated);
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, isFeatured: !item.isFeatured } : item,
+      ),
+    );
+    markDirty(id);
   };
 
   const handleValueChange = (id: string, value: string) => {
@@ -212,10 +216,7 @@ export function CompactAmenitiesTable({
   };
 
   const handleValueBlur = (id: string) => {
-    const item = items.find((i) => i.id === id);
-    if (item) {
-      saveAmenity(item);
-    }
+    markDirty(id);
   };
 
   const handleValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -351,12 +352,30 @@ export function CompactAmenitiesTable({
             />
           </div>
 
-          {isPending && (
+          {dirtyIds.size > 0 ? (
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground shrink-0 text-[10px] font-bold tracking-widest uppercase">
+                {dirtyIds.size} izmena
+              </span>
+              <Button
+                onClick={handleBatchSave}
+                disabled={isBatchSaving}
+                className="flex h-10 shrink-0 items-center gap-1.5 rounded-xl px-4 text-xs font-black tracking-widest uppercase"
+              >
+                {isBatchSaving ? (
+                  <Icon name="progress_activity" className="animate-spin text-[14px]" />
+                ) : (
+                  <Icon name="save" className="text-[14px]" />
+                )}
+                <span>Sačuvaj</span>
+              </Button>
+            </div>
+          ) : isPending ? (
             <div className="text-primary bg-primary/10 border-primary/20 flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold tracking-widest uppercase">
               <Icon name="progress_activity" className="animate-spin text-[14px]" />
               Synchronizing...
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Grid Container */}

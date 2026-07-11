@@ -46,7 +46,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
             <Icon name="phone" className="text-primary text-[14px]" />
           </div>
           <h3 className="text-foreground text-[10px] font-black tracking-widest uppercase">
-            Public Contact
+            Javni kontakt
           </h3>
         </div>
         {isPending && (
@@ -61,7 +61,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <Label className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-              Phone Number
+              Broj telefona
             </Label>
             {saveStatus.publicPhone && <Icon name="check" className="text-primary text-[12px]" />}
           </div>
@@ -77,7 +77,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <Label className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-              Public Email
+              Javni email
             </Label>
             {saveStatus.publicEmail && <Icon name="check" className="text-primary text-[12px]" />}
           </div>
