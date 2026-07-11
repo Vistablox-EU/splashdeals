@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 
 interface MobileTopNavProps {
@@ -10,9 +11,11 @@ interface MobileTopNavProps {
 
 export function MobileTopNav({ isMobileMenuOpen, onToggle }: MobileTopNavProps) {
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="icon"
       onClick={onToggle}
-      className="bg-muted/50 border-border text-muted-foreground hover:bg-muted hover:border-primary/20 active:bg-primary/20 active:border-primary/30 relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl border shadow-md shadow-black/10 transition-all duration-300 active:scale-90 md:hidden"
+      className="bg-muted/50 border-border text-muted-foreground hover:bg-muted hover:border-primary/20 active:bg-primary/20 active:border-primary/30 relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl border shadow-md shadow-foreground/10 transition-all duration-300 active:scale-90 md:hidden"
       aria-label={isMobileMenuOpen ? "Zatvori meni" : "Otvori meni"}
     >
       {isMobileMenuOpen ? (
@@ -20,6 +23,6 @@ export function MobileTopNav({ isMobileMenuOpen, onToggle }: MobileTopNavProps) 
       ) : (
         <Icon name="menu" className="text-primary text-[20px]" />
       )}
-    </button>
+    </Button>
   );
 }

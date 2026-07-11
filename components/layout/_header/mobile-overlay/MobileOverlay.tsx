@@ -47,7 +47,7 @@ export function MobileOverlay({
               <Link
                 href={navLinks[0].href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-white uppercase italic transition-colors"
+                className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-foreground uppercase italic transition-colors"
               >
                 <Icon name="search" className="text-primary text-[32px]" />
                 {navLinks[0].name}
@@ -73,7 +73,7 @@ export function MobileOverlay({
                 <Link
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-white uppercase italic transition-colors"
+                  className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-foreground uppercase italic transition-colors"
                 >
                   <Icon name={link.icon} className="text-primary text-[32px]" />
                   {link.name}
@@ -82,14 +82,14 @@ export function MobileOverlay({
             ))}
           </div>
 
-          <div className="mt-auto space-y-4 border-t border-white/5 pt-6">
+          <div className="mt-auto space-y-4 border-t border-border/10 pt-6">
             <LiquidButton
               className="h-14 w-full text-base"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {dict?.nav?.get_pass || "Uzmi kartu"}
             </LiquidButton>
-            <div className="text-center text-xs font-bold tracking-widest text-slate-500 uppercase">
+            <div className="text-center text-xs font-bold tracking-widest text-muted-foreground uppercase">
               {dict?.home?.rights_reserved || "Srbijini najbolji akva parkovi"}
             </div>
           </div>

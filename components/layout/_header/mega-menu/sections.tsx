@@ -15,19 +15,19 @@ function BadgeChip({ badge }: { badge: LinkMetadata["badge"] }) {
   const config: Record<string, { label: string; className: string }> = {
     new: {
       label: badge.text || "Novo",
-      className: "bg-cyan-500/15 text-cyan-500 border-cyan-500/20",
+      className: "bg-primary/15 text-primary border-primary/20",
     },
     sale: {
       label: badge.text || "Akcija",
-      className: "bg-red-500/15 text-red-500 border-red-500/20",
+      className: "bg-destructive/15 text-destructive border-destructive/20",
     },
     popular: {
       label: badge.text || "Popularno",
-      className: "bg-amber-500/15 text-amber-500 border-amber-500/20",
+      className: "bg-warning/15 text-warning border-warning/20",
     },
     soon: {
       label: badge.text || "Uskoro",
-      className: "bg-purple-500/15 text-purple-500 border-purple-500/20 border-dashed",
+      className: "bg-muted/15 text-muted-foreground border-muted/20 border-dashed",
     },
     custom: {
       label: badge.text || "",

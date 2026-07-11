@@ -86,6 +86,7 @@
   },
   "devDependencies": {
     "@better-auth/cli": "^1.4.21",
+    "@next/bundle-analyzer": "^16.2.10",
     "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4.3.1",
     "@testing-library/jest-dom": "^6.9.1",

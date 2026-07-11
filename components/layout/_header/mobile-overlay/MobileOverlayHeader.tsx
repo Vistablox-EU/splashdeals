@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 
 interface MobileOverlayHeaderProps {
@@ -16,9 +17,9 @@ export function MobileOverlayHeader({ onClose }: MobileOverlayHeaderProps) {
             Splash
           </span>
           {/* Glint Overlay */}
-          <div className="group-hover/logo:animate-logo-shimmer pointer-events-none absolute inset-0 z-20 translate-x-[-100%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <div className="group-hover/logo:animate-logo-shimmer pointer-events-none absolute inset-0 z-20 translate-x-[-100%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
         </div>
-        <span className="-ml-1 text-3xl font-black text-white uppercase italic md:text-4xl">
+        <span className="-ml-1 text-3xl font-black text-foreground uppercase italic md:text-4xl">
           deals
         </span>
         <div className="relative mt-4 ml-1">
@@ -26,13 +27,15 @@ export function MobileOverlayHeader({ onClose }: MobileOverlayHeaderProps) {
           <div className="bg-primary absolute inset-0 h-2 w-2 animate-ping rounded-full opacity-50 blur-[2px]" />
         </div>
       </div>
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={onClose}
-        className="hover:border-primary/20 active:bg-primary/20 active:border-primary/30 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/80 shadow-md shadow-black/10 transition-all duration-300 hover:bg-white/10 active:scale-90"
+        className="hover:border-primary/20 active:bg-primary/20 active:border-primary/30 flex h-11 w-11 items-center justify-center rounded-xl border border-border/10 bg-muted/10 text-muted-foreground shadow-md shadow-foreground/10 transition-all duration-300 active:scale-90"
         aria-label="Zatvori meni"
       >
         <Icon name="close" className="text-primary text-[20px]" />
-      </button>
+      </Button>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
   NavigationMenuContent,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import { SectionRenderer } from "./sections";
 import type { NavigationMenuData, DiscoveryMenuData } from "./types";
@@ -139,14 +140,15 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
           <NavigationMenuList>
             <li className="text-muted-foreground flex items-center gap-3 px-3 py-1.5 text-xs">
               <span>Meni nije dostupan</span>
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={handleRetry}
-                className="bg-muted hover:bg-muted/80 text-foreground inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-bold transition-colors"
                 aria-label="Pokušaj ponovo"
               >
                 <Icon name="refresh" className="size-3" />
                 Pokušaj ponovo
-              </button>
+              </Button>
             </li>
           </NavigationMenuList>
         </NavigationMenu>

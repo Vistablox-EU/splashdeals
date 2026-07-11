@@ -30,8 +30,8 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3 text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase">
-        <Icon name="location_on" className="text-[14px] text-slate-600" />
+      <div className="flex items-center gap-3 text-[10px] font-black tracking-[0.2em] text-muted-foreground uppercase">
+        <Icon name="location_on" className="text-[14px] text-muted-foreground" />
         {dict.nav.cities}
       </div>
 
@@ -51,8 +51,8 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
                 className={cn(
                   "flex h-10 shrink-0 items-center justify-center rounded-full border px-4 text-[10px] font-black tracking-widest uppercase transition-all duration-300 active:scale-95",
                   isPopular
-                    ? "bg-primary/10 border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/40 shadow-[0_0_12px_rgba(6,182,212,0.05)]"
-                    : "border-white/5 bg-white/5 text-slate-400 hover:border-white/10 hover:bg-white/10 hover:text-white",
+                    ? "bg-primary/10 border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/40 shadow-[0_0_12px_hsl(var(--primary)/0.05)]"
+                    : "border-border/10 bg-muted/10 text-muted-foreground hover:border-border/20 hover:bg-muted/20 hover:text-foreground",
                 )}
               >
                 {isPopular && (
@@ -65,7 +65,7 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
           <Link
             href={`/`}
             onClick={onCitySelect}
-            className="text-primary/80 hover:text-primary hover:border-primary/30 flex h-10 shrink-0 items-center justify-center rounded-full border border-dashed border-white/15 bg-white/5 px-5 text-[10px] font-black tracking-widest uppercase transition-all active:scale-95"
+            className="text-primary/80 hover:text-primary hover:border-primary/30 flex h-10 shrink-0 items-center justify-center rounded-full border border-dashed border-border/20 bg-white/5 px-5 text-[10px] font-black tracking-widest uppercase transition-all active:scale-95"
           >
             {dict.nav.all_regions || "Sve Regije"}
           </Link>

@@ -40,7 +40,7 @@ export function CartButton({ isOnline, mounted, totalItems, openCart }: CartButt
         >
           <div className="relative">
             <Icon name="shopping_bag" className="text-[16px]" />
-            <span className="text-background absolute -top-3 -right-3 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-black shadow-lg transition-all duration-300">
+            <span className="text-background absolute -top-3 -right-3 flex h-4 w-4 items-center justify-center rounded-full bg-background text-[10px] font-black shadow-lg transition-all duration-300">
               {totalItems}
             </span>
           </div>

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { MegaMenu } from "../mega-menu/MegaMenu";
 import { Logo } from "./Logo";
 
