@@ -8,9 +8,9 @@
   "scripts": {
     "seed": "tsx prisma/seed.ts",
     "seed:enhanced": "tsx prisma/seed-enhanced.ts",
-    "postinstall": "prisma generate && prisma migrate deploy",
+    "postinstall": "prisma generate",
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
