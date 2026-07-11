@@ -27,6 +27,7 @@ import { SEOPanel } from "../../_components/seo-panel";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import { createBlogPostAction, updateBlogPostAction } from "@/app/(server)/actions/cms";
+import { useCmsAutosave, AutosaveData } from "@/hooks/use-cms-autosave";
 
 function countImagesWithoutAlt(html: string): number {
   if (!html) return 0;
@@ -65,6 +66,7 @@ const postFormSchema = z.object({
   canonicalUrl: z.string().optional(),
   robotsDirective: z.string().optional(),
   publishedAt: z.string().optional(),
+  expiresAt: z.string().optional(),
 });
 
 interface PostEditorProps {
@@ -125,6 +127,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
       canonicalUrl: (post?.canonicalUrl as string) || "",
       robotsDirective: (post?.robotsDirective as string) || "",
       publishedAt: post?.publishedAt ? toDatetimeLocal(post.publishedAt as Date) : "",
+      expiresAt: post?.expiresAt ? toDatetimeLocal(post.expiresAt as Date) : "",
     },
   });
 
@@ -140,7 +143,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = form;
 
   const handleTitleChange = useCallback(
@@ -185,6 +188,11 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
         } else {
           data.publishedAt = null;
         }
+        if (data.expiresAt) {
+          data.expiresAt = new Date(data.expiresAt as string).toISOString();
+        } else {
+          data.expiresAt = null;
+        }
 
         const cleansedTags = selectedTagIds.filter(Boolean);
         const result = isEditing
@@ -192,6 +200,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
           : await createBlogPostAction(data as never, cleansedTags);
 
         if (result.success) {
+          clearDraft();
           toast.success(isEditing ? "Objava ažurirana" : "Objava kreirana");
           router.push("/admin/cms/posts");
           router.refresh();
@@ -209,9 +218,110 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     );
   }, []);
 
+  // --- Autosave ---
+  const autosaveKey = isEditing ? `cms-draft-${post!.id}` : "cms-draft-new";
+  const formValues = watch();
+
+  const {
+    status: autosaveStatus,
+    restore,
+    clearDraft,
+    migrateDraft,
+  } = useCmsAutosave(
+    autosaveKey,
+    {
+      title: (formValues.title as string) || "",
+      content: (formValues.content as string) || "",
+      excerpt: (formValues.excerpt as string) || "",
+      coverImage: (formValues.coverImage as string) || "",
+      featuredImage: (formValues.featuredImage as string) || "",
+      status: (formValues.status as string) || "DRAFT",
+      categoryId: (formValues.categoryId as string) || "",
+      metaTitle: (formValues.metaTitle as string) || "",
+      metaDescription: (formValues.metaDescription as string) || "",
+      savedAt: 0,
+    },
+    isDirty,
+  );
+
+  const [showRestoreBanner, setShowRestoreBanner] = useState(false);
+  const [pendingAutosave, setPendingAutosave] = useState<AutosaveData | null>(null);
+
+  // Check for a saved draft on mount
+  useEffect(() => {
+    const saved = restore();
+    if (saved && saved.title) {
+      setPendingAutosave(saved);
+      setShowRestoreBanner(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Warn before leaving with unsaved changes
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
+
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Restore banner */}
+        {showRestoreBanner && pendingAutosave && (
+          <div className="mb-4 rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-800">
+            <p className="text-sm font-medium">
+              Imate nesačuvane izmene od{" "}
+              {new Date(pendingAutosave.savedAt).toLocaleTimeString("sr-RS", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+              .
+            </p>
+            <div className="mt-2 flex gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="default"
+                onClick={() => {
+                  setValue("title", pendingAutosave.title);
+                  setValue("content", pendingAutosave.content || "");
+                  setValue("excerpt", pendingAutosave.excerpt || "");
+                  setValue("coverImage", pendingAutosave.coverImage || "");
+                  setValue("featuredImage", pendingAutosave.featuredImage || "");
+                  setValue(
+                    "status",
+                    (pendingAutosave.status as "DRAFT" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
+                  );
+                  setValue("categoryId", pendingAutosave.categoryId || "");
+                  setValue("metaTitle", pendingAutosave.metaTitle || "");
+                  setValue("metaDescription", pendingAutosave.metaDescription || "");
+                  setShowRestoreBanner(false);
+                  setPendingAutosave(null);
+                }}
+              >
+                Vrati ih
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  clearDraft();
+                  setShowRestoreBanner(false);
+                  setPendingAutosave(null);
+                }}
+              >
+                Odbaci
+              </Button>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_380px]">
           <div className="space-y-6">
             <div className="space-y-2">
@@ -372,15 +482,56 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                   })()}
                 </div>
               )}
-              <div className="flex gap-2 pt-2">
-                <Button type="submit" disabled={isPending} className="flex-1">
-                  {isPending ? (
-                    <Icon name="progress_activity" className="size-4 animate-spin" />
-                  ) : (
-                    <Icon name="save" className="size-4" />
-                  )}
-                  {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
-                </Button>
+
+              {/* Expiry - shown when status is PUBLISHED */}
+              {watch("status") === "PUBLISHED" && (
+                <div className="space-y-2 pt-2">
+                  <Label htmlFor="expiresAt">Ističe</Label>
+                  <Input
+                    id="expiresAt"
+                    type="datetime-local"
+                    {...register("expiresAt")}
+                    className="w-full"
+                  />
+                  {(() => {
+                    const val = watch("expiresAt");
+                    if (val) {
+                      const dt = new Date(val);
+                      if (dt > new Date()) {
+                        return (
+                          <div className="space-y-1">
+                            <p className="text-muted-foreground text-xs">
+                              Ističe {formatScheduledDate(val)}
+                            </p>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive h-auto p-0 text-xs"
+                              onClick={() => setValue("expiresAt", "")}
+                            >
+                              Otkaži istek
+                            </Button>
+                          </div>
+                        );
+                      }
+                    }
+                    return null;
+                  })()}
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 pt-2">
+                <div className="flex-1">
+                  <Button type="submit" disabled={isPending} className="w-full">
+                    {isPending ? (
+                      <Icon name="progress_activity" className="size-4 animate-spin" />
+                    ) : (
+                      <Icon name="save" className="size-4" />
+                    )}
+                    {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
+                  </Button>
+                </div>
                 <Button
                   type="button"
                   variant="outline"
@@ -388,6 +539,21 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                 >
                   Odustani
                 </Button>
+              </div>
+              {/* Autosave status */}
+              <div className="flex items-center justify-end gap-2 pt-1">
+                {autosaveStatus === "saving" && (
+                  <span className="text-muted-foreground text-xs">Čuvanje...</span>
+                )}
+                {autosaveStatus === "saved" && (
+                  <span className="text-muted-foreground text-xs">
+                    Sačuvano u{" "}
+                    {new Date().toLocaleTimeString("sr-RS", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                )}
               </div>
             </div>
 

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toast } from "sonner";
 import {
   flexRender,
@@ -18,6 +19,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -26,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { deletePageAction } from "@/app/(server)/actions/cms";
+import { deletePageAction, markAsReviewedAction } from "@/app/(server)/actions/cms";
 
 const statusLabels: Record<string, string> = {
   DRAFT: "Nacrt",
@@ -41,13 +43,23 @@ interface PageRow {
   status: string;
   template: string;
   createdAt: string;
+  updatedAt: string;
+  reviewedAt: string | null;
   publishedAt: string | null;
+  isStale: boolean;
 }
 
-export function PagesListClient({ pages }: { pages: Array<Record<string, unknown>> }) {
+export function PagesListClient({
+  pages,
+  isStaleFilter,
+}: {
+  pages: Array<Record<string, unknown>>;
+  isStaleFilter: boolean;
+}) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const statusBadgeVariant = (status: string): "default" | "secondary" | "outline" => {
     switch (status) {
@@ -76,18 +88,78 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
     [router],
   );
 
+  const handleMarkReviewed = useCallback(
+    async (ids: string[]) => {
+      const result = await markAsReviewedAction(ids, "page");
+      if (result.success) {
+        toast.success(`Označeno ${result.data?.updated ?? 0} strana kao aktuelno`);
+        setSelectedIds(new Set());
+        router.refresh();
+      } else {
+        toast.error(result.error || "Greška");
+      }
+    },
+    [router],
+  );
+
+  const toggleSelectAll = useCallback(() => {
+    const allIds = (table.getFilteredRowModel().rows ?? []).map((r) => r.original.id);
+    if (selectedIds.size === allIds.length && allIds.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(allIds));
+    }
+  }, [selectedIds]);
+
+  const toggleSelect = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
   const columns: ColumnDef<PageRow>[] = [
+    {
+      id: "select",
+      header: ({ table }) => {
+        const allIds = table.getFilteredRowModel().rows.map((r) => r.original.id);
+        const allSelected = allIds.length > 0 && allIds.every((id) => selectedIds.has(id));
+        return (
+          <Checkbox
+            checked={allSelected}
+            onCheckedChange={toggleSelectAll}
+            aria-label="Izaberi sve"
+          />
+        );
+      },
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedIds.has(row.original.id)}
+          onCheckedChange={() => toggleSelect(row.original.id)}
+          aria-label={`Izaberi ${row.original.title}`}
+        />
+      ),
+    },
     {
       accessorKey: "title",
       header: "Naslov",
       cell: ({ row }) => (
-        <Button
-          variant="link"
-          className="h-auto p-0 text-left text-sm font-medium"
-          onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
-        >
-          {row.original.title}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="link"
+            className="h-auto p-0 text-left text-sm font-medium"
+            onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
+          >
+            {row.original.title}
+          </Button>
+          {row.original.isStale && (
+            <Badge variant="secondary" className="bg-warning/10 text-warning text-xs">
+              Starija od 12 meseci
+            </Badge>
+          )}
+        </div>
       ),
     },
     {
@@ -127,6 +199,16 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
       id: "actions",
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-1">
+          {row.original.isStale && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs h-7 px-2"
+              onClick={() => handleMarkReviewed([row.original.id])}
+            >
+              I dalje je aktuelno
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -178,7 +260,30 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
             className="h-9 pl-8"
           />
         </div>
+        <Button variant={isStaleFilter ? "default" : "outline"} size="sm" asChild>
+          <Link href={isStaleFilter ? "/admin/cms/pages" : "/admin/cms/pages?stale=true"}>
+            <Icon name="clock" className="size-3.5" />
+            {isStaleFilter ? "Sve strane" : "Stare strane"}
+          </Link>
+        </Button>
       </div>
+
+      {/* Bulk action bar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground text-xs">
+            Izabrano: {selectedIds.size} strana
+          </span>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => handleMarkReviewed(Array.from(selectedIds))}
+          >
+            <Icon name="check" className="mr-1 size-3.5" />
+            Označi izabrane
+          </Button>
+        </div>
+      )}
 
       <div className="rounded-lg border">
         <Table>

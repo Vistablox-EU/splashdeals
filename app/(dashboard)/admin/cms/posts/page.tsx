@@ -11,25 +11,60 @@ export const metadata: Metadata = {
   title: "Blog objave | CMS | Splashdeals",
 };
 
-export default async function PostsPage() {
+export default async function PostsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ stale?: string }>;
+}) {
   await requireAdmin();
   await connection();
 
-  const posts = await prisma.blogPost.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      category: { select: { id: true, name: true, slug: true, color: true } },
-      _count: { select: { tags: true } },
-    },
-  });
+  const params = await searchParams;
+  const isStaleFilter = params.stale === "true";
 
-  // Serialize Date -> ISO string for client
-  const serialized = posts.map((post) => ({
-    ...post,
-    createdAt: post.createdAt.toISOString(),
-    updatedAt: post.updatedAt.toISOString(),
-    publishedAt: post.publishedAt?.toISOString() ?? null,
-  }));
+  const staleThreshold = new Date();
+  staleThreshold.setFullYear(staleThreshold.getFullYear() - 1);
+
+  let posts;
+  if (isStaleFilter) {
+    posts = await prisma.blogPost.findMany({
+      where: {
+        status: "PUBLISHED",
+        updatedAt: { lt: staleThreshold },
+        OR: [{ reviewedAt: null }, { reviewedAt: { lt: staleThreshold } }],
+      },
+      orderBy: { updatedAt: "desc" },
+      include: {
+        category: { select: { id: true, name: true, slug: true, color: true } },
+        _count: { select: { tags: true } },
+      },
+    });
+  } else {
+    posts = await prisma.blogPost.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        category: { select: { id: true, name: true, slug: true, color: true } },
+        _count: { select: { tags: true } },
+      },
+    });
+  }
+
+  // Serialize Date -> ISO string for client + compute isStale
+  const serialized = posts.map((post) => {
+    const lastDate = post.reviewedAt
+      ? new Date(Math.max(post.updatedAt.getTime(), post.reviewedAt.getTime()))
+      : post.updatedAt;
+    const isStale = post.status === "PUBLISHED" && lastDate < staleThreshold;
+
+    return {
+      ...post,
+      createdAt: post.createdAt.toISOString(),
+      updatedAt: post.updatedAt.toISOString(),
+      publishedAt: post.publishedAt?.toISOString() ?? null,
+      reviewedAt: post.reviewedAt?.toISOString() ?? null,
+      isStale,
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -48,7 +83,10 @@ export default async function PostsPage() {
         </Button>
       </div>
 
-      <PostsListClient posts={serialized as unknown as Array<Record<string, unknown>>} />
+      <PostsListClient
+        posts={serialized as unknown as Array<Record<string, unknown>>}
+        isStaleFilter={isStaleFilter}
+      />
     </div>
   );
 }
