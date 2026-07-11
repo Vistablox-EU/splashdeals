@@ -71,7 +71,6 @@ function generateId(): string {
 
 async function fileToWebPBlob(file: File): Promise<Blob | null> {
   try {
-    const img = new Image();
     const bitmap = await createImageBitmap(file, {
       resizeQuality: "high",
     });
