@@ -253,6 +253,7 @@ export function MediaLibraryContent({
             typeFilter={typeFilter}
             dateRange={dateRange}
             collectionFilter={collectionFilter}
+            sizeMode={sizeMode}
             actionLabel={actionLabel || (ml.actions as Record<string, string>)?.select || "Izaberi"}
           />
         </div>

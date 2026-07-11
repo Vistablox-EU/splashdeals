@@ -94,7 +94,44 @@ export function MediaDetailPane({
   const [altText, setAltText] = useState("");
   const [isZoomed, setIsZoomed] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isEditingFilename, setIsEditingFilename] = useState(false);
+  const [filenameValue, setFilenameValue] = useState("");
+  const [filenameSaving, setFilenameSaving] = useState(false);
   const altDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const startEditingFilename = useCallback(() => {
+    if (!detail) return;
+    const dot = detail.filename.lastIndexOf(".");
+    setFilenameValue(dot > 0 ? detail.filename.slice(0, dot) : detail.filename);
+    setIsEditingFilename(true);
+  }, [detail]);
+
+  const handleFilenameSave = useCallback(async () => {
+    if (!detail || !filenameValue.trim()) {
+      setIsEditingFilename(false);
+      return;
+    }
+    const dot = detail.filename.lastIndexOf(".");
+    const ext = dot > 0 ? detail.filename.slice(dot) : "";
+    const newName = filenameValue.trim() + ext;
+    if (newName === detail.filename) {
+      setIsEditingFilename(false);
+      return;
+    }
+    setFilenameSaving(true);
+    const result = await updateMediaAction({ id: detail.id, filename: newName });
+    setFilenameSaving(false);
+    if (result.success) {
+      setIsEditingFilename(false);
+      // Re-fetch to update detail state
+      const updated = await getMediaAction(detail.id);
+      if (updated.success && updated.data) setDetail(updated.data as MediaDetail);
+    }
+  }, [detail, filenameValue]);
+
+  const handleFilenameCancel = useCallback(() => {
+    setIsEditingFilename(false);
+  }, []);
 
   // Fetch details on mount / id change
   useEffect(() => {
@@ -231,12 +268,60 @@ export function MediaDetailPane({
           </button>
         </div>
 
-        {/* Filename */}
+        {/* Filename — editable, extension preserved */}
         <div className="flex flex-col gap-1">
           <span className="text-muted-foreground text-[10px] tracking-wider uppercase">
             {dict.details.name}
           </span>
-          <span className="text-foreground truncate text-sm font-medium">{detail.filename}</span>
+          {isEditingFilename ? (
+            <div className="flex items-center gap-1">
+              <input
+                type="text"
+                value={filenameValue}
+                onChange={(e) => setFilenameValue(e.target.value)}
+                onBlur={handleFilenameSave}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleFilenameSave();
+                  if (e.key === "Escape") handleFilenameCancel();
+                }}
+                className="bg-muted/30 border-border focus-visible:ring-ring h-7 flex-1 rounded-md border px-2 text-sm outline-none focus-visible:ring-2"
+                autoFocus
+                disabled={filenameSaving}
+              />
+              <span className="text-muted-foreground shrink-0 text-sm">
+                {(() => {
+                  if (!detail) return "";
+                  const dot = detail.filename.lastIndexOf(".");
+                  return dot > 0 ? detail.filename.slice(dot) : "";
+                })()}
+              </span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={startEditingFilename}
+              className="text-foreground hover:bg-muted/30 group -mx-1 flex items-center gap-1.5 truncate rounded px-1 text-sm font-medium transition-colors"
+              title="Kliknite za izmenu naziva"
+            >
+              {detail &&
+                (() => {
+                  const dot = detail.filename.lastIndexOf(".");
+                  const b = dot > 0 ? detail.filename.slice(0, dot) : detail.filename;
+                  return <span className="truncate">{b}</span>;
+                })()}
+              <span className="text-muted-foreground shrink-0">
+                {detail &&
+                  (() => {
+                    const dot = detail.filename.lastIndexOf(".");
+                    return dot > 0 ? detail.filename.slice(dot) : "";
+                  })()}
+              </span>
+              <Icon
+                name="edit"
+                className="text-muted-foreground/40 group-hover:text-muted-foreground size-3 shrink-0 transition-colors"
+              />
+            </button>
+          )}
         </div>
 
         {/* Details grid */}
