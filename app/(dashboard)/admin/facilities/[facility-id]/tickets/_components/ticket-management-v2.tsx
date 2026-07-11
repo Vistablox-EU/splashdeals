@@ -637,10 +637,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       </Dialog>
 
       {/* ─── Delete Product Confirmation ────────────────── */}
-      <Dialog
-        open={deleteProductTarget !== null}
-        onOpenChange={() => setDeleteProductTarget(null)}
-      >
+      <Dialog open={deleteProductTarget !== null} onOpenChange={() => setDeleteProductTarget(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Obriši tip</DialogTitle>

@@ -49,7 +49,7 @@ export function HeroActionPill({
       <div className="flex items-center justify-end md:hidden">
         <ShareButton
           title={facility.name}
-          url={`${process.env.NEXT_PUBLIC_SITE_URL}/${facilitySlug}`}
+          url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
         />
       </div>
 
@@ -63,7 +63,7 @@ export function HeroActionPill({
         </Link>
         <ShareButton
           title={facility.name}
-          url={`${process.env.NEXT_PUBLIC_SITE_URL}/${facilitySlug}`}
+          url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
         />
         {weather && <WeatherBadge weather={weather} />}
       </div>

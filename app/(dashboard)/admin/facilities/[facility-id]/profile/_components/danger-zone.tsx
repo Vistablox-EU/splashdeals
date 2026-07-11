@@ -114,8 +114,9 @@ export function DangerZone({
                 <strong className="text-foreground">
                   {transactionCount} aktivnih ili istorijskih transakcija
                 </strong>{" "}
-                u sistemskom registru. Potpuno brisanje je onemogućeno radi očuvanja računovodstvenih
-                revizija. Postavite status objekta na <strong className="text-foreground">CLOSED</strong>.
+                u sistemskom registru. Potpuno brisanje je onemogućeno radi očuvanja
+                računovodstvenih revizija. Postavite status objekta na{" "}
+                <strong className="text-foreground">CLOSED</strong>.
               </p>
             </div>
           </div>
@@ -126,9 +127,9 @@ export function DangerZone({
                 Obriši objekat
               </p>
               <p className="text-muted-foreground text-[10px] leading-normal font-medium">
-                Trajno briše <strong className="text-foreground/80">{facilityName}</strong>{" "}
-                zajedno sa svim povezanim ulaznicama, radnim vremenom, sadržajima, zatvaranjima i
-                osobljem. Ova radnja je apsolutna i ne može se poništiti.
+                Trajno briše <strong className="text-foreground/80">{facilityName}</strong> zajedno
+                sa svim povezanim ulaznicama, radnim vremenom, sadržajima, zatvaranjima i osobljem.
+                Ova radnja je apsolutna i ne može se poništiti.
               </p>
             </div>
 
@@ -161,8 +162,8 @@ export function DangerZone({
                   <DialogDescription className="text-muted-foreground text-xs leading-normal">
                     Ova radnja je{" "}
                     <strong className="text-destructive uppercase">destruktivna</strong> i potpuno
-                    će obrisati <strong className="text-foreground">{facilityName}</strong> iz
-                    baze podataka. Trenutno će kaskadno obrisati:
+                    će obrisati <strong className="text-foreground">{facilityName}</strong> iz baze
+                    podataka. Trenutno će kaskadno obrisati:
                   </DialogDescription>
                 </DialogHeader>
 

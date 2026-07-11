@@ -91,11 +91,7 @@ export default async function FacilityManagementLayout({
         <div className="bg-accent/5 pointer-events-none absolute bottom-0 left-0 -mb-48 -ml-48 h-[400px] w-[400px] rounded-full blur-[100px]" />
 
         {/* 🧭 Unified Master Command Bar */}
-        <ErrorBoundary
-          fallback={
-            <SlotError reset={() => {}} title="Navigacija nije učitana" />
-          }
-        >
+        <ErrorBoundary fallback={<SlotError reset={() => {}} title="Navigacija nije učitana" />}>
           <Suspense fallback={<FacilityNavSkeleton />}>
             <FacilityNav
               facility={facility}
@@ -118,11 +114,7 @@ export default async function FacilityManagementLayout({
             </div>
 
             <aside className="sticky top-8 hidden xl:col-span-3 xl:block">
-              <ErrorBoundary
-                fallback={
-                  <SlotError reset={() => {}} title="Sidebar nije učitan" />
-                }
-              >
+              <ErrorBoundary fallback={<SlotError reset={() => {}} title="Sidebar nije učitan" />}>
                 <Suspense fallback={<FacilityActionSidebarSkeleton />}>
                   <FacilityActionSidebar facility={facility as FacilityLayoutData} />
                 </Suspense>

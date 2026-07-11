@@ -169,11 +169,12 @@ export function ShowcaseTicketGroups({
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
-              <button
+              <Button
                 key={group.id}
+                variant="ghost"
                 onClick={() => setActiveGroupId(group.id)}
                 className={cn(
-                  "relative shrink-0 rounded-full px-6 py-3 text-xs font-black tracking-widest uppercase transition-all duration-300 select-none",
+                  "relative shrink-0 rounded-full px-6 py-3 text-xs font-black tracking-widest uppercase transition-colors duration-300 select-none",
                   isActive
                     ? "text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground bg-muted/50 border-border border md:border-none md:bg-transparent",
@@ -181,7 +182,7 @@ export function ShowcaseTicketGroups({
               >
                 {isActive && <div className="bg-primary absolute inset-0 rounded-full" />}
                 <span className="relative z-10">{group.title}</span>
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -265,7 +266,7 @@ export function ShowcaseTicketGroups({
       {/* Sticky Drawer */}
       {totalItems > 0 && (
         <div className="animate-in slide-in-from-bottom fixed right-4 bottom-20 left-4 z-[999] duration-300 md:hidden">
-          <div className="mobile-glass flex items-center justify-between gap-4 rounded-3xl p-4 shadow-[0_0_25px_rgba(6,182,212,0.1)]">
+          <div className="mobile-glass flex items-center justify-between gap-4 rounded-3xl p-4 shadow-[0_0_25px_hsl(var(--primary)/0.1)]">
             <div className="space-y-0.5">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
                 Korpa
@@ -281,7 +282,7 @@ export function ShowcaseTicketGroups({
             </div>
             <Button
               onClick={() => (window.location.href = "/cart")}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all active:scale-95"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
             >
               <span>Kupi</span>
               <Icon name="arrow_forward" className="text-[16px]" />
@@ -404,7 +405,7 @@ function MobileTicketAccordion({
   };
 
   return (
-    <div className="border-border/40 overflow-hidden border-b transition-all duration-300">
+    <div className="border-border/40 overflow-hidden border-b transition-[max-height,opacity] duration-300">
       {/* Collapsed row */}
       <button
         onClick={onToggle}
@@ -494,7 +495,7 @@ function MobileTicketAccordion({
                     >
                       <div className="flex min-w-0 flex-1 items-center gap-2">
                         <div
-                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
                             isSel ? "border-primary" : "border-muted-foreground/30"
                           }`}
                         >
@@ -582,13 +583,14 @@ function MobileTicketAccordion({
               <Button
                 onClick={handleAdd}
                 disabled={isAdding || isAdded || !activePrice}
-                className={`flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${
-                  isAdded
-                    ? "border-primary/30 bg-primary/10 text-primary"
-                    : isAdding
-                      ? "border-primary/10 bg-primary/5 text-primary cursor-not-allowed"
-                      : "border-primary/20 bg-primary/15 text-primary hover:bg-primary/10 hover:border-primary/40 hover:text-primary/80"
-                }`}
+                className={cn(
+                  "flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-colors duration-300",
+                  isAdded && "border-primary/30 bg-primary/10 text-primary",
+                  isAdding && "border-primary/10 bg-primary/5 text-primary cursor-not-allowed",
+                  !isAdded &&
+                    !isAdding &&
+                    "border-primary/20 bg-primary/15 text-primary hover:bg-primary/10 hover:border-primary/40 hover:text-primary/80",
+                )}
               >
                 {isAdded ? (
                   <>
@@ -641,11 +643,17 @@ function SingleTierCard({
     >
       <div className="flex-1 space-y-4 text-center md:text-left">
         <div className="flex flex-wrap justify-center gap-2 md:justify-start">
-          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] font-black tracking-widest uppercase">
+          <Badge
+            variant="default"
+            className="bg-primary/10 text-primary border-primary/20 text-[10px] font-black tracking-widest uppercase"
+          >
             {tier.isSeasonPass ? "Sezonska karta" : "Ulaznica"}
           </Badge>
           {tier.maxPeople && tier.maxPeople > 1 && (
-            <Badge className="border-primary/20 bg-primary/10 text-primary text-[10px] font-black tracking-widest uppercase">
+            <Badge
+              variant="default"
+              className="border-primary/20 bg-primary/10 text-primary text-[10px] font-black tracking-widest uppercase"
+            >
               Porodični paket
             </Badge>
           )}
@@ -697,7 +705,7 @@ function SingleTierCard({
                   <span className="bg-destructive pointer-events-none absolute top-1/2 right-[-2px] left-[-2px] h-[1.5px] -rotate-12" />
                 </span>
               </div>
-              <div className="bg-primary/10 border-primary/30 flex min-w-[110px] flex-1 flex-col items-center justify-center rounded-xl border px-3 py-1.5 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+              <div className="bg-primary/10 border-primary/30 flex min-w-[110px] flex-1 flex-col items-center justify-center rounded-xl border px-3 py-1.5 shadow-[0_0_15px_hsl(var(--primary)/0.1)]">
                 <span className="text-primary mb-1 text-[8px] leading-none font-black tracking-widest uppercase">
                   Kupi online
                 </span>
@@ -824,7 +832,7 @@ function TierList({
         <div
           key={tier.id}
           id={`ticket-${tier.id}`}
-          className="bg-muted/20 border-border hover:bg-muted/50 group flex flex-col justify-between gap-3 rounded-2xl border p-3 transition-all md:flex-row md:items-center"
+          className="bg-muted/20 border-border hover:bg-muted/50 group flex flex-col justify-between gap-3 rounded-2xl border p-3 transition-colors md:flex-row md:items-center"
         >
           <div className="flex w-full flex-1 items-start gap-2">
             {tier.imageUrl && (
@@ -844,12 +852,18 @@ function TierList({
                   {tier.label}
                 </h4>
                 {tier.dayType && tier.dayType !== "ALL" && (
-                  <Badge className="text-muted-foreground border-muted/30 bg-muted/20 text-[9px] font-black tracking-tighter uppercase">
+                  <Badge
+                    variant="outline"
+                    className="text-muted-foreground border-muted/30 bg-muted/20 text-[9px] font-black tracking-tighter uppercase"
+                  >
                     {tier.dayType === "WEEKDAY" ? "Radni dan" : "Vikend"}
                   </Badge>
                 )}
                 {tier.timeSlot && tier.timeSlot !== "FULL_DAY" && (
-                  <Badge className="text-muted-foreground border-muted/30 bg-muted/20 text-[9px] font-black tracking-tighter uppercase">
+                  <Badge
+                    variant="outline"
+                    className="text-muted-foreground border-muted/30 bg-muted/20 text-[9px] font-black tracking-tighter uppercase"
+                  >
                     {tier.timeSlot === "AFTER_16H"
                       ? "Posle 16h"
                       : tier.timeSlot === "THREE_HOUR"
@@ -858,7 +872,10 @@ function TierList({
                   </Badge>
                 )}
                 {tier.isSeasonPass && (
-                  <Badge className="border-primary/20 bg-primary/10 text-primary text-[9px] font-black tracking-tighter uppercase">
+                  <Badge
+                    variant="default"
+                    className="border-primary/20 bg-primary/10 text-primary text-[9px] font-black tracking-tighter uppercase"
+                  >
                     Sezonska
                   </Badge>
                 )}
@@ -947,7 +964,7 @@ function TierGrid({
         <div
           key={tier.id}
           id={`ticket-${tier.id}`}
-          className="bg-muted/20 border-border hover:bg-muted/50 group flex flex-col gap-6 rounded-2xl border p-6 transition-all"
+          className="bg-muted/20 border-border hover:bg-muted/50 group flex flex-col gap-6 rounded-2xl border p-6 transition-colors"
         >
           {tier.imageUrl && (
             <div className="border-border/50 relative h-20 w-20 self-start overflow-hidden rounded-xl border">

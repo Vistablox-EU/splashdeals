@@ -45,10 +45,14 @@ export default function FacilityLoading() {
       <main className="relative z-20 mx-auto -mt-12 max-w-7xl space-y-24 px-6 pb-32 md:px-12">
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
           <div className="space-y-12 lg:col-span-8">
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="bg-muted h-32 rounded-[2rem]" />
-              ))}
+            <div className="border-border rounded-2xl border-2 p-6 sm:p-12 md:p-16">
+              <div className="mb-6">
+                <Skeleton className="bg-muted h-4 w-32 rounded" />
+              </div>
+              <Skeleton className="bg-muted mb-6 h-6 w-48 rounded-lg" />
+              <Skeleton className="bg-muted mb-2 h-4 w-full rounded" />
+              <Skeleton className="bg-muted mb-2 h-4 w-3/4 rounded" />
+              <Skeleton className="bg-muted h-4 w-5/6 rounded" />
             </div>
           </div>
           <aside className="lg:col-span-4">

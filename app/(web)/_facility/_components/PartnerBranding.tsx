@@ -13,7 +13,7 @@ export function PartnerBranding({ logoUrl, name }: PartnerBrandingProps) {
   if (!logoUrl) return null;
 
   return (
-    <div className="glass-frost border-border bg-muted/20 hover:border-primary/20 hover:bg-muted/40 group flex items-center gap-5 rounded-[2rem] border p-6 transition-all duration-500">
+    <div className="glass-frost border-border bg-muted/20 hover:border-primary/20 hover:bg-muted/40 group flex items-center gap-5 rounded-[2rem] border p-6 transition-[border-color,background-color,transform] duration-500">
       <div className="border-border bg-background/50 relative flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-3xl border p-2.5 shadow-2xl backdrop-blur-md transition-transform duration-500 group-hover:scale-105">
         <Image src={logoUrl} alt={`${name} Logo`} fill className="object-contain p-3" />
       </div>

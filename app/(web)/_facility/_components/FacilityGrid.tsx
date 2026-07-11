@@ -146,7 +146,7 @@ export async function FacilityGrid({
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       {serializedFacilities.map((facility, idx) => (
-        <div key={facility.id} className="transition-all duration-500">
+        <div key={facility.id} className="transition-[opacity,transform] duration-500">
           <FacilityCard
             facility={facility}
             dict={dict}

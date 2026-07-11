@@ -1,4 +1,3 @@
-"use client";
 import { Icon } from "@/components/ui/Icon";
 
 import React from "react";
@@ -135,13 +134,13 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
           return (
             <div
               key={fa.amenityId}
-              className="group border-border bg-card/40 hover:border-primary/30 hover:bg-muted/20 relative flex min-h-[76px] cursor-default flex-row items-center gap-3 overflow-hidden rounded-2xl border p-4 backdrop-blur-md transition-all duration-500 sm:min-h-[170px] sm:flex-col sm:items-center sm:justify-center sm:p-8 sm:text-center"
+              className="group border-border bg-card/40 hover:border-primary/30 hover:bg-muted/20 relative flex min-h-[76px] cursor-default flex-row items-center gap-3 overflow-hidden rounded-2xl border p-4 backdrop-blur-md transition-[border-color,background-color,transform] duration-500 sm:min-h-[170px] sm:flex-col sm:items-center sm:justify-center sm:p-8 sm:text-center"
             >
               {/* 🔮 Glow Hover Effect */}
               <div className="from-primary/[0.02] pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
               {/* 🧿 Icon Container (Neon Glassmorphism) */}
-              <div className="text-primary border-border bg-muted/10 relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:mb-4 sm:h-14 sm:w-14 sm:rounded-2xl">
+              <div className="text-primary border-border bg-muted/10 relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border shadow-inner backdrop-blur-md transition-[border-color,background-color,transform] duration-500 group-hover:scale-110 sm:mb-4 sm:h-14 sm:w-14 sm:rounded-2xl">
                 <Icon name={iconName} className="text-primary text-[20px] sm:text-[24px]" />
               </div>
 

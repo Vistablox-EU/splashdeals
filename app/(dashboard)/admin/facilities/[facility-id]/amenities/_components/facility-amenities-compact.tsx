@@ -197,9 +197,7 @@ export function CompactAmenitiesTable({
 
   const handleToggleFeatured = (id: string) => {
     setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, isFeatured: !item.isFeatured } : item,
-      ),
+      prev.map((item) => (item.id === id ? { ...item, isFeatured: !item.isFeatured } : item)),
     );
     markDirty(id);
   };

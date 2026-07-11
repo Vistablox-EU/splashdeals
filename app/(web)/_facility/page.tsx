@@ -36,6 +36,19 @@ const MediaGallery = dynamic(
   () => import("./_components/MediaGallery").then((mod) => mod.MediaGallery),
   {
     ssr: true,
+    loading: () => (
+      <div className="space-y-12">
+        <div className="mx-auto max-w-2xl space-y-4 text-center">
+          <Skeleton className="bg-muted mx-auto h-4 w-24 rounded" />
+          <Skeleton className="bg-muted mx-auto h-8 w-64 rounded-lg" />
+        </div>
+        <div className="grid auto-rows-[250px] grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="bg-muted rounded-[2.5rem]" />
+          ))}
+        </div>
+      </div>
+    ),
   },
 );
 
@@ -192,7 +205,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               weather={weather}
             />
 
-            <h1 className="text-primary-foreground py-2 text-4xl leading-[0.8] font-black tracking-tighter italic md:text-7xl">
+            <h1 className="text-primary-foreground py-2 text-4xl leading-[0.9] font-black tracking-tighter italic md:text-7xl">
               {(() => {
                 const words = facility.name.split(" ");
                 if (words.length === 1) {
@@ -238,7 +251,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             <Card className="brand-card flex min-h-0 flex-col justify-center">
               <CardHeader className="gap-6 p-6 pb-0 sm:p-12 sm:pb-0 md:p-16 md:pb-0">
                 <div className="text-primary hidden items-center gap-3 text-xs font-black tracking-[0.2em] uppercase md:flex">
-                  <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
+                  <Icon name="auto_awesome" aria-hidden="true" className="text-[16px]" /> Iskustvo
                 </div>
                 <div className="brand-divider mb-4 hidden w-24 md:block" />
                 <CardTitle className="text-foreground hidden text-2xl leading-tight font-black tracking-tighter uppercase italic md:block md:text-5xl">

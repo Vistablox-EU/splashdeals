@@ -43,7 +43,7 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
       href={`/facilities/${facility.category.toLowerCase().replace(/_/g, "-")}/${facility.slug}`}
       className="block"
     >
-      <Card className="group border-border hover:border-primary/30 relative flex h-[300px] flex-col justify-end overflow-hidden transition-all duration-500 sm:h-[400px]">
+      <Card className="group border-border hover:border-primary/30 relative flex h-[300px] flex-col justify-end overflow-hidden transition-[border-color] duration-500 sm:h-[400px]">
         {facility.logoUrl && (
           <div className="border-border bg-background/60 absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border p-2 shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-105 sm:top-6 sm:right-6 sm:h-14 sm:w-14">
             <div className="relative h-full w-full">
@@ -105,7 +105,7 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
                 <div />
               )}
 
-              <div className="text-primary bg-primary/10 border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary shadow-primary/10 flex items-center gap-1.5 rounded-xl border px-4 py-2.5 text-[9px] font-black tracking-[0.15em] uppercase shadow-lg transition-all duration-300 group-hover:translate-x-1">
+              <div className="text-primary bg-primary/10 border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary shadow-primary/10 flex items-center gap-1.5 rounded-xl border px-4 py-2.5 text-[9px] font-black tracking-[0.15em] uppercase shadow-lg transition-colors duration-300 group-hover:translate-x-1">
                 <span>Detaljnije</span>
                 <Icon
                   name="navigation"

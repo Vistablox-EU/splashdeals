@@ -62,11 +62,12 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
 
       <div className="grid auto-rows-[180px] grid-cols-2 gap-2 sm:gap-4 md:auto-rows-[250px] md:grid-cols-4">
         {galleryMedia.map((m: FacilityMedia, i: number) => (
-          <div
+          <button
             key={m.id}
             onClick={() => setSelectedIdx(i)}
-            className="group border-border animate-fade-in-up bg-muted/5 relative cursor-pointer overflow-hidden rounded-[2.5rem] border"
+            className="group border-border animate-fade-in-up bg-muted/5 relative overflow-hidden rounded-[2.5rem] border"
             style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
+            aria-label={`${dict?.media_gallery?.expand_view || "Open image"} ${i + 1}`}
           >
             {m.type === "VIDEO" ? (
               <div className="relative h-full w-full">
@@ -75,7 +76,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                   poster={m.thumbnailUrl || undefined}
                   muted
                   preload="none"
-                  className="h-full w-full object-cover transition-all duration-1000 group-hover:scale-110"
+                  className="h-full w-full object-cover transition-[transform] duration-1000 group-hover:scale-110"
                 />
                 <div className="bg-background/20 absolute inset-0 flex items-center justify-center">
                   <Icon
@@ -89,12 +90,12 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                 src={m.url}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                className="h-full w-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:rotate-1"
+                className="h-full w-full object-cover transition-[transform] duration-1000 group-hover:scale-110 group-hover:rotate-1"
                 alt={m.caption || "Facility media"}
                 loading="lazy"
               />
             )}
-            <div className="from-background/90 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100">
+            <div className="from-background/90 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-8 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
               <div className="translate-y-4 space-y-2 transition-transform duration-500 group-hover:translate-y-0">
                 <p className="text-primary-foreground text-lg font-bold">
                   {m.caption || dict?.media_gallery?.fallback_caption || "Letnji Užitak"}
@@ -106,22 +107,23 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                     : dict?.media_gallery?.expand_view || "Prikaži Veće"}
                 </div>
               </div>
-              <div className="bg-muted/20 absolute top-6 right-6 scale-75 rounded-full p-3 opacity-0 backdrop-blur-md transition-all group-hover:scale-100 group-hover:opacity-100">
+              <div className="bg-muted/20 absolute top-6 right-6 scale-75 rounded-full p-3 opacity-0 backdrop-blur-md transition-[transform,opacity] group-hover:scale-100 group-hover:opacity-100">
                 <Icon
                   name="favorite"
                   className="text-primary-foreground hover:text-destructive cursor-pointer text-[20px] transition-colors"
                 />
               </div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
       {/* 🎭 LIGHTBOX */}
       {selectedIdx !== null && (
-        <div
+        <button
           className="bg-background/95 animate-fade-in fixed inset-0 z-[2000] flex items-center justify-center p-4 backdrop-blur-2xl md:p-20"
           onClick={() => setSelectedIdx(null)}
+          aria-label={dict?.media_gallery?.close || "Zatvori galeriju"}
         >
           <Button
             variant="ghost"
@@ -161,7 +163,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
               </div>
             )}
           </div>
-        </div>
+        </button>
       )}
     </section>
   );

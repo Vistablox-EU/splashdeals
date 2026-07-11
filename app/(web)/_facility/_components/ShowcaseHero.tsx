@@ -81,7 +81,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
             muted
             playsInline
             {...{ fetchPriority: "high" as const }}
-            className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover brightness-75 transition-all duration-700"
+            className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover brightness-75 transition-[filter] duration-700"
             poster={heroMedia.thumbnailUrl || undefined}
           >
             <source src={heroMedia.url} type="video/mp4" />
@@ -100,7 +100,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
             fill
             priority
             sizes="100vw"
-            className="object-cover brightness-75 transition-all duration-700"
+            className="object-cover brightness-75 transition-[filter] duration-700"
           />
         </div>
       );
