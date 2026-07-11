@@ -323,6 +323,13 @@
     "play_video": "Pusti Video",
     "expand_view": "Prikaži Veće"
   },
+  "scheduling": {
+    "scheduled_for": "Zakazano za",
+    "cancel_schedule": "Otka\u017Ei zakazivanje",
+    "schedule_date": "Datum i vreme objave",
+    "upcoming_title": "Zakazane objave",
+    "no_scheduled": "Nema zakazanih objava."
+  },
   "media_library": {
     "title": "Media biblioteka",
     "search_placeholder": "Pretraži medije...",

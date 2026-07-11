@@ -28,6 +28,21 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import { createBlogPostAction, updateBlogPostAction } from "@/app/(server)/actions/cms";
 
+function countImagesWithoutAlt(html: string): number {
+  if (!html) return 0;
+  const regex = /<img\s[^>]*>/gi;
+  let match: RegExpExecArray | null;
+  let count = 0;
+  while ((match = regex.exec(html)) !== null) {
+    const tag = match[0];
+    // Check for an alt attribute (handle both "alt=" and "alt =")
+    if (!/alt\s*=\s*["']/i.test(tag)) {
+      count++;
+    }
+  }
+  return count;
+}
+
 const postFormSchema = z.object({
   title: z.string().min(1, "Naslov je obavezan"),
   slug: z
@@ -60,6 +75,30 @@ interface PostEditorProps {
   dict?: Record<string, unknown>;
 }
 
+function toDatetimeLocal(iso: Date | string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function formatScheduledDate(dt: string): string {
+  try {
+    const d = new Date(dt);
+    if (isNaN(d.getTime())) return dt;
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    const day = pad(d.getDate());
+    const month = pad(d.getMonth() + 1);
+    const year = d.getFullYear();
+    const hours = pad(d.getHours());
+    const minutes = pad(d.getMinutes());
+    return `${day}.${month}.${year}. u ${hours}:${minutes}`;
+  } catch {
+    return dt;
+  }
+}
+
 export function PostEditor({ post, initialTagIds, categories, tags, dict }: PostEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -85,7 +124,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
       ogImage: (post?.ogImage as string) || "",
       canonicalUrl: (post?.canonicalUrl as string) || "",
       robotsDirective: (post?.robotsDirective as string) || "",
-      publishedAt: (post?.publishedAt as string) || "",
+      publishedAt: post?.publishedAt ? toDatetimeLocal(post.publishedAt as Date) : "",
     },
   });
 
@@ -130,7 +169,23 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
       if (!data.ogTitle) data.ogTitle = data.metaTitle as string;
       if (!data.ogDescription) data.ogDescription = data.metaDescription as string;
 
+      // Warn about images missing alt text — non-blocking
+      const missingAltCount = countImagesWithoutAlt(content);
+      if (missingAltCount > 0) {
+        const label =
+          missingAltCount >= 2 && missingAltCount <= 4
+            ? `${missingAltCount} slike nemaju alt tekst.`
+            : `${missingAltCount} slika nema alt tekst.`;
+        toast.warning(`${label} Dodajte ga klikom na sliku u editoru.`);
+      }
+
       startTransition(async () => {
+        if (data.publishedAt) {
+          data.publishedAt = new Date(data.publishedAt as string).toISOString();
+        } else {
+          data.publishedAt = null;
+        }
+
         const cleansedTags = selectedTagIds.filter(Boolean);
         const result = isEditing
           ? await updateBlogPostAction(post!.id as string, data as never, cleansedTags)
@@ -279,6 +334,44 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                   onCheckedChange={(checked) => setValue("isFeatured", checked)}
                 />
               </div>
+
+              {/* Scheduling - shown when status is PUBLISHED */}
+              {watch("status") === "PUBLISHED" && (
+                <div className="space-y-2 pt-2">
+                  <Label htmlFor="publishedAt">Datum i vreme objave</Label>
+                  <Input
+                    id="publishedAt"
+                    type="datetime-local"
+                    {...register("publishedAt")}
+                    className="w-full"
+                  />
+                  {(() => {
+                    const val = watch("publishedAt");
+                    if (val) {
+                      const dt = new Date(val);
+                      if (dt > new Date()) {
+                        return (
+                          <div className="space-y-1">
+                            <p className="text-muted-foreground text-xs">
+                              Zakazano za {formatScheduledDate(val)}
+                            </p>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive h-auto p-0 text-xs"
+                              onClick={() => setValue("publishedAt", "")}
+                            >
+                              Otkaži zakazivanje
+                            </Button>
+                          </div>
+                        );
+                      }
+                    }
+                    return null;
+                  })()}
+                </div>
+              )}
               <div className="flex gap-2 pt-2">
                 <Button type="submit" disabled={isPending} className="flex-1">
                   {isPending ? (

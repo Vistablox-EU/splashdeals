@@ -28,6 +28,20 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import { createPageAction, updatePageAction } from "@/app/(server)/actions/cms";
 
+function countImagesWithoutAlt(html: string): number {
+  if (!html) return 0;
+  const regex = /<img\s[^>]*>/gi;
+  let match: RegExpExecArray | null;
+  let count = 0;
+  while ((match = regex.exec(html)) !== null) {
+    const tag = match[0];
+    if (!/alt\s*=\s*["']/i.test(tag)) {
+      count++;
+    }
+  }
+  return count;
+}
+
 const pageFormSchema = z.object({
   title: z.string().min(1, "Naslov je obavezan"),
   slug: z
@@ -103,6 +117,17 @@ export function PageEditor({ page, dict }: PageEditorProps) {
 
   const onSubmit = useCallback(
     async (data: Record<string, unknown>) => {
+      // Warn about images missing alt text — non-blocking
+      const content = (data.content as string) || "";
+      const missingAltCount = countImagesWithoutAlt(content);
+      if (missingAltCount > 0) {
+        const label =
+          missingAltCount >= 2 && missingAltCount <= 4
+            ? `${missingAltCount} slike nemaju alt tekst.`
+            : `${missingAltCount} slika nema alt tekst.`;
+        toast.warning(`${label} Dodajte ga klikom na sliku u editoru.`);
+      }
+
       startTransition(async () => {
         const result = isEditing
           ? await updatePageAction(page!.id as string, data as never)

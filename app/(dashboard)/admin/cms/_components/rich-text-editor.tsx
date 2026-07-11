@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect, useState } from "react";
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import ImageExtension from "@tiptap/extension-image";
@@ -17,6 +17,16 @@ import { createImageUploadPlugin } from "./image-upload-plugin";
 import { MediaLibraryDialog } from "@/app/(dashboard)/admin/media/_components/media-library-dialog";
 import { ImageBubbleMenu } from "./image-bubble-menu";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 interface RichTextEditorProps {
   content: string;
@@ -102,6 +112,9 @@ function Toolbar({
   source?: "blog" | "stranica";
 }) {
   const linkUrlRef = useRef<HTMLInputElement>(null);
+  const [pendingImageUrl, setPendingImageUrl] = useState<string | null>(null);
+  const [pendingAltText, setPendingAltText] = useState("");
+  const altInputRef = useRef<HTMLInputElement>(null);
 
   const setLink = useCallback(() => {
     const url = linkUrlRef.current?.value;
@@ -130,9 +143,11 @@ function Toolbar({
         const { uploadMediaAction } = await import("@/app/(server)/actions/cms-media");
         const res = await uploadMediaAction(formData);
         if (res.success && res.data?.url) {
-          editor.chain().focus().setImage({ src: res.data.url }).run();
           toast.dismiss(toastId);
           toast.success("Slika je otpremljena.");
+          setPendingImageUrl(res.data.url);
+          setPendingAltText("");
+          setTimeout(() => altInputRef.current?.focus(), 150);
         } else {
           toast.dismiss(toastId);
           toast.error(res.error || "Greška pri otpremanju slike.");
@@ -145,6 +160,36 @@ function Toolbar({
     };
     input.click();
   }, [editor, source]);
+
+  const handleAltDialogConfirm = useCallback(() => {
+    if (pendingImageUrl) {
+      editor.chain().focus().setImage({ src: pendingImageUrl, alt: pendingAltText }).run();
+    }
+    setPendingImageUrl(null);
+    setPendingAltText("");
+  }, [editor, pendingImageUrl, pendingAltText]);
+
+  const handleAltDialogSkip = useCallback(() => {
+    if (pendingImageUrl) {
+      editor.chain().focus().setImage({ src: pendingImageUrl, alt: "" }).run();
+    }
+    setPendingImageUrl(null);
+    setPendingAltText("");
+  }, [editor, pendingImageUrl]);
+
+  const handleAltDialogOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        // Dialog was dismissed (Escape / click outside) — insert without alt
+        if (pendingImageUrl) {
+          editor.chain().focus().setImage({ src: pendingImageUrl, alt: "" }).run();
+        }
+        setPendingImageUrl(null);
+        setPendingAltText("");
+      }
+    },
+    [editor, pendingImageUrl],
+  );
 
   return (
     <TooltipProvider>
@@ -299,6 +344,36 @@ function Toolbar({
           }
         />
       </div>
+
+      {/* Alt text prompt after Slike upload */}
+      <AlertDialog open={!!pendingImageUrl} onOpenChange={handleAltDialogOpenChange}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Alt tekst za sliku</AlertDialogTitle>
+            <AlertDialogDescription>
+              Dodaj opis slike koji će biti prikazan ako se slika ne učita. Ovo poboljšava
+              pristupačnost i SEO.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Input
+            ref={altInputRef}
+            value={pendingAltText}
+            onChange={(e) => setPendingAltText(e.target.value)}
+            placeholder="Opis slike..."
+            className="w-full"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAltDialogConfirm();
+              }
+            }}
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleAltDialogSkip}>Preskoči</AlertDialogCancel>
+            <AlertDialogAction onClick={handleAltDialogConfirm}>Dodaj</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </TooltipProvider>
   );
 }
