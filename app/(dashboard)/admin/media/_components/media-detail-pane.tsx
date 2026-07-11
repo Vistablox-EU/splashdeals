@@ -275,7 +275,7 @@ export function MediaDetailPane({
           </span>
           {isEditingFilename ? (
             <div className="flex items-center gap-1">
-              <input
+              <Input
                 type="text"
                 value={filenameValue}
                 onChange={(e) => setFilenameValue(e.target.value)}
@@ -284,7 +284,7 @@ export function MediaDetailPane({
                   if (e.key === "Enter") handleFilenameSave();
                   if (e.key === "Escape") handleFilenameCancel();
                 }}
-                className="bg-muted/30 border-border focus-visible:ring-ring h-7 flex-1 rounded-md border px-2 text-sm outline-none focus-visible:ring-2"
+                className="bg-muted/30 h-7 flex-1 px-2"
                 autoFocus
                 disabled={filenameSaving}
               />
