@@ -7,7 +7,7 @@ interface MediaLibraryPageProps {
 }
 
 export function MediaLibraryPage({ dict }: MediaLibraryPageProps) {
-  const ml = dict as Record<string, unknown>;
+  const ml = (dict?.media_library as Record<string, unknown>) || {};
 
   return (
     <div className="flex h-full flex-col">
