@@ -12,7 +12,6 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
 
 type SortKey = "newest" | "oldest" | "name_asc" | "name_desc" | "largest" | "smallest";
 type TypeKey = "all" | "jpg" | "png" | "webp" | "gif" | "svg";
