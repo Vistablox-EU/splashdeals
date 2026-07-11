@@ -647,3 +647,25 @@ export async function purgeTrashedMediaAction(): Promise<ActionResult<{ purged: 
     return handleServerActionError(error, "cms/purgeTrashedMedia");
   }
 }
+
+// ─── 12. Restore Media (undo soft delete) ────────────────
+
+export async function restoreMediaAction(id: string): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+
+    const media = await (prisma as any).cmsMedia.findUnique({ where: { id } });
+    if (!media) return { success: false, error: "Medija nije pronađena." };
+    if (!media.deletedAt) return { success: false, error: "Medija nije obrisana." };
+
+    await (prisma as any).cmsMedia.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+
+    revalidatePath("/admin/media");
+    return { success: true };
+  } catch (error) {
+    return handleServerActionError(error, "cms/restoreMedia");
+  }
+}
