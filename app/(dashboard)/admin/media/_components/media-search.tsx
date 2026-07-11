@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 
 interface MediaSearchProps {
@@ -73,14 +74,16 @@ export function MediaSearch({ value, onChange, placeholder, dict }: MediaSearchP
         className="pr-8 pl-9"
       />
       {localValue && (
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={handleClear}
           aria-label="Obriši pretragu"
-          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 flex size-5 -translate-y-1/2 items-center justify-center rounded-full transition-colors"
+          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-1 size-6 -translate-y-1/2 rounded-full p-0"
         >
           <Icon name="close" className="size-3.5" />
-        </button>
+        </Button>
       )}
     </div>
   );

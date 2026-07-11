@@ -75,7 +75,7 @@ export function MediaUploadProgress({ uploads }: MediaUploadProgressProps) {
                   </span>
                 )}
                 {upload.status === "done" && (
-                  <Icon name="check_circle" className="size-3.5 text-green-500" />
+                  <Icon name="check_circle" className="text-success size-3.5" />
                 )}
                 {upload.status === "error" && (
                   <Icon name="error" className="text-destructive size-3.5" />
