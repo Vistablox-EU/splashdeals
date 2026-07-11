@@ -49,9 +49,9 @@ export default function FacilityLoading() {
               <div className="mb-6">
                 <Skeleton className="bg-muted h-4 w-32 rounded" />
               </div>
-              <Skeleton className="bg-muted h-6 w-48 rounded-lg mb-6" />
-              <Skeleton className="bg-muted h-4 w-full rounded mb-2" />
-              <Skeleton className="bg-muted h-4 w-3/4 rounded mb-2" />
+              <Skeleton className="bg-muted mb-6 h-6 w-48 rounded-lg" />
+              <Skeleton className="bg-muted mb-2 h-4 w-full rounded" />
+              <Skeleton className="bg-muted mb-2 h-4 w-3/4 rounded" />
               <Skeleton className="bg-muted h-4 w-5/6 rounded" />
             </div>
           </div>

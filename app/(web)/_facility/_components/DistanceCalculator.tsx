@@ -80,12 +80,13 @@ export function DistanceCalculator({ destLat, destLng }: DistanceCalculatorProps
     );
   };
 
-  if (error) return (
-    <div className="border-border bg-muted/20 flex items-center gap-2 rounded-2xl border px-5 py-2.5 text-xs font-black tracking-widest uppercase opacity-50">
-      <Icon name="explore" className="text-muted-foreground text-[16px]" />
-      <span className="text-muted-foreground">Lokacija nedostupna</span>
-    </div>
-  );
+  if (error)
+    return (
+      <div className="border-border bg-muted/20 flex items-center gap-2 rounded-2xl border px-5 py-2.5 text-xs font-black tracking-widest uppercase opacity-50">
+        <Icon name="explore" className="text-muted-foreground text-[16px]" />
+        <span className="text-muted-foreground">Lokacija nedostupna</span>
+      </div>
+    );
 
   return (
     <Button
