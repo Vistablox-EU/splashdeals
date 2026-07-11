@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, startTransition } from "react";
 
 export interface AutosaveData {
   title: string;
@@ -22,7 +22,9 @@ export function useCmsAutosave(formKey: string, data: AutosaveData, isDirty: boo
   useEffect(() => {
     if (!isDirty) return;
 
-    setStatus("saving");
+    startTransition(() => {
+      setStatus("saving");
+    });
     if (timerRef.current) clearTimeout(timerRef.current);
 
     timerRef.current = setTimeout(() => {

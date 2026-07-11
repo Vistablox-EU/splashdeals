@@ -203,7 +203,7 @@ export function PagesListClient({
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs h-7 px-2"
+              className="h-7 px-2 text-xs"
               onClick={() => handleMarkReviewed([row.original.id])}
             >
               I dalje je aktuelno
@@ -232,7 +232,6 @@ export function PagesListClient({
     },
   ];
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: pages as unknown as PageRow[],
     columns,
@@ -271,9 +270,7 @@ export function PagesListClient({
       {/* Bulk action bar */}
       {selectedIds.size > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground text-xs">
-            Izabrano: {selectedIds.size} strana
-          </span>
+          <span className="text-muted-foreground text-xs">Izabrano: {selectedIds.size} strana</span>
           <Button
             variant="secondary"
             size="sm"
