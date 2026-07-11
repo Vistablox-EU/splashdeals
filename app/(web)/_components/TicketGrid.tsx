@@ -131,14 +131,17 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
         const hasDiscount = ticket.originalPrice && ticket.originalPrice > ticket.price;
 
         return (
-          <article key={ticket.id} className="group relative h-full transition-all duration-700">
+          <article
+            key={ticket.id}
+            className="group relative h-full transition-[transform,opacity,box-shadow] duration-700"
+          >
             {/* Single overlay link covering the entire card */}
             <Link
               href={`/${ticket.facility.slug}#deals`}
               className="focus-visible:ring-primary absolute inset-0 z-20 rounded-xl focus-visible:ring-2"
               aria-label={`${ticket.facility.name} — ${ticket.title}`}
             />
-            <Card className="group border-border hover:border-primary/30 flex h-full flex-col transition-all duration-500 hover:-translate-y-2">
+            <Card className="group border-border hover:border-primary/30 flex h-full flex-col transition-[border-color,transform,box-shadow] duration-500 hover:-translate-y-2">
               <div className="relative h-40 w-full overflow-hidden sm:h-52">
                 <div className="from-background/90 absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
                 {cardImage ? (

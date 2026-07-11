@@ -155,7 +155,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
           <div className="space-y-4">
             {items.map((item) => (
               <div key={item.id}>
-                <Card className="border-border hover:border-border group from-background/5 bg-gradient-to-r to-transparent p-4 transition-all sm:p-6">
+                <Card className="border-border hover:border-border group from-background/5 bg-gradient-to-r to-transparent p-4 transition-[border-color] sm:p-6">
                   <div className="flex flex-col items-center gap-4 sm:gap-8 md:flex-row">
                     {/* Icon/Image Placeholder */}
                     <div className="bg-primary/10 border-primary/20 relative flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border transition-transform group-hover:scale-110">

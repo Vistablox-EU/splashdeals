@@ -259,7 +259,7 @@ export function TicketPurchaseModal({
                 setSelectedCategory(cat.id);
                 setSelectedProduct(null);
               }}
-              className={`flex-1 rounded-lg py-2 text-[10px] font-black tracking-widest uppercase transition-all ${
+              className={`flex-1 rounded-lg py-2 text-[10px] font-black tracking-widest uppercase transition-[background-color,color] ${
                 selectedCategory === cat.id
                   ? "bg-primary/10 text-primary border-primary/20 border"
                   : "text-muted-foreground hover:text-foreground"
@@ -284,7 +284,7 @@ export function TicketPurchaseModal({
           >
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <div
-                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-[border-color] ${
                   selectedProduct === prod.id ? "border-primary" : "border-muted-foreground/30"
                 }`}
               >
@@ -356,7 +356,7 @@ export function TicketPurchaseModal({
               >
                 <div className="flex min-w-0 flex-1 items-center gap-2">
                   <div
-                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-[border-color] ${
                       isSelected ? "border-primary" : "border-muted-foreground/30"
                     }`}
                   >
@@ -448,7 +448,7 @@ export function TicketPurchaseModal({
         <Button
           onClick={handleAddToCart}
           disabled={isAdding || isAdded || !activePrice}
-          className={`flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${
+          className={`flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-[background-color,border-color,opacity] duration-300 ${
             isAdded
               ? "border-primary/30 bg-primary/10 text-primary"
               : isAdding
@@ -493,6 +493,7 @@ export function TicketPurchaseModal({
       <div className="fixed inset-0 z-50 flex flex-col justify-end md:hidden">
         <div
           onClick={onClose}
+          role="presentation"
           className="bg-background/80 animate-fade-in pointer-events-auto absolute inset-0 backdrop-blur-sm"
         />
         <div
@@ -524,13 +525,14 @@ export function TicketPurchaseModal({
       <div className="hidden md:fixed md:inset-0 md:z-50 md:flex md:items-center md:justify-center md:p-6">
         <div
           onClick={onClose}
+          role="presentation"
           className="bg-background/95 animate-fade-in pointer-events-auto absolute inset-0 backdrop-blur-md"
         />
         <div
           ref={modalRef}
           className={cn(
             "animate-fade-in-up relative z-10 w-full max-w-lg md:max-w-xl",
-            closing && "scale-95 opacity-0 transition-all duration-300",
+            closing && "scale-95 opacity-0 transition-[transform,opacity] duration-300",
           )}
         >
           <Card className="border-border bg-card relative z-10 flex flex-col gap-6 overflow-visible rounded-3xl p-8 shadow-2xl md:p-10">
