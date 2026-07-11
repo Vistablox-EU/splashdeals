@@ -222,7 +222,7 @@ export function PostsListClient({
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs h-7 px-2"
+              className="h-7 px-2 text-xs"
               onClick={() => handleMarkReviewed([row.original.id])}
             >
               I dalje je aktuelno
@@ -251,7 +251,6 @@ export function PostsListClient({
     },
   ];
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: posts as unknown as PostRow[],
     columns,
@@ -311,9 +310,7 @@ export function PostsListClient({
       {/* Bulk action bar */}
       {selectedIds.size > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground text-xs">
-            Izabrano: {selectedIds.size} objava
-          </span>
+          <span className="text-muted-foreground text-xs">Izabrano: {selectedIds.size} objava</span>
           <Button
             variant="secondary"
             size="sm"
