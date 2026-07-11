@@ -254,8 +254,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
       setPendingAutosave(saved);
       setShowRestoreBanner(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [restore, autosaveKey]);
 
   // Warn before leaving with unsaved changes
   useEffect(() => {

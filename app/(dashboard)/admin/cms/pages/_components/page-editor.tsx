@@ -190,8 +190,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
       setPendingAutosave(saved);
       setShowRestoreBanner(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [restore, autosaveKey]);
 
   // Warn before leaving with unsaved changes
   useEffect(() => {
