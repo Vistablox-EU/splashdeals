@@ -6,10 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
 import { getTicketHierarchy } from "../_lib/ticket-admin-actions";
 import { ProductImageSection } from "./product-image-section";
 import { PriceCard } from "./price-card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface Props {
   facilityId: string;
@@ -43,6 +52,14 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const [editCatTitle, setEditCatTitle] = React.useState("");
   const [editingProductId, setEditingProductId] = React.useState<string | null>(null);
   const [editProductTitle, setEditProductTitle] = React.useState("");
+  const [deleteCategoryTarget, setDeleteCategoryTarget] = React.useState<{
+    id: string;
+    title: string;
+  } | null>(null);
+  const [deleteProductTarget, setDeleteProductTarget] = React.useState<{
+    id: string;
+    title: string;
+  } | null>(null);
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId) ?? null;
   const selectedProduct =
@@ -66,6 +83,10 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     setNewCatTitle("");
     setShowNewCat(false);
     setSelectedCategoryId(cat.id);
+    toast.success("Kategorija dodata", {
+      description: `Kategorija "${cat.title}" je uspešno kreirana.`,
+      duration: 2000,
+    });
   };
 
   const handleAddProduct = async () => {
@@ -103,9 +124,20 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     setNewProdTitle("");
     setShowNewProd(false);
     setSelectedProductId(prod.id);
+    toast.success("Tip dodat", {
+      description: `Tip "${prod.title}" je uspešno kreiran.`,
+      duration: 2000,
+    });
   };
 
-  const handleDeleteCategory = async (id: string) => {
+  const handleDeleteCategory = (id: string, title: string) => {
+    setDeleteCategoryTarget({ id, title });
+  };
+
+  const confirmDeleteCategory = async () => {
+    if (!deleteCategoryTarget) return;
+    const { id, title } = deleteCategoryTarget;
+    setDeleteCategoryTarget(null);
     const { deleteCategory } = await import("../_lib/ticket-admin-actions");
     await deleteCategory(id, facilityId);
     setCategories((prev) => prev.filter((c) => c.id !== id));
@@ -113,6 +145,10 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       setSelectedCategoryId(null);
       setSelectedProductId(null);
     }
+    toast.success("Kategorija obrisana", {
+      description: `Kategorija "${title}" je uspešno obrisana.`,
+      duration: 2000,
+    });
   };
 
   const handleStartEditCategory = (cat: SerializedCategory) => {
@@ -182,7 +218,14 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     );
   };
 
-  const handleDeleteProduct = async (id: string) => {
+  const handleDeleteProduct = (id: string, title: string) => {
+    setDeleteProductTarget({ id, title });
+  };
+
+  const confirmDeleteProduct = async () => {
+    if (!deleteProductTarget) return;
+    const { id, title } = deleteProductTarget;
+    setDeleteProductTarget(null);
     const { deleteProduct } = await import("../_lib/ticket-admin-actions");
     await deleteProduct(id, facilityId);
     setCategories((prev) =>
@@ -192,6 +235,10 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       })),
     );
     if (selectedProductId === id) setSelectedProductId(null);
+    toast.success("Tip obrisan", {
+      description: `Tip "${title}" je uspešno obrisan.`,
+      duration: 2000,
+    });
   };
 
   const handleAddPrice = async (productId: string) => {
@@ -310,7 +357,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDeleteCategory(cat.id);
+                    handleDeleteCategory(cat.id, cat.title);
                   }}
                   variant="ghost"
                   size="icon"
@@ -422,7 +469,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteProduct(prod.id);
+                      handleDeleteProduct(prod.id, prod.title);
                     }}
                     variant="ghost"
                     size="icon"
@@ -563,6 +610,56 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
           )}
         </div>
       </div>
+
+      {/* ─── Delete Category Confirmation ──────────────── */}
+      <Dialog
+        open={deleteCategoryTarget !== null}
+        onOpenChange={() => setDeleteCategoryTarget(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Obriši kategoriju</DialogTitle>
+            <DialogDescription>
+              Da li ste sigurni da želite da obrišete kategoriju &quot;
+              {deleteCategoryTarget?.title}
+              &quot;? Ova radnja je nepovratna.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteCategoryTarget(null)}>
+              Otkaži
+            </Button>
+            <Button variant="destructive" onClick={confirmDeleteCategory}>
+              Obriši
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Delete Product Confirmation ────────────────── */}
+      <Dialog
+        open={deleteProductTarget !== null}
+        onOpenChange={() => setDeleteProductTarget(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Obriši tip</DialogTitle>
+            <DialogDescription>
+              Da li ste sigurni da želite da obrišete tip &quot;
+              {deleteProductTarget?.title}
+              &quot;? Ova radnja je nepovratna.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteProductTarget(null)}>
+              Otkaži
+            </Button>
+            <Button variant="destructive" onClick={confirmDeleteProduct}>
+              Obriši
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Mobile nav dots */}
       <div className="bg-background/80 border-border/50 fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 gap-1.5 rounded-full border px-3 py-2 shadow-lg backdrop-blur-md lg:hidden">

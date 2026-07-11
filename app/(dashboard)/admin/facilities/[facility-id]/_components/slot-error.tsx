@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 interface SlotErrorProps {
-  error: Error & { digest?: string };
+  error?: Error & { digest?: string };
   reset: () => void;
   title?: string;
 }

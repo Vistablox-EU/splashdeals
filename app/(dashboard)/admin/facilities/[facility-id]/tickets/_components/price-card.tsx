@@ -11,8 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
 import { updatePrice, getTicketHierarchy, deletePrice } from "../_lib/ticket-admin-actions";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const DAY_LABELS: Record<string, string> = {
   ALL: "Svi dani",
@@ -35,6 +44,7 @@ interface PriceCardProps {
 
 export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardProps) {
   const [editing, setEditing] = React.useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
   const [form, setForm] = React.useState({
     label: price.label ?? "",
     price: price.price.toString(),
@@ -203,11 +213,7 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={async () => {
-                  const { deletePrice } = await import("../_lib/ticket-admin-actions");
-                  await deletePrice(price.id, facilityId);
-                  onDeleted();
-                }}
+                onClick={() => setShowDeleteConfirm(true)}
                 className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 rounded-lg transition-all"
                 aria-label="Delete price"
               >
@@ -228,6 +234,39 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
           </div>
         </>
       )}
+
+      {/* ─── Delete Confirmation Dialog ──────────────────── */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Obriši cenu</DialogTitle>
+            <DialogDescription>
+              Da li ste sigurni da želite da obrišete ovu cenu od{" "}
+              {price.price.toLocaleString("sr-RS")} RSD? Ova radnja je nepovratna.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
+              Otkaži
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                const { deletePrice } = await import("../_lib/ticket-admin-actions");
+                await deletePrice(price.id, facilityId);
+                setShowDeleteConfirm(false);
+                toast.success("Cena obrisana", {
+                  description: `Cena od ${price.price.toLocaleString("sr-RS")} RSD je uspešno obrisana.`,
+                  duration: 2000,
+                });
+                onDeleted();
+              }}
+            >
+              Obriši
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -48,7 +48,7 @@ export function DangerZone({
 
   const handleDelete = () => {
     if (confirmName !== facilityName) {
-      toast.error("Verification name does not match.");
+      toast.error("Ime za verifikaciju se ne podudara.");
       return;
     }
 
@@ -56,16 +56,16 @@ export function DangerZone({
       try {
         const result = await deleteFacilityAction(facilityId);
         if (result.success) {
-          toast.success("Facility successfully purged");
+          toast.success("Objekat uspešno obrisan");
           setIsOpen(false);
           router.push("/admin/facilities");
           router.refresh();
         } else {
-          toast.error(result.error || "Failed to purge facility");
+          toast.error(result.error || "Greška pri brisanju objekta");
         }
       } catch (error: unknown) {
         console.error("Failed to delete facility:", error instanceof Error ? error.message : error);
-        toast.error("An anomaly occurred during deletion.");
+        toast.error("Došlo je do greške tokom brisanja.");
       }
     });
   };
@@ -79,10 +79,10 @@ export function DangerZone({
           </div>
           <div>
             <h3 className="text-foreground text-xs font-black tracking-wider uppercase">
-              Danger Zone
+              Zona opasnosti
             </h3>
             <p className="text-destructive/60 mt-0.5 text-[9px] font-bold tracking-widest uppercase">
-              Catastrophic Actions & Registry Purges
+              Katastrofalne radnje i brisanje registra
             </p>
           </div>
         </div>
@@ -94,11 +94,11 @@ export function DangerZone({
             <Icon name="lock" className="text-muted-foreground mt-0.5 shrink-0 text-[16px]" />
             <div className="space-y-1">
               <p className="text-foreground/80 text-xs font-black tracking-wider uppercase">
-                Administrative Guard Active
+                Administrativna zaštita aktivna
               </p>
               <p className="text-muted-foreground text-[10px] leading-normal font-medium">
-                Your role classification ({userRole}) does not possess elevated privileges required
-                to delete facility nodes. Contact a Super Administrator to execute purges.
+                Vaša uloga ({userRole}) nema dovoljne privilegije za brisanje objekata.
+                Kontaktirajte Super Administratora za izvršenje brisanja.
               </p>
             </div>
           </div>
@@ -107,15 +107,15 @@ export function DangerZone({
             <Icon name="lock" className="text-destructive mt-0.5 shrink-0 text-[16px]" />
             <div className="space-y-1">
               <p className="text-destructive text-xs font-black tracking-wider uppercase">
-                Deletion Locked
+                Brisanje zaključano
               </p>
               <p className="text-muted-foreground text-[10px] leading-relaxed font-medium">
-                This facility is linked to{" "}
+                Ovaj objekat je povezan sa{" "}
                 <strong className="text-foreground">
-                  {transactionCount} active or historical transaction records
+                  {transactionCount} aktivnih ili istorijskih transakcija
                 </strong>{" "}
-                in the system ledger. Hard deletion is disabled to preserve accounting audits. Set
-                the facility status to <strong className="text-foreground">CLOSED</strong> instead.
+                u sistemskom registru. Potpuno brisanje je onemogućeno radi očuvanja računovodstvenih
+                revizija. Postavite status objekta na <strong className="text-foreground">CLOSED</strong>.
               </p>
             </div>
           </div>
@@ -123,12 +123,12 @@ export function DangerZone({
           <div className="bg-background/40 border-destructive/10 flex flex-col justify-between gap-4 rounded-xl border p-4 md:flex-row md:items-center">
             <div className="max-w-xl space-y-1">
               <p className="text-foreground text-xs font-black tracking-wider uppercase">
-                Purge Facility Node
+                Obriši objekat
               </p>
               <p className="text-muted-foreground text-[10px] leading-normal font-medium">
-                Permanently delete <strong className="text-foreground/80">{facilityName}</strong>{" "}
-                along with all associated tickets, operating hours, amenities, closures, and staff
-                assignments. This action is absolute and cannot be undone.
+                Trajno briše <strong className="text-foreground/80">{facilityName}</strong>{" "}
+                zajedno sa svim povezanim ulaznicama, radnim vremenom, sadržajima, zatvaranjima i
+                osobljem. Ova radnja je apsolutna i ne može se poništiti.
               </p>
             </div>
 
@@ -146,7 +146,7 @@ export function DangerZone({
                   className="border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground h-10 shrink-0 rounded-xl px-6 text-[9px] font-black tracking-widest uppercase transition-all duration-300"
                 >
                   <Icon name="delete" className="mr-2 size-3.5" />
-                  Purge Node
+                  Obriši objekat
                 </Button>
               </DialogTrigger>
 
@@ -155,32 +155,32 @@ export function DangerZone({
                   <div className="text-destructive flex items-center gap-2">
                     <Icon name="warning" className="size-5 shrink-0" />
                     <DialogTitle className="text-base font-black tracking-wider uppercase">
-                      Absolute Purge Registry
+                      Potpuno brisanje registra
                     </DialogTitle>
                   </div>
                   <DialogDescription className="text-muted-foreground text-xs leading-normal">
-                    This action is{" "}
-                    <strong className="text-destructive uppercase">destructive</strong> and will
-                    completely wipe <strong className="text-foreground">{facilityName}</strong> from
-                    the database. It will immediately cascade to delete:
+                    Ova radnja je{" "}
+                    <strong className="text-destructive uppercase">destruktivna</strong> i potpuno
+                    će obrisati <strong className="text-foreground">{facilityName}</strong> iz
+                    baze podataka. Trenutno će kaskadno obrisati:
                   </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-2 py-2">
                   <ul className="text-muted-foreground list-disc space-y-1 pl-5 font-mono text-[9px] tracking-wider uppercase">
-                    <li>All pricing schemas & active tickets</li>
-                    <li>Schedules, hours & closure exceptions</li>
-                    <li>Media associations & gallery images</li>
-                    <li>Staff assignments & local registry records</li>
+                    <li>Sve cene i aktivne ulaznice</li>
+                    <li>Rasporede, radno vreme i izuzetke</li>
+                    <li>Medijske asocijacije i galeriju</li>
+                    <li>Osoblje i lokalne registarske zapise</li>
                   </ul>
 
                   <div className="border-border/50 space-y-2 border-t pt-4">
                     <label className="text-muted-foreground text-[10px] font-black tracking-wider uppercase">
-                      To confirm, type the exact facility name{" "}
+                      Za potvrdu, unesite tačno ime objekta{" "}
                       <span className="text-foreground select-none">
                         &quot;{facilityName}&quot;
                       </span>{" "}
-                      below:
+                      ispod:
                     </label>
                     <Input
                       value={confirmName}
@@ -203,7 +203,7 @@ export function DangerZone({
                     className="border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground h-10 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all"
                     disabled={isPending}
                   >
-                    Cancel
+                    Otkaži
                   </Button>
                   <Button
                     type="button"
@@ -216,7 +216,7 @@ export function DangerZone({
                     ) : (
                       <>
                         <Icon name="delete" className="mr-2 size-3.5" />
-                        Purge Facility
+                        Obriši objekat
                       </>
                     )}
                   </Button>

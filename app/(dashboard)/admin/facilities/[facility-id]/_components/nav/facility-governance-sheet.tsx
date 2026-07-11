@@ -92,17 +92,17 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
           className="border-border hover:bg-muted/30 gap-2 text-[10px] font-black tracking-widest uppercase transition-all"
         >
           <Icon name="settings" className="text-[16px]" />
-          Advanced Governance
+          Napredno upravljanje
         </Button>
       </SheetTrigger>
       <SheetContent className="bg-background/95 border-border/50 w-full overflow-y-auto p-8 shadow-2xl backdrop-blur-2xl sm:max-w-[440px]">
         <SheetHeader className="border-border/50 border-b pb-8">
           <SheetTitle className="flex items-center gap-2 text-xl font-black tracking-tighter">
             <Icon name="gpp_maybe" className="text-primary text-[20px]" />
-            System Governance
+            Sistemsko upravljanje
           </SheetTitle>
           <SheetDescription className="text-xs font-bold tracking-widest uppercase opacity-50">
-            Administrative controls and registry management.
+            Administrativne kontrole i upravljanje registrom.
           </SheetDescription>
         </SheetHeader>
 
@@ -116,29 +116,29 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-[10px] font-black tracking-widest uppercase opacity-60">
                       <Icon name="monitor_heart" className="text-[12px]" />
-                      Operational Status
+                      Operativni status
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger className="bg-muted/20 border-border focus:ring-primary h-12">
-                          <SelectValue placeholder="Select status" />
+                          <SelectValue placeholder="Izaberite status" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-background border-border">
-                        <SelectItem value="DRAFT">Draft</SelectItem>
-                        <SelectItem value="ACTIVE">Active</SelectItem>
-                        <SelectItem value="CLOSED">Closed</SelectItem>
+                        <SelectItem value="DRAFT">Draft (Skica)</SelectItem>
+                        <SelectItem value="ACTIVE">Aktivno</SelectItem>
+                        <SelectItem value="CLOSED">Zatvoreno</SelectItem>
                         <SelectItem
                           value="EMERGENCY_SHUTDOWN"
                           className="text-destructive font-bold"
                         >
-                          Emergency Shutdown
+                          Hitno gašenje
                         </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription className="text-[10px] leading-relaxed">
-                      &quot;Emergency Shutdown&quot; will instantly revoke all ticket scanning
-                      capabilities for this facility.
+                      &quot;Hitno gašenje&quot; će trenutno povući sve mogućnosti skeniranja
+                      ulaznica za ovaj objekat.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -156,7 +156,7 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
                   ) : (
                     <Icon name="settings" className="text-[14px]" />
                   )}
-                  Update System Rules
+                  Ažuriraj pravila sistema
                 </Button>
               </SheetFooter>
             </form>

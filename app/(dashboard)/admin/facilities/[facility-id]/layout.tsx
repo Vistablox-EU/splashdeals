@@ -3,8 +3,10 @@ import { prisma } from "@/server/lib/prisma";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { FacilityNav, FacilityNavSkeleton } from "./_components/nav";
 import { FacilityActionSidebar, FacilityActionSidebarSkeleton } from "./_components/sidebar";
+import { SlotError } from "./_components/slot-error";
 import type { Metadata } from "next";
 import { FacilityLayoutContextHandler } from "./_components/facility-layout-context-handler";
 import { FacilityProvider } from "./_components/facility-context";
@@ -89,17 +91,23 @@ export default async function FacilityManagementLayout({
         <div className="bg-accent/5 pointer-events-none absolute bottom-0 left-0 -mb-48 -ml-48 h-[400px] w-[400px] rounded-full blur-[100px]" />
 
         {/* 🧭 Unified Master Command Bar */}
-        <Suspense fallback={<FacilityNavSkeleton />}>
-          <FacilityNav
-            facility={facility}
-            counts={{
-              ticketCategories: facility._count.ticketCategories,
-              media: facility._count.media,
-              amenities: facility._count.amenities,
-              faq: facility._count.faqs,
-            }}
-          />
-        </Suspense>
+        <ErrorBoundary
+          fallback={
+            <SlotError reset={() => {}} title="Navigacija nije učitana" />
+          }
+        >
+          <Suspense fallback={<FacilityNavSkeleton />}>
+            <FacilityNav
+              facility={facility}
+              counts={{
+                ticketCategories: facility._count.ticketCategories,
+                media: facility._count.media,
+                amenities: facility._count.amenities,
+                faq: facility._count.faqs,
+              }}
+            />
+          </Suspense>
+        </ErrorBoundary>
 
         <div className="relative z-10 w-full flex-1 overflow-y-auto p-4 md:p-8">
           <div className="animate-in fade-in slide-in-from-bottom-2 grid grid-cols-1 items-start gap-8 duration-700 xl:grid-cols-12">
@@ -110,9 +118,15 @@ export default async function FacilityManagementLayout({
             </div>
 
             <aside className="sticky top-8 hidden xl:col-span-3 xl:block">
-              <Suspense fallback={<FacilityActionSidebarSkeleton />}>
-                <FacilityActionSidebar facility={facility as FacilityLayoutData} />
-              </Suspense>
+              <ErrorBoundary
+                fallback={
+                  <SlotError reset={() => {}} title="Sidebar nije učitan" />
+                }
+              >
+                <Suspense fallback={<FacilityActionSidebarSkeleton />}>
+                  <FacilityActionSidebar facility={facility as FacilityLayoutData} />
+                </Suspense>
+              </ErrorBoundary>
             </aside>
           </div>
         </div>

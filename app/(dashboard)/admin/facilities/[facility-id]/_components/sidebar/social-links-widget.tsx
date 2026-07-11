@@ -52,7 +52,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
             <Icon name="photo_camera" className="text-primary text-[14px]" />
           </div>
           <h3 className="text-foreground text-[10px] font-black tracking-widest uppercase">
-            Social Links
+            Društvene mreže
           </h3>
         </div>
         {isPending && (
@@ -99,7 +99,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <Label className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-              Official Website
+              Zvanični sajt
             </Label>
             {saveStatus.website && <Icon name="check" className="text-primary text-[12px]" />}
           </div>
