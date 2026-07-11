@@ -460,6 +460,31 @@ export async function bulkDeleteBlogPostsAction(
   }
 }
 
+// ─── Stale Content ─────────────────────────────────────
+
+export async function markAsReviewedAction(
+  ids: string[],
+  type: "post" | "page",
+): Promise<ActionResult<{ updated: number }>> {
+  try {
+    await requireAdmin();
+
+    const model = type === "post" ? (prisma as any).blogPost : (prisma as any).page;
+
+    const result = await model.updateMany({
+      where: { id: { in: ids } },
+      data: { reviewedAt: new Date() },
+    });
+
+    revalidatePath("/admin/cms/posts");
+    revalidatePath("/admin/cms/pages");
+
+    return { success: true, data: { updated: result.count } };
+  } catch (error) {
+    return handleServerActionError(error, "cms/markAsReviewed");
+  }
+}
+
 // ─── Helper ────────────────────────────────────────────
 
 function calculateReadingTime(html: string): number {

@@ -11,20 +11,51 @@ export const metadata: Metadata = {
   title: "Strane | CMS | Splashdeals",
 };
 
-export default async function PagesPage() {
+export default async function PagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ stale?: string }>;
+}) {
   await requireAdmin();
   await connection();
 
-  const pages = await prisma.page.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const params = await searchParams;
+  const isStaleFilter = params.stale === "true";
 
-  const serialized = pages.map((page) => ({
-    ...page,
-    createdAt: page.createdAt.toISOString(),
-    updatedAt: page.updatedAt.toISOString(),
-    publishedAt: page.publishedAt?.toISOString() ?? null,
-  }));
+  const staleThreshold = new Date();
+  staleThreshold.setFullYear(staleThreshold.getFullYear() - 1);
+
+  let pages;
+  if (isStaleFilter) {
+    pages = await prisma.page.findMany({
+      where: {
+        status: "PUBLISHED",
+        updatedAt: { lt: staleThreshold },
+        OR: [{ reviewedAt: null }, { reviewedAt: { lt: staleThreshold } }],
+      },
+      orderBy: { updatedAt: "desc" },
+    });
+  } else {
+    pages = await prisma.page.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  const serialized = pages.map((page) => {
+    const lastDate = page.reviewedAt
+      ? new Date(Math.max(page.updatedAt.getTime(), page.reviewedAt.getTime()))
+      : page.updatedAt;
+    const isStale = page.status === "PUBLISHED" && lastDate < staleThreshold;
+
+    return {
+      ...page,
+      createdAt: page.createdAt.toISOString(),
+      updatedAt: page.updatedAt.toISOString(),
+      publishedAt: page.publishedAt?.toISOString() ?? null,
+      reviewedAt: page.reviewedAt?.toISOString() ?? null,
+      isStale,
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -43,7 +74,10 @@ export default async function PagesPage() {
         </Button>
       </div>
 
-      <PagesListClient pages={serialized as unknown as Array<Record<string, unknown>>} />
+      <PagesListClient
+        pages={serialized as unknown as Array<Record<string, unknown>>}
+        isStaleFilter={isStaleFilter}
+      />
     </div>
   );
 }

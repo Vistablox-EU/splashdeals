@@ -325,10 +325,13 @@
   },
   "scheduling": {
     "scheduled_for": "Zakazano za",
-    "cancel_schedule": "Otka\u017Ei zakazivanje",
+    "cancel_schedule": "Otkaži zakazivanje",
     "schedule_date": "Datum i vreme objave",
     "upcoming_title": "Zakazane objave",
-    "no_scheduled": "Nema zakazanih objava."
+    "no_scheduled": "Nema zakazanih objava.",
+    "expires_label": "Ističe",
+    "expires_at": "Datum isteka",
+    "cancel_expiry": "Otkaži istek"
   },
   "media_library": {
     "title": "Media biblioteka",
@@ -420,5 +423,21 @@
     "duplicate_warning": "Datoteka \"{filename}\" već postoji u biblioteci. Da li želite da je dodate ponovo?",
     "duplicate_upload_anyway": "Ipak dodaj",
     "duplicate_cancel": "Otkaži"
+  },
+  "stale_content": {
+    "badge": "Starija od {months} meseci",
+    "mark_reviewed": "I dalje je aktuelno",
+    "filter_label": "Stare objave",
+    "threshold_months": "12",
+    "reviewed_success": "Označeno kao pregledano",
+    "mark_selected": "Označi izabrane"
+  },
+  "autosave": {
+    "saved_at": "Sačuvano u",
+    "saving": "Čuvanje...",
+    "unsaved_changes": "Imate nesačuvane izmene.",
+    "restore_draft": "Vrati ih",
+    "discard_draft": "Odbaci",
+    "restored_success": "Nesačuvane izmene su vraćene."
   }
 }
