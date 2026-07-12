@@ -25,6 +25,10 @@ export default function TicketingError({
           Došlo je do neočekivane greške prilikom učitavanja ulaznica. Pokušajte ponovo ili nas
           kontaktirajte.
         </p>
+        <p className="text-muted-foreground/60 text-xs">
+          Ako problem potraje, proverite da li je izabrani objekat još uvek aktivan ili nam
+          pišite na podrška@splashdeals.rs
+        </p>
         <div className="flex justify-center gap-4">
           <Button onClick={reset} variant="default">
             Pokušaj ponovo
