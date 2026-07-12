@@ -3,10 +3,7 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { prisma } from "@/server/lib/prisma";
 import { generateIdempotencyKey, withStripeRetry } from "@/server/lib/stripe-utils";
-import {
-  validatePromoCodeAction,
-  incrementCampaignUsageAction,
-} from "@/app/(server)/actions/campaigns";
+import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
 
 // ──────────────────────────────────────────────
 // Validation
