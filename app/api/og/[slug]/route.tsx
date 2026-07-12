@@ -1,8 +1,8 @@
 import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
-import { SITE_URL, getCategoryLabel } from "@/app/(web)/_facility/_head/schemas";
-import { getFacility } from "@/app/(web)/_facility/_head";
+import { SITE_URL, getCategoryLabel } from "@/app/(web)/facility/_data/schemas";
+import { getFacility } from "@/app/(web)/facility/_data/metadata";
 
 export const runtime = "nodejs";
 

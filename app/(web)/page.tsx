@@ -7,7 +7,7 @@ import React, { Suspense } from "react";
 import { StatsGrid } from "@/components/ui/StatsGrid";
 import { Button } from "@/components/ui/button";
 import { TicketCardSkeleton } from "@/components/ui/TicketCardSkeleton";
-import { TicketGrid } from "./_components/TicketGrid";
+import { TicketGrid } from "./ticketing/_components/TicketGrid";
 
 interface PageProps {
   params: Promise<Record<string, never>>;

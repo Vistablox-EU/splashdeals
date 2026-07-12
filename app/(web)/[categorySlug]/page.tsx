@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/server/lib/prisma";
-import { FacilityShowcaseTemplate } from "@/app/(web)/_facility/page";
-import { buildFacilityMetadata } from "@/app/(web)/_facility/_head";
+import { FacilityShowcaseTemplate } from "@/app/(web)/facility/_components/ShowcaseTemplate";
+import { buildFacilityMetadata } from "@/app/(web)/facility/_data/metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 import { resolveFacilitySlug } from "@/lib/routing/resolve-slug";
 import { isKnownCategory, slugToDbValue, getAllSlugs } from "@/lib/routing/categories";

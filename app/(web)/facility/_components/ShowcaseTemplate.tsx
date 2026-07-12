@@ -18,22 +18,22 @@ function isDeletedFacility(slug: string): boolean {
 }
 
 // 🏝️ Islands: Client Components for interactive portions
-import { ShowcaseHero } from "./_components/ShowcaseHero";
-import { FaqAccordion } from "./_components/FaqAccordion";
-import { OperationalPortal } from "./_components/OperationalPortal";
-import { TicketGridSkeleton } from "./_components/ShowcaseSkeletons";
-import { HeroActionPill } from "./_components/HeroActionPill";
+import { ShowcaseHero } from "./ShowcaseHero";
+import { FaqAccordion } from "./FaqAccordion";
+import { OperationalPortal } from "./OperationalPortal";
+import { TicketGridSkeleton } from "./ShowcaseSkeletons";
+import { HeroActionPill } from "./HeroActionPill";
 import dynamic from "next/dynamic";
 
 const ShowcaseTicketGroups = dynamic(
-  () => import("./_components/ShowcaseTicketGroups").then((mod) => mod.ShowcaseTicketGroups),
+  () => import("@/app/(web)/ticketing/_components/ShowcaseTicketGroups").then((mod) => mod.ShowcaseTicketGroups),
   {
     loading: () => <TicketGridSkeleton />,
   },
 );
 
 const MediaGallery = dynamic(
-  () => import("./_components/MediaGallery").then((mod) => mod.MediaGallery),
+  () => import("./MediaGallery").then((mod) => mod.MediaGallery),
   {
     ssr: true,
     loading: () => (
@@ -53,20 +53,20 @@ const MediaGallery = dynamic(
 );
 
 const ShowcaseAmenities = dynamic(
-  () => import("./_components/ShowcaseAmenities").then((mod) => mod.ShowcaseAmenities),
+  () => import("./ShowcaseAmenities").then((mod) => mod.ShowcaseAmenities),
   {
     ssr: true,
   },
 );
 
-import { PartnerBranding } from "./_components/PartnerBranding";
+import { PartnerBranding } from "./PartnerBranding";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { serialize } from "@/lib/serialize";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { validateDiscoverySlug } from "@/server/lib/data/discovery";
-import { getCategoryLabel, buildFacilitySchema, TierEntry } from "./_head";
-import { getFacility, buildTicketGroups, flattenActivePrices } from "./_head";
+import { getCategoryLabel, buildFacilitySchema, TierEntry } from "../_data";
+import { getFacility, buildTicketGroups, flattenActivePrices } from "../_data";
 import { getWeather } from "@/server/lib/weather";
 
 interface FacilityPageProps {
@@ -353,33 +353,4 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       </main>
     </div>
   );
-}
-
-/**
- * 🌊 Legacy Page Entry (Triggers HTTP 301 Permanent Redirect)
- * Unless it's a permanently deleted path — then 410 Gone.
- */
-export default async function FacilityShowcasePage({ params }: FacilityPageProps) {
-  const { facilitySlug } = await params;
-
-  // Permanently deleted legacy paths — 410 Gone
-  if (isDeletedFacility(facilitySlug)) {
-    return (
-      <html lang="sr">
-        <head>
-          <meta name="robots" content="noindex, nofollow" />
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-        </head>
-        <body className="bg-background text-muted-foreground m-0 flex min-h-screen items-center justify-center font-sans">
-          <div className="text-center">
-            <div className="text-primary m-0 text-[6rem] font-black">410</div>
-            <p className="mt-2 text-lg">This page has been permanently deleted.</p>
-          </div>
-        </body>
-      </html>
-    );
-  }
-
-  permanentRedirect(`/${facilitySlug}`);
 }
