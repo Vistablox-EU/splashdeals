@@ -44,7 +44,11 @@ export const auth = betterAuth({
       user: { id: string; email: string; name?: string | null };
       url: string;
     }) => {
-      await sendEmail(user.email, "Reset your Splashdeals Admin password", buildResetPasswordHtml(url));
+      await sendEmail(
+        user.email,
+        "Reset your Splashdeals Admin password",
+        buildResetPasswordHtml(url),
+      );
     },
   },
 

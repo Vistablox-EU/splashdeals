@@ -42,11 +42,24 @@ export async function sendOrderConfirmation(transactionId: string): Promise<void
 
   const ticketRows = (transaction.ticketDetails as any[]) || [];
   const qrImages = transaction.issuedTickets
-    .map((t) => `<img src="${process.env.NEXT_PUBLIC_BASE_URL}/api/qr/${t.qrHash}.png" width="150" height="150" alt="QR kod" />`)
+    .map(
+      (t) =>
+        `<img src="${process.env.NEXT_PUBLIC_BASE_URL}/api/qr/${t.qrHash}.png" width="150" height="150" alt="QR kod" />`,
+    )
     .join("");
 
-  const html = buildTicketEmailHtml(transaction.facility.name, ticketRows, qrImages, Number(transaction.totalAmount), transaction.stripeSession);
-  await sendEmail(transaction.user.email, `Tvoje karte za ${transaction.facility.name} su spremne!`, html);
+  const html = buildTicketEmailHtml(
+    transaction.facility.name,
+    ticketRows,
+    qrImages,
+    Number(transaction.totalAmount),
+    transaction.stripeSession,
+  );
+  await sendEmail(
+    transaction.user.email,
+    `Tvoje karte za ${transaction.facility.name} su spremne!`,
+    html,
+  );
 }
 
 export async function sendRecoveryEmail(email: string, items: any[]) {
@@ -56,7 +69,13 @@ export async function sendRecoveryEmail(email: string, items: any[]) {
   await sendEmail(email, "Ostali su ti kartice u korpi!", html);
 }
 
-function buildTicketEmailHtml(facilityName: string, ticketRows: any[], qrImages: string, total: number, sessionId: string): string {
+function buildTicketEmailHtml(
+  facilityName: string,
+  ticketRows: any[],
+  qrImages: string,
+  total: number,
+  sessionId: string,
+): string {
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"></head>
 <body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:24px">
