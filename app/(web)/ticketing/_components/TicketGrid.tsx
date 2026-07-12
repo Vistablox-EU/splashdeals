@@ -7,13 +7,26 @@ import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { Badge } from "@/components/ui/badge";
 import { dbValueToSlug, slugToName } from "@/lib/routing/categories";
 
+const CATEGORY_COLORS: Record<string, string> = {
+  akva_park: "bg-cyan-500 hover:bg-cyan-600",
+  banja_terme: "bg-amber-600 hover:bg-amber-700",
+  wellness_spa: "bg-emerald-600 hover:bg-emerald-700",
+  gradski_bazen: "bg-sky-600 hover:bg-sky-700",
+};
+
+function isOpenToday(hours: { dayOfWeek: number; isClosed: boolean }[]): boolean {
+  if (!hours || hours.length === 0) return false;
+  const today = new Date().getDay();
+  const todayHours = hours.find((h) => h.dayOfWeek === today);
+  return todayHours ? !todayHours.isClosed : false;
+}
+
 async function getTickets() {
   const now = new Date();
 
   const data = await prisma.ticketPrice.findMany({
     where: {
       isActive: true,
-      // Sale window: ticket must be within its valid sale period
       AND: [
         { OR: [{ saleStart: null }, { saleStart: { lte: now } }] },
         { OR: [{ saleEnd: null }, { saleEnd: { gte: now } }] },
@@ -37,6 +50,9 @@ async function getTickets() {
                     where: { type: "PHOTO" },
                     orderBy: { order: "asc" },
                     take: 1,
+                  },
+                  hours: {
+                    select: { dayOfWeek: true, isClosed: true },
                   },
                 },
               },
@@ -83,7 +99,8 @@ async function getTickets() {
           name: facility.name,
           slug: facility.slug,
           category: facility.category,
-          cityId: facility.cityId,
+          city: facility.city,
+          hours: facility.hours,
           media: facility.media.map((m) => ({
             id: m.id,
             url: m.url,
@@ -103,7 +120,6 @@ async function getTickets() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
   const allTickets = await getTickets();
-  // Limit to max 8 cards for edge-to-edge desktop grid (lg:5 + xl:6)
   const tickets = allTickets.slice(0, 8);
 
   if (tickets.length === 0) {
@@ -115,35 +131,56 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
     );
   }
 
-  // Fill density if inventory is low (Marketplace SLA)
   const fillerCount = Math.max(0, 6 - tickets.length);
   const fillers = Array(fillerCount).fill(null);
 
   const priceFormat = new Intl.NumberFormat("sr-RS");
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 xl:grid-cols-6">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
       {tickets.map((ticket, idx) => {
         const cardImage = ticket.facility.media?.[0]?.url || ticket.imageUrl;
         const dbSlug = dbValueToSlug(ticket.facility.category ?? "");
         const badgeLabel = (dbSlug ? slugToName(dbSlug) : null) ?? ticket.facility.category;
 
         const hasDiscount = ticket.originalPrice && ticket.originalPrice > ticket.price;
+        const discountPercent = hasDiscount
+          ? Math.round(
+              ((Number(ticket.originalPrice) - Number(ticket.price)) /
+                Number(ticket.originalPrice)) *
+                100,
+            )
+          : 0;
+
+        const categoryKey = dbSlug || "";
+        const badgeColorClass = CATEGORY_COLORS[categoryKey] || "bg-primary hover:bg-primary/90";
+
+        const openToday = isOpenToday(ticket.facility.hours);
 
         return (
-          <article
-            key={ticket.id}
-            className="group relative h-full transition-[transform,opacity,box-shadow] duration-700"
-          >
+          <article key={ticket.id} className="group relative h-full transition-all duration-700">
             {/* Single overlay link covering the entire card */}
             <Link
               href={`/${ticket.facility.slug}#deals`}
               className="focus-visible:ring-primary absolute inset-0 z-20 rounded-xl focus-visible:ring-2"
               aria-label={`${ticket.facility.name} — ${ticket.title}`}
             />
-            <Card className="group border-border hover:border-primary/30 flex h-full flex-col transition-[border-color,transform,box-shadow] duration-500 hover:-translate-y-2">
-              <div className="relative h-40 w-full overflow-hidden sm:h-52">
-                <div className="from-background/90 absolute inset-0 z-10 bg-gradient-to-t to-transparent" />
+            <Card className="group border-border hover:border-primary/30 hover:shadow-primary/5 flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-xl">
+              {/* Facility name + city above image */}
+              <div className="flex flex-col gap-0.5 px-4 pt-4 sm:px-5 sm:pt-5">
+                <h3 className="text-foreground line-clamp-1 text-sm leading-tight font-black tracking-tight uppercase">
+                  {ticket.facility.name}
+                </h3>
+                {ticket.facility.city && (
+                  <span className="text-muted-foreground flex items-center gap-1 text-[10px] font-bold">
+                    <Icon name="location_on" className="text-primary/70 text-[10px]" />
+                    {ticket.facility.city}
+                  </span>
+                )}
+              </div>
+
+              {/* Image — aspect-[3/4], full bleed, no text overlay */}
+              <div className="relative mx-4 mt-3 aspect-[3/4] w-[calc(100%-2rem)] overflow-hidden rounded-xl sm:mx-5 sm:w-[calc(100%-2.5rem)]">
                 {cardImage ? (
                   <Image
                     src={cardImage}
@@ -152,7 +189,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                     priority={idx < 2}
                     loading={idx < 2 ? "eager" : "lazy"}
                     fetchPriority={idx < 2 ? "high" : "auto"}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, (max-width: 1536px) 20vw, 16vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 20vw, 16vw"
                     className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
                 ) : (
@@ -161,61 +198,61 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                   </div>
                 )}
 
-                <div className="pointer-events-none absolute bottom-4 left-4 z-30">
-                  <div className="mb-1 flex items-center gap-2">
-                    <Badge className="bg-primary border-none px-2 py-0.5 text-[10px] font-black tracking-widest uppercase ring-0">
-                      {badgeLabel}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-base font-black tracking-tight text-white uppercase italic">
-                    <Icon name="location_on" className="text-primary text-[12px]" />
-                    {ticket.facility.name}
-                  </div>
+                {/* Category badge on image — top left */}
+                <div className="pointer-events-none absolute top-3 left-3 z-10">
+                  <Badge
+                    className={`${badgeColorClass} border-none px-2 py-0.5 text-[9px] font-black tracking-widest text-white uppercase ring-0`}
+                  >
+                    {badgeLabel}
+                  </Badge>
                 </div>
-              </div>
 
-              <div className="flex flex-grow flex-col p-4 sm:p-6">
-                <h3 className="group-hover:text-primary mb-3 text-xl leading-tight font-black tracking-tight uppercase transition-colors">
-                  {ticket.title}
-                </h3>
-
-                {/* ✨ Metadata badges */}
-                {(ticket.isSeasonPass || ticket.minPeople > 1) && (
-                  <div className="mb-2 flex flex-wrap gap-1.5">
-                    {ticket.isSeasonPass && (
-                      <span className="text-primary/70 text-[10px] font-bold tracking-wider uppercase">
-                        Sezonska
-                      </span>
-                    )}
-                    {ticket.minPeople > 1 && (
-                      <span className="text-primary/70 text-[10px] font-bold tracking-wider uppercase">
-                        od {ticket.minPeople} osobe
-                      </span>
-                    )}
+                {/* Discount pill on image — top right */}
+                {hasDiscount && (
+                  <div className="pointer-events-none absolute top-3 right-3 z-10">
+                    <span className="bg-destructive text-destructive-foreground inline-flex items-center rounded-full px-2 py-0.5 text-[10px] leading-none font-black shadow-lg">
+                      -{discountPercent}%
+                    </span>
                   </div>
                 )}
 
-                <p className="text-muted-foreground mb-6 line-clamp-2 text-xs leading-relaxed font-medium">
+                {/* Open today indicator on image — bottom left */}
+                {openToday && (
+                  <div className="pointer-events-none absolute right-3 bottom-3 z-10">
+                    <span className="bg-background/90 text-foreground inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] leading-none font-bold shadow-sm backdrop-blur-sm">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      Otvoreno danas
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-grow flex-col px-4 pt-3 pb-4 sm:px-5 sm:pb-5">
+                <h4 className="group-hover:text-primary mb-1 text-sm leading-tight font-black tracking-tight uppercase transition-colors">
+                  {ticket.title}
+                </h4>
+
+                <p className="text-muted-foreground mb-3 line-clamp-2 text-[10px] leading-relaxed font-medium">
                   {ticket.description || dict.home.default_ticket_desc}
                 </p>
 
-                <div className="border-border group-hover:border-border relative z-30 mt-auto flex items-end justify-between border-t pt-6 transition-colors">
+                <div className="relative z-30 mt-auto flex items-end justify-between gap-2">
                   <div className="flex flex-col">
-                    <span className="text-muted-foreground/60 mb-0.5 text-[9px] font-black tracking-[0.2em] uppercase">
-                      {ticket.currency}
-                    </span>
-                    <div className="flex items-baseline gap-2">
-                      {hasDiscount && (
-                        <span className="text-muted-foreground/40 text-sm font-medium line-through">
-                          {priceFormat.format(ticket.originalPrice!)}
-                        </span>
-                      )}
+                    {hasDiscount && (
+                      <span className="text-muted-foreground/40 text-[9px] font-medium line-through">
+                        {priceFormat.format(ticket.originalPrice!)}
+                      </span>
+                    )}
+                    <div className="flex items-baseline gap-1">
                       <data
                         value={ticket.price}
-                        className="text-foreground text-2xl font-black tracking-tighter italic sm:text-3xl"
+                        className="text-foreground text-lg font-black tracking-tighter italic sm:text-xl"
                       >
                         {priceFormat.format(ticket.price)}
                       </data>
+                      <span className="text-muted-foreground/60 text-[8px] font-black tracking-[0.2em] uppercase">
+                        {ticket.currency}
+                      </span>
                     </div>
                   </div>
 
@@ -248,17 +285,23 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
           key={`filler-${i}`}
           className="pointer-events-none h-full opacity-40 grayscale transition-opacity duration-500 select-none"
         >
-          <Card className="border-border flex h-full flex-col border-dashed opacity-50">
-            <div className="bg-muted/50 flex h-52 w-full items-center justify-center">
+          <Card className="border-border flex h-full flex-col overflow-hidden border-dashed opacity-50">
+            <div className="px-4 pt-4 sm:px-5 sm:pt-5">
+              <div className="bg-muted mb-1 h-4 w-3/4 rounded-md" />
+              <div className="bg-muted h-3 w-1/2 rounded-md" />
+            </div>
+            <div className="bg-muted/50 mx-4 mt-3 flex aspect-[3/4] w-[calc(100%-2rem)] items-center justify-center rounded-xl sm:mx-5 sm:w-[calc(100%-2.5rem)]">
               <Icon name="auto_awesome" className="text-muted-foreground/30 text-[40px]" />
             </div>
-            <div className="flex flex-grow flex-col p-6">
-              <div className="bg-muted mb-3 h-5 w-24 rounded-md" />
-              <div className="bg-muted mb-2 h-3 w-full rounded-md" />
-              <div className="bg-muted mb-6 h-3 w-2/3 rounded-md" />
-              <div className="border-border mt-auto flex items-end justify-between border-t pt-6">
-                <div className="bg-muted h-8 w-16 rounded-md" />
-                <div className="bg-muted h-12 w-12 rounded-2xl" />
+            <div className="flex flex-grow flex-col px-4 pt-3 pb-4 sm:px-5 sm:pb-5">
+              <div className="bg-muted mb-1 h-4 w-2/3 rounded-md" />
+              <div className="bg-muted mb-3 h-3 w-full rounded-md" />
+              <div className="mt-auto flex items-end justify-between gap-2">
+                <div className="flex flex-col gap-1">
+                  <div className="bg-muted h-3 w-12 rounded-sm" />
+                  <div className="bg-muted h-5 w-16 rounded-md" />
+                </div>
+                <div className="bg-muted h-10 w-10 rounded-2xl" />
               </div>
             </div>
           </Card>

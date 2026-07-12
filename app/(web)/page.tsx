@@ -213,10 +213,11 @@ export default async function LandingPage({
         </div>
       </div>
 
-      {/* 🌊 INVENTORY GRID (NOW EDGE-TO-EDGE ON DESKTOP) */}
+      {/* 🌊 INVENTORY GRID (EDGE-TO-EDGE) */}
       <section id="inventory" className="scroll-mt-32 pb-16 sm:pb-40">
-        <div className="mx-auto mb-8 max-w-7xl px-6 sm:mb-16 md:px-12">
-          <div className="border-border flex items-end justify-between border-b pb-8">
+        {/* Heading — stays constrained */}
+        <div className="mx-auto max-w-7xl px-6 md:px-12">
+          <div className="border-border mb-8 flex items-end justify-between border-b pb-8 sm:mb-16">
             <div>
               <h2 className="mb-2 text-4xl font-black tracking-tighter uppercase italic">
                 {dict.home.offers_title}
@@ -231,10 +232,11 @@ export default async function LandingPage({
           </div>
         </div>
 
+        {/* Grid — full-width with generous padding */}
         <div className="px-6 lg:px-16">
           <Suspense
             fallback={
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 xl:grid-cols-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
                 {[...Array(6)].map((_, i) => (
                   <TicketCardSkeleton key={i} />
                 ))}
