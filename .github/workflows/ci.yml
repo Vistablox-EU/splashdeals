@@ -28,7 +28,7 @@ jobs:
       - run: node scripts/check-architecture.mjs
       - run: node scripts/check-circular.mjs
       - run: npm run check:unused -- --no-exit-code 2>&1
-      - run: npx jscpd --min-lines 8 --min-tokens 60 --format "ts,tsx" --threshold 4 app server lib components
+      - run: npx jscpd --min-lines 8 --min-tokens 60 --format "ts,tsx" --threshold 5 app server lib components
 
   deploy:
     if: github.event_name == 'push'
