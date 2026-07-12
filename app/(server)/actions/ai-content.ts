@@ -9,9 +9,7 @@ interface AIContentResult {
   excerpt: string;
 }
 
-export async function generateContentAction(
-  topic: string,
-): Promise<ActionResult<AIContentResult>> {
+export async function generateContentAction(topic: string): Promise<ActionResult<AIContentResult>> {
   try {
     await requireAdmin();
 

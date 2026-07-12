@@ -27,6 +27,7 @@ import {
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useAction } from "@/hooks/use-action";
+import { z } from "zod";
 import { createApiKeyAction, deleteApiKeyAction } from "@/server/actions/api-keys";
 
 interface ApiKey {
@@ -52,9 +53,12 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
       successMessage: "API key generated",
       refresh: false,
       onSuccess: (result) => {
-        const data = result.data as { key?: string } | undefined;
-        if (data?.key) {
-          setGeneratedKey(data.key);
+        const createApiKeyResponseSchema = z.object({
+          key: z.string().optional(),
+        });
+        const parsed = createApiKeyResponseSchema.safeParse(result.data);
+        if (parsed.success && parsed.data.key) {
+          setGeneratedKey(parsed.data.key);
         }
       },
     },

@@ -26,31 +26,31 @@ import { HeroActionPill } from "./HeroActionPill";
 import dynamic from "next/dynamic";
 
 const ShowcaseTicketGroups = dynamic(
-  () => import("@/app/(web)/ticketing/_components/ShowcaseTicketGroups").then((mod) => mod.ShowcaseTicketGroups),
+  () =>
+    import("@/app/(web)/ticketing/_components/ShowcaseTicketGroups").then(
+      (mod) => mod.ShowcaseTicketGroups,
+    ),
   {
     loading: () => <TicketGridSkeleton />,
   },
 );
 
-const MediaGallery = dynamic(
-  () => import("./MediaGallery").then((mod) => mod.MediaGallery),
-  {
-    ssr: true,
-    loading: () => (
-      <div className="space-y-12">
-        <div className="mx-auto max-w-2xl space-y-4 text-center">
-          <Skeleton className="bg-muted mx-auto h-4 w-24 rounded" />
-          <Skeleton className="bg-muted mx-auto h-8 w-64 rounded-lg" />
-        </div>
-        <div className="grid auto-rows-[250px] grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="bg-muted rounded-[2.5rem]" />
-          ))}
-        </div>
+const MediaGallery = dynamic(() => import("./MediaGallery").then((mod) => mod.MediaGallery), {
+  ssr: true,
+  loading: () => (
+    <div className="space-y-12">
+      <div className="mx-auto max-w-2xl space-y-4 text-center">
+        <Skeleton className="bg-muted mx-auto h-4 w-24 rounded" />
+        <Skeleton className="bg-muted mx-auto h-8 w-64 rounded-lg" />
       </div>
-    ),
-  },
-);
+      <div className="grid auto-rows-[250px] grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <Skeleton key={i} className="bg-muted rounded-[2.5rem]" />
+        ))}
+      </div>
+    </div>
+  ),
+});
 
 const ShowcaseAmenities = dynamic(
   () => import("./ShowcaseAmenities").then((mod) => mod.ShowcaseAmenities),

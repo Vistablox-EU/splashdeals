@@ -16,11 +16,7 @@ interface FacilityRow {
   name: string;
 }
 
-export default function CreateCampaignForm({
-  facilities,
-}: {
-  facilities: FacilityRow[];
-}) {
+export default function CreateCampaignForm({ facilities }: { facilities: FacilityRow[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -44,9 +40,7 @@ export default function CreateCampaignForm({
             : null,
           validFrom: formData.get("validFrom") as string,
           validTo: formData.get("validTo") as string,
-          usageLimit: formData.get("usageLimit")
-            ? Number(formData.get("usageLimit"))
-            : null,
+          usageLimit: formData.get("usageLimit") ? Number(formData.get("usageLimit")) : null,
           facilityIds,
         });
 

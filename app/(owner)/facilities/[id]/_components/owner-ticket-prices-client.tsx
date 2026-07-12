@@ -34,11 +34,7 @@ export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
     setUpdating(priceId);
     try {
       const { updateTicketPriceAction } = await import("@/app/(server)/actions/owner");
-      await updateTicketPriceAction(
-        priceId,
-        { isActive: !currentActive },
-        facilityId,
-      );
+      await updateTicketPriceAction(priceId, { isActive: !currentActive }, facilityId);
       toast.success(currentActive ? "Cena deaktivirana" : "Cena aktivirana");
       router.refresh();
     } catch {
@@ -93,11 +89,9 @@ export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
         <tbody>
           {prices.map((price) => (
             <tr key={price.id} className="border-b last:border-0">
-              <td className="py-2 text-muted-foreground">
-                {price.ticketType.category.title}
-              </td>
+              <td className="text-muted-foreground py-2">{price.ticketType.category.title}</td>
               <td className="py-2 font-medium">{price.ticketType.title}</td>
-              <td className="py-2 text-muted-foreground">{price.label || "—"}</td>
+              <td className="text-muted-foreground py-2">{price.label || "—"}</td>
               <td className="py-2">
                 {editingId === price.id ? (
                   <div className="flex items-center gap-1">
@@ -117,11 +111,7 @@ export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
                     >
                       Sačuvaj
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setEditingId(null)}
-                    >
+                    <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>
                       Otkaži
                     </Button>
                   </div>

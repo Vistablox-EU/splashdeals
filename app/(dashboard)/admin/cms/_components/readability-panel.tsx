@@ -54,11 +54,32 @@ function getReadabilityLabel(avgSentenceLen: number): {
   color: string;
   bg: string;
 } {
-  if (avgSentenceLen <= 0) return { label: "Nema sadržaja", color: "text-muted-foreground", bg: "bg-muted border-muted" };
-  if (avgSentenceLen < 10) return { label: "Vrlo lako za čitanje", color: "text-green-600", bg: "bg-green-50 border-green-200" };
-  if (avgSentenceLen < 15) return { label: "Lako za čitanje", color: "text-green-600", bg: "bg-green-50 border-green-200" };
-  if (avgSentenceLen < 20) return { label: "Prosečna čitljivost", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" };
-  if (avgSentenceLen < 25) return { label: "Teže za čitanje", color: "text-orange-600", bg: "bg-orange-50 border-orange-200" };
+  if (avgSentenceLen <= 0)
+    return { label: "Nema sadržaja", color: "text-muted-foreground", bg: "bg-muted border-muted" };
+  if (avgSentenceLen < 10)
+    return {
+      label: "Vrlo lako za čitanje",
+      color: "text-green-600",
+      bg: "bg-green-50 border-green-200",
+    };
+  if (avgSentenceLen < 15)
+    return {
+      label: "Lako za čitanje",
+      color: "text-green-600",
+      bg: "bg-green-50 border-green-200",
+    };
+  if (avgSentenceLen < 20)
+    return {
+      label: "Prosečna čitljivost",
+      color: "text-yellow-600",
+      bg: "bg-yellow-50 border-yellow-200",
+    };
+  if (avgSentenceLen < 25)
+    return {
+      label: "Teže za čitanje",
+      color: "text-orange-600",
+      bg: "bg-orange-50 border-orange-200",
+    };
   return { label: "Vrlo teško za čitanje", color: "text-red-600", bg: "bg-red-50 border-red-200" };
 }
 
@@ -97,9 +118,7 @@ export function ReadabilityPanel({ content }: ReadabilityPanelProps) {
       </h4>
 
       <div className={`rounded-lg border p-3 ${stats.bg}`}>
-        <p className={`text-sm font-medium ${stats.color}`}>
-          Čitljivost: {stats.label}
-        </p>
+        <p className={`text-sm font-medium ${stats.color}`}>Čitljivost: {stats.label}</p>
         <p className="text-muted-foreground mt-1 text-xs">
           {stats.avgSentenceLen} reči po rečenici
         </p>

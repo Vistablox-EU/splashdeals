@@ -105,9 +105,7 @@ export function TicketPurchaseModal({
   const [isAdded, setIsAdded] = useState(false);
   const [closing, setClosing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split("T")[0],
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -356,54 +354,54 @@ export function TicketPurchaseModal({
               const dayLabel = computedDayType
                 ? DAY_LABELS[computedDayType]
                 : DAY_LABELS[p.dayType ?? "ALL"];
-            const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"];
-            const displayLabel = p.label || `${dayLabel} — ${timeLabel}`;
+              const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"];
+              const displayLabel = p.label || `${dayLabel} — ${timeLabel}`;
 
-            return (
-              <button
-                key={p.id}
-                onClick={() => setSelectedPrice(p.id)}
-                className={`flex w-full items-center justify-between py-3 text-left transition-colors ${
-                  isSelected ? "bg-primary/[0.02]" : "hover:bg-muted/10 active:bg-muted/20"
-                }`}
-              >
-                <div className="flex min-w-0 flex-1 items-center gap-2">
-                  <div
-                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-[border-color] ${
-                      isSelected ? "border-primary" : "border-muted-foreground/30"
-                    }`}
-                  >
-                    {isSelected && <div className="bg-primary h-2 w-2 rounded-full" />}
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => setSelectedPrice(p.id)}
+                  className={`flex w-full items-center justify-between py-3 text-left transition-colors ${
+                    isSelected ? "bg-primary/[0.02]" : "hover:bg-muted/10 active:bg-muted/20"
+                  }`}
+                >
+                  <div className="flex min-w-0 flex-1 items-center gap-2">
+                    <div
+                      className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-[border-color] ${
+                        isSelected ? "border-primary" : "border-muted-foreground/30"
+                      }`}
+                    >
+                      {isSelected && <div className="bg-primary h-2 w-2 rounded-full" />}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-foreground block truncate text-sm font-bold">
+                        {displayLabel}
+                      </span>
+                      {hasDiscount && (
+                        <span className="text-muted-foreground flex items-center gap-1 text-[9px]">
+                          Ušteda {discountPct}%
+                          {p.id === bestDealId && (
+                            <span className="bg-secondary/20 text-secondary rounded-full px-1 py-[1px] text-[7px] leading-none font-black tracking-widest uppercase">
+                              Najbolja ponuda
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <span className="text-foreground block truncate text-sm font-bold">
-                      {displayLabel}
+                  <div className="flex shrink-0 items-baseline gap-1.5">
+                    <span className="text-foreground text-sm font-black">
+                      {p.price.toLocaleString("sr-RS")}
                     </span>
+                    <span className="text-primary text-[9px] font-bold">RSD</span>
                     {hasDiscount && (
-                      <span className="text-muted-foreground flex items-center gap-1 text-[9px]">
-                        Ušteda {discountPct}%
-                        {p.id === bestDealId && (
-                          <span className="bg-secondary/20 text-secondary rounded-full px-1 py-[1px] text-[7px] leading-none font-black tracking-widest uppercase">
-                            Najbolja ponuda
-                          </span>
-                        )}
+                      <span className="text-muted-foreground ml-0.5 text-[8px] line-through">
+                        {p.originalPrice?.toLocaleString("sr-RS")}
                       </span>
                     )}
                   </div>
-                </div>
-                <div className="flex shrink-0 items-baseline gap-1.5">
-                  <span className="text-foreground text-sm font-black">
-                    {p.price.toLocaleString("sr-RS")}
-                  </span>
-                  <span className="text-primary text-[9px] font-bold">RSD</span>
-                  {hasDiscount && (
-                    <span className="text-muted-foreground ml-0.5 text-[8px] line-through">
-                      {p.originalPrice?.toLocaleString("sr-RS")}
-                    </span>
-                  )}
-                </div>
-              </button>
-            );
+                </button>
+              );
             });
           })()}
         </div>
@@ -500,7 +498,7 @@ export function TicketPurchaseModal({
         type="date"
         value={selectedDate}
         onChange={(e) => setSelectedDate(e.target.value)}
-        className="bg-muted/40 border-border text-foreground w-full rounded-xl border px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30"
+        className="bg-muted/40 border-border text-foreground focus:ring-primary/30 w-full rounded-xl border px-3 py-2 text-sm font-bold focus:ring-2 focus:outline-none"
       />
     </div>
   );

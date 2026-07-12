@@ -119,7 +119,11 @@ export function SEOScoringPanel({ content, slug }: SEOScoringPanelProps) {
   const scoreColor =
     totalScore < 20 ? "text-red-600" : totalScore <= 35 ? "text-yellow-600" : "text-green-600";
   const scoreBg =
-    totalScore < 20 ? "bg-red-50 border-red-200" : totalScore <= 35 ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200";
+    totalScore < 20
+      ? "bg-red-50 border-red-200"
+      : totalScore <= 35
+        ? "bg-yellow-50 border-yellow-200"
+        : "bg-green-50 border-green-200";
 
   return (
     <div className="space-y-4">
@@ -149,9 +153,9 @@ export function SEOScoringPanel({ content, slug }: SEOScoringPanelProps) {
               <span
                 className={
                   item.points === item.maxPoints
-                    ? "text-green-600 font-medium"
+                    ? "font-medium text-green-600"
                     : item.points > 0
-                      ? "text-yellow-600 font-medium"
+                      ? "font-medium text-yellow-600"
                       : "text-red-400"
                 }
               >

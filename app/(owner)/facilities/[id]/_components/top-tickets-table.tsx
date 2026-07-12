@@ -29,27 +29,22 @@ export function TopTicketsTable({ data }: Props) {
         <thead>
           <tr className="border-b text-left">
             <th className="pb-2 font-medium">Tip ulaznice</th>
-            <th className="pb-2 font-medium text-right">Prodata</th>
-            <th className="pb-2 font-medium text-right">%</th>
-            <th className="pb-2 font-medium text-right">Prihod</th>
+            <th className="pb-2 text-right font-medium">Prodata</th>
+            <th className="pb-2 text-right font-medium">%</th>
+            <th className="pb-2 text-right font-medium">Prihod</th>
           </tr>
         </thead>
         <tbody>
           {data.map((ticket) => (
             <tr key={ticket.title} className="border-b last:border-0">
               <td className="py-2 font-medium">{ticket.title}</td>
-              <td className="py-2 text-right text-muted-foreground">
+              <td className="text-muted-foreground py-2 text-right">
                 {ticket.count.toLocaleString("sr-RS")}
               </td>
-              <td className="py-2 text-right text-muted-foreground">
-                {totalCount > 0
-                  ? ((ticket.count / totalCount) * 100).toFixed(1)
-                  : "0.0"}
-                %
+              <td className="text-muted-foreground py-2 text-right">
+                {totalCount > 0 ? ((ticket.count / totalCount) * 100).toFixed(1) : "0.0"}%
               </td>
-              <td className="py-2 text-right font-medium">
-                {formatCurrency(ticket.revenue)}
-              </td>
+              <td className="py-2 text-right font-medium">{formatCurrency(ticket.revenue)}</td>
             </tr>
           ))}
         </tbody>

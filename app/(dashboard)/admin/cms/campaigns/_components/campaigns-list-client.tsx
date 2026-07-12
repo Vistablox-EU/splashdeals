@@ -51,7 +51,9 @@ interface FacilityRow {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("sr-RS", {
-    day: "2-digit", month: "2-digit", year: "numeric",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
   });
 }
 
@@ -67,9 +69,7 @@ export function CampaignsListClient({
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
   const rows = campaigns as unknown as CampaignRow[];
-  const facilityMap = new Map(
-    (facilities as unknown as FacilityRow[]).map((f) => [f.id, f.name]),
-  );
+  const facilityMap = new Map((facilities as unknown as FacilityRow[]).map((f) => [f.id, f.name]));
 
   const getFacilityNames = (restrictions: { facilityId: string }[]) => {
     return restrictions
@@ -163,9 +163,7 @@ export function CampaignsListClient({
                       <div className="space-y-1">
                         <span className="text-sm font-medium">{campaign.name}</span>
                         {facilitiesStr && (
-                          <div className="text-muted-foreground text-xs">
-                            {facilitiesStr}
-                          </div>
+                          <div className="text-muted-foreground text-xs">{facilitiesStr}</div>
                         )}
                         {campaign.minPurchaseAmount && (
                           <div className="text-muted-foreground text-xs">

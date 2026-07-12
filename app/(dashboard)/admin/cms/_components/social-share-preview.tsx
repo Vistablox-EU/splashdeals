@@ -30,22 +30,16 @@ export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePr
         </div>
         {coverImage && (
           <div className="bg-muted aspect-[1.91/1] w-full overflow-hidden">
-            <img
-              src={coverImage}
-              alt=""
-              className="h-full w-full object-cover"
-            />
+            <img src={coverImage} alt="" className="h-full w-full object-cover" />
           </div>
         )}
         <div className="bg-card p-3">
-          <p className="text-muted-foreground truncate text-[10px] uppercase tracking-wider">
+          <p className="text-muted-foreground truncate text-[10px] tracking-wider uppercase">
             splashdeals.rs
           </p>
-          <p className="mt-1 text-sm font-semibold leading-tight">{truncatedTitle}</p>
+          <p className="mt-1 text-sm leading-tight font-semibold">{truncatedTitle}</p>
           {truncatedExcerpt && (
-            <p className="text-muted-foreground mt-1 text-xs leading-snug">
-              {truncatedExcerpt}
-            </p>
+            <p className="text-muted-foreground mt-1 text-xs leading-snug">{truncatedExcerpt}</p>
           )}
         </div>
       </div>
@@ -58,22 +52,14 @@ export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePr
         <div className="bg-card p-3">
           {coverImage && (
             <div className="bg-muted mb-2 aspect-[2/1] w-full overflow-hidden rounded-lg">
-              <img
-                src={coverImage}
-                alt=""
-                className="h-full w-full object-cover"
-              />
+              <img src={coverImage} alt="" className="h-full w-full object-cover" />
             </div>
           )}
-          <p className="text-sm font-semibold leading-tight">{truncatedTitle}</p>
+          <p className="text-sm leading-tight font-semibold">{truncatedTitle}</p>
           {truncatedExcerpt && (
-            <p className="text-muted-foreground mt-1 text-xs leading-snug">
-              {truncatedExcerpt}
-            </p>
+            <p className="text-muted-foreground mt-1 text-xs leading-snug">{truncatedExcerpt}</p>
           )}
-          <p className="text-muted-foreground mt-1 truncate text-[10px]">
-            splashdeals.rs/blog/...
-          </p>
+          <p className="text-muted-foreground mt-1 truncate text-[10px]">splashdeals.rs/blog/...</p>
         </div>
       </div>
 
@@ -85,15 +71,11 @@ export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePr
         <div className="bg-card flex gap-3 p-3">
           {coverImage && (
             <div className="bg-muted size-16 shrink-0 overflow-hidden rounded-lg">
-              <img
-                src={coverImage}
-                alt=""
-                className="h-full w-full object-cover"
-              />
+              <img src={coverImage} alt="" className="h-full w-full object-cover" />
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold leading-tight">{truncatedTitle}</p>
+            <p className="text-sm leading-tight font-semibold">{truncatedTitle}</p>
             {truncatedExcerpt && (
               <p className="text-muted-foreground mt-0.5 text-xs leading-snug">
                 {truncatedExcerpt}

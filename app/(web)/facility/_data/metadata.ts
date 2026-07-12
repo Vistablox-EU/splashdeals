@@ -291,7 +291,12 @@ export async function buildFacilityMetadata(
       url: canonicalUrl,
       siteName: "SplashDeals",
       images: [
-        { url: `${SITE_URL}/api/og/facility/${facilitySlug}`, width: 1200, height: 630, alt: facility.name },
+        {
+          url: `${SITE_URL}/api/og/facility/${facilitySlug}`,
+          width: 1200,
+          height: 630,
+          alt: facility.name,
+        },
       ],
       locale: "sr_RS",
       type: "website",

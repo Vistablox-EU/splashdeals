@@ -4,11 +4,7 @@ import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import EditCampaignForm from "./_components/edit-campaign-form";
 
-export default async function EditCampaignPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function EditCampaignPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   await connection();
 
@@ -35,9 +31,7 @@ export default async function EditCampaignPage({
         name: campaign.name,
         code: campaign.code || "",
         discountPercent: Number(campaign.discountPercent),
-        minPurchaseAmount: campaign.minPurchaseAmount
-          ? Number(campaign.minPurchaseAmount)
-          : null,
+        minPurchaseAmount: campaign.minPurchaseAmount ? Number(campaign.minPurchaseAmount) : null,
         validFrom: campaign.validFrom.toISOString().slice(0, 10),
         validTo: campaign.validTo.toISOString().slice(0, 10),
         usageLimit: campaign.usageLimit,

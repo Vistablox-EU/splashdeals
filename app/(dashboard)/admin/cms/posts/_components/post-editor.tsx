@@ -134,7 +134,9 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
       featuredImage: (post?.featuredImage as string) || "",
       author: (post?.author as string) || "",
       authorPersonId: (post?.authorPersonId as string) || "",
-      status: (post?.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED") || "DRAFT",
+      status:
+        (post?.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED") ||
+        "DRAFT",
       categoryId: (post?.categoryId as string) || "",
       isFeatured: (post?.isFeatured as boolean) || false,
       metaTitle: (post?.metaTitle as string) || "",
@@ -292,12 +294,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit as SubmitHandler<any>)}>
         {/* Editor Presence */}
-        {isEditing && !!post?.id && (
-          <EditorPresence
-            postId={post.id as string}
-            currentUserId=""
-          />
-        )}
+        {isEditing && !!post?.id && <EditorPresence postId={post.id as string} currentUserId="" />}
         {/* Restore banner */}
         {showRestoreBanner && pendingAutosave && (
           <div className="mb-4 rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-800">
@@ -440,9 +437,8 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                     toast.error("Prvo unesi naslov (temu) za generisanje sadržaja.");
                     return;
                   }
-                  const { generateContentAction } = await import(
-                    "@/app/(server)/actions/ai-content"
-                  );
+                  const { generateContentAction } =
+                    await import("@/app/(server)/actions/ai-content");
                   const result = await generateContentAction(topic);
                   if (result.success && result.data) {
                     setValue("content", result.data.content || "");
@@ -537,7 +533,10 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                 <Select
                   value={watch("status") || "DRAFT"}
                   onValueChange={(value) =>
-                    setValue("status", value as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED")
+                    setValue(
+                      "status",
+                      value as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED",
+                    )
                   }
                 >
                   <SelectTrigger id="status" aria-label="Status" className="w-full">

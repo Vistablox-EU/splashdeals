@@ -793,42 +793,42 @@ export async function listOrphanedMediaAction(): Promise<ActionResult<OrphanedMe
     for (const r of postRefs as Array<{ url: string }>) usedUrls.add(r.url);
 
     // Check content column for URL references
-    const contentPostRefs = await (prisma as any).$queryRawUnsafe(
+    const contentPostRefs = (await (prisma as any).$queryRawUnsafe(
       `SELECT DISTINCT id FROM marketing.blog_posts WHERE content LIKE ANY($1::text[])`,
       urls.map((u: string) => `%${u}%`),
-    ) as Array<{ id: string }>;
+    )) as Array<{ id: string }>;
 
     if (contentPostRefs.length > 0) {
       // If any post references these URLs, we can't be sure which ones
       // So let's do a per-URL content check for accuracy
       for (const media of allMedia) {
-        const contentMatches = await (prisma as any).$queryRawUnsafe(
+        const contentMatches = (await (prisma as any).$queryRawUnsafe(
           `SELECT 1 FROM marketing.blog_posts WHERE content LIKE $1 LIMIT 1`,
           `%${media.url}%`,
-        ) as Array<Record<string, unknown>>;
+        )) as Array<Record<string, unknown>>;
         if (contentMatches.length > 0) usedUrls.add(media.url);
 
-        const pageContentMatches = await (prisma as any).$queryRawUnsafe(
+        const pageContentMatches = (await (prisma as any).$queryRawUnsafe(
           `SELECT 1 FROM marketing.pages WHERE content LIKE $1 LIMIT 1`,
           `%${media.url}%`,
-        ) as Array<Record<string, unknown>>;
+        )) as Array<Record<string, unknown>>;
         if (pageContentMatches.length > 0) usedUrls.add(media.url);
       }
     }
 
-    const orphaned = allMedia.filter(
-      (m: { url: string }) => !usedUrls.has(m.url),
-    );
+    const orphaned = allMedia.filter((m: { url: string }) => !usedUrls.has(m.url));
 
     return {
       success: true,
-      data: orphaned.map((m: { id: string; filename: string; url: string; size: number; createdAt: Date }) => ({
-        id: m.id,
-        filename: m.filename,
-        url: m.url,
-        size: m.size,
-        createdAt: m.createdAt.toISOString(),
-      })),
+      data: orphaned.map(
+        (m: { id: string; filename: string; url: string; size: number; createdAt: Date }) => ({
+          id: m.id,
+          filename: m.filename,
+          url: m.url,
+          size: m.size,
+          createdAt: m.createdAt.toISOString(),
+        }),
+      ),
     };
   } catch (error) {
     return handleServerActionError(error, "cms/listOrphanedMedia");

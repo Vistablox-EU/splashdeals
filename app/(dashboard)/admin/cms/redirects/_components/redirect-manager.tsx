@@ -146,7 +146,7 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b bg-muted/50">
+              <tr className="bg-muted/50 border-b">
                 <th className="px-4 py-3 text-left font-medium">Source</th>
                 <th className="px-4 py-3 text-left font-medium">Destination</th>
                 <th className="px-4 py-3 text-center font-medium">Tip</th>
@@ -165,16 +165,13 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
                 redirects.map((r) => (
                   <tr
                     key={r.id}
-                    className={`border-b last:border-0 hover:bg-muted/30 ${!r.isActive ? "opacity-50" : ""}`}
+                    className={`hover:bg-muted/30 border-b last:border-0 ${!r.isActive ? "opacity-50" : ""}`}
                   >
                     <td className="px-4 py-3 font-mono text-xs">{r.source}</td>
                     <td className="px-4 py-3 font-mono text-xs">{r.destination}</td>
                     <td className="px-4 py-3 text-center text-xs">{r.statusCode}</td>
                     <td className="px-4 py-3 text-center">
-                      <Switch
-                        checked={r.isActive}
-                        onCheckedChange={() => handleToggle(r.id)}
-                      />
+                      <Switch checked={r.isActive} onCheckedChange={() => handleToggle(r.id)} />
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Button

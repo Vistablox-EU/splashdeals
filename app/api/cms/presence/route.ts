@@ -73,9 +73,7 @@ export async function GET(request: NextRequest) {
       select: { id: true, name: true, image: true },
     });
 
-    const userMap = new Map(
-      users.map((u) => [u.id, { name: u.name, image: u.image }]),
-    );
+    const userMap = new Map(users.map((u) => [u.id, { name: u.name, image: u.image }]));
 
     const result = presences.map((p: { userId: string; lastSeen: Date }) => ({
       userId: p.userId,
