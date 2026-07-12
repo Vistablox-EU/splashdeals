@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/Icon";
-import { Button } from "@/components/ui/button";
 
 async function getUserFavorites(userId: string) {
   return prisma.userFavorite.findMany({

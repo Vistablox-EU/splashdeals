@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 
 export default function AccountError({
-  error,
+  _error,
   reset,
 }: {
-  error: Error & { digest?: string };
+  _error: Error & { digest?: string };
   reset: () => void;
 }) {
   return (
