@@ -10,10 +10,7 @@ export function getDayTypeForDate(date: Date): "WEEKDAY" | "WEEKEND" {
   return "WEEKDAY";
 }
 
-export function filterPricesByDate<T extends PriceWithDayType>(
-  prices: T[],
-  date: Date,
-): T[] {
+export function filterPricesByDate<T extends PriceWithDayType>(prices: T[], date: Date): T[] {
   const dayType = getDayTypeForDate(date);
   return prices.filter((p) => p.dayType === "ALL" || p.dayType === dayType);
 }

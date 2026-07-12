@@ -126,7 +126,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-sm">
               {post.publishedAt && (
-                <time dateTime={post.publishedAt.toISOString()}>{formatDate(post.publishedAt)}</time>
+                <time dateTime={post.publishedAt.toISOString()}>
+                  {formatDate(post.publishedAt)}
+                </time>
               )}
               {post.readingTime && (
                 <span className="flex items-center gap-1">
@@ -172,14 +174,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Content */}
           <div
             id="blog-content"
-            className="prose prose-lg dark:prose-invert max-w-none toc-content"
+            className="prose prose-lg dark:prose-invert toc-content max-w-none"
             dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
           />
 
           {/* #384 — Author card */}
-          {post.authorPerson && (
-            <AuthorCard person={post.authorPerson} />
-          )}
+          {post.authorPerson && <AuthorCard person={post.authorPerson} />}
 
           {/* Related posts */}
           {relatedPosts.length > 0 && (
@@ -207,7 +207,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                       {rp.title}
                     </h3>
                     {rp.publishedAt && (
-                      <p className="text-muted-foreground mt-1 text-xs">{formatDate(rp.publishedAt)}</p>
+                      <p className="text-muted-foreground mt-1 text-xs">
+                        {formatDate(rp.publishedAt)}
+                      </p>
                     )}
                   </Link>
                 ))}
@@ -221,7 +223,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <aside className="hidden lg:block">
             <div className="sticky top-24">
               <nav className="border-muted max-h-[calc(100vh-8rem)] overflow-y-auto border-l pl-4">
-                <h3 className="text-foreground mb-3 text-xs font-semibold uppercase tracking-wider">
+                <h3 className="text-foreground mb-3 text-xs font-semibold tracking-wider uppercase">
                   Sadržaj
                 </h3>
                 <ul className="space-y-1.5">
@@ -290,7 +292,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 }
 
 // #384 — Author card component
-function AuthorCard({ person }: { person: { name: string; photo: string | null; bio: string | null; twitterUrl: string | null; facebookUrl: string | null; linkedinUrl: string | null; instagramUrl: string | null } }) {
+function AuthorCard({
+  person,
+}: {
+  person: {
+    name: string;
+    photo: string | null;
+    bio: string | null;
+    twitterUrl: string | null;
+    facebookUrl: string | null;
+    linkedinUrl: string | null;
+    instagramUrl: string | null;
+  };
+}) {
   return (
     <div className="bg-muted/30 mt-12 flex items-start gap-4 rounded-xl border p-6">
       {person.photo ? (
@@ -313,22 +327,42 @@ function AuthorCard({ person }: { person: { name: string; photo: string | null; 
         {(person.twitterUrl || person.facebookUrl || person.linkedinUrl || person.instagramUrl) && (
           <div className="mt-2 flex gap-3">
             {person.twitterUrl && (
-              <a href={person.twitterUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a
+                href={person.twitterUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <Icon name="X" className="size-4" />
               </a>
             )}
             {person.facebookUrl && (
-              <a href={person.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a
+                href={person.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <Icon name="facebook" className="size-4" />
               </a>
             )}
             {person.linkedinUrl && (
-              <a href={person.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a
+                href={person.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <Icon name="linkedin" className="size-4" />
               </a>
             )}
             {person.instagramUrl && (
-              <a href={person.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a
+                href={person.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <Icon name="instagram" className="size-4" />
               </a>
             )}

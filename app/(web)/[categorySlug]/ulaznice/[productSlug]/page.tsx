@@ -48,9 +48,7 @@ export default async function TicketProductDetailPage({
   let foundCategory: (typeof categories)[number] | null = null;
 
   for (const cat of categories) {
-    const prod = cat.types.find(
-      (t) => t.slug === productSlug || t.id === productSlug,
-    );
+    const prod = cat.types.find((t) => t.slug === productSlug || t.id === productSlug);
     if (prod) {
       foundProduct = prod;
       foundCategory = cat;
@@ -140,7 +138,7 @@ export default async function TicketProductDetailPage({
               )}
             </div>
 
-            <h1 className="text-foreground text-3xl leading-[0.95] font-black uppercase italic tracking-tighter md:text-5xl">
+            <h1 className="text-foreground text-3xl leading-[0.95] font-black tracking-tighter uppercase italic md:text-5xl">
               {product.title}
             </h1>
 
@@ -155,7 +153,7 @@ export default async function TicketProductDetailPage({
         {/* Right: Price card / CTA */}
         <div className="md:sticky md:top-28 md:self-start">
           <Card className="border-border overflow-visible p-8">
-            <h3 className="text-foreground mb-6 text-lg font-black uppercase italic tracking-tight">
+            <h3 className="text-foreground mb-6 text-lg font-black tracking-tight uppercase italic">
               Izaberite varijantu
             </h3>
 

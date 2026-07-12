@@ -79,8 +79,7 @@
       // Update subtitle with facility name
       var subtitle = widget.querySelector("p:first-of-type");
       if (subtitle && data.name) {
-        subtitle.textContent =
-          data.name + (data.city ? " — " + data.city : "");
+        subtitle.textContent = data.name + (data.city ? " — " + data.city : "");
       }
 
       // Mark as loaded

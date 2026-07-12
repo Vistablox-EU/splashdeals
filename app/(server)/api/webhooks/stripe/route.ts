@@ -211,12 +211,14 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
 
     if (transaction && targetEmail) {
       // Mark any CartSession as notified since checkout completed
-      await prisma.cartSession.updateMany({
-        where: { userId, notified: false },
-        data: { notified: true },
-      }).catch(() => {
-        // CartSession may not exist; that's fine
-      });
+      await prisma.cartSession
+        .updateMany({
+          where: { userId, notified: false },
+          data: { notified: true },
+        })
+        .catch(() => {
+          // CartSession may not exist; that's fine
+        });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await sendTicketConfirmationEmail(targetEmail, transaction as any, session.id).catch(

@@ -45,7 +45,7 @@ export default async function FacilityTicketsPage({
     return (
       <div className="mx-auto flex min-h-[60vh] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center">
         <Icon name="shopping_bag" className="text-muted-foreground mb-6 text-[64px]" />
-        <h1 className="text-foreground mb-4 text-3xl font-black uppercase italic tracking-tighter">
+        <h1 className="text-foreground mb-4 text-3xl font-black tracking-tighter uppercase italic">
           Ulaznice — {facility.name}
         </h1>
         <p className="text-muted-foreground text-lg font-medium">
@@ -59,7 +59,7 @@ export default async function FacilityTicketsPage({
     <div className="text-foreground mx-auto min-h-screen max-w-7xl px-6 pt-24 pb-32 sm:px-12">
       {/* Header */}
       <div className="mb-12">
-        <div className="flex items-center gap-2 text-sm mb-4">
+        <div className="mb-4 flex items-center gap-2 text-sm">
           <Link
             href={`/${facility.slug}`}
             className="text-muted-foreground hover:text-foreground text-xs font-bold tracking-widest uppercase transition-colors"
@@ -72,8 +72,7 @@ export default async function FacilityTicketsPage({
           </span>
         </div>
         <h1 className="text-foreground text-4xl leading-[0.9] font-black tracking-tighter uppercase italic md:text-6xl">
-          Ulaznice —{" "}
-          <span className="text-primary">{facility.name}</span>
+          Ulaznice — <span className="text-primary">{facility.name}</span>
         </h1>
       </div>
 
@@ -81,7 +80,7 @@ export default async function FacilityTicketsPage({
       <div className="space-y-16">
         {categories.map((category) => (
           <section key={category.id} id={`cat-${category.slug || category.id}`}>
-            <h2 className="text-foreground mb-8 text-2xl font-black uppercase italic tracking-tighter">
+            <h2 className="text-foreground mb-8 text-2xl font-black tracking-tighter uppercase italic">
               {category.title}
             </h2>
 
@@ -91,7 +90,9 @@ export default async function FacilityTicketsPage({
                   (min, p) => (Number(p.price) < Number(min.price) ? p : min),
                   product.prices[0],
                 );
-                const hasDiscount = bestPrice?.originalPrice && Number(bestPrice.originalPrice) > Number(bestPrice.price);
+                const hasDiscount =
+                  bestPrice?.originalPrice &&
+                  Number(bestPrice.originalPrice) > Number(bestPrice.price);
 
                 return (
                   <Link
@@ -113,7 +114,7 @@ export default async function FacilityTicketsPage({
                       )}
                       <div className="flex flex-1 flex-col p-6">
                         <div className="mb-2 flex items-start justify-between gap-4">
-                          <h3 className="text-foreground group-hover:text-primary text-lg leading-tight font-black uppercase italic tracking-tight transition-colors">
+                          <h3 className="text-foreground group-hover:text-primary text-lg leading-tight font-black tracking-tight uppercase italic transition-colors">
                             {product.title}
                           </h3>
                           {product.isSeasonPass && (
@@ -140,10 +141,12 @@ export default async function FacilityTicketsPage({
                                 {Number(bestPrice.originalPrice).toLocaleString("sr-RS")}
                               </span>
                             )}
-                            <span className="text-foreground text-2xl font-black italic tracking-tighter">
+                            <span className="text-foreground text-2xl font-black tracking-tighter italic">
                               {Number(bestPrice.price).toLocaleString("sr-RS")}
                             </span>
-                            <span className="text-primary text-[10px] font-bold uppercase">RSD</span>
+                            <span className="text-primary text-[10px] font-bold uppercase">
+                              RSD
+                            </span>
                           </div>
                         )}
 

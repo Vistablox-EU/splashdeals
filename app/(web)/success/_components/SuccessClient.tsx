@@ -311,7 +311,9 @@ export function SuccessClient({
             className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-16 w-full rounded-full border px-10 sm:w-auto"
           >
             <Icon
-              name={resendStatus === "sent" ? "check_circle" : isPending ? "progress_activity" : "mail"}
+              name={
+                resendStatus === "sent" ? "check_circle" : isPending ? "progress_activity" : "mail"
+              }
               className={`mr-3 text-[20px] ${isPending ? "animate-spin" : ""}`}
             />
             {resendStatus === "sent"

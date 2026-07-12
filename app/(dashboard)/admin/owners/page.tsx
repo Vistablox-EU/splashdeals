@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -82,9 +76,8 @@ export default function AdminOwnersPage() {
         <CardHeader>
           <CardTitle>Dodela vlasnika</CardTitle>
           <CardDescription>
-            Dodelite vlasništvo nad objektom korisniku putem email adrese. Korisnik
-            će dobiti FACILITY_OWNER rolu i moći će da upravlja cenama i pregleda
-            prodaju.
+            Dodelite vlasništvo nad objektom korisniku putem email adrese. Korisnik će dobiti
+            FACILITY_OWNER rolu i moći će da upravlja cenama i pregleda prodaju.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -100,15 +93,9 @@ export default function AdminOwnersPage() {
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Objekat</label>
-            <Select
-              value={facilityId}
-              onValueChange={setFacilityId}
-              disabled={loading}
-            >
+            <Select value={facilityId} onValueChange={setFacilityId} disabled={loading}>
               <SelectTrigger>
-                <SelectValue
-                  placeholder={loading ? "Učitavanje..." : "Izaberite objekat"}
-                />
+                <SelectValue placeholder={loading ? "Učitavanje..." : "Izaberite objekat"} />
               </SelectTrigger>
               <SelectContent>
                 {facilities.map((f) => (
