@@ -2,27 +2,37 @@ import "server-only";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import { sendEmail } from "./email";
-import { buildResetPasswordHtml } from "./email-templates/reset-password";
+import { bearer } from "better-auth/plugins/bearer";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
 
-  trustedOrigins: [
-    "https://www.splashdeals.rs",
-    "https://splashdeals.rs",
-    "http://localhost:3000",
-    // Add Vercel preview URLs here for PR deployments
-  ],
+  trustedOrigins: ["https://www.splashdeals.rs", "https://splashdeals.rs", "http://localhost:3000"],
+
+  // Social-only for buyer accounts
   emailAndPassword: {
-    enabled: true,
-    autoSignIn: true,
+    enabled: false,
+  },
+
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    },
+    facebook: {
+      clientId: process.env.FACEBOOK_CLIENT_ID || "",
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || "",
+    },
+    apple: {
+      clientId: process.env.APPLE_CLIENT_ID || "",
+      clientSecret: process.env.APPLE_CLIENT_SECRET || "",
+    },
   },
 
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    expiresIn: 60 * 60 * 24 * 30, // 30 days for buyers
     updateAge: 60 * 60 * 24, // refresh once per day
     cookieCache: {
       enabled: true,
@@ -31,33 +41,14 @@ export const auth = betterAuth({
   },
 
   emailVerification: {
-    sendOnSignUp: false, // No public sign-up for admin
-  },
-
-  resetPassword: {
-    enabled: true,
-    expiresIn: 3600, // 1 hour
-    sendResetPassword: async ({
-      user,
-      url,
-    }: {
-      user: { id: string; email: string; name?: string | null };
-      url: string;
-    }) => {
-      await sendEmail(
-        user.email,
-        "Reset your Splashdeals Admin password",
-        buildResetPasswordHtml(url),
-      );
-    },
+    sendOnSignUp: false,
   },
 
   rateLimit: {
-    window: 60, // 60 seconds
-    max: 15, // 15 requests per window
+    window: 60,
+    max: 15,
   },
 
-  // Expert addition: Map role to session for easier RBAC
   user: {
     additionalFields: {
       role: {
@@ -67,6 +58,19 @@ export const auth = betterAuth({
       },
     },
   },
+
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (_user) => {
+          // Social provider email is handled by Better Auth automatically
+        },
+      },
+    },
+  },
+
+  plugins: [bearer()],
+
   advanced: {
     crossSubDomainCookies: {
       enabled: process.env.NODE_ENV === "production",
@@ -74,6 +78,9 @@ export const auth = betterAuth({
         process.env.NODE_ENV === "production"
           ? process.env.COOKIE_DOMAIN || ".splashdeals.rs"
           : undefined,
+    },
+    defaultCookieNames: {
+      sessionToken: "splashdeals.session",
     },
   },
 });

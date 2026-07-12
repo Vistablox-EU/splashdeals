@@ -108,7 +108,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     const targetEmail = fulfillmentEmail || session.customer_details?.email;
 
     // 1. Resolve User
-    let userId = "";
+    let userId: string | null = null;
     if (targetEmail) {
       const user = await prisma.user.upsert({
         where: { email: targetEmail },
@@ -118,21 +118,30 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
       userId = user.id;
     }
 
+    // Guard: Don't create transactions without a valid user
+    if (!userId) {
+      console.warn(
+        `[FULFILLMENT SKIPPED] No user email available for session ${session.id}. Cannot create transaction without a valid userId.`,
+      );
+      return;
+    }
+
     // 2. Atomic Fulfillment Transaction
     const transaction = await prisma.$transaction(async (tx) => {
       const transaction = await tx.transaction.upsert({
         where: { stripeSession: session.id },
         update: {
           status: "SUCCESS",
-          userId: userId || "",
+          userId: userId,
         },
         create: {
+          orderRef: `SD-${new Date().toISOString().slice(2, 10).replace(/-/g, "")}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
           stripeSession: session.id,
           facilityId: orderDetails[0].facilityId,
           totalAmount: (session.amount_total || 0) / 100,
           currency: "RSD",
           status: "SUCCESS",
-          userId: userId || "",
+          userId: userId,
         },
       });
 
@@ -164,6 +173,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
                 ticketId: item.ticketPriceId,
                 ticketGroupId: item.facilityId,
                 transactionId: transaction.id,
+                userId: transaction.userId,
                 expiryDate: new Date(),
                 status: TicketStatus.HOLD,
                 holderName: holderName || null,
@@ -186,6 +196,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
             ticketId: ticketPrice.id,
             ticketGroupId: item.facilityId,
             transactionId: transaction.id,
+            userId: transaction.userId,
             expiryDate: isSeason
               ? getNextSubscriptionExpiry(new Date().getFullYear(), new Date())
               : expiryDate,
