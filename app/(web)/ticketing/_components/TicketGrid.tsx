@@ -103,8 +103,8 @@ async function getTickets() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
   const allTickets = await getTickets();
-  // Limit to max 4 cards as per user request for a single compact row
-  const tickets = allTickets.slice(0, 4);
+  // Limit to max 8 cards for edge-to-edge desktop grid (lg:5 + xl:6)
+  const tickets = allTickets.slice(0, 8);
 
   if (tickets.length === 0) {
     return (
@@ -116,13 +116,13 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
   }
 
   // Fill density if inventory is low (Marketplace SLA)
-  const fillerCount = Math.max(0, 4 - tickets.length);
+  const fillerCount = Math.max(0, 6 - tickets.length);
   const fillers = Array(fillerCount).fill(null);
 
   const priceFormat = new Intl.NumberFormat("sr-RS");
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 xl:grid-cols-6">
       {tickets.map((ticket, idx) => {
         const cardImage = ticket.facility.media?.[0]?.url || ticket.imageUrl;
         const dbSlug = dbValueToSlug(ticket.facility.category ?? "");
@@ -152,7 +152,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                     priority={idx < 2}
                     loading={idx < 2 ? "eager" : "lazy"}
                     fetchPriority={idx < 2 ? "high" : "auto"}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, (max-width: 1536px) 20vw, 16vw"
                     className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
                 ) : (
