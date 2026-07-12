@@ -150,3 +150,18 @@ export async function sendOrderConfirmation(transactionId: string): Promise<void
     html,
   });
 }
+
+/**
+ * 🛒 Sends an abandoned cart recovery reminder email.
+ */
+export async function sendRecoveryEmail(email: string, items: any[]) {
+  const itemList = items.map((i: any) => `${i.quantity}x ${i.title}`).join(", ");
+  await getTransporter().sendMail({
+    from: process.env.SMTP_FROM || "Splashdeals <noreply@splashdeals.rs>",
+    to: email,
+    subject: "Ostali su ti kartice u korpi!",
+    html: `<p>Pre nego što zaboraviš — tvoje karte još čekaju:</p>
+           <ul>${items.map((i: any) => `<li>${i.quantity}x ${i.title}</li>`).join("")}</ul>
+           <a href="${process.env.NEXT_PUBLIC_BASE_URL}/cart" style="display:block;padding:12px;background:#000;color:#fff;text-align:center;border-radius:8px;">Vidi korpu</a>`,
+  });
+}

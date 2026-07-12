@@ -104,6 +104,10 @@ export const useCart = create<CartStore>()(
             lastUpdated: now,
           });
         }
+        // Track cart abandonment timestamp
+        if (typeof window !== "undefined") {
+          localStorage.setItem("cartAbandonedAt", String(now));
+        }
       },
 
       removeItem: (id) => {
@@ -131,7 +135,12 @@ export const useCart = create<CartStore>()(
         });
       },
 
-      clearCart: () => set({ items: [], lastUpdated: Date.now() }),
+      clearCart: () => {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("cartAbandonedAt");
+        }
+        set({ items: [], lastUpdated: Date.now() });
+      },
 
       clearStaleCart: () => {
         const now = Date.now();

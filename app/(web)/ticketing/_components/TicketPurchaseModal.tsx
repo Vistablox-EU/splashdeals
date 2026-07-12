@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
+import { getDayTypeForDate, filterPricesByDate } from "@/app/(server)/lib/ticket-utils";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -104,6 +105,9 @@ export function TicketPurchaseModal({
   const [isAdded, setIsAdded] = useState(false);
   const [closing, setClosing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  );
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -334,15 +338,24 @@ export function TicketPurchaseModal({
           Izaberite varijantu
         </span>
         <div className="divide-border/40 divide-y">
-          {activeProduct!.prices.map((p) => {
-            const isSelected = activePrice?.id === p.id;
-            const hasDiscount = p.originalPrice && p.originalPrice > p.price;
-            const discountPct = hasDiscount
-              ? Math.round(
-                  ((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) * 100,
-                )
-              : 0;
-            const dayLabel = DAY_LABELS[p.dayType ?? "ALL"];
+          {(() => {
+            const filteredPrices = selectedDate
+              ? filterPricesByDate(activeProduct!.prices, new Date(selectedDate + "T00:00:00"))
+              : activeProduct!.prices;
+            const computedDayType = selectedDate
+              ? getDayTypeForDate(new Date(selectedDate + "T00:00:00"))
+              : null;
+            return filteredPrices.map((p) => {
+              const isSelected = activePrice?.id === p.id;
+              const hasDiscount = p.originalPrice && p.originalPrice > p.price;
+              const discountPct = hasDiscount
+                ? Math.round(
+                    ((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) * 100,
+                  )
+                : 0;
+              const dayLabel = computedDayType
+                ? DAY_LABELS[computedDayType]
+                : DAY_LABELS[p.dayType ?? "ALL"];
             const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"];
             const displayLabel = p.label || `${dayLabel} — ${timeLabel}`;
 
@@ -391,7 +404,8 @@ export function TicketPurchaseModal({
                 </div>
               </button>
             );
-          })}
+            });
+          })()}
         </div>
       </div>
 
@@ -477,10 +491,28 @@ export function TicketPurchaseModal({
     </>
   );
 
+  const renderDatePicker = () => (
+    <div>
+      <label className="text-muted-foreground block pb-1 text-[9px] font-black tracking-widest uppercase">
+        Izaberite datum
+      </label>
+      <input
+        type="date"
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+        className="bg-muted/40 border-border text-foreground w-full rounded-xl border px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30"
+      />
+    </div>
+  );
+
   const renderContent = () => {
     if (loading) return renderLoading();
-    if (!activeProduct) return renderProductSelection();
-    return renderVariationSelection();
+    return (
+      <>
+        {renderDatePicker()}
+        {!activeProduct ? renderProductSelection() : renderVariationSelection()}
+      </>
+    );
   };
 
   // ─── Render ──────────────────────────────────────────────────────

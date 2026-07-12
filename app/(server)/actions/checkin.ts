@@ -117,7 +117,7 @@ export async function verifyTicketAction(
 /**
  * ✅ Mark a ticket as used (check-in)
  */
-export async function useTicketAction(hash: string): Promise<ActionResult> {
+export async function useTicketAction(hash: string): Promise<ActionResult<{ id: string; usageCount: number; usageLimit: number; status: string }>> {
   try {
     const ticket = await prisma.issuedTicket.findUnique({
       where: { qrHash: hash },

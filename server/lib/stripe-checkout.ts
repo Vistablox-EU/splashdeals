@@ -210,6 +210,8 @@ export async function createCheckoutSession(params: {
     checkoutUserId = user.id;
   }
 
+  const resolvedUserId = checkoutUserId || "";
+
   await prisma.transaction.create({
     data: {
       facilityId: ticketDetails[0].facilityId,
@@ -217,7 +219,7 @@ export async function createCheckoutSession(params: {
       totalAmount: (session.amount_total || 0) / 100,
       currency: "RSD",
       status: "PENDING",
-      userId: checkoutUserId || "",
+      userId: resolvedUserId,
       ticketDetails: JSON.stringify(
         ticketDetails.map((td) => ({
           type: td.ticketTypeTitle,
@@ -230,6 +232,21 @@ export async function createCheckoutSession(params: {
       ),
     },
   });
+
+  // 6. Create/update CartSession for abandoned cart recovery tracking
+  if (resolvedUserId) {
+    const cartItems = ticketDetails.map((td) => ({
+      title: td.ticketTypeTitle,
+      quantity: td.quantity,
+      price: td.unitPrice,
+    }));
+    await prisma.cartSession.create({
+      data: {
+        userId: resolvedUserId,
+        items: cartItems,
+      },
+    });
+  }
 
   return { url: session.url };
 }

@@ -23,6 +23,7 @@ model User {
   amenityAuditLogs AmenityAuditLog[]
   staffAssignments FacilityStaffAssignment[]
   facilityOwners   FacilityOwner[]
+  cartSessions     CartSession[]
   reviews          Review[]
 
   @@schema("admin")
@@ -134,6 +135,7 @@ model Facility {
   products          Product[]
   campaignLinks     CampaignFacility[]
   reviews           Review[]
+  pageViews         FacilityPageView[]
 
   @@schema("partners")
 }
@@ -435,6 +437,19 @@ model IssuedTicket {
 
   ticketPrice TicketPrice  @relation(fields: [ticketPriceId], references: [id], onDelete: Restrict)
   transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@schema("sales")
+}
+
+model CartSession {
+  id        String   @id @default(uuid())
+  userId    String
+  items     Json
+  notified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@schema("sales")
 }
@@ -825,6 +840,23 @@ model FacilityLabel {
 }
 
 /// Pitanja i odgovori za objekat — prikazuju se na javnoj stranici objekta
+/// 📊 Daily page view counter for facility analytics dashboard
+model FacilityPageView {
+  id         String   @id @default(uuid())
+  facilityId String
+  date       DateTime // normalized to start of day (00:00:00 UTC)
+  count      Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@unique([facilityId, date])
+  @@index([facilityId, date])
+  @@map("facility_page_views")
+  @@schema("partners")
+}
+
 model FacilityFAQ {
   id           String   @id @default(uuid())
   facilityId   String
