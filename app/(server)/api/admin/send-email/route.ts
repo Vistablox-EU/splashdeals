@@ -31,12 +31,7 @@ export async function POST(request: Request) {
     const validated = sendEmailSchema.parse(json);
 
     // Send email
-    await sendEmail({
-      to: validated.to,
-      subject: validated.subject,
-      text: validated.text,
-      html: validated.html || validated.text,
-    });
+    await sendEmail(validated.to, validated.subject, validated.html || validated.text || "");
 
     return NextResponse.json({
       success: true,

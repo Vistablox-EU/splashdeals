@@ -344,11 +344,5 @@ async function sendTicketConfirmationEmail(
   });
 
   // 6. Send the email using lib/email.ts
-  await sendEmail({
-    to: email,
-    subject: "Vaše Splashdeals karte su spremne! 🎫",
-    html,
-    text,
-    attachments,
-  });
+  await sendEmail(email, "Vaše Splashdeals karte su spremne! 🎫", html);
 }
