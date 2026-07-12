@@ -212,7 +212,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                 {/* Discount pill on image — top right */}
                 {hasDiscount && (
                   <div className="pointer-events-none absolute top-3 right-3 z-10">
-                    <span className="bg-amber-500 text-amber-950 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] leading-none font-black shadow-lg">
+                    <span className="inline-flex items-center rounded-full bg-amber-500 px-2 py-0.5 text-[10px] leading-none font-black text-amber-950 shadow-lg">
                       -{discountPercent}%
                     </span>
                   </div>
@@ -235,7 +235,9 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                 </h4>
 
                 <p className="text-muted-foreground mb-2 line-clamp-2 text-[10px] leading-relaxed font-medium">
-                  {ticket.description || ticket.facility.description || dict.home.default_ticket_desc}
+                  {ticket.description ||
+                    ticket.facility.description ||
+                    dict.home.default_ticket_desc}
                 </p>
 
                 <div className="relative z-30 mt-auto flex items-end justify-between gap-2">
