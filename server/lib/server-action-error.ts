@@ -6,6 +6,8 @@ export interface ActionResult<T = void> {
   success: boolean;
   data?: T;
   error?: string;
+  message?: string;
+  conflict?: boolean;
   fieldErrors?: Record<string, string[]>;
 }
 

@@ -5,6 +5,7 @@ import { Logo } from "./Logo";
 
 import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
+import { SearchBox } from "@/app/(web)/_components/SearchBox";
 
 interface DesktopTopNavProps {
   cities: { id: string; name: string; slug: string }[];
@@ -46,8 +47,11 @@ export function DesktopTopNav({
           />
         </div>
 
-        {/* Right — MegaMenu (right-placed menus) + controls */}
+        {/* Right — SearchBox + MegaMenu (right-placed menus) + controls */}
         <div className="flex flex-1 items-center justify-end gap-1.5 md:gap-3">
+          <div className="hidden md:block">
+            <SearchBox />
+          </div>
           <MegaMenu side="right" />
           <ThemeToggle />
           <CartButton

@@ -70,6 +70,11 @@ export const adminNavData = {
           requiredRole: "SUPER_ADMIN",
         },
         {
+          title: "Vebhukovi",
+          url: "/admin/cms/webhooks",
+          icon: "webhook",
+        },
+        {
           title: "Media biblioteka",
           url: "/admin/media",
           icon: "photo_library",

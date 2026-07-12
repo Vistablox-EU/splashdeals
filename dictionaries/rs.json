@@ -246,6 +246,9 @@
     "modal_search_subtitle": "Došlo je do greške u pretrazi.",
     "modal_ticket_subtitle": "Došlo je do greške pri otvaranju brzog pregleda ulaznice."
   },
+  "edit": {
+    "conflict": "Neko je već izmenio ovu objavu. Osveži stranicu."
+  },
   "cart": {
     "title": "Vaša Korpa",
     "description": "Pregledajte izabrane karte za akva parkove i finalizujte svoje letnje planove.",
@@ -450,5 +453,30 @@
     "submitted": "Poslato na pregled",
     "approved": "Objavljeno",
     "readonly_notice": "Ova objava čeka pregled"
+  },
+  "webhook": {
+    "title": "Vebhukovi",
+    "create": "Dodaj webhook",
+    "name": "Naziv",
+    "url": "URL",
+    "events": "Događaji",
+    "events_options": {
+      "post.published": "Objava objavljena",
+      "post.updated": "Objava izmenjena",
+      "post.deleted": "Objava obrisana",
+      "post.scheduled": "Objava zakazana",
+      "page.published": "Stranica objavljena",
+      "page.updated": "Stranica izmenjena",
+      "page.deleted": "Stranica obrisana"
+    },
+    "last_status": "Poslednji status",
+    "logs": "Logovi",
+    "test": "Testiraj",
+    "deleted": "Webhook obrisan",
+    "created": "Webhook kreiran",
+    "reactivate": "Reaktiviraj",
+    "deactivated_badge": "Deaktiviran zbog grešaka",
+    "ping_success": "Uspešno",
+    "ping_error": "Greška: {code}"
   }
 }
