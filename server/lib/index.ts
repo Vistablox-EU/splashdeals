@@ -13,7 +13,7 @@ export { validateAction } from "./actions/validator";
 export { subscribeToNewsletter } from "./actions/newsletter";
 
 // ── Email ────────────────────────────────────────────────────
-export { configureEmailReporter, sendEmail } from "./email";
+export { configureEmailReporter, sendEmail, sendOrderConfirmation } from "./email";
 
 // ── Stripe ───────────────────────────────────────────────────
 export { generateIdempotencyKey, withStripeRetry } from "./stripe-utils";

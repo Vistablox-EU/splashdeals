@@ -2,6 +2,7 @@
 
 import { createCheckoutSession } from "@/server/lib/stripe-checkout";
 import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
+import { sendOrderConfirmation } from "@/server/lib/email";
 
 /**
  * 🌊 Initialise a Stripe Checkout session from the cart.
@@ -22,5 +23,20 @@ export async function createCheckoutSessionAction(params: {
     return { success: true, data: { url: result.url } };
   } catch (error) {
     return handleServerActionError(error, "checkout");
+  }
+}
+
+/**
+ * 📧 Resends the order confirmation email for a given transaction.
+ * Called from the success page when the user clicks "Pošalji ponovo na email".
+ */
+export async function resendConfirmationAction(
+  transactionId: string,
+): Promise<ActionResult<{ sent: boolean }>> {
+  try {
+    await sendOrderConfirmation(transactionId);
+    return { success: true, data: { sent: true } };
+  } catch (error) {
+    return handleServerActionError(error, "resendConfirmation");
   }
 }
