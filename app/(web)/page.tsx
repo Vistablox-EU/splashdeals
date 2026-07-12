@@ -213,37 +213,36 @@ export default async function LandingPage({
         </div>
       </div>
 
-      {/* 🌊 INVENTORY GRID (NOW EDGE-TO-EDGE ON DESKTOP) */}
-      <section id="inventory" className="scroll-mt-32 pb-16 sm:pb-40">
-        <div className="mx-auto mb-8 max-w-7xl px-6 sm:mb-16 md:px-12">
-          <div className="border-border flex items-end justify-between border-b pb-8">
-            <div>
-              <h2 className="mb-2 text-4xl font-black tracking-tighter uppercase italic">
-                {dict.home.offers_title}
-              </h2>
-              <p className="text-muted-foreground text-xs font-bold tracking-[0.2em] uppercase">
-                {dict.home.offers_subtitle}
-              </p>
-            </div>
-            <div className="text-primary/50 hidden text-[10px] font-black tracking-[0.4em] uppercase sm:block">
-              {dict.home.rights_reserved}
-            </div>
+      {/* 🌊 INVENTORY GRID (NOW HIGHER) */}
+      <section
+        id="inventory"
+        className="mx-auto max-w-7xl scroll-mt-32 px-6 pb-16 sm:pb-40 md:px-12"
+      >
+        <div className="border-border mb-8 flex items-end justify-between border-b pb-8 sm:mb-16">
+          <div>
+            <h2 className="mb-2 text-4xl font-black tracking-tighter uppercase italic">
+              {dict.home.offers_title}
+            </h2>
+            <p className="text-muted-foreground text-xs font-bold tracking-[0.2em] uppercase">
+              {dict.home.offers_subtitle}
+            </p>
+          </div>
+          <div className="text-primary/50 hidden text-[10px] font-black tracking-[0.4em] uppercase sm:block">
+            {dict.home.rights_reserved}
           </div>
         </div>
 
-        <div className="px-6 lg:px-16">
-          <Suspense
-            fallback={
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 xl:grid-cols-6">
-                {[...Array(6)].map((_, i) => (
-                  <TicketCardSkeleton key={i} />
-                ))}
-              </div>
-            }
-          >
-            <TicketGrid dict={dict} />
-          </Suspense>
-        </div>
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {[...Array(4)].map((_, i) => (
+                <TicketCardSkeleton key={i} />
+              ))}
+            </div>
+          }
+        >
+          <TicketGrid dict={dict} />
+        </Suspense>
       </section>
 
       {/* 🏄 HOW IT WORKS (SIMPLE & FAST) */}
