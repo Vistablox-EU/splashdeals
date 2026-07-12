@@ -26,8 +26,8 @@ export default function TicketingError({
           kontaktirajte.
         </p>
         <p className="text-muted-foreground/60 text-xs">
-          Ako problem potraje, proverite da li je izabrani objekat još uvek aktivan ili nam
-          pišite na podrška@splashdeals.rs
+          Ako problem potraje, proverite da li je izabrani objekat još uvek aktivan ili nam pišite
+          na podrška@splashdeals.rs
         </p>
         <div className="flex justify-center gap-4">
           <Button onClick={reset} variant="default">
