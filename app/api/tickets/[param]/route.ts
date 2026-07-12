@@ -47,8 +47,10 @@ function corsResponse(data: unknown, status = 200, extraHeaders?: Record<string,
 
 /** Matches UUID v4 or v7 or cuid */
 function isTicketProductId(value: string): boolean {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value) ||
-    /^c[a-z0-9]{24}$/.test(value);
+  return (
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value) ||
+    /^c[a-z0-9]{24}$/.test(value)
+  );
 }
 
 // ---------------------------------------------------------------------------

@@ -87,10 +87,7 @@ export async function GET(request: NextRequest) {
           facility: facilityWhere,
         },
       },
-      orderBy: [
-        { category: { displayOrder: "asc" } },
-        { displayOrder: "asc" },
-      ],
+      orderBy: [{ category: { displayOrder: "asc" } }, { displayOrder: "asc" }],
       include: {
         category: {
           select: {

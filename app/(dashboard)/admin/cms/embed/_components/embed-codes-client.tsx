@@ -22,18 +22,11 @@ interface Facility {
   status: string;
 }
 
-export function EmbedCodesClient({
-  facilities,
-}: {
-  facilities: Array<Record<string, unknown>>;
-}) {
+export function EmbedCodesClient({ facilities }: { facilities: Array<Record<string, unknown>> }) {
   const rows = facilities as unknown as Facility[];
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const baseUrl =
-    typeof window !== "undefined"
-      ? window.location.origin
-      : "https://splashdeals.rs";
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://splashdeals.rs";
 
   const getEmbedCode = (slug: string) => {
     const widgetUrl = `${baseUrl}/api/embed/facility/${slug}`;
@@ -83,7 +76,10 @@ export function EmbedCodesClient({
         );
       default:
         return (
-          <Badge variant="outline" className="border-gray-300 bg-gray-50 text-gray-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-400">
+          <Badge
+            variant="outline"
+            className="border-gray-300 bg-gray-50 text-gray-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-400"
+          >
             {status}
           </Badge>
         );
@@ -105,10 +101,7 @@ export function EmbedCodesClient({
         <TableBody>
           {rows.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={5}
-                className="text-muted-foreground h-24 text-center text-sm"
-              >
+              <TableCell colSpan={5} className="text-muted-foreground h-24 text-center text-sm">
                 Nema objekata.
               </TableCell>
             </TableRow>
@@ -118,9 +111,7 @@ export function EmbedCodesClient({
                 <TableCell>
                   <div className="space-y-1">
                     <span className="text-sm font-medium">{facility.name}</span>
-                    <div className="text-muted-foreground text-xs">
-                      /{facility.slug}
-                    </div>
+                    <div className="text-muted-foreground text-xs">/{facility.slug}</div>
                   </div>
                 </TableCell>
                 <TableCell>

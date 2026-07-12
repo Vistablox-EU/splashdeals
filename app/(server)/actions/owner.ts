@@ -98,20 +98,12 @@ export async function getOwnerAnalyticsAction(
   ]);
 
   const totalViews = views.reduce((sum, d) => sum + d.count, 0);
-  const views7d = views
-    .slice(-7)
-    .reduce((sum, d) => sum + d.count, 0);
+  const views7d = views.slice(-7).reduce((sum, d) => sum + d.count, 0);
 
   const totalSales = sales.length;
-  const sales7d = sales.filter(
-    (s) =>
-      s.createdAt.getTime() > Date.now() - 7 * 86400000,
-  ).length;
+  const sales7d = sales.filter((s) => s.createdAt.getTime() > Date.now() - 7 * 86400000).length;
 
-  const totalRevenue = sales.reduce(
-    (sum, tx) => sum + Number(tx.totalAmount),
-    0,
-  );
+  const totalRevenue = sales.reduce((sum, tx) => sum + Number(tx.totalAmount), 0);
   const revenue7d = sales
     .filter((s) => s.createdAt.getTime() > Date.now() - 7 * 86400000)
     .reduce((sum, tx) => sum + Number(tx.totalAmount), 0);

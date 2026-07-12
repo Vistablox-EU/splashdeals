@@ -10,7 +10,8 @@ import { prisma } from "@/server/lib/prisma";
  * GET /api/embed/facility/{slug}
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || "https://splashdeals.rs";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || "https://splashdeals.rs";
 
 export async function GET(
   _request: NextRequest,
@@ -30,13 +31,10 @@ export async function GET(
   });
 
   if (!facility) {
-    return new Response(
-      JSON.stringify({ error: "Facility not found or inactive" }),
-      {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: "Facility not found or inactive" }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const facilityUrl = `${BASE_URL}/${facility.slug}`;

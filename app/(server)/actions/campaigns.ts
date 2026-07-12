@@ -76,9 +76,7 @@ export async function listCampaignsAction(): Promise<ActionResult<CampaignData[]
 
 // ─── Get single ────────────────────────────────────────
 
-export async function getCampaignAction(
-  id: string,
-): Promise<ActionResult<CampaignData>> {
+export async function getCampaignAction(id: string): Promise<ActionResult<CampaignData>> {
   try {
     await requireAdmin();
 
@@ -224,7 +222,9 @@ export async function validatePromoCodeAction(
   facilityId?: string,
   totalAmount?: number,
 ): Promise<
-  ActionResult<{ valid: true; discountPercent: number; campaignId: string } | { valid: false; error: string }>
+  ActionResult<
+    { valid: true; discountPercent: number; campaignId: string } | { valid: false; error: string }
+  >
 > {
   try {
     if (!code.trim()) {
@@ -277,9 +277,7 @@ export async function validatePromoCodeAction(
 
     // Check facility restrictions
     if (facilityId && campaign.facilityRestrictions.length > 0) {
-      const isAllowed = campaign.facilityRestrictions.some(
-        (fr) => fr.facilityId === facilityId,
-      );
+      const isAllowed = campaign.facilityRestrictions.some((fr) => fr.facilityId === facilityId);
       if (!isAllowed) {
         return {
           success: true,
@@ -303,9 +301,7 @@ export async function validatePromoCodeAction(
 
 // ─── Increment campaign usage ──────────────────────────
 
-export async function incrementCampaignUsageAction(
-  campaignId: string,
-): Promise<ActionResult> {
+export async function incrementCampaignUsageAction(campaignId: string): Promise<ActionResult> {
   try {
     await prisma.campaign.update({
       where: { id: campaignId },

@@ -3,7 +3,10 @@
 import { createCheckoutSession } from "@/server/lib/stripe-checkout";
 import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
 import { sendOrderConfirmation } from "@/server/lib/email";
-import { validatePromoCodeAction, incrementCampaignUsageAction } from "@/app/(server)/actions/campaigns";
+import {
+  validatePromoCodeAction,
+  incrementCampaignUsageAction,
+} from "@/app/(server)/actions/campaigns";
 
 /**
  * 🌊 Initialise a Stripe Checkout session from the cart.
@@ -67,8 +70,6 @@ export async function validateAndApplyPromoAction(
 /**
  * 📈 Increments campaign usage after a successful checkout.
  */
-export async function applyPromoUsageAction(
-  campaignId: string,
-): Promise<ActionResult> {
+export async function applyPromoUsageAction(campaignId: string): Promise<ActionResult> {
   return incrementCampaignUsageAction(campaignId);
 }

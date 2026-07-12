@@ -29,7 +29,7 @@ export async function listRedirectsAction(): Promise<ActionResult<RedirectRow[]>
 // ─── Create ──────────────────────────────────────────
 
 const createSchema = {
-  source: (v: string) => v.trim().startsWith("/") ? v.trim() : `/${v.trim()}`,
+  source: (v: string) => (v.trim().startsWith("/") ? v.trim() : `/${v.trim()}`),
   destination: (v: string) => v.trim(),
   statusCode: (v: number) => (v === 301 || v === 302 ? v : 301),
 };

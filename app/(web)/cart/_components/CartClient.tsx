@@ -289,10 +289,10 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                 </div>
                 {discount && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-green-600 font-bold">
+                    <span className="font-bold text-green-600">
                       Popust ({discount.discountPercent}%)
                     </span>
-                    <span className="text-green-600 font-black">
+                    <span className="font-black text-green-600">
                       -{formatPrice(discountAmount)} RSD
                     </span>
                   </div>
@@ -387,8 +387,11 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                       <svg className="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle
                           className="opacity-25"
-                          cx="12" cy="12" r="10"
-                          stroke="currentColor" strokeWidth="4"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
                         />
                         <path
                           className="opacity-75"
@@ -402,9 +405,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                   </Button>
                 </div>
               )}
-              {promoError && (
-                <p className="text-destructive text-xs font-medium">{promoError}</p>
-              )}
+              {promoError && <p className="text-destructive text-xs font-medium">{promoError}</p>}
             </div>
 
             <div className="space-y-4">

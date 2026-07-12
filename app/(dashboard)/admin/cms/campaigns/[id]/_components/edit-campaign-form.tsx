@@ -61,9 +61,7 @@ export default function EditCampaignForm({
             : null,
           validFrom: formData.get("validFrom") as string,
           validTo: formData.get("validTo") as string,
-          usageLimit: formData.get("usageLimit")
-            ? Number(formData.get("usageLimit"))
-            : null,
+          usageLimit: formData.get("usageLimit") ? Number(formData.get("usageLimit")) : null,
           facilityIds,
         });
 
@@ -103,9 +101,7 @@ export default function EditCampaignForm({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Izmeni kampanju</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Izmeni detalje kampanje.
-          </p>
+          <p className="text-muted-foreground mt-1 text-sm">Izmeni detalje kampanje.</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleToggleActive} disabled={isPending}>
