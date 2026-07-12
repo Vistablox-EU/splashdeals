@@ -3,6 +3,7 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { prisma } from "@/server/lib/prisma";
 import { generateIdempotencyKey, withStripeRetry } from "@/server/lib/stripe-utils";
+import { validatePromoCodeAction, incrementCampaignUsageAction } from "@/app/(server)/actions/campaigns";
 
 // ──────────────────────────────────────────────
 // Validation
@@ -18,6 +19,8 @@ export const checkoutSchema = z.object({
   email: z.string().email().optional().nullable(),
   holderName: z.string().optional().nullable(),
   holderPhotoUrl: z.string().url().optional().nullable(),
+  promoCode: z.string().optional().nullable(),
+  campaignId: z.string().optional().nullable(),
 });
 
 // ──────────────────────────────────────────────
@@ -57,8 +60,10 @@ export async function createCheckoutSession(params: {
   email?: string | null;
   holderName?: string | null;
   holderPhotoUrl?: string | null;
+  promoCode?: string | null;
+  campaignId?: string | null;
 }): Promise<CreateCheckoutSessionResult> {
-  const { items, email, holderName, holderPhotoUrl } = params;
+  const { items, email, holderName, holderPhotoUrl, promoCode, campaignId } = params;
 
   // 1. Validate input at runtime (defence-in-depth beyond TypeScript)
   checkoutSchema.parse(params);
@@ -139,6 +144,29 @@ export async function createCheckoutSession(params: {
     });
   }
 
+  // ─── Validate promo code if provided ────────────────
+  let discountPercent = 0;
+  let validatedCampaignId: string | null = null;
+  if (promoCode) {
+    const facilityId = ticketDetails[0]?.facilityId;
+    const validation = await validatePromoCodeAction(
+      promoCode,
+      facilityId,
+      ticketDetails.reduce((sum, td) => sum + td.unitPrice * td.quantity, 0),
+    );
+
+    if (!validation.success || !validation.data || !validation.data.valid) {
+      throw new Error(
+        validation.data && "error" in validation.data
+          ? validation.data.error
+          : "Promo kod nije validan.",
+      );
+    }
+
+    discountPercent = validation.data.discountPercent;
+    validatedCampaignId = validation.data.campaignId;
+  }
+
   const idempotencyKey = generateIdempotencyKey({ body: params, userId: null });
 
   // 4. Create Stripe Checkout Session with retry + idempotency
@@ -156,6 +184,11 @@ export async function createCheckoutSession(params: {
           holderName: holderName || "",
           holderPhotoUrl: holderPhotoUrl || "",
           fulfillmentEmail: email || "",
+          ...(validatedCampaignId && {
+            campaignId: validatedCampaignId,
+            discountPercent: String(discountPercent),
+            promoCode: promoCode || "",
+          }),
         },
       },
       { idempotencyKey },

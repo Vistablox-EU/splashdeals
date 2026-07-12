@@ -454,6 +454,24 @@
     "approved": "Objavljeno",
     "readonly_notice": "Ova objava čeka pregled"
   },
+  "campaign": {
+    "title": "Kampanje",
+    "create": "Nova kampanja",
+    "name": "Naziv",
+    "code": "Kod",
+    "discount": "Popust (%)",
+    "validity": "Važi od/do",
+    "usage": "Iskorišćenost",
+    "facilities": "Objekti",
+    "minAmount": "Minimalni iznos",
+    "created": "Kampanja kreirana",
+    "deleted": "Kampanja obrisana",
+    "promo_placeholder": "Unesi promo kod",
+    "promo_apply": "Primeni",
+    "promo_remove": "Ukloni",
+    "promo_invalid": "Nepostojeći ili istekao kod",
+    "promo_applied": "Popust: {percent}%"
+  },
   "webhook": {
     "title": "Vebhukovi",
     "create": "Dodaj webhook",

@@ -20,9 +20,16 @@ export interface CartItem {
   updatedAt: number; // Unix ms (Date.now()) for conflict resolution
 }
 
+export interface DiscountInfo {
+  campaignId: string;
+  code: string;
+  discountPercent: number;
+}
+
 interface CartStore {
   items: CartItem[];
   lastUpdated: number;
+  discount: DiscountInfo | null;
   addItem: (item: Omit<CartItem, "id" | "updatedAt">) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -31,6 +38,8 @@ interface CartStore {
   getTotalItems: () => number;
   getTotalPrice: () => number;
   syncFromTab: (items: CartItem[]) => void;
+  setDiscount: (discount: DiscountInfo | null) => void;
+  clearDiscount: () => void;
 }
 
 const STALE_THRESHOLD_MS = 30 * 60 * 1000; // 30 minutes
@@ -61,6 +70,7 @@ export const useCart = create<CartStore>()(
     (set, get) => ({
       items: [],
       lastUpdated: Date.now(),
+      discount: null,
 
       addItem: (item) => {
         const id = generateItemId(item.ticketId, item.facilityId);
@@ -144,6 +154,10 @@ export const useCart = create<CartStore>()(
         const merged = mergeCartItems(get().items, incomingItems);
         set({ items: merged, lastUpdated: Date.now() });
       },
+
+      setDiscount: (discount) => set({ discount }),
+
+      clearDiscount: () => set({ discount: null }),
     }),
     {
       name: "splash-cart-storage",
