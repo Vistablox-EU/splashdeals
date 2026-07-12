@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas  = ["admin", "marketing", "partners", "public", "sales"]
+  schemas  = ["identity", "marketing", "partners", "public", "sales"]
 }
 
 model User {
@@ -13,6 +13,7 @@ model User {
   email            String                    @unique
   emailVerified    Boolean                   @default(false)
   image            String?
+  stripeCustomerId String?                   @unique
   role             UserRole                  @default(CUSTOMER)
   createdAt        DateTime                  @default(now())
   updatedAt        DateTime                  @updatedAt
@@ -25,8 +26,10 @@ model User {
   facilityOwners   FacilityOwner[]
   cartSessions     CartSession[]
   reviews          Review[]
+  favorites        UserFavorite[]
+  issuedTickets    IssuedTicket[]
 
-  @@schema("admin")
+  @@schema("identity")
 }
 
 model ApiKey {
@@ -42,7 +45,7 @@ model ApiKey {
 
   @@index([userId])
   @@map("api_keys")
-  @@schema("admin")
+  @@schema("identity")
 }
 
 model Session {
@@ -58,7 +61,7 @@ model Session {
 
   @@index([userId])
   @@index([expiresAt])
-  @@schema("admin")
+  @@schema("identity")
 }
 
 model Account {
@@ -78,7 +81,7 @@ model Account {
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@schema("admin")
+  @@schema("identity")
 }
 
 model Verification {
@@ -90,7 +93,7 @@ model Verification {
   updatedAt  DateTime?
 
   @@index([identifier])
-  @@schema("admin")
+  @@schema("identity")
 }
 
 model Facility {
@@ -136,6 +139,7 @@ model Facility {
   campaignLinks     CampaignFacility[]
   reviews           Review[]
   pageViews         FacilityPageView[]
+  favoritedBy       UserFavorite[]
 
   @@schema("partners")
 }
@@ -384,6 +388,7 @@ model TicketPrice {
 
 model Transaction {
   id               String         @id @default(uuid())
+  orderRef         String         @unique
   userId           String
   facilityId       String
   stripeSession    String         @unique
@@ -399,6 +404,7 @@ model Transaction {
   user             User           @relation(fields: [userId], references: [id])
 
   @@index([status])
+  @@index([userId, createdAt])
   @@schema("sales")
 }
 
@@ -428,6 +434,7 @@ model IssuedTicket {
   qrHash         String       @unique
   ticketPriceId  String
   transactionId  String
+  userId         String?
   status         TicketStatus @default(ACTIVE)
   usageCount     Int          @default(0)
   usageLimit     Int          @default(1)
@@ -437,7 +444,9 @@ model IssuedTicket {
 
   ticketPrice TicketPrice  @relation(fields: [ticketPriceId], references: [id], onDelete: Restrict)
   transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  user        User?       @relation(fields: [userId], references: [id])
 
+  @@index([userId])
   @@schema("sales")
 }
 
@@ -452,6 +461,22 @@ model CartSession {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@schema("sales")
+}
+
+/// ⭐ Links users to facilities they have favorited
+model UserFavorite {
+  userId     String
+  facilityId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@id([userId, facilityId])
+  @@index([userId])
+  @@index([facilityId])
+  @@map("user_favorites")
+  @@schema("partners")
 }
 
 model Campaign {
@@ -764,7 +789,7 @@ enum UserRole {
   FACILITY_OWNER
   SUPER_ADMIN
 
-  @@schema("admin")
+  @@schema("identity")
 }
 
 enum FacilityStatus {

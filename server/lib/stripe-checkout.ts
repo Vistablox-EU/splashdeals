@@ -19,7 +19,8 @@ export const checkoutItemSchema = z.object({
 
 export const checkoutSchema = z.object({
   items: z.array(checkoutItemSchema).min(1),
-  email: z.string().email().optional().nullable(),
+  userId: z.string().min(1),
+  email: z.string().email(),
   holderName: z.string().optional().nullable(),
   holderPhotoUrl: z.string().url().optional().nullable(),
   promoCode: z.string().optional().nullable(),
@@ -60,13 +61,14 @@ export interface CreateCheckoutSessionResult {
  */
 export async function createCheckoutSession(params: {
   items: { ticketPriceId: string; quantity: number }[];
-  email?: string | null;
+  userId: string;
+  email: string;
   holderName?: string | null;
   holderPhotoUrl?: string | null;
   promoCode?: string | null;
   campaignId?: string | null;
 }): Promise<CreateCheckoutSessionResult> {
-  const { items, email, holderName, holderPhotoUrl, promoCode, campaignId } = params;
+  const { items, userId, email, holderName, holderPhotoUrl, promoCode, campaignId } = params;
 
   // 1. Validate input at runtime (defence-in-depth beyond TypeScript)
   checkoutSchema.parse(params);
@@ -170,7 +172,8 @@ export async function createCheckoutSession(params: {
     validatedCampaignId = validation.data.campaignId;
   }
 
-  const idempotencyKey = generateIdempotencyKey({ body: params, userId: null });
+  // ─── Build Stripe session with metadata ────────────
+  const idempotencyKey = generateIdempotencyKey({ body: params, userId });
 
   // 4. Create Stripe Checkout Session with retry + idempotency
   const session = await withStripeRetry(async () => {
@@ -179,14 +182,14 @@ export async function createCheckoutSession(params: {
         payment_method_types: ["card"],
         line_items: lineItems,
         mode: "payment",
-        customer_email: email || undefined,
+        customer_email: email,
         success_url: `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${siteUrl}/facilities`,
         metadata: {
           orderDetails: JSON.stringify(ticketDetails),
           holderName: holderName || "",
           holderPhotoUrl: holderPhotoUrl || "",
-          fulfillmentEmail: email || "",
+          fulfillmentEmail: email,
           ...(validatedCampaignId && {
             campaignId: validatedCampaignId,
             discountPercent: String(discountPercent),
@@ -202,27 +205,16 @@ export async function createCheckoutSession(params: {
     throw new Error("Stripe did not return a checkout URL.");
   }
 
-  // 5. Upsert user if email provided, then create PENDING Transaction
-  let checkoutUserId: string | null = null;
-  if (email) {
-    const user = await prisma.user.upsert({
-      where: { email },
-      update: {},
-      create: { email, name: email.split("@")[0] || "Customer" },
-    });
-    checkoutUserId = user.id;
-  }
-
-  const resolvedUserId = checkoutUserId || "";
-
+  // 5. Create PENDING Transaction with authenticated user
   await prisma.transaction.create({
     data: {
+      orderRef: `SD-${new Date().toISOString().slice(2, 10).replace(/-/g, "")}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
       facilityId: ticketDetails[0].facilityId,
       stripeSession: session.id,
       totalAmount: (session.amount_total || 0) / 100,
       currency: "RSD",
       status: "PENDING",
-      userId: resolvedUserId,
+      userId: userId,
       ticketDetails: JSON.stringify(
         ticketDetails.map((td) => ({
           type: td.ticketTypeTitle,
@@ -236,8 +228,7 @@ export async function createCheckoutSession(params: {
     },
   });
 
-  // 6. Create/update CartSession for abandoned cart recovery tracking
-  if (resolvedUserId) {
+  if (userId) {
     const cartItems = ticketDetails.map((td) => ({
       title: td.ticketTypeTitle,
       quantity: td.quantity,
@@ -245,7 +236,7 @@ export async function createCheckoutSession(params: {
     }));
     await prisma.cartSession.create({
       data: {
-        userId: resolvedUserId,
+        userId: userId,
         items: cartItems,
       },
     });

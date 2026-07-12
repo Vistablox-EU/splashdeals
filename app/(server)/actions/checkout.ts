@@ -7,6 +7,8 @@ import {
   validatePromoCodeAction,
   incrementCampaignUsageAction,
 } from "@/app/(server)/actions/campaigns";
+import { auth } from "@/server/lib/auth";
+import { headers } from "next/headers";
 
 /**
  * 🌊 Initialise a Stripe Checkout session from the cart.
@@ -14,6 +16,7 @@ import {
  * Validates items, builds Stripe line items, creates a PENDING transaction,
  * and returns the Stripe Checkout redirect URL.
  *
+ * Requires the user to be authenticated via social auth.
  * Called from CartClient.tsx — the client clears the cart and redirects
  * the browser to the returned URL.
  */
@@ -25,7 +28,16 @@ export async function createCheckoutSessionAction(params: {
   campaignId?: string | null;
 }): Promise<ActionResult<{ url: string }>> {
   try {
-    const result = await createCheckoutSession(params);
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return { success: false, error: "Morate biti prijavljeni da biste nastavili kupovinu." };
+    }
+
+    const result = await createCheckoutSession({
+      ...params,
+      userId: session.user.id,
+      email: session.user.email,
+    });
     return { success: true, data: { url: result.url } };
   } catch (error) {
     return handleServerActionError(error, "checkout");
