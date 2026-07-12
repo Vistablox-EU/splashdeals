@@ -30,6 +30,10 @@ export default function TicketingError({
         <p className="text-muted-foreground/50 text-xs">
           Greška: {error.message || "Nepoznata greška"}
         </p>
+        <p className="text-muted-foreground/60 text-xs">
+          Ako problem potraje, proverite da li je izabrani objekat još uvek aktivan ili nam pišite
+          na podrška@splashdeals.rs
+        </p>
         <div className="flex justify-center gap-4">
           <Button onClick={reset} variant="default">
             Pokušaj ponovo
