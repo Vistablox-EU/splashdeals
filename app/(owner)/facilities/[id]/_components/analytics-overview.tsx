@@ -50,13 +50,13 @@ export function AnalyticsOverview({
       {cards.map((card) => (
         <Card key={card.title}>
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <CardTitle className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
               {card.title}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{card.value}</p>
-            <p className="text-xs text-muted-foreground mt-1">{card.subtitle}</p>
+            <p className="text-muted-foreground mt-1 text-xs">{card.subtitle}</p>
           </CardContent>
         </Card>
       ))}

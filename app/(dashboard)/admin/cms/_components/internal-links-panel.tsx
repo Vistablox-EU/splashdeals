@@ -48,29 +48,26 @@ export function InternalLinksPanel({ content }: InternalLinksPanelProps) {
       .slice(0, 10); // Max 10 suggestions
   }, [text, facilities]);
 
-  const insertLink = useCallback(
-    (facilitySlug: string, facilityName: string) => {
-      // Get the editor element and insert a link
-      const editorEl = document.querySelector(".ProseMirror");
-      if (editorEl) {
-        // We can't directly manipulate Tiptap from here, but we can provide
-        // the link markup that the user can paste. We'll set a clipboard
-        // approach: copy the link to clipboard
-        const link = `https://splashdeals.rs/akva-park/${facilitySlug}`;
-        const html = `<a href="${link}" target="_blank" rel="noopener noreferrer">${facilityName}</a>`;
+  const insertLink = useCallback((facilitySlug: string, facilityName: string) => {
+    // Get the editor element and insert a link
+    const editorEl = document.querySelector(".ProseMirror");
+    if (editorEl) {
+      // We can't directly manipulate Tiptap from here, but we can provide
+      // the link markup that the user can paste. We'll set a clipboard
+      // approach: copy the link to clipboard
+      const link = `https://splashdeals.rs/akva-park/${facilitySlug}`;
+      const html = `<a href="${link}" target="_blank" rel="noopener noreferrer">${facilityName}</a>`;
 
-        navigator.clipboard.write([
-          new ClipboardItem({
-            "text/html": new Blob([html], { type: "text/html" }),
-            "text/plain": new Blob([`${facilityName} (${link})`], { type: "text/plain" }),
-          }),
-        ]);
+      navigator.clipboard.write([
+        new ClipboardItem({
+          "text/html": new Blob([html], { type: "text/html" }),
+          "text/plain": new Blob([`${facilityName} (${link})`], { type: "text/plain" }),
+        }),
+      ]);
 
-        toast(`${facilityName} link kopiran. Zalepi ga u editor (Ctrl+V).`);
-      }
-    },
-    [],
-  );
+      toast(`${facilityName} link kopiran. Zalepi ga u editor (Ctrl+V).`);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -117,9 +114,7 @@ export function InternalLinksPanel({ content }: InternalLinksPanelProps) {
       )}
 
       {facilities.length > 0 && suggestions.length === 0 && (
-        <p className="text-muted-foreground text-xs">
-          {facilities.length} objekata u bazi.
-        </p>
+        <p className="text-muted-foreground text-xs">{facilities.length} objekata u bazi.</p>
       )}
     </div>
   );

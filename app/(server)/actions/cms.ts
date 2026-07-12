@@ -17,7 +17,10 @@ const blogPostSchema = z.object({
     .string()
     .min(1, "Slug je obavezan")
     .regex(/^[a-z0-9-]+$/, "Samo mala slova, brojevi i crtice"),
-  content: z.string().default("").transform((v) => sanitizeHtml(v)),
+  content: z
+    .string()
+    .default("")
+    .transform((v) => sanitizeHtml(v)),
   excerpt: z.string().optional(),
   coverImage: z.string().optional(),
   coverImageAlt: z.string().optional(),
@@ -46,13 +49,18 @@ const pageSchema = z.object({
     .string()
     .min(1, "Slug je obavezan")
     .regex(/^[a-z0-9-]+$/, "Samo mala slova, brojevi i crtice"),
-  content: z.string().default("").transform((v) => sanitizeHtml(v)),
+  content: z
+    .string()
+    .default("")
+    .transform((v) => sanitizeHtml(v)),
   excerpt: z.string().optional(),
   coverImage: z.string().optional(),
   template: z.string().default("default"),
   showHeader: z.boolean().default(true),
   showFooter: z.boolean().default(true),
-  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "PUBLISHED_PENDING", "ARCHIVED"]).default("DRAFT"),
+  status: z
+    .enum(["DRAFT", "REVIEW", "PUBLISHED", "PUBLISHED_PENDING", "ARCHIVED"])
+    .default("DRAFT"),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   ogTitle: z.string().optional(),
@@ -222,11 +230,7 @@ export async function updateBlogPostAction(
     // #397 — Auto redirect on slug change: when slug changes, create 301 redirect
     // from old slug to new slug. We fetch the post BEFORE the tag update to compare slugs.
     const existingPost = await prisma.blogPost.findUnique({ where: { id } });
-    if (
-      existingPost &&
-      validated.slug &&
-      existingPost.slug !== validated.slug
-    ) {
+    if (existingPost && validated.slug && existingPost.slug !== validated.slug) {
       const oldSlug = existingPost.slug;
       const newSlug = validated.slug;
       await prisma.redirect.upsert({
@@ -795,7 +799,9 @@ function calculateReadingTime(html: string): number {
 // ─── Orphan Pages ───────────────────────────────────
 
 export async function getOrphanPagesAction(): Promise<
-  ActionResult<Array<{ id: string; title: string; slug: string; type: "page" | "blogPost"; createdAt: Date }>>
+  ActionResult<
+    Array<{ id: string; title: string; slug: string; type: "page" | "blogPost"; createdAt: Date }>
+  >
 > {
   try {
     await requireAdmin();
@@ -833,13 +839,30 @@ export async function getOrphanPagesAction(): Promise<
     // Find pages whose slugs are NOT in any linked content
     const orphanPages = pages
       .filter((p) => !allLinkedSlugs.has(p.slug))
-      .map((p) => ({ id: p.id, title: p.title, slug: p.slug, type: "page" as const, createdAt: p.createdAt }));
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        type: "page" as const,
+        createdAt: p.createdAt,
+      }));
 
     const orphanPosts = blogPosts
       .filter((p) => !allLinkedSlugs.has(p.slug))
-      .map((p) => ({ id: p.id, title: p.title, slug: p.slug, type: "blogPost" as const, createdAt: p.createdAt }));
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        type: "blogPost" as const,
+        createdAt: p.createdAt,
+      }));
 
-    return { success: true, data: [...orphanPages, ...orphanPosts].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) };
+    return {
+      success: true,
+      data: [...orphanPages, ...orphanPosts].sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+      ),
+    };
   } catch (error) {
     return handleServerActionError(error, "cms/getOrphanPages");
   }
@@ -848,7 +871,16 @@ export async function getOrphanPagesAction(): Promise<
 // ─── Broken Link Checker ────────────────────────────
 
 export async function checkBrokenLinksAction(): Promise<
-  ActionResult<Array<{ postId: string; postTitle: string; postSlug: string; url: string; statusCode: number; contentType: "post" | "page" }>>
+  ActionResult<
+    Array<{
+      postId: string;
+      postTitle: string;
+      postSlug: string;
+      url: string;
+      statusCode: number;
+      contentType: "post" | "page";
+    }>
+  >
 > {
   try {
     await requireAdmin();
@@ -878,7 +910,14 @@ export async function checkBrokenLinksAction(): Promise<
       return [...new Set(links)];
     };
 
-    const brokenLinks: Array<{ postId: string; postTitle: string; postSlug: string; url: string; statusCode: number; contentType: "post" | "page" }> = [];
+    const brokenLinks: Array<{
+      postId: string;
+      postTitle: string;
+      postSlug: string;
+      url: string;
+      statusCode: number;
+      contentType: "post" | "page";
+    }> = [];
 
     for (const page of pages) {
       const links = extractExternalLinks(page.content);
@@ -886,7 +925,11 @@ export async function checkBrokenLinksAction(): Promise<
         try {
           const controller = new AbortController();
           const timeout = setTimeout(() => controller.abort(), 5000);
-          const response = await fetch(url, { method: "HEAD", signal: controller.signal, redirect: "manual" });
+          const response = await fetch(url, {
+            method: "HEAD",
+            signal: controller.signal,
+            redirect: "manual",
+          });
           clearTimeout(timeout);
           const status = response.status;
           if (status >= 400) {
@@ -918,7 +961,11 @@ export async function checkBrokenLinksAction(): Promise<
         try {
           const controller = new AbortController();
           const timeout = setTimeout(() => controller.abort(), 5000);
-          const response = await fetch(url, { method: "HEAD", signal: controller.signal, redirect: "manual" });
+          const response = await fetch(url, {
+            method: "HEAD",
+            signal: controller.signal,
+            redirect: "manual",
+          });
           clearTimeout(timeout);
           const status = response.status;
           if (status >= 400) {
@@ -953,7 +1000,16 @@ export async function checkBrokenLinksAction(): Promise<
 // ─── 404 Monitoring ────────────────────────────────
 
 export async function getNotFoundLogsAction(): Promise<
-  ActionResult<Array<{ id: string; path: string; referrer: string | null; count: number; firstSeen: Date; lastSeen: Date }>>
+  ActionResult<
+    Array<{
+      id: string;
+      path: string;
+      referrer: string | null;
+      count: number;
+      firstSeen: Date;
+      lastSeen: Date;
+    }>
+  >
 > {
   try {
     await requireAdmin();
@@ -961,7 +1017,17 @@ export async function getNotFoundLogsAction(): Promise<
       orderBy: { count: "desc" },
       take: 100,
     });
-    return { success: true, data: logs as unknown as Array<{ id: string; path: string; referrer: string | null; count: number; firstSeen: Date; lastSeen: Date }> };
+    return {
+      success: true,
+      data: logs as unknown as Array<{
+        id: string;
+        path: string;
+        referrer: string | null;
+        count: number;
+        firstSeen: Date;
+        lastSeen: Date;
+      }>,
+    };
   } catch (error) {
     return handleServerActionError(error, "cms/getNotFoundLogs");
   }
@@ -980,7 +1046,9 @@ export async function clearNotFoundLogAction(id: string): Promise<ActionResult> 
 
 // ─── Internal Link Suggestions ─────────────────────
 
-export async function getFacilityNamesAction(): Promise<ActionResult<Array<{ name: string; slug: string }>>> {
+export async function getFacilityNamesAction(): Promise<
+  ActionResult<Array<{ name: string; slug: string }>>
+> {
   try {
     await requireAdmin();
     const facilities = await (prisma as any).facility.findMany({

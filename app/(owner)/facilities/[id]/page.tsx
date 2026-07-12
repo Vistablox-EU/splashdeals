@@ -45,14 +45,16 @@ export default async function OwnerFacilityDashboardPage({ params }: Props) {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Panel objekta</h1>
-        <p className="text-muted-foreground text-sm">Upravljanje cenama ulaznica i pregled prodaje.</p>
+        <p className="text-muted-foreground text-sm">
+          Upravljanje cenama ulaznica i pregled prodaje.
+        </p>
       </div>
 
       {/* Sales summary cards */}
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-muted-foreground text-sm font-medium">
               Ukupna zarada (30 dana)
             </CardTitle>
           </CardHeader>
@@ -62,7 +64,7 @@ export default async function OwnerFacilityDashboardPage({ params }: Props) {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-muted-foreground text-sm font-medium">
               Prodatih karata (30 dana)
             </CardTitle>
           </CardHeader>
@@ -72,7 +74,7 @@ export default async function OwnerFacilityDashboardPage({ params }: Props) {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-muted-foreground text-sm font-medium">
               Transakcija (30 dana)
             </CardTitle>
           </CardHeader>
@@ -90,7 +92,7 @@ export default async function OwnerFacilityDashboardPage({ params }: Props) {
           <TabsTrigger value="sales">Transakcije</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="analytics" className="space-y-6 mt-4">
+        <TabsContent value="analytics" className="mt-4 space-y-6">
           <AnalyticsOverview
             totalViews={analytics.totalViews}
             views7d={analytics.views7d}
@@ -184,7 +186,7 @@ export default async function OwnerFacilityDashboardPage({ params }: Props) {
                     <tbody>
                       {sales.map((tx) => (
                         <tr key={tx.id} className="border-b last:border-0">
-                          <td className="py-2 text-muted-foreground">
+                          <td className="text-muted-foreground py-2">
                             {new Date(tx.createdAt).toLocaleDateString("sr-RS", {
                               day: "numeric",
                               month: "short",
@@ -193,8 +195,10 @@ export default async function OwnerFacilityDashboardPage({ params }: Props) {
                               minute: "2-digit",
                             })}
                           </td>
-                          <td className="py-2 font-medium">{formatCurrency(Number(tx.totalAmount))}</td>
-                          <td className="py-2 text-muted-foreground">{tx.issuedTickets.length}</td>
+                          <td className="py-2 font-medium">
+                            {formatCurrency(Number(tx.totalAmount))}
+                          </td>
+                          <td className="text-muted-foreground py-2">{tx.issuedTickets.length}</td>
                         </tr>
                       ))}
                     </tbody>

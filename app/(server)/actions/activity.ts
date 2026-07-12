@@ -33,9 +33,9 @@ export async function logActivity(
 /**
  * 📋 Get recent activity log entries.
  */
-export async function getActivityLogAction(limit = 100): Promise<
-  ActionResult<Array<Record<string, unknown>>>
-> {
+export async function getActivityLogAction(
+  limit = 100,
+): Promise<ActionResult<Array<Record<string, unknown>>>> {
   try {
     await requireAdmin();
 

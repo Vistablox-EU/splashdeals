@@ -25,7 +25,7 @@ export default async function ActivityLogPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b bg-muted/50">
+              <tr className="bg-muted/50 border-b">
                 <th className="px-4 py-3 text-left font-medium">Vreme</th>
                 <th className="px-4 py-3 text-left font-medium">Akcija</th>
                 <th className="px-4 py-3 text-left font-medium">Tip entiteta</th>
@@ -41,19 +41,19 @@ export default async function ActivityLogPage() {
                 </tr>
               ) : (
                 logs.map((log: Record<string, unknown>) => (
-                  <tr key={log.id as string} className="border-b last:border-0 hover:bg-muted/30">
-                    <td className="px-4 py-3 text-muted-foreground whitespace-nowrap font-mono text-xs">
+                  <tr key={log.id as string} className="hover:bg-muted/30 border-b last:border-0">
+                    <td className="text-muted-foreground px-4 py-3 font-mono text-xs whitespace-nowrap">
                       {new Date(log.createdAt as string).toLocaleString("sr-RS")}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                      <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium">
                         {log.action as string}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground text-xs">
+                    <td className="text-muted-foreground px-4 py-3 text-xs">
                       {(log.entityType as string) || "—"}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
+                    <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
                       {(log.entityId as string) || "—"}
                     </td>
                   </tr>

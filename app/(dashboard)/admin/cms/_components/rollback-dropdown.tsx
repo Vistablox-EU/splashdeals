@@ -75,12 +75,10 @@ export function RollbackDropdown({ postId, onRestore }: RollbackDropdownProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <Icon name="history" className="size-4 text-muted-foreground" />
+      <Icon name="history" className="text-muted-foreground size-4" />
       <Select value={selectedRevisionId} onValueChange={setSelectedRevisionId}>
         <SelectTrigger className="h-8 w-[240px] text-xs" aria-label="Vrati na reviziju">
-          <SelectValue
-            placeholder={loading ? "Učitavanje..." : "Vrati na reviziju"}
-          />
+          <SelectValue placeholder={loading ? "Učitavanje..." : "Vrati na reviziju"} />
         </SelectTrigger>
         <SelectContent>
           {revisions.map((rev) => (

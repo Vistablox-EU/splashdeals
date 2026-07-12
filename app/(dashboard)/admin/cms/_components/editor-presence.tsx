@@ -32,9 +32,7 @@ export function EditorPresence({ postId, pageId, currentUserId }: EditorPresence
         if (!res.ok) return;
 
         const data = await res.json();
-        const filtered = (data.editors || []).filter(
-          (e: EditorInfo) => e.userId !== currentUserId,
-        );
+        const filtered = (data.editors || []).filter((e: EditorInfo) => e.userId !== currentUserId);
         setEditors(filtered);
       } catch {
         // Ignore

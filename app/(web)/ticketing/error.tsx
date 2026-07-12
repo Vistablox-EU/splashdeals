@@ -20,9 +20,7 @@ export default function TicketingError({
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="max-w-md space-y-6 text-center">
         <Icon name="confirmation_number" className="text-warning mx-auto h-16 w-16" />
-        <h1 className="text-foreground text-3xl font-black uppercase italic">
-          Greška u prodaji
-        </h1>
+        <h1 className="text-foreground text-3xl font-black uppercase italic">Greška u prodaji</h1>
         <p className="text-muted-foreground">
           Došlo je do neočekivane greške prilikom učitavanja ulaznica. Pokušajte ponovo ili nas
           kontaktirajte.
