@@ -956,3 +956,34 @@ model SearchLog {
 
   @@schema("marketing")
 }
+
+/// 📋 Activity log for CMS audit trail
+model ActivityLog {
+  id         String   @id @default(uuid())
+  userId     String
+  action     String   // "post.created", "post.updated", "post.published", "post.deleted", etc.
+  entityId   String?
+  entityType String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("activity_logs")
+  @@schema("marketing")
+}
+
+/// 🔀 URL redirect manager
+model Redirect {
+  id          String   @id @default(uuid())
+  source      String   @unique
+  destination String
+  statusCode  Int      @default(301)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([source, isActive])
+  @@map("redirects")
+  @@schema("marketing")
+}

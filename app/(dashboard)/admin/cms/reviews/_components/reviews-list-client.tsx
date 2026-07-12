@@ -45,7 +45,10 @@ export function ReviewsListClient({ reviews }: { reviews: Review[] }) {
     <div className="space-y-4">
       {reviews.length === 0 && <p className="text-muted-foreground">Nema recenzija.</p>}
       {reviews.map((r) => (
-        <div key={r.id} className="border-border flex items-center justify-between rounded-lg border p-4">
+        <div
+          key={r.id}
+          className="border-border flex items-center justify-between rounded-lg border p-4"
+        >
           <div>
             <div className="flex items-center gap-2">
               <span className="font-medium">{r.user.name || r.user.email}</span>
@@ -57,8 +60,14 @@ export function ReviewsListClient({ reviews }: { reviews: Review[] }) {
             <p className="mt-1 text-sm">{r.content}</p>
           </div>
           <div className="flex gap-2">
-            {!r.isApproved && <Button size="sm" onClick={() => handleApprove(r.id)}>Odobri</Button>}
-            <Button size="sm" variant="destructive" onClick={() => handleDelete(r.id)}>Obriši</Button>
+            {!r.isApproved && (
+              <Button size="sm" onClick={() => handleApprove(r.id)}>
+                Odobri
+              </Button>
+            )}
+            <Button size="sm" variant="destructive" onClick={() => handleDelete(r.id)}>
+              Obriši
+            </Button>
           </div>
         </div>
       ))}

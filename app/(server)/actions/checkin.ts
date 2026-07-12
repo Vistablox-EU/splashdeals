@@ -38,9 +38,7 @@ type TicketInfo = {
 /**
  * 🔍 Verify a ticket by its QR hash
  */
-export async function verifyTicketAction(
-  hash: string,
-): Promise<ActionResult<TicketInfo>> {
+export async function verifyTicketAction(hash: string): Promise<ActionResult<TicketInfo>> {
   try {
     const ticket = await prisma.issuedTicket.findUnique({
       where: { qrHash: hash },
@@ -117,7 +115,9 @@ export async function verifyTicketAction(
 /**
  * ✅ Mark a ticket as used (check-in)
  */
-export async function useTicketAction(hash: string): Promise<ActionResult<{ id: string; usageCount: number; usageLimit: number; status: string }>> {
+export async function useTicketAction(
+  hash: string,
+): Promise<ActionResult<{ id: string; usageCount: number; usageLimit: number; status: string }>> {
   try {
     const ticket = await prisma.issuedTicket.findUnique({
       where: { qrHash: hash },
