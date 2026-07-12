@@ -1,4 +1,4 @@
-import "server-only";
+"use server";
 
 import { prisma } from "@/server/lib/prisma";
 import { requireFacilityOwner } from "@/server/lib/auth-guards";
