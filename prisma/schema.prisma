@@ -846,3 +846,43 @@ enum TimeSlot {
 
   @@schema("partners")
 }
+
+/// Webhooks for CMS content events
+model Webhook {
+  id                   String       @id @default(uuid())
+  name                 String
+  url                  String
+  events               String[]
+  isActive             Boolean      @default(true)
+  consecutiveFailures  Int          @default(0)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  logs WebhookLog[]
+
+  @@schema("marketing")
+}
+
+model WebhookLog {
+  id           String   @id @default(uuid())
+  webhookId    String
+  event        String
+  status       String
+  responseCode Int?
+  responseBody String?
+  createdAt    DateTime @default(now())
+
+  webhook Webhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@schema("marketing")
+}
+
+/// Search analytics — zero-result query tracking
+model SearchLog {
+  id        String   @id @default(uuid())
+  query     String
+  results   Int
+  createdAt DateTime @default(now())
+
+  @@schema("marketing")
+}

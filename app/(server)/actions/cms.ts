@@ -5,6 +5,7 @@ import { requireAdmin, requireSuperAdmin } from "@/server/lib/auth-guards";
 import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
 import { revalidatePath } from "next/cache";
 import { z } from "zod/v4";
+import { triggerWebhooks } from "@/app/(server)/actions/webhooks";
 
 // ─── Zod v4 šeme ───────────────────────────────────────
 
@@ -122,6 +123,16 @@ export async function createBlogPostAction(
     }
 
     revalidatePath("/admin/cms/posts");
+
+    // Fire webhook events
+    const createdEvent =
+      validated.status === "PUBLISHED"
+        ? "post.published"
+        : validated.publishedAt
+          ? "post.scheduled"
+          : "post.published";
+    triggerWebhooks(createdEvent, { id: post.id, title: post.title, slug: post.slug });
+
     return { success: true, data: { id: post.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/createBlogPost");
@@ -132,6 +143,7 @@ export async function updateBlogPostAction(
   id: string,
   data: BlogPostFormValues,
   tagIds?: string[],
+  expectedVersion?: string,
 ): Promise<ActionResult<{ id: string }>> {
   try {
     await requireAdmin();
@@ -140,8 +152,13 @@ export async function updateBlogPostAction(
     // REVIEW status resets to DRAFT — items must go through approval flow
     if (validated.status === "REVIEW") validated.status = "DRAFT";
 
-    const post = await prisma.blogPost.update({
-      where: { id },
+    const where: Record<string, unknown> = { id };
+    if (expectedVersion) {
+      where.updatedAt = expectedVersion;
+    }
+
+    const result = await prisma.blogPost.updateMany({
+      where: where as any,
       data: {
         ...validated,
         publishedAt: validated.publishedAt
@@ -150,6 +167,22 @@ export async function updateBlogPostAction(
             ? new Date()
             : undefined,
         readingTime: calculateReadingTime(validated.content),
+      },
+    });
+
+    // Conflict check — if expectedVersion was provided and no rows matched
+    if (expectedVersion && result.count === 0) {
+      return {
+        success: true,
+        conflict: true,
+        message: "Neko je već izmenio ovu objavu. Osveži stranicu.",
+      };
+    }
+
+    // Re-fetch the post to handle tags (updateMany doesn't support nested relations)
+    const post = await prisma.blogPost.update({
+      where: { id },
+      data: {
         tags: {
           deleteMany: {},
           create: tagIds && tagIds.length > 0 ? tagIds.map((tagId) => ({ tagId })) : [],
@@ -171,6 +204,14 @@ export async function updateBlogPostAction(
 
     revalidatePath("/admin/cms/posts");
     revalidatePath(`/admin/cms/posts/${id}`);
+
+    triggerWebhooks("post.updated", {
+      id,
+      title: post.title,
+      slug: post.slug,
+      status: validated.status,
+    });
+
     return { success: true, data: { id: post.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/updateBlogPost");
@@ -182,6 +223,7 @@ export async function deleteBlogPostAction(id: string): Promise<ActionResult> {
     await requireSuperAdmin();
     await prisma.blogPost.delete({ where: { id } });
     revalidatePath("/admin/cms/posts");
+    triggerWebhooks("post.deleted", { id });
     return { success: true };
   } catch (error) {
     return handleServerActionError(error, "cms/deleteBlogPost");
@@ -253,6 +295,7 @@ export async function createPageAction(
     });
 
     revalidatePath("/admin/cms/pages");
+    triggerWebhooks("page.published", { id: page.id, title: page.title, slug: page.slug });
     return { success: true, data: { id: page.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/createPage");
@@ -262,6 +305,7 @@ export async function createPageAction(
 export async function updatePageAction(
   id: string,
   data: PageFormValues,
+  expectedVersion?: string,
 ): Promise<ActionResult<{ id: string }>> {
   try {
     await requireAdmin();
@@ -270,8 +314,13 @@ export async function updatePageAction(
     // REVIEW status resets to DRAFT — items must go through approval flow
     if (validated.status === "REVIEW") validated.status = "DRAFT";
 
-    const page = await prisma.page.update({
-      where: { id },
+    const where: Record<string, unknown> = { id };
+    if (expectedVersion) {
+      where.updatedAt = expectedVersion;
+    }
+
+    const result = await prisma.page.updateMany({
+      where: where as any,
       data: {
         ...validated,
         publishedAt: validated.publishedAt
@@ -282,8 +331,25 @@ export async function updatePageAction(
       },
     });
 
+    // Conflict check — if expectedVersion was provided and no rows matched
+    if (expectedVersion && result.count === 0) {
+      return {
+        success: true,
+        conflict: true,
+        message: "Neko je već izmenio ovu objavu. Osveži stranicu.",
+      };
+    }
+
+    const page = await prisma.page.findUniqueOrThrow({ where: { id } });
+
     revalidatePath("/admin/cms/pages");
     revalidatePath(`/admin/cms/pages/${id}`);
+    triggerWebhooks("page.updated", {
+      id,
+      title: page.title,
+      slug: page.slug,
+      status: validated.status,
+    });
     return { success: true, data: { id: page.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/updatePage");
@@ -295,6 +361,7 @@ export async function deletePageAction(id: string): Promise<ActionResult> {
     await requireSuperAdmin();
     await prisma.page.delete({ where: { id } });
     revalidatePath("/admin/cms/pages");
+    triggerWebhooks("page.deleted", { id });
     return { success: true };
   } catch (error) {
     return handleServerActionError(error, "cms/deletePage");
@@ -536,6 +603,10 @@ export async function approvePostAction(
     });
     revalidatePath("/admin/cms/posts");
     revalidatePath("/admin/cms/pages");
+
+    const approveEvent = type === "post" ? "post.published" : "page.published";
+    triggerWebhooks(approveEvent, { id, type });
+
     return { success: true, data: { status: "PUBLISHED" } };
   } catch (error) {
     return handleServerActionError(error, "cms/approvePost");
