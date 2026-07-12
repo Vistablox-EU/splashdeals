@@ -125,3 +125,28 @@ export async function createAdminUserAction(data: {
     return handleServerActionError(error, "users");
   }
 }
+
+/**
+ * 🔗 Assign a FACILITY_OWNER role to a user and link them to a facility
+ */
+export async function assignFacilityOwnerAction(email: string, facilityId: string) {
+  try {
+    await requireSuperAdmin();
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new Error("User not found");
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { role: "FACILITY_OWNER" as UserRole },
+    });
+    await prisma.facilityOwner.upsert({
+      where: { userId_facilityId: { userId: user.id, facilityId } },
+      create: { userId: user.id, facilityId },
+      update: {},
+    });
+
+    revalidatePath("/admin/owners");
+    return { success: true };
+  } catch (error) {
+    return handleServerActionError(error, "users");
+  }
+}

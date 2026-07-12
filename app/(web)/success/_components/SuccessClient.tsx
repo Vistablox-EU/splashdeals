@@ -1,11 +1,12 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { resendConfirmationAction } from "@/app/(server)/actions/checkout";
 
 interface IssuedTicket {
   id: string;
@@ -72,6 +73,26 @@ export function SuccessClient({
 }) {
   const [transaction, setTransaction] = useState<Transaction | null>(initialTransaction);
   const isLoading = !transaction || transaction.status !== "SUCCESS";
+  const [isPending, startTransition] = useTransition();
+  const [resendStatus, setResendStatus] = useState<"idle" | "sent" | "error">("idle");
+
+  const handleResend = () => {
+    startTransition(async () => {
+      try {
+        const result = await resendConfirmationAction(transaction!.id);
+        if (result.success) {
+          setResendStatus("sent");
+          setTimeout(() => setResendStatus("idle"), 3000);
+        } else {
+          setResendStatus("error");
+          setTimeout(() => setResendStatus("idle"), 3000);
+        }
+      } catch {
+        setResendStatus("error");
+        setTimeout(() => setResendStatus("idle"), 3000);
+      }
+    });
+  };
 
   useEffect(() => {
     let timerId: NodeJS.Timeout | null = null;
@@ -280,6 +301,24 @@ export function SuccessClient({
           >
             <Icon name="download" className="text-primary-foreground mr-3 text-[20px]" />
             {dict.actions.download}
+          </Button>
+
+          <Button
+            onClick={handleResend}
+            disabled={isPending}
+            size="lg"
+            variant="outline"
+            className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-16 w-full rounded-full border px-10 sm:w-auto"
+          >
+            <Icon
+              name={resendStatus === "sent" ? "check_circle" : isPending ? "progress_activity" : "mail"}
+              className={`mr-3 text-[20px] ${isPending ? "animate-spin" : ""}`}
+            />
+            {resendStatus === "sent"
+              ? "Poslato! ✅"
+              : resendStatus === "error"
+                ? "Greška"
+                : "Pošalji ponovo na email"}
           </Button>
         </div>
 

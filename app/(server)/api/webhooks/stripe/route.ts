@@ -6,7 +6,7 @@ import { getNextSubscriptionExpiry } from "@/server/lib/utils/seasonal";
 import { after } from "next/server";
 import { TicketStatus } from "@prisma/client";
 import crypto from "node:crypto";
-import { sendEmail } from "@/server/lib/email";
+import { sendEmail, sendOrderConfirmation } from "@/server/lib/email";
 import {
   buildTicketDeliveryHtml,
   buildTicketDeliveryText,
@@ -210,6 +210,14 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     });
 
     if (transaction && targetEmail) {
+      // Mark any CartSession as notified since checkout completed
+      await prisma.cartSession.updateMany({
+        where: { userId, notified: false },
+        data: { notified: true },
+      }).catch(() => {
+        // CartSession may not exist; that's fine
+      });
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await sendTicketConfirmationEmail(targetEmail, transaction as any, session.id).catch(
         (err) => {
@@ -219,6 +227,14 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
           );
         },
       );
+
+      // Also send the standardized confirmation email
+      await sendOrderConfirmation(transaction.id).catch((err) => {
+        console.error(
+          "[FULFILLMENT] Order confirmation email failed, tickets still created successfully:",
+          err,
+        );
+      });
     }
 
     console.info(`[FULFILLMENT SUCCESS] Processed session ${session.id}`);

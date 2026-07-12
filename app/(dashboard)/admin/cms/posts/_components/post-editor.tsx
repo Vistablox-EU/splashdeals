@@ -612,6 +612,24 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                 >
                   Odustani
                 </Button>
+                {isEditing && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="gap-1.5 border-blue-300 text-blue-700 hover:bg-blue-50"
+                    onClick={() => {
+                      const slug = watch("slug");
+                      if (slug) {
+                        window.open(`/blog/${slug}?preview=1`, "_blank");
+                      } else {
+                        toast.error("Prvo sačuvaj objavu da bi dobila slug.");
+                      }
+                    }}
+                  >
+                    <Icon name="visibility" className="size-4" />
+                    Pregled
+                  </Button>
+                )}
               </div>
               {/* Autosave status */}
               <div className="flex items-center justify-end gap-2 pt-1">

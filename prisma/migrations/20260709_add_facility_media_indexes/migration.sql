@@ -1,6 +1,10 @@
 -- Add indexes for FacilityMedia query performance
 -- See: https://github.com/Damir-VistaBlox/splashdeals/issues/6
 
+-- First ensure the columns exist (they were missing on clean databases)
+ALTER TABLE "partners"."FacilityMedia" ADD COLUMN IF NOT EXISTS "isHero" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "partners"."FacilityMedia" ADD COLUMN IF NOT EXISTS "isGalleryVisible" BOOLEAN NOT NULL DEFAULT true;
+
 -- Index for gallery sorting: all media queries sort by facilityId + order
 CREATE INDEX IF NOT EXISTS "FacilityMedia_facilityId_order_idx"
   ON "partners"."FacilityMedia" ("facilityId", "order");

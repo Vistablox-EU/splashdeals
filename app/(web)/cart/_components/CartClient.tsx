@@ -2,11 +2,13 @@
 import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react";
-import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
+import { useCart, MAX_QUANTITY_PER_ITEM, type DiscountInfo } from "@/hooks/use-cart";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import { createCheckoutSessionAction } from "@/app/(server)/actions/checkout";
+import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
 import { trackBeginCheckout } from "@/lib/analytics/events";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +25,18 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const [showIdentityDialog, setShowIdentityDialog] = React.useState(false);
+  const [promoCode, setPromoCode] = React.useState("");
+  const [promoError, setPromoError] = React.useState("");
+  const [promoLoading, setPromoLoading] = React.useState(false);
+  const discount = useCart((s) => s.discount);
+  const setDiscount = useCart((s) => s.setDiscount);
+  const clearDiscount = useCart((s) => s.clearDiscount);
+
+  const totalBeforeDiscount = getTotalPrice();
+  const discountAmount = discount
+    ? Math.round(totalBeforeDiscount * (discount.discountPercent / 100))
+    : 0;
+  const total = totalBeforeDiscount - discountAmount;
 
   React.useEffect(() => {
     const timer = requestAnimationFrame(() => {
@@ -34,7 +48,6 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
 
   if (!isMounted) return null;
 
-  const total = getTotalPrice();
   const requiresIdentity = items.some((i) => i.requiresIdentity);
   const requiresPhoto = items.some((i) => i.requiresPhoto);
 
@@ -270,8 +283,20 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
               <div className="border-border space-y-3 border-t pt-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground font-bold">Međuzbir</span>
-                  <span className="text-foreground font-black">{formatPrice(total)} RSD</span>
+                  <span className="text-foreground font-black">
+                    {formatPrice(totalBeforeDiscount)} RSD
+                  </span>
                 </div>
+                {discount && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-green-600 font-bold">
+                      Popust ({discount.discountPercent}%)
+                    </span>
+                    <span className="text-green-600 font-black">
+                      -{formatPrice(discountAmount)} RSD
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground font-bold">Naknada za obradu</span>
                   <span className="text-primary font-black">0 %</span>
@@ -283,6 +308,103 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                   <span className="text-splash font-black">{formatPrice(total)} RSD</span>
                 </div>
               </div>
+            </div>
+
+            {/* Promo code */}
+            <div className="border-border space-y-3 border-t pt-4">
+              {discount ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-green-600">
+                      Popust: {discount.discountPercent}%
+                    </span>
+                    <code className="bg-muted rounded px-1.5 py-0.5 text-xs">{discount.code}</code>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive/60 hover:text-destructive h-7 text-xs"
+                    onClick={() => clearDiscount()}
+                  >
+                    Ukloni
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Input
+                    placeholder="Unesi promo kod"
+                    value={promoCode}
+                    onChange={(e) => {
+                      setPromoCode(e.target.value.toUpperCase());
+                      setPromoError("");
+                    }}
+                    className="h-9 flex-1 text-xs uppercase"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        // Trigger apply
+                        const btn = e.currentTarget
+                          .closest("form")
+                          ?.querySelector("button[type=submit]") as HTMLButtonElement;
+                        btn?.click();
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="h-9"
+                    disabled={promoLoading || !promoCode.trim()}
+                    onClick={async () => {
+                      if (!promoCode.trim()) return;
+                      setPromoLoading(true);
+                      setPromoError("");
+                      const facilityId = items[0]?.facilityId;
+                      const result = await validatePromoCodeAction(
+                        promoCode.trim(),
+                        facilityId,
+                        totalBeforeDiscount,
+                      );
+                      setPromoLoading(false);
+                      if (result.success && result.data) {
+                        if (result.data.valid) {
+                          setDiscount({
+                            campaignId: result.data.campaignId,
+                            code: promoCode.trim(),
+                            discountPercent: result.data.discountPercent,
+                          });
+                          setPromoCode("");
+                          toast.success(`Popust: ${result.data.discountPercent}%`);
+                        } else {
+                          setPromoError(result.data.error);
+                        }
+                      } else {
+                        setPromoError(result.error || "Greška pri validaciji koda.");
+                      }
+                    }}
+                  >
+                    {promoLoading ? (
+                      <svg className="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12" cy="12" r="10"
+                          stroke="currentColor" strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                    ) : (
+                      "Primeni"
+                    )}
+                  </Button>
+                </div>
+              )}
+              {promoError && (
+                <p className="text-destructive text-xs font-medium">{promoError}</p>
+              )}
             </div>
 
             <div className="space-y-4">

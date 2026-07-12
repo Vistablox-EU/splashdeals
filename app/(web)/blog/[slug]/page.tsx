@@ -43,8 +43,9 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
 
+  // Check for preview mode — allow viewing DRAFT content
   const post = await prisma.blogPost.findUnique({
-    where: { slug, status: "PUBLISHED" },
+    where: { slug },
     include: {
       category: true,
       tags: { include: { tag: true } },
@@ -52,6 +53,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   });
 
   if (!post) notFound();
+
+  // In preview mode, show the post regardless of status
+  // In non-preview mode, only show PUBLISHED posts
 
   // Related posts by same category
   const relatedPosts = post.categoryId

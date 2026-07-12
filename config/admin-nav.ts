@@ -98,6 +98,12 @@ export const adminNavData = {
           icon: "key",
           requiredRole: "SUPER_ADMIN",
         },
+        {
+          title: "Vlasnici objekata",
+          url: "/admin/owners",
+          icon: "people",
+          requiredRole: "SUPER_ADMIN",
+        },
       ],
     },
   ] as NavItem[],

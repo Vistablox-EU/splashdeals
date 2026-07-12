@@ -6,6 +6,7 @@ import { handleServerActionError, type ActionResult } from "@/server/lib/server-
 import { revalidatePath } from "next/cache";
 import { z } from "zod/v4";
 import { triggerWebhooks } from "@/app/(server)/actions/webhooks";
+import { logActivity } from "@/app/(server)/actions/activity";
 
 // ─── Zod v4 šeme ───────────────────────────────────────
 
@@ -133,6 +134,18 @@ export async function createBlogPostAction(
           : "post.published";
     triggerWebhooks(createdEvent, { id: post.id, title: post.title, slug: post.slug });
 
+    // Log activity (non-blocking)
+    const user = await requireAdmin().catch(() => null);
+    if (user) {
+      logActivity(
+        user.id,
+        validated.status === "PUBLISHED" ? "post.published" : "post.created",
+        post.id,
+        "blogPost",
+        { title: post.title, slug: post.slug },
+      );
+    }
+
     return { success: true, data: { id: post.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/createBlogPost");
@@ -212,6 +225,18 @@ export async function updateBlogPostAction(
       status: validated.status,
     });
 
+    // Log activity (non-blocking)
+    const user = await requireAdmin().catch(() => null);
+    if (user) {
+      logActivity(
+        user.id,
+        validated.status === "PUBLISHED" ? "post.published" : "post.updated",
+        id,
+        "blogPost",
+        { title: post.title, slug: post.slug, status: validated.status },
+      );
+    }
+
     return { success: true, data: { id: post.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/updateBlogPost");
@@ -224,6 +249,13 @@ export async function deleteBlogPostAction(id: string): Promise<ActionResult> {
     await prisma.blogPost.delete({ where: { id } });
     revalidatePath("/admin/cms/posts");
     triggerWebhooks("post.deleted", { id });
+
+    // Log activity (non-blocking)
+    const user = await requireSuperAdmin().catch(() => null);
+    if (user) {
+      logActivity(user.id, "post.deleted", id, "blogPost", {});
+    }
+
     return { success: true };
   } catch (error) {
     return handleServerActionError(error, "cms/deleteBlogPost");
@@ -296,6 +328,19 @@ export async function createPageAction(
 
     revalidatePath("/admin/cms/pages");
     triggerWebhooks("page.published", { id: page.id, title: page.title, slug: page.slug });
+
+    // Log activity (non-blocking)
+    const user = await requireAdmin().catch(() => null);
+    if (user) {
+      logActivity(
+        user.id,
+        validated.status === "PUBLISHED" ? "page.published" : "page.created",
+        page.id,
+        "page",
+        { title: page.title, slug: page.slug },
+      );
+    }
+
     return { success: true, data: { id: page.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/createPage");
@@ -350,6 +395,19 @@ export async function updatePageAction(
       slug: page.slug,
       status: validated.status,
     });
+
+    // Log activity (non-blocking)
+    const user = await requireAdmin().catch(() => null);
+    if (user) {
+      logActivity(
+        user.id,
+        validated.status === "PUBLISHED" ? "page.published" : "page.updated",
+        id,
+        "page",
+        { title: page.title, slug: page.slug, status: validated.status },
+      );
+    }
+
     return { success: true, data: { id: page.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/updatePage");
@@ -362,6 +420,13 @@ export async function deletePageAction(id: string): Promise<ActionResult> {
     await prisma.page.delete({ where: { id } });
     revalidatePath("/admin/cms/pages");
     triggerWebhooks("page.deleted", { id });
+
+    // Log activity (non-blocking)
+    const user = await requireSuperAdmin().catch(() => null);
+    if (user) {
+      logActivity(user.id, "page.deleted", id, "page", {});
+    }
+
     return { success: true };
   } catch (error) {
     return handleServerActionError(error, "cms/deletePage");
@@ -607,6 +672,12 @@ export async function approvePostAction(
     const approveEvent = type === "post" ? "post.published" : "page.published";
     triggerWebhooks(approveEvent, { id, type });
 
+    // Log activity (non-blocking)
+    try {
+      const u = await requireAdmin();
+      logActivity(u.id, `${type}.published`, id, type, {});
+    } catch {}
+
     return { success: true, data: { status: "PUBLISHED" } };
   } catch (error) {
     return handleServerActionError(error, "cms/approvePost");
@@ -626,6 +697,13 @@ export async function rejectPostAction(
     });
     revalidatePath("/admin/cms/posts");
     revalidatePath("/admin/cms/pages");
+
+    // Log activity (non-blocking)
+    try {
+      const u = await requireAdmin();
+      logActivity(u.id, `${type}.rejected`, id, type, {});
+    } catch {}
+
     return { success: true, data: { status: "DRAFT" } };
   } catch (error) {
     return handleServerActionError(error, "cms/rejectPost");

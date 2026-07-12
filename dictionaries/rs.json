@@ -454,6 +454,24 @@
     "approved": "Objavljeno",
     "readonly_notice": "Ova objava čeka pregled"
   },
+  "campaign": {
+    "title": "Kampanje",
+    "create": "Nova kampanja",
+    "name": "Naziv",
+    "code": "Kod",
+    "discount": "Popust (%)",
+    "validity": "Važi od/do",
+    "usage": "Iskorišćenost",
+    "facilities": "Objekti",
+    "minAmount": "Minimalni iznos",
+    "created": "Kampanja kreirana",
+    "deleted": "Kampanja obrisana",
+    "promo_placeholder": "Unesi promo kod",
+    "promo_apply": "Primeni",
+    "promo_remove": "Ukloni",
+    "promo_invalid": "Nepostojeći ili istekao kod",
+    "promo_applied": "Popust: {percent}%"
+  },
   "webhook": {
     "title": "Vebhukovi",
     "create": "Dodaj webhook",
@@ -478,5 +496,18 @@
     "deactivated_badge": "Deaktiviran zbog grešaka",
     "ping_success": "Uspešno",
     "ping_error": "Greška: {code}"
+  },
+  "owner": {
+    "title": "Vlasnički panel",
+    "facilities": "Moji objekti",
+    "tickets": "Cene ulaznica",
+    "sales": "Prodaja",
+    "revenue": "Ukupna zarada",
+    "tickets_sold": "Prodatih karata",
+    "last_30_days": "Poslednjih 30 dana",
+    "toggle_active": "Aktiviraj/Deaktiviraj",
+    "no_facilities": "Nemate dodeljenih objekata.",
+    "assign_title": "Dodela vlasnika",
+    "assign_button": "Dodeli"
   }
 }

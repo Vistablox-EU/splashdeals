@@ -22,6 +22,9 @@ model User {
   transactions     Transaction[]
   amenityAuditLogs AmenityAuditLog[]
   staffAssignments FacilityStaffAssignment[]
+  facilityOwners   FacilityOwner[]
+  cartSessions     CartSession[]
+  reviews          Review[]
 
   @@schema("admin")
 }
@@ -128,8 +131,11 @@ model Facility {
   faqs              FacilityFAQ[]
   labels            FacilityLabel[]
   staffAssignments  FacilityStaffAssignment[]
+  owners            FacilityOwner[]
   products          Product[]
   campaignLinks     CampaignFacility[]
+  reviews           Review[]
+  pageViews         FacilityPageView[]
 
   @@schema("partners")
 }
@@ -149,6 +155,19 @@ model FacilityStaffAssignment {
   @@index([facilityId])
   @@index([userId])
   @@map("facility_staff_assignments")
+  @@schema("partners")
+}
+
+/// 🏪 Links FACILITY_OWNER users to the specific facilities they own
+model FacilityOwner {
+  userId     String
+  facilityId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@id([userId, facilityId])
   @@schema("partners")
 }
 
@@ -418,6 +437,19 @@ model IssuedTicket {
 
   ticketPrice TicketPrice  @relation(fields: [ticketPriceId], references: [id], onDelete: Restrict)
   transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@schema("sales")
+}
+
+model CartSession {
+  id        String   @id @default(uuid())
+  userId    String
+  items     Json
+  notified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@schema("sales")
 }
@@ -705,6 +737,7 @@ model NavigationMenuItem {
 enum UserRole {
   CUSTOMER
   FACILITY_STAFF
+  FACILITY_OWNER
   SUPER_ADMIN
 
   @@schema("admin")
@@ -807,6 +840,23 @@ model FacilityLabel {
 }
 
 /// Pitanja i odgovori za objekat — prikazuju se na javnoj stranici objekta
+/// 📊 Daily page view counter for facility analytics dashboard
+model FacilityPageView {
+  id         String   @id @default(uuid())
+  facilityId String
+  date       DateTime // normalized to start of day (00:00:00 UTC)
+  count      Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@unique([facilityId, date])
+  @@index([facilityId, date])
+  @@map("facility_page_views")
+  @@schema("partners")
+}
+
 model FacilityFAQ {
   id           String   @id @default(uuid())
   facilityId   String
@@ -820,6 +870,26 @@ model FacilityFAQ {
   @@index([facilityId, displayOrder])
   @@schema("partners")
   @@map("facility_faqs")
+}
+
+/// ⭐ Reviews — user reviews for facilities
+model Review {
+  id         String   @id @default(uuid())
+  facilityId String
+  userId     String
+  rating     Int      // 1-5
+  title      String?
+  content    String?
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([facilityId, userId]) // one review per user per facility
+  @@map("reviews")
+  @@schema("partners")
 }
 
 enum AmenityValueType {
@@ -884,5 +954,36 @@ model SearchLog {
   results   Int
   createdAt DateTime @default(now())
 
+  @@schema("marketing")
+}
+
+/// 📋 Activity log for CMS audit trail
+model ActivityLog {
+  id         String   @id @default(uuid())
+  userId     String
+  action     String   // "post.created", "post.updated", "post.published", "post.deleted", etc.
+  entityId   String?
+  entityType String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("activity_logs")
+  @@schema("marketing")
+}
+
+/// 🔀 URL redirect manager
+model Redirect {
+  id          String   @id @default(uuid())
+  source      String   @unique
+  destination String
+  statusCode  Int      @default(301)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([source, isActive])
+  @@map("redirects")
   @@schema("marketing")
 }

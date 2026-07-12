@@ -84,3 +84,21 @@ export async function validateFacilityAccess(
 
   return adminUser;
 }
+
+/**
+ * 🏪 Facility Owner Guard: Requires FACILITY_OWNER role
+ * SUPER_ADMIN bypasses the check (admins have access to everything).
+ * If facilityId is provided, verifies the user is an owner of that specific facility.
+ */
+export async function requireFacilityOwner(facilityId?: string): Promise<AuthedUser> {
+  const user = await requireAdmin(); // must be authenticated
+  if (user.role === "SUPER_ADMIN") return user; // admins have access to everything
+  if (user.role !== "FACILITY_OWNER") throw new Error("Unauthorized");
+  if (facilityId) {
+    const owner = await prisma.facilityOwner.findUnique({
+      where: { userId_facilityId: { userId: user.id, facilityId } },
+    });
+    if (!owner) throw new Error("Unauthorized");
+  }
+  return user;
+}

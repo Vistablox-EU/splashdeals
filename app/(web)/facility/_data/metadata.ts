@@ -291,7 +291,7 @@ export async function buildFacilityMetadata(
       url: canonicalUrl,
       siteName: "SplashDeals",
       images: [
-        { url: `${SITE_URL}/api/og/${facilitySlug}`, width: 1200, height: 630, alt: facility.name },
+        { url: `${SITE_URL}/api/og/facility/${facilitySlug}`, width: 1200, height: 630, alt: facility.name },
       ],
       locale: "sr_RS",
       type: "website",
@@ -300,7 +300,7 @@ export async function buildFacilityMetadata(
       card: "summary_large_image",
       title,
       description: finalDescription,
-      images: [`${SITE_URL}/api/og/${facilitySlug}`],
+      images: [`${SITE_URL}/api/og/facility/${facilitySlug}`],
     },
   };
 }
