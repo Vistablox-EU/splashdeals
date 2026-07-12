@@ -61,7 +61,7 @@ const pageFormSchema = z.object({
   template: z.string().optional(),
   showHeader: z.boolean().optional(),
   showFooter: z.boolean().optional(),
-  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED"]).optional(),
+  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "PUBLISHED_PENDING", "ARCHIVED"]).optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   ogTitle: z.string().optional(),
@@ -93,7 +93,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
       template: (page?.template as string) || "default",
       showHeader: (page?.showHeader as boolean) ?? true,
       showFooter: (page?.showFooter as boolean) ?? true,
-      status: (page?.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
+      status: (page?.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED") || "DRAFT",
       metaTitle: (page?.metaTitle as string) || "",
       metaDescription: (page?.metaDescription as string) || "",
       ogTitle: (page?.ogTitle as string) || "",
@@ -381,7 +381,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
                 <Select
                   value={watch("status") || "DRAFT"}
                   onValueChange={(value) =>
-                    setValue("status", value as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED")
+                    setValue("status", value as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED")
                   }
                 >
                   <SelectTrigger id="status" aria-label="Status" className="w-full">
@@ -391,6 +391,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
                     <SelectItem value="DRAFT">Nacrt</SelectItem>
                     <SelectItem value="REVIEW">Na pregledu</SelectItem>
                     <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
+                    <SelectItem value="PUBLISHED_PENDING">Objavljeno (čeka potvrdu)</SelectItem>
                     <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
                   </SelectContent>
                 </Select>

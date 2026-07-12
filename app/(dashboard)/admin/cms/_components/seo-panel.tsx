@@ -12,12 +12,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useFormContext } from "react-hook-form";
+import { SEOScoringPanel } from "./seo-scoring-panel";
 
 interface SEOPanelProps {
   previewUrl?: string;
+  content?: string;
 }
 
-export function SEOPanel({ previewUrl }: SEOPanelProps) {
+export function SEOPanel({ previewUrl, content }: SEOPanelProps) {
   const { register, watch } = useFormContext();
   const title = watch("title");
   const metaTitle = watch("metaTitle");
@@ -28,6 +30,19 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
 
   return (
     <div className="space-y-6">
+      {/* Focus Keyword + SEO Scoring */}
+      <div className="space-y-2">
+        <Label htmlFor="focusKeyword">Fokus ključna reč</Label>
+        <Input
+          id="focusKeyword"
+          {...register("focusKeyword")}
+          placeholder="npr. akva park Beograd"
+          className="w-full"
+        />
+      </div>
+      <SEOScoringPanel content={content} />
+      <Separator />
+
       {/* SERP Preview */}
       <div>
         <h4 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">

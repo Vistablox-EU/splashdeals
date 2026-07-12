@@ -24,6 +24,13 @@ import {
 } from "@/components/ui/select";
 import { RichTextEditor } from "../../_components/rich-text-editor";
 import { SEOPanel } from "../../_components/seo-panel";
+import { SEOScoringPanel } from "../../_components/seo-scoring-panel";
+import { ReadabilityPanel } from "../../_components/readability-panel";
+import { InternalLinksPanel } from "../../_components/internal-links-panel";
+import { EditorPresence } from "../../_components/editor-presence";
+import { ContentBlocksPanel } from "../../_components/content-blocks-panel";
+import { SocialSharePreview } from "../../_components/social-share-preview";
+import { RollbackDropdown } from "../../_components/rollback-dropdown";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import {
@@ -59,13 +66,16 @@ const postFormSchema = z.object({
   content: z.string().optional(),
   excerpt: z.string().optional(),
   coverImage: z.string().optional(),
+  coverImageAlt: z.string().optional(),
   featuredImage: z.string().optional(),
   author: z.string().optional(),
-  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED"]).optional(),
+  authorPersonId: z.string().optional(),
+  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "PUBLISHED_PENDING", "ARCHIVED"]).optional(),
   categoryId: z.string().optional(),
   isFeatured: z.boolean().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
+  focusKeyword: z.string().optional(),
   ogTitle: z.string().optional(),
   ogDescription: z.string().optional(),
   ogImage: z.string().optional(),
@@ -120,9 +130,11 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
       content: (post?.content as string) || "",
       excerpt: (post?.excerpt as string) || "",
       coverImage: (post?.coverImage as string) || "",
+      coverImageAlt: (post?.coverImageAlt as string) || "",
       featuredImage: (post?.featuredImage as string) || "",
       author: (post?.author as string) || "",
-      status: (post?.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
+      authorPersonId: (post?.authorPersonId as string) || "",
+      status: (post?.status as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED") || "DRAFT",
       categoryId: (post?.categoryId as string) || "",
       isFeatured: (post?.isFeatured as boolean) || false,
       metaTitle: (post?.metaTitle as string) || "",
@@ -132,6 +144,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
       ogImage: (post?.ogImage as string) || "",
       canonicalUrl: (post?.canonicalUrl as string) || "",
       robotsDirective: (post?.robotsDirective as string) || "",
+      focusKeyword: (post?.focusKeyword as string) || "",
       publishedAt: post?.publishedAt ? toDatetimeLocal(post.publishedAt as Date) : "",
       expiresAt: post?.expiresAt ? toDatetimeLocal(post.expiresAt as Date) : "",
     },
@@ -277,6 +290,13 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Editor Presence */}
+        {isEditing && post?.id && (
+          <EditorPresence
+            postId={post.id as string}
+            currentUserId=""
+          />
+        )}
         {/* Restore banner */}
         {showRestoreBanner && pendingAutosave && (
           <div className="mb-4 rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-800">
@@ -406,6 +426,42 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                 className="min-h-[80px] resize-none"
               />
             </div>
+            {/* #365 — AI content generation */}
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-1.5 border-purple-300 text-purple-700 hover:bg-purple-50"
+                onClick={async () => {
+                  const topic = watch("title");
+                  if (!topic || topic.trim().length < 2) {
+                    toast.error("Prvo unesi naslov (temu) za generisanje sadržaja.");
+                    return;
+                  }
+                  const { generateContentAction } = await import(
+                    "@/app/(server)/actions/ai-content"
+                  );
+                  const result = await generateContentAction(topic);
+                  if (result.success && result.data) {
+                    setValue("content", result.data.content || "");
+                    setValue("excerpt", result.data.excerpt || "");
+                    if (result.data.title && result.data.title !== topic) {
+                      setValue("title", result.data.title);
+                      if (!isEditing) {
+                        setValue("slug", slugify(result.data.title, { lower: true, strict: true }));
+                      }
+                    }
+                    toast.success("Sadržaj generisan!");
+                  } else {
+                    toast.error(result.error || "Greška pri generisanju.");
+                  }
+                }}
+              >
+                <Icon name="auto_awesome" className="size-4" />
+                Generiši sadržaj
+              </Button>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="coverImage">Cover slika (URL)</Label>
               <div className="flex gap-2">
@@ -426,6 +482,13 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                   }
                 />
               </div>
+              {/* #385 — Cover image alt text separately editable */}
+              <Input
+                id="coverImageAlt"
+                {...register("coverImageAlt")}
+                placeholder="Alt tekst za cover sliku (SEO)"
+                className="text-muted-foreground mt-1 text-sm"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="featuredImage">Istaknuta slika (URL)</Label>
@@ -473,7 +536,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                 <Select
                   value={watch("status") || "DRAFT"}
                   onValueChange={(value) =>
-                    setValue("status", value as "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED")
+                    setValue("status", value as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED")
                   }
                 >
                   <SelectTrigger id="status" aria-label="Status" className="w-full">
@@ -483,6 +546,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                     <SelectItem value="DRAFT">Nacrt</SelectItem>
                     <SelectItem value="REVIEW">Na pregledu</SelectItem>
                     <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
+                    <SelectItem value="PUBLISHED_PENDING">Objavljeno (čeka potvrdu)</SelectItem>
                     <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
                   </SelectContent>
                 </Select>
@@ -706,10 +770,25 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                   <SheetTitle>SEO podešavanja</SheetTitle>
                 </SheetHeader>
                 <div className="mt-6">
-                  <SEOPanel />
+                  <SEOPanel content={watch("content") as string} />
                 </div>
               </SheetContent>
             </Sheet>
+
+            {/* SEO Scoring Panel */}
+            <div className="space-y-3 rounded-lg border p-4">
+              <SEOScoringPanel content={watch("content") as string} />
+            </div>
+
+            {/* Readability Panel */}
+            <div className="space-y-3 rounded-lg border p-4">
+              <ReadabilityPanel content={watch("content") as string} />
+            </div>
+
+            {/* Internal Links Panel */}
+            <div className="space-y-3 rounded-lg border p-4">
+              <InternalLinksPanel content={watch("content") as string} />
+            </div>
           </div>
         </div>
       </form>

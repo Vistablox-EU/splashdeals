@@ -513,7 +513,6 @@ model BlogPost {
   publishedAt   DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-
   /// SEO polja
   metaTitle       String?
   metaDescription String?
@@ -523,6 +522,9 @@ model BlogPost {
   canonicalUrl    String?
   robotsDirective String?
   schemaMarkup    Json?
+
+  /// Cover image alt text (separately editable)
+  coverImageAlt String?
 
   /// Status i organizacija
   status      PostStatus    @default(DRAFT)
@@ -534,6 +536,10 @@ model BlogPost {
   readingTime Int?
   expiresAt  DateTime?
   reviewedAt DateTime?
+
+  /// Author as Person (reusable)
+  authorPersonId String?
+  authorPerson   Person?   @relation(fields: [authorPersonId], references: [id])
 
   @@index([status, publishedAt])
   @@index([slug])
@@ -607,6 +613,7 @@ model Page {
   ogImage         String?
   canonicalUrl    String?
   robotsDirective String?
+  focusKeyword    String?
 
   /// Layout opcije
   template   String  @default("default")
@@ -654,8 +661,25 @@ enum PostStatus {
   DRAFT
   REVIEW
   PUBLISHED
+  PUBLISHED_PENDING
   ARCHIVED
 
+  @@schema("marketing")
+}
+
+/// 🚫 Logged 404 not-found requests
+model NotFoundLog {
+  id        String   @id @default(uuid())
+  path      String
+  referrer  String?
+  userAgent String?
+  count     Int      @default(1)
+  firstSeen DateTime @default(now())
+  lastSeen  DateTime @updatedAt
+
+  @@index([path])
+  @@index([count])
+  @@map("not_found_logs")
   @@schema("marketing")
 }
 
@@ -971,6 +995,28 @@ model ActivityLog {
   @@index([action])
   @@index([createdAt])
   @@map("activity_logs")
+  @@schema("marketing")
+}
+
+/// 👤 Author as Person — reusable author profile
+model Person {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  bio         String?  @db.Text
+  photo       String?
+  email       String?
+  twitterUrl  String?
+  facebookUrl String?
+  linkedinUrl String?
+  instagramUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts BlogPost[]
+
+  @@index([slug])
+  @@map("persons")
   @@schema("marketing")
 }
 

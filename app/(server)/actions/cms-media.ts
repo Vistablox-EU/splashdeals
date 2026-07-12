@@ -26,6 +26,7 @@ const updateMediaSchema = z.object({
   id: z.string(),
   altText: z.string().optional(),
   filename: z.string().optional(),
+  license: z.string().optional(),
 });
 
 const batchDeleteMediaSchema = z.object({
@@ -47,6 +48,7 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
       width: number | null;
       height: number | null;
       collection: string | null;
+      license: string | null;
       createdAt: string;
     }>;
     nextCursor: string | null;
@@ -119,6 +121,7 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
             width: number | null;
             height: number | null;
             collection: string | null;
+            license: string | null;
             createdAt: Date;
           }) => ({
             id: m.id,
@@ -130,6 +133,7 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
             width: m.width,
             height: m.height,
             collection: m.collection,
+            license: m.license,
             createdAt: m.createdAt.toISOString(),
           }),
         ),
@@ -247,6 +251,7 @@ export async function uploadMediaAction(
         width: imgWidth,
         height: imgHeight,
         collection: (formData.get("collection") as string) || null,
+        license: (formData.get("license") as string) || null,
       },
     });
 
@@ -306,6 +311,7 @@ export async function getMediaAction(id: string): Promise<
     width: number | null;
     height: number | null;
     collection: string | null;
+    license: string | null;
     createdAt: string;
     usageCount: number;
     usedIn: Array<{ type: "post" | "page"; id: string; title: string }>;
@@ -358,6 +364,7 @@ export async function getMediaAction(id: string): Promise<
         width: media.width ?? null,
         height: media.height ?? null,
         collection: media.collection ?? null,
+        license: media.license ?? null,
         createdAt: media.createdAt.toISOString(),
         usageCount: usedIn.length,
         usedIn,
@@ -382,6 +389,7 @@ export async function updateMediaAction(
       data: {
         ...(params.altText !== undefined && { altText: params.altText }),
         ...(params.filename !== undefined && { filename: params.filename }),
+        ...(params.license !== undefined && { license: params.license }),
       },
     });
 
@@ -733,5 +741,96 @@ export async function restoreMediaAction(id: string): Promise<ActionResult> {
     return { success: true };
   } catch (error) {
     return handleServerActionError(error, "cms/restoreMedia");
+  }
+}
+
+interface OrphanedMediaItem {
+  id: string;
+  filename: string;
+  url: string;
+  size: number;
+  createdAt: string;
+}
+
+// ─── 13. List Orphaned Media ─────────────────────────────
+
+export async function listOrphanedMediaAction(): Promise<ActionResult<OrphanedMediaItem[]>> {
+  try {
+    await requireAdmin();
+
+    // Get all media
+    const allMedia = await prisma.cmsMedia.findMany({
+      orderBy: { createdAt: "desc" },
+      select: { id: true, filename: true, url: true, size: true, createdAt: true },
+    });
+
+    const urls = allMedia.map((m: { url: string }) => m.url);
+
+    if (urls.length === 0) return { success: true, data: [] };
+
+    // Find which URLs are referenced in blog posts or pages
+    const [postRefs, pageRefs] = await Promise.all([
+      (prisma as any).$queryRawUnsafe(
+        `SELECT DISTINCT url FROM (
+          SELECT "coverImage" as url FROM marketing.blog_posts WHERE "coverImage" = ANY($1::text[])
+          UNION
+          SELECT "featuredImage" as url FROM marketing.blog_posts WHERE "featuredImage" = ANY($1::text[])
+          UNION
+          SELECT "ogImage" as url FROM marketing.blog_posts WHERE "ogImage" = ANY($1::text[])
+        ) sub`,
+        urls,
+      ) as Promise<Array<{ url: string }>>,
+      (prisma as any).$queryRawUnsafe(
+        `SELECT DISTINCT url FROM (
+          SELECT url FROM marketing.cms_media WHERE url = ANY($1::text[])
+        ) sub`,
+        urls,
+      ) as Promise<Array<{ url: string }>>,
+    ]);
+
+    // Check also content field (expensive — only do for small sets)
+    const usedUrls = new Set<string>();
+    for (const r of postRefs as Array<{ url: string }>) usedUrls.add(r.url);
+
+    // Check content column for URL references
+    const contentPostRefs = await (prisma as any).$queryRawUnsafe(
+      `SELECT DISTINCT id FROM marketing.blog_posts WHERE content LIKE ANY($1::text[])`,
+      urls.map((u: string) => `%${u}%`),
+    ) as Array<{ id: string }>;
+
+    if (contentPostRefs.length > 0) {
+      // If any post references these URLs, we can't be sure which ones
+      // So let's do a per-URL content check for accuracy
+      for (const media of allMedia) {
+        const contentMatches = await (prisma as any).$queryRawUnsafe(
+          `SELECT 1 FROM marketing.blog_posts WHERE content LIKE $1 LIMIT 1`,
+          `%${media.url}%`,
+        ) as Array<Record<string, unknown>>;
+        if (contentMatches.length > 0) usedUrls.add(media.url);
+
+        const pageContentMatches = await (prisma as any).$queryRawUnsafe(
+          `SELECT 1 FROM marketing.pages WHERE content LIKE $1 LIMIT 1`,
+          `%${media.url}%`,
+        ) as Array<Record<string, unknown>>;
+        if (pageContentMatches.length > 0) usedUrls.add(media.url);
+      }
+    }
+
+    const orphaned = allMedia.filter(
+      (m: { url: string }) => !usedUrls.has(m.url),
+    );
+
+    return {
+      success: true,
+      data: orphaned.map((m: { id: string; filename: string; url: string; size: number; createdAt: Date }) => ({
+        id: m.id,
+        filename: m.filename,
+        url: m.url,
+        size: m.size,
+        createdAt: m.createdAt.toISOString(),
+      })),
+    };
+  } catch (error) {
+    return handleServerActionError(error, "cms/listOrphanedMedia");
   }
 }

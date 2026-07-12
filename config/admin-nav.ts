@@ -79,6 +79,18 @@ export const adminNavData = {
           url: "/admin/media",
           icon: "photo_library",
         },
+        {
+          title: "API dokumentacija",
+          url: "/admin/cms/api-docs",
+          icon: "api",
+          requiredRole: "SUPER_ADMIN",
+        },
+        {
+          title: "Neiskorišćeni mediji",
+          url: "/admin/cms/orphaned-media",
+          icon: "delete_sweep",
+          requiredRole: "SUPER_ADMIN",
+        },
       ],
     },
     {

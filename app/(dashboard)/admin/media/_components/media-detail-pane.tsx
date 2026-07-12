@@ -76,6 +76,7 @@ interface MediaDetail {
   size: number;
   mimeType: string;
   altText: string | null;
+  license: string | null;
   createdAt: string;
   usageCount: number;
   usedIn: Array<{ type: "post" | "page"; id: string; title: string }>;
@@ -346,6 +347,31 @@ export function MediaDetailPane({
             </span>
             <span className="text-foreground text-xs">{formatDate(detail.createdAt)}</span>
           </div>
+        </div>
+
+        {/* License */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-muted-foreground text-[10px] tracking-wider uppercase">
+            Licenca
+          </label>
+          <select
+            value={detail.license || ""}
+            onChange={async (e) => {
+              const newLicense = e.target.value || null;
+              setDetail((prev) => (prev ? { ...prev, license: newLicense } : prev));
+              await updateMediaAction({ id: detail.id, license: newLicense || undefined });
+            }}
+            className="border-input bg-background ring-offset-background file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-8 w-full rounded-md border px-2 text-xs file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">Bez licence</option>
+            <option value="CC0">CC0 — Javno vlasništvo</option>
+            <option value="CC-BY">CC BY — Uz navođenje autora</option>
+            <option value="CC-BY-SA">CC BY-SA — Deli pod istim uslovima</option>
+            <option value="CC-BY-NC">CC BY-NC — Nekomercijalno</option>
+            <option value="CC-BY-ND">CC BY-ND — Bez prerade</option>
+            <option value="All Rights Reserved">Sva prava zadržana</option>
+            <option value="Royalty Free">Royalty Free</option>
+          </select>
         </div>
 
         <Separator />

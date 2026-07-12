@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod/v4";
 import { triggerWebhooks } from "@/app/(server)/actions/webhooks";
 import { logActivity } from "@/app/(server)/actions/activity";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 // ─── Zod v4 šeme ───────────────────────────────────────
 
@@ -16,11 +17,13 @@ const blogPostSchema = z.object({
     .string()
     .min(1, "Slug je obavezan")
     .regex(/^[a-z0-9-]+$/, "Samo mala slova, brojevi i crtice"),
-  content: z.string().default(""),
+  content: z.string().default("").transform((v) => sanitizeHtml(v)),
   excerpt: z.string().optional(),
   coverImage: z.string().optional(),
+  coverImageAlt: z.string().optional(),
   featuredImage: z.string().optional(),
   author: z.string().optional(),
+  authorPersonId: z.string().optional().nullable(),
   status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED"]).default("DRAFT"),
   categoryId: z.string().optional(),
   isFeatured: z.boolean().default(false),
@@ -32,6 +35,7 @@ const blogPostSchema = z.object({
   canonicalUrl: z.string().optional(),
   robotsDirective: z.string().optional(),
   publishedAt: z.string().datetime().optional().nullable(),
+  focusKeyword: z.string().optional(),
 });
 
 export type BlogPostFormValues = z.infer<typeof blogPostSchema>;
@@ -42,13 +46,13 @@ const pageSchema = z.object({
     .string()
     .min(1, "Slug je obavezan")
     .regex(/^[a-z0-9-]+$/, "Samo mala slova, brojevi i crtice"),
-  content: z.string().default(""),
+  content: z.string().default("").transform((v) => sanitizeHtml(v)),
   excerpt: z.string().optional(),
   coverImage: z.string().optional(),
   template: z.string().default("default"),
   showHeader: z.boolean().default(true),
   showFooter: z.boolean().default(true),
-  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED"]).default("DRAFT"),
+  status: z.enum(["DRAFT", "REVIEW", "PUBLISHED", "PUBLISHED_PENDING", "ARCHIVED"]).default("DRAFT"),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   ogTitle: z.string().optional(),
@@ -215,6 +219,28 @@ export async function updateBlogPostAction(
       });
     }
 
+    // #397 — Auto redirect on slug change: when slug changes, create 301 redirect
+    // from old slug to new slug. We fetch the post BEFORE the tag update to compare slugs.
+    const existingPost = await prisma.blogPost.findUnique({ where: { id } });
+    if (
+      existingPost &&
+      validated.slug &&
+      existingPost.slug !== validated.slug
+    ) {
+      const oldSlug = existingPost.slug;
+      const newSlug = validated.slug;
+      await prisma.redirect.upsert({
+        where: { source: `/blog/${oldSlug}` },
+        update: { destination: `/blog/${newSlug}`, isActive: true },
+        create: {
+          source: `/blog/${oldSlug}`,
+          destination: `/blog/${newSlug}`,
+          statusCode: 301,
+          isActive: true,
+        },
+      });
+    }
+
     revalidatePath("/admin/cms/posts");
     revalidatePath(`/admin/cms/posts/${id}`);
 
@@ -240,6 +266,53 @@ export async function updateBlogPostAction(
     return { success: true, data: { id: post.id } };
   } catch (error) {
     return handleServerActionError(error, "cms/updateBlogPost");
+  }
+}
+
+// ─── Blog Post Revisions ────────────────────────────────
+
+export async function getBlogPostRevisionsAction(
+  postId: string,
+): Promise<ActionResult<Array<{ id: string; title: string; createdAt: string }>>> {
+  try {
+    await requireAdmin();
+    const revisions = await prisma.blogPostRevision.findMany({
+      where: { postId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+      },
+    });
+    return {
+      success: true,
+      data: revisions.map((r) => ({
+        id: r.id,
+        title: r.title,
+        createdAt: r.createdAt.toISOString(),
+      })),
+    };
+  } catch (error) {
+    return handleServerActionError(error, "cms/getBlogPostRevisions");
+  }
+}
+
+export async function getBlogPostRevisionAction(
+  id: string,
+): Promise<ActionResult<{ title: string; content: string; excerpt: string | null }>> {
+  try {
+    await requireAdmin();
+    const revision = await prisma.blogPostRevision.findUnique({
+      where: { id },
+      select: { title: true, content: true, excerpt: true },
+    });
+    if (!revision) {
+      return { success: false, error: "Revizija nije pronađena." };
+    }
+    return { success: true, data: revision };
+  } catch (error) {
+    return handleServerActionError(error, "cms/getBlogPostRevision");
   }
 }
 
@@ -717,4 +790,204 @@ function calculateReadingTime(html: string): number {
   if (!text) return 0;
   const wordCount = text.split(/\s+/).length;
   return Math.max(1, Math.ceil(wordCount / 200));
+}
+
+// ─── Orphan Pages ───────────────────────────────────
+
+export async function getOrphanPagesAction(): Promise<
+  ActionResult<Array<{ id: string; title: string; slug: string; type: "page" | "blogPost"; createdAt: Date }>>
+> {
+  try {
+    await requireAdmin();
+
+    const [pages, blogPosts] = await Promise.all([
+      prisma.page.findMany({
+        where: { status: "PUBLISHED" },
+        select: { id: true, title: true, slug: true, content: true, createdAt: true },
+      }),
+      prisma.blogPost.findMany({
+        where: { status: "PUBLISHED" },
+        select: { id: true, title: true, slug: true, content: true, createdAt: true },
+      }),
+    ]);
+
+    // Get all slugs that are linked to in any published content
+    const allLinkedSlugs = new Set<string>();
+
+    const extractSlugs = (html: string) => {
+      const hrefRegex = /href="([^"]*)"/gi;
+      let match: RegExpExecArray | null;
+      while ((match = hrefRegex.exec(html)) !== null) {
+        const url = match[1];
+        // Extract slug from URL
+        const slugMatch = url.match(/\/(?:blog\/)?([a-z0-9-]+)(?:\?|#|$)/);
+        if (slugMatch) {
+          allLinkedSlugs.add(slugMatch[1]);
+        }
+      }
+    };
+
+    for (const page of pages) extractSlugs(page.content);
+    for (const post of blogPosts) extractSlugs(post.content);
+
+    // Find pages whose slugs are NOT in any linked content
+    const orphanPages = pages
+      .filter((p) => !allLinkedSlugs.has(p.slug))
+      .map((p) => ({ id: p.id, title: p.title, slug: p.slug, type: "page" as const, createdAt: p.createdAt }));
+
+    const orphanPosts = blogPosts
+      .filter((p) => !allLinkedSlugs.has(p.slug))
+      .map((p) => ({ id: p.id, title: p.title, slug: p.slug, type: "blogPost" as const, createdAt: p.createdAt }));
+
+    return { success: true, data: [...orphanPages, ...orphanPosts].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) };
+  } catch (error) {
+    return handleServerActionError(error, "cms/getOrphanPages");
+  }
+}
+
+// ─── Broken Link Checker ────────────────────────────
+
+export async function checkBrokenLinksAction(): Promise<
+  ActionResult<Array<{ postId: string; postTitle: string; postSlug: string; url: string; statusCode: number; contentType: "post" | "page" }>>
+> {
+  try {
+    await requireAdmin();
+
+    const [pages, blogPosts] = await Promise.all([
+      prisma.page.findMany({
+        where: { status: "PUBLISHED" },
+        select: { id: true, title: true, slug: true, content: true },
+      }),
+      prisma.blogPost.findMany({
+        where: { status: "PUBLISHED" },
+        select: { id: true, title: true, slug: true, content: true },
+      }),
+    ]);
+
+    const extractExternalLinks = (html: string): string[] => {
+      const links: string[] = [];
+      const hrefRegex = /href="(https?:\/\/[^"]+)"/gi;
+      let match: RegExpExecArray | null;
+      while ((match = hrefRegex.exec(html)) !== null) {
+        const url = match[1];
+        // Skip splashdeals internal links
+        if (!url.includes("splashdeals.rs") && !url.includes("localhost")) {
+          links.push(url);
+        }
+      }
+      return [...new Set(links)];
+    };
+
+    const brokenLinks: Array<{ postId: string; postTitle: string; postSlug: string; url: string; statusCode: number; contentType: "post" | "page" }> = [];
+
+    for (const page of pages) {
+      const links = extractExternalLinks(page.content);
+      for (const url of links) {
+        try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 5000);
+          const response = await fetch(url, { method: "HEAD", signal: controller.signal, redirect: "manual" });
+          clearTimeout(timeout);
+          const status = response.status;
+          if (status >= 400) {
+            brokenLinks.push({
+              postId: page.id,
+              postTitle: page.title,
+              postSlug: page.slug,
+              url,
+              statusCode: status,
+              contentType: "page",
+            });
+          }
+        } catch {
+          brokenLinks.push({
+            postId: page.id,
+            postTitle: page.title,
+            postSlug: page.slug,
+            url,
+            statusCode: 0,
+            contentType: "page",
+          });
+        }
+      }
+    }
+
+    for (const post of blogPosts) {
+      const links = extractExternalLinks(post.content);
+      for (const url of links) {
+        try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 5000);
+          const response = await fetch(url, { method: "HEAD", signal: controller.signal, redirect: "manual" });
+          clearTimeout(timeout);
+          const status = response.status;
+          if (status >= 400) {
+            brokenLinks.push({
+              postId: post.id,
+              postTitle: post.title,
+              postSlug: post.slug,
+              url,
+              statusCode: status,
+              contentType: "post",
+            });
+          }
+        } catch {
+          brokenLinks.push({
+            postId: post.id,
+            postTitle: post.title,
+            postSlug: post.slug,
+            url,
+            statusCode: 0,
+            contentType: "post",
+          });
+        }
+      }
+    }
+
+    return { success: true, data: brokenLinks };
+  } catch (error) {
+    return handleServerActionError(error, "cms/checkBrokenLinks");
+  }
+}
+
+// ─── 404 Monitoring ────────────────────────────────
+
+export async function getNotFoundLogsAction(): Promise<
+  ActionResult<Array<{ id: string; path: string; referrer: string | null; count: number; firstSeen: Date; lastSeen: Date }>>
+> {
+  try {
+    await requireAdmin();
+    const logs = await prisma.notFoundLog.findMany({
+      orderBy: { count: "desc" },
+      take: 100,
+    });
+    return { success: true, data: logs as unknown as Array<{ id: string; path: string; referrer: string | null; count: number; firstSeen: Date; lastSeen: Date }> };
+  } catch (error) {
+    return handleServerActionError(error, "cms/getNotFoundLogs");
+  }
+}
+
+export async function clearNotFoundLogAction(id: string): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    await prisma.notFoundLog.delete({ where: { id } });
+    revalidatePath("/admin/cms/404s");
+    return { success: true };
+  } catch (error) {
+    return handleServerActionError(error, "cms/clearNotFoundLog");
+  }
+}
+
+// ─── Internal Link Suggestions ─────────────────────
+
+export async function getFacilityNamesAction(): Promise<ActionResult<Array<{ name: string; slug: string }>>> {
+  try {
+    await requireAdmin();
+    const facilities = await (prisma as any).facility.findMany({
+      select: { name: true, slug: true },
+    });
+    return { success: true, data: facilities as Array<{ name: string; slug: string }> };
+  } catch (error) {
+    return handleServerActionError(error, "cms/getFacilityNames");
+  }
 }

@@ -18,6 +18,7 @@ interface MediaItem {
   width: number | null;
   height: number | null;
   collection: string | null;
+  license: string | null;
   createdAt: string;
 }
 
