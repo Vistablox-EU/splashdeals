@@ -267,7 +267,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
           <div className="mb-8 flex flex-col items-center space-y-4 text-center sm:mb-16">
             <div className="brand-divider mb-2 w-16" />
             <h2 className="text-foreground text-2xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
-              Aktuelne <span className="text-splash">Ponude.</span>
+              {dict.facilities.ticket_prices}
             </h2>
           </div>
           <Suspense fallback={<TicketGridSkeleton />}>

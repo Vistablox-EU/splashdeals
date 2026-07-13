@@ -83,7 +83,8 @@
     "in_this_category": "Ponuda u ovoj kategoriji",
     "location_discovery": "Strateški Regioni",
     "best_in": "Najbolje Destinacije u",
-    "no_results_hint": "Pokušajte da prilagodite filtere ili istražite druge kategorije."
+    "no_results_hint": "Pokušajte da prilagodite filtere ili istražite druge kategorije.",
+    "ticket_prices": "Cene Ulaznica"
   },
   "nav": {
     "home": "Početna",
