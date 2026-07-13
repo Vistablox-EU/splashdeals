@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { useCart } from "@/hooks/use-cart";
+import { getCartAction } from "@/app/(server)/actions/cart";
 
 interface NavItem {
   label: string;
@@ -42,10 +43,8 @@ export function BottomNav() {
       if (currentScrollY < SCROLL_THRESHOLD) {
         setIsVisible(true);
       } else if (delta > SCROLL_THRESHOLD) {
-        // Scrolling down past threshold → hide
         setIsVisible(false);
       } else if (delta < -SCROLL_THRESHOLD) {
-        // Scrolling up past threshold → show
         setIsVisible(true);
       }
 
@@ -53,6 +52,31 @@ export function BottomNav() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+
+    // 🚩 Phase 2: Sync cart badge count with server on mount
+    if (process.env.NEXT_PUBLIC_CART_V2) {
+      getCartAction()
+        .then((result) => {
+          if (result.success && result.data) {
+            const serverItems = result.data.items || [];
+            const currentCount = useCart.getState().getTotalItems();
+            const serverCount = serverItems.reduce(
+              (sum: number, i: any) => sum + (i.quantity || 0),
+              0,
+            );
+            if (currentCount === 0 && serverCount > 0) {
+              for (const item of serverItems) {
+                useCart.setState((state) => {
+                  if (state.items.find((i) => i.id === item.id)) return state;
+                  return { items: [...state.items, { ...item, updatedAt: Date.now() }] };
+                });
+              }
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

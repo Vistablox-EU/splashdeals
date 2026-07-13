@@ -10,6 +10,7 @@ import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import { createCheckoutSessionAction } from "@/app/(server)/actions/checkout";
 import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
 import {
+  addToCartAction,
   removeFromCartAction,
   updateCartQuantityAction,
   clearCartAction,
@@ -20,7 +21,13 @@ import Link from "next/link";
 import { toast } from "sonner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function CartClient({ dict }: { dict: Record<string, any> }) {
+export function CartClient({
+  dict,
+  initialCart,
+}: {
+  dict: Record<string, any>;
+  initialCart?: any[] | null;
+}) {
   const items = useCart((s) => s.items);
   const updateQuantity = useCart((s) => s.updateQuantity);
   const removeItem = useCart((s) => s.removeItem);
@@ -43,13 +50,81 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
     : 0;
   const total = totalBeforeDiscount - discountAmount;
 
+  /**
+   * 🚩 Phase 2: Server cart synchronization
+   * - If server has items, hydrate Zustand from server (server is source of truth)
+   * - If localStorage has items but server is empty, migrate to server
+   */
+  const performServerCartSync = React.useCallback(async () => {
+    const STORAGE_KEY = "cart-storage";
+
+    const stored = localStorage.getItem(STORAGE_KEY);
+    let localItems: any[] = [];
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        localItems = parsed?.state?.items || [];
+      } catch {
+        // Ignore corrupt localStorage
+      }
+    }
+
+    if (initialCart && initialCart.length > 0) {
+      // Server has items — hydrate Zustand from server (server is source of truth)
+      const currentItems = useCart.getState().items;
+      const currentKeys = new Set(currentItems.map((i: any) => i.id));
+      const needsHydrate =
+        currentItems.length === 0 ||
+        currentItems.length !== initialCart.length ||
+        !initialCart.every((i: any) => currentKeys.has(i.id));
+
+      if (needsHydrate) {
+        useCart.getState().clearCart();
+        for (const item of initialCart) {
+          useCart.setState((state) => {
+            const exists = state.items.find((i) => i.id === item.id);
+            if (exists) return state;
+            return { items: [...state.items, { ...item, updatedAt: Date.now() }] };
+          });
+        }
+      }
+
+      localStorage.removeItem(STORAGE_KEY);
+    } else if (localItems.length > 0) {
+      // Server is empty, localStorage has items — migrate to server
+      for (const item of localItems) {
+        addToCartAction({
+          ticketPriceId: item.ticketId,
+          facilityId: item.facilityId,
+          quantity: item.quantity,
+          title: item.title,
+          price: item.price,
+          currency: item.currency || "RSD",
+          requiresIdentity: item.requiresIdentity,
+          requiresPhoto: item.requiresPhoto,
+          facilityName: item.facilityName,
+          category: item.category,
+          validityType: item.validityType,
+          imageUrl: item.imageUrl || null,
+          minPeople: item.minPeople,
+          maxPeople: item.maxPeople ?? null,
+        }).catch(console.error);
+      }
+    }
+  }, [initialCart]);
+
   React.useEffect(() => {
     const timer = requestAnimationFrame(() => {
       setIsMounted(true);
       clearStaleCart();
+
+      // 🚩 Phase 2: Server-first cart — sync with server
+      if (process.env.NEXT_PUBLIC_CART_V2) {
+        performServerCartSync();
+      }
     });
     return () => cancelAnimationFrame(timer);
-  }, [clearStaleCart]);
+  }, [clearStaleCart, performServerCartSync]);
 
   if (!isMounted) return null;
 
