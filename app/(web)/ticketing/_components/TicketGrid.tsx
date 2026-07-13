@@ -45,7 +45,13 @@ async function getTickets() {
           category: {
             include: {
               facility: {
-                include: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  category: true,
+                  city: true,
+                  description: true,
                   media: {
                     where: { type: "PHOTO" },
                     orderBy: { order: "asc" },
@@ -54,7 +60,6 @@ async function getTickets() {
                   hours: {
                     select: { dayOfWeek: true, isClosed: true },
                   },
-                  description: true,
                 },
               },
             },
