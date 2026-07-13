@@ -9,7 +9,7 @@ const adapter = new PrismaNeon({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 const cities = [
-  { name: "Belgrade", slug: "belgrade" },
+  { name: "Beograd", slug: "belgrade" },
   { name: "Novi Sad", slug: "novi-sad" },
   { name: "Niš", slug: "nis" },
   { name: "Kragujevac", slug: "kragujevac" },
@@ -20,7 +20,7 @@ const cities = [
   { name: "Srem", slug: "srem" },
   { name: "Banat", slug: "banat" },
   { name: "Central Serbia", slug: "central-serbia" },
-  { name: "Belgrade Day Trip", slug: "belgrade-day-trip" },
+  { name: "Beograd Day Trip", slug: "belgrade-day-trip" },
   { name: "Airport Area", slug: "airport-area" },
   { name: "Šumadija", slug: "sumadija" },
   { name: "Bačka", slug: "backa" },

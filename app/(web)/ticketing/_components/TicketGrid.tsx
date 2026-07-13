@@ -54,6 +54,7 @@ async function getTickets() {
                   hours: {
                     select: { dayOfWeek: true, isClosed: true },
                   },
+                  description: true,
                 },
               },
             },
@@ -100,6 +101,7 @@ async function getTickets() {
           slug: facility.slug,
           category: facility.category,
           city: facility.city,
+          description: facility.description || null,
           hours: facility.hours,
           media: facility.media.map((m) => ({
             id: m.id,
@@ -167,20 +169,20 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
             />
             <Card className="group border-border hover:border-primary/30 hover:shadow-primary/5 flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-xl">
               {/* Facility name + city above image */}
-              <div className="flex flex-col gap-0.5 px-4 pt-3 sm:px-4 sm:pt-4">
-                <h3 className="text-foreground line-clamp-1 text-xs leading-tight font-black tracking-tight uppercase sm:text-sm">
+              <div className="flex flex-col gap-0.5 px-3 pt-3 sm:px-4 sm:pt-4">
+                <h3 className="text-foreground line-clamp-1 text-[11px] leading-tight font-black tracking-tight uppercase sm:text-xs">
                   {ticket.facility.name}
                 </h3>
                 {ticket.facility.city && (
-                  <span className="text-muted-foreground flex items-center gap-1 text-[10px] font-bold">
-                    <Icon name="location_on" className="text-primary/70 text-[10px]" />
+                  <span className="text-muted-foreground flex items-center gap-1 text-[9px] font-bold">
+                    <Icon name="location_on" className="text-primary/70 text-[9px]" />
                     {ticket.facility.city}
                   </span>
                 )}
               </div>
 
-              {/* Image — aspect-[4/5], full bleed, no text overlay */}
-              <div className="relative mx-4 mt-2.5 aspect-[4/5] w-[calc(100%-2rem)] overflow-hidden rounded-xl sm:mx-4 sm:w-[calc(100%-2rem)]">
+              {/* Image — compact aspect ratio */}
+              <div className="relative mx-3 mt-2 aspect-[4/5] w-[calc(100%-1.5rem)] overflow-hidden rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
                 {cardImage ? (
                   <Image
                     src={cardImage}
@@ -210,7 +212,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                 {/* Discount pill on image — top right */}
                 {hasDiscount && (
                   <div className="pointer-events-none absolute top-3 right-3 z-10">
-                    <span className="inline-flex items-center rounded-full bg-amber-500 px-2 py-0.5 text-[10px] leading-none font-black text-white shadow-lg">
+                    <span className="inline-flex items-center rounded-full bg-amber-500 px-2 py-0.5 text-[10px] leading-none font-black text-amber-950 shadow-lg">
                       -{discountPercent}%
                     </span>
                   </div>
@@ -227,10 +229,16 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                 )}
               </div>
 
-              <div className="flex flex-grow flex-col px-4 pt-2.5 pb-3.5 sm:px-4 sm:pb-4">
-                <h4 className="group-hover:text-primary mb-1 text-xs leading-tight font-black tracking-tight uppercase transition-colors sm:text-sm">
+              <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pb-4">
+                <h4 className="group-hover:text-primary mb-1 text-sm leading-tight font-black tracking-tight uppercase transition-colors">
                   {ticket.title}
                 </h4>
+
+                <p className="text-muted-foreground mb-2 line-clamp-2 text-[10px] leading-relaxed font-medium">
+                  {ticket.description ||
+                    ticket.facility.description ||
+                    dict.home.default_ticket_desc}
+                </p>
 
                 <div className="relative z-30 mt-auto flex items-end justify-between gap-2">
                   <div className="flex flex-col">
@@ -242,7 +250,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                     <div className="flex items-baseline gap-1">
                       <data
                         value={ticket.price}
-                        className="text-foreground text-sm font-black tracking-tighter italic sm:text-lg"
+                        className="text-foreground text-base font-black tracking-tighter italic sm:text-lg"
                       >
                         {priceFormat.format(ticket.price)}
                       </data>
@@ -282,21 +290,21 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
           className="pointer-events-none h-full opacity-40 grayscale transition-opacity duration-500 select-none"
         >
           <Card className="border-border flex h-full flex-col overflow-hidden border-dashed opacity-50">
-            <div className="px-4 pt-3 sm:px-4 sm:pt-4">
-              <div className="bg-muted mb-1 h-4 w-3/4 rounded-md" />
-              <div className="bg-muted h-3 w-1/2 rounded-md" />
+            <div className="px-3 pt-3 sm:px-4 sm:pt-4">
+              <div className="bg-muted mb-1 h-3 w-3/4 rounded-md" />
+              <div className="bg-muted h-2 w-1/2 rounded-md" />
             </div>
-            <div className="bg-muted/50 mx-4 mt-2.5 flex aspect-[4/5] w-[calc(100%-2rem)] items-center justify-center rounded-xl sm:mx-4 sm:w-[calc(100%-2rem)]">
-              <Icon name="auto_awesome" className="text-muted-foreground/30 text-[40px]" />
+            <div className="bg-muted/50 mx-3 mt-2 flex aspect-[4/5] w-[calc(100%-1.5rem)] items-center justify-center rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
+              <Icon name="auto_awesome" className="text-muted-foreground/30 text-[30px]" />
             </div>
-            <div className="flex flex-grow flex-col px-4 pt-2.5 pb-3.5 sm:px-4 sm:pb-4">
-              <div className="bg-muted mb-1 h-4 w-2/3 rounded-md" />
+            <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pb-4">
+              <div className="bg-muted mb-1 h-3 w-2/3 rounded-md" />
               <div className="mt-auto flex items-end justify-between gap-2">
                 <div className="flex flex-col gap-1">
-                  <div className="bg-muted h-3 w-12 rounded-sm" />
-                  <div className="bg-muted h-5 w-16 rounded-md" />
+                  <div className="bg-muted h-2 w-12 rounded-sm" />
+                  <div className="bg-muted h-4 w-16 rounded-md" />
                 </div>
-                <div className="bg-muted h-10 w-10 rounded-2xl" />
+                <div className="bg-muted h-8 w-8 rounded-2xl" />
               </div>
             </div>
           </Card>
