@@ -222,13 +222,13 @@ export function CustomersTable({ page, limit, search: initialSearch }: Customers
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-foreground font-bold text-xs">
+                    <span className="text-foreground text-xs font-bold">
                       {customer.transactionCount}
                     </span>
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`font-bold text-xs ${
+                      className={`text-xs font-bold ${
                         customer.activeTicketsCount > 0
                           ? "text-emerald-400"
                           : "text-muted-foreground"
