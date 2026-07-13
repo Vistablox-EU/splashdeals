@@ -1,14 +1,15 @@
 import { Metadata } from "next";
-import { connection } from "next/server";
-import { JsonLd } from "@/components/SEO/JsonLd";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
+import { getDictionary } from "@/lib/dictionaries";
+import { prisma } from "@/server/lib/prisma";
+import { auth } from "@/server/lib/auth";
+import { headers } from "next/headers";
+import type { Prisma } from "@prisma/client";
+import { JsonLd } from "@/components/SEO/JsonLd";
+import { CheckoutForm } from "./_components/CheckoutForm";
+import type { CartItem } from "@/lib/types/cart";
 
-/**
- * 🌊 Checkout Page
- * Users must add items to cart first — direct access redirects to homepage.
- * Meta robots: noindex, nofollow (transactional page — never index).
- * Only ONE source of robots directives to prevent conflicts.
- */
 export const metadata: Metadata = {
   title: "Naplata | Splashdeals",
   robots: { index: false, follow: false },
@@ -18,9 +19,73 @@ export const metadata: Metadata = {
 export default async function CheckoutPage() {
   await connection();
 
-  // No items in cart — redirect to homepage
-  // (In a real implementation, this would check cart state)
-  redirect("/");
+  const dict = await getDictionary();
+
+  // Require authentication
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) {
+    redirect("/prijava");
+  }
+
+  // Read cart from server
+  const cartSession = await prisma.cartSession.findFirst({
+    where: { userId: session.user.id },
+    orderBy: { updatedAt: "desc" },
+  });
+
+  if (!cartSession || !Array.isArray(cartSession.items) || cartSession.items.length === 0) {
+    redirect("/cart");
+  }
+
+  // Re-validate prices against DB
+  const items = cartSession.items as unknown as CartItem[];
+  const validatedItems: CartItem[] = [];
+  let needsUpdate = false;
+
+  for (const item of items) {
+    const ticketPrice = await prisma.ticketPrice.findUnique({
+      where: { id: item.ticketId },
+      include: {
+        ticketType: {
+          include: {
+            category: { include: { facility: true } },
+          },
+        },
+      },
+    });
+
+    if (
+      !ticketPrice ||
+      !ticketPrice.isActive ||
+      ticketPrice.ticketType.category.facility.status !== "ACTIVE"
+    ) {
+      continue;
+    }
+
+    const currentPrice = Number(ticketPrice.price);
+    if (currentPrice !== item.price) {
+      needsUpdate = true;
+      validatedItems.push({ ...item, price: currentPrice });
+    } else {
+      validatedItems.push(item);
+    }
+  }
+
+  if (validatedItems.length === 0) {
+    redirect("/cart");
+  }
+
+  // Persist any price changes
+  if (needsUpdate) {
+    await prisma.cartSession.update({
+      where: { id: cartSession.id },
+      data: { items: validatedItems as unknown as Prisma.InputJsonValue },
+    });
+  }
+
+  const totalBeforeDiscount = validatedItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
+  const _facilityId = validatedItems[0].facilityId;
 
   return (
     <>
@@ -33,9 +98,11 @@ export default async function CheckoutPage() {
           description: "Završite kupovinu digitalnih ulaznica za akva parkove.",
         }}
       />
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-muted-foreground">Preusmeravanje...</p>
-      </div>
+      <CheckoutForm
+        initialItems={validatedItems}
+        totalBeforeDiscount={totalBeforeDiscount}
+        dict={dict}
+      />
     </>
   );
 }

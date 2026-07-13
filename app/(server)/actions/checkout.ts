@@ -9,6 +9,7 @@ import {
 } from "@/app/(server)/actions/campaigns";
 import { auth } from "@/server/lib/auth";
 import { headers } from "next/headers";
+import { setCartLockAction } from "@/app/(server)/actions/cart";
 
 /**
  * 🌊 Initialise a Stripe Checkout session from the cart.
@@ -33,12 +34,24 @@ export async function createCheckoutSessionAction(params: {
       return { success: false, error: "Morate biti prijavljeni da biste nastavili kupovinu." };
     }
 
-    const result = await createCheckoutSession({
-      ...params,
-      userId: session.user.id,
-      email: session.user.email,
-    });
-    return { success: true, data: { url: result.url } };
+    // 🔒 Lock cart to prevent concurrent mutations during checkout
+    await setCartLockAction(true);
+
+    try {
+      const result = await createCheckoutSession({
+        ...params,
+        userId: session.user.id,
+        email: session.user.email,
+      });
+
+      // 🔓 Unlock on success (cart cleared by Stripe webhook)
+      await setCartLockAction(false);
+      return { success: true, data: { url: result.url } };
+    } catch (error) {
+      // 🔓 Unlock on failure so user can retry
+      await setCartLockAction(false);
+      throw error;
+    }
   } catch (error) {
     return handleServerActionError(error, "checkout");
   }
