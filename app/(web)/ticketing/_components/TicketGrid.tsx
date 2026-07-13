@@ -187,7 +187,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
               </div>
 
               {/* Image — compact aspect ratio */}
-              <div className="relative mx-3 mt-2 aspect-[4/5] w-[calc(100%-1.5rem)] overflow-hidden rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
+              <div className="relative mx-3 mt-2 aspect-square w-[calc(100%-1.5rem)] overflow-hidden rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
                 {cardImage ? (
                   <Image
                     src={cardImage}
@@ -299,7 +299,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
               <div className="bg-muted mb-1 h-3 w-3/4 rounded-md" />
               <div className="bg-muted h-2 w-1/2 rounded-md" />
             </div>
-            <div className="bg-muted/50 mx-3 mt-2 flex aspect-[4/5] w-[calc(100%-1.5rem)] items-center justify-center rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
+            <div className="bg-muted/50 mx-3 mt-2 flex aspect-square w-[calc(100%-1.5rem)] items-center justify-center rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
               <Icon name="auto_awesome" className="text-muted-foreground/30 text-[30px]" />
             </div>
             <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pb-4">

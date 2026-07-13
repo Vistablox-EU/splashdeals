@@ -9,6 +9,11 @@ import { Input } from "@/components/ui/input";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import { createCheckoutSessionAction } from "@/app/(server)/actions/checkout";
 import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
+import {
+  removeFromCartAction,
+  updateCartQuantityAction,
+  clearCartAction,
+} from "@/app/(server)/actions/cart";
 import { trackBeginCheckout } from "@/lib/analytics/events";
 import Image from "next/image";
 import Link from "next/link";
@@ -100,6 +105,9 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
       if (result.data?.url) {
         // 🌊 Clear cart immediately so it's empty when they return
         clearCart();
+        if (process.env.NEXT_PUBLIC_CART_V2) {
+          clearCartAction().catch(console.error);
+        }
         window.location.href = result.data.url;
       } else {
         throw new Error(result.error || "Checkout endpoint returned no redirect URL");
@@ -213,6 +221,12 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                           if (typeof navigator !== "undefined" && "vibrate" in navigator)
                             navigator.vibrate(10);
                           updateQuantity(item.id, item.quantity - 1);
+                          if (process.env.NEXT_PUBLIC_CART_V2) {
+                            updateCartQuantityAction({
+                              itemId: item.id,
+                              quantity: item.quantity - 1,
+                            }).catch(console.error);
+                          }
                         }}
                         variant="ghost"
                         size="icon"
@@ -234,6 +248,12 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                           if (typeof navigator !== "undefined" && "vibrate" in navigator)
                             navigator.vibrate(10);
                           updateQuantity(item.id, item.quantity + 1);
+                          if (process.env.NEXT_PUBLIC_CART_V2) {
+                            updateCartQuantityAction({
+                              itemId: item.id,
+                              quantity: item.quantity + 1,
+                            }).catch(console.error);
+                          }
                         }}
                         variant="ghost"
                         size="icon"
@@ -256,6 +276,9 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                           if (typeof navigator !== "undefined" && "vibrate" in navigator)
                             navigator.vibrate([20, 50, 20]);
                           removeItem(item.id);
+                          if (process.env.NEXT_PUBLIC_CART_V2) {
+                            removeFromCartAction({ itemId: item.id }).catch(console.error);
+                          }
                         }}
                         variant="ghost"
                         size="default"

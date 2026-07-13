@@ -6,6 +6,7 @@ import { useUIState } from "@/hooks/use-ui-state";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { trackAddToCart } from "@/lib/analytics/events";
+import { addToCartAction } from "@/app/(server)/actions/cart";
 
 interface AddToCartButtonProps {
   ticket: {
@@ -53,6 +54,26 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
       maxPeople: ticket.maxPeople,
       imageUrl: ticket.imageUrl,
     });
+
+    // 🔄 Dual-write: persist to server cart session (fire-and-forget)
+    if (process.env.NEXT_PUBLIC_CART_V2) {
+      addToCartAction({
+        ticketPriceId: ticket.id,
+        facilityId: ticket.facility.id,
+        quantity: 1,
+        title: ticket.title,
+        price: Number(ticket.price),
+        currency: ticket.currency,
+        facilityName: ticket.facility.name,
+        category: ticket.facility.category,
+        validityType: ticket.validityType,
+        requiresIdentity: ticket.requiresIdentity,
+        requiresPhoto: ticket.requiresPhoto,
+        minPeople: ticket.minPeople,
+        maxPeople: ticket.maxPeople,
+        imageUrl: ticket.imageUrl,
+      }).catch(console.error);
+    }
     trackAddToCart({
       ticketId: ticket.id,
       facilityName: ticket.facility.name,

@@ -9,6 +9,7 @@ import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
 import { getDayTypeForDate, filterPricesByDate } from "@/app/(server)/lib/ticket-utils";
+import { addToCartAction } from "@/app/(server)/actions/cart";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -229,6 +230,26 @@ export function TicketPurchaseModal({
       maxPeople: activeProduct.maxPeople,
       imageUrl: activeProduct.imageUrl || null,
     });
+
+    // 🔄 Dual-write: persist to server cart session (fire-and-forget)
+    if (process.env.NEXT_PUBLIC_CART_V2) {
+      addToCartAction({
+        ticketPriceId: activePrice.id,
+        facilityId: facility.id,
+        quantity,
+        title: `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`,
+        price: activePrice.price,
+        currency: "RSD",
+        facilityName: facility.name,
+        category: facility.category,
+        validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
+        requiresIdentity: activeProduct.requiresIdentity,
+        requiresPhoto: activeProduct.requiresPhoto,
+        minPeople: activeProduct.minPeople,
+        maxPeople: activeProduct.maxPeople,
+        imageUrl: activeProduct.imageUrl || null,
+      }).catch(console.error);
+    }
 
     setIsAdding(true);
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);

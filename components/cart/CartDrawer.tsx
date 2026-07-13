@@ -9,6 +9,7 @@ import { LiquidButton } from "@/components/ui/LiquidButton";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
+import { removeFromCartAction, updateCartQuantityAction } from "@/app/(server)/actions/cart";
 
 export const CartDrawer = () => {
   const isCartOpen = useUIState((s) => s.isCartOpen);
@@ -109,6 +110,12 @@ export const CartDrawer = () => {
                               if (typeof navigator !== "undefined" && "vibrate" in navigator)
                                 navigator.vibrate(10);
                               updateQuantity(item.id, item.quantity - 1);
+                              if (process.env.NEXT_PUBLIC_CART_V2) {
+                                updateCartQuantityAction({
+                                  itemId: item.id,
+                                  quantity: item.quantity - 1,
+                                }).catch(console.error);
+                              }
                             }}
                             className="p-1.5 text-white/40 transition-colors hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-30"
                           >
@@ -129,6 +136,12 @@ export const CartDrawer = () => {
                               if (typeof navigator !== "undefined" && "vibrate" in navigator)
                                 navigator.vibrate(10);
                               updateQuantity(item.id, item.quantity + 1);
+                              if (process.env.NEXT_PUBLIC_CART_V2) {
+                                updateCartQuantityAction({
+                                  itemId: item.id,
+                                  quantity: item.quantity + 1,
+                                }).catch(console.error);
+                              }
                             }}
                             className="p-1.5 text-white/40 transition-colors hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-30"
                           >
@@ -140,6 +153,9 @@ export const CartDrawer = () => {
                             if (typeof navigator !== "undefined" && "vibrate" in navigator)
                               navigator.vibrate([20, 50, 20]);
                             removeItem(item.id);
+                            if (process.env.NEXT_PUBLIC_CART_V2) {
+                              removeFromCartAction({ itemId: item.id }).catch(console.error);
+                            }
                           }}
                           className="text-[10px] font-black tracking-widest text-red-400/50 uppercase transition-colors hover:text-red-400"
                         >

@@ -8,6 +8,7 @@ import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { TicketPurchaseModal } from "./TicketPurchaseModal";
+import { addToCartAction } from "@/app/(server)/actions/cart";
 
 interface TicketTier {
   id: string;
@@ -401,24 +402,47 @@ function MobileTicketAccordion({
 
   const handleAdd = () => {
     if (!activePrice || !activeProduct || !facility) return;
+    const validityType = activeProduct.title.toLowerCase().includes("sezonsk")
+      ? "SUMMER_SEASON"
+      : "FLEXIBLE_30_DAY";
+    const cartTitle = `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`;
     addItem({
       ticketId: activePrice.id,
       facilityId: facility.id,
       facilityName: facility.name,
       category: facility.category,
       quantity: qty,
-      title: `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`,
+      title: cartTitle,
       price: activePrice.price,
       currency: "RSD",
       requiresIdentity: false,
       requiresPhoto: false,
-      validityType: activeProduct.title.toLowerCase().includes("sezonsk")
-        ? "SUMMER_SEASON"
-        : "FLEXIBLE_30_DAY",
+      validityType,
       minPeople: activeProduct.minPeople || 1,
       maxPeople: activeProduct.maxPeople || null,
       imageUrl: null,
     });
+
+    // 🔄 Dual-write: persist to server cart session (fire-and-forget)
+    if (process.env.NEXT_PUBLIC_CART_V2) {
+      addToCartAction({
+        ticketPriceId: activePrice.id,
+        facilityId: facility.id,
+        quantity: qty,
+        title: cartTitle,
+        price: activePrice.price,
+        currency: "RSD",
+        facilityName: facility.name,
+        category: facility.category,
+        validityType,
+        requiresIdentity: false,
+        requiresPhoto: false,
+        minPeople: activeProduct.minPeople || 1,
+        maxPeople: activeProduct.maxPeople || null,
+        imageUrl: null,
+      }).catch(console.error);
+    }
+
     setIsAdding(true);
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
     setTimeout(() => {

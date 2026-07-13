@@ -1,30 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { CartItem, DiscountInfo } from "@/lib/types/cart";
+import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 
-export interface CartItem {
-  id: string;
-  ticketId: string;
-  quantity: number;
-  title: string;
-  price: number;
-  currency: string;
-  facilityId?: string;
-  facilityName?: string;
-  category?: string;
-  validityType?: string;
-  requiresIdentity?: boolean;
-  requiresPhoto?: boolean;
-  imageUrl?: string | null;
-  minPeople?: number;
-  maxPeople?: number | null;
-  updatedAt: number; // Unix ms (Date.now()) for conflict resolution
-}
-
-export interface DiscountInfo {
-  campaignId: string;
-  code: string;
-  discountPercent: number;
-}
+// Re-export for backward compatibility
+export type { CartItem, DiscountInfo };
+export { MAX_QUANTITY_PER_ITEM };
 
 interface CartStore {
   items: CartItem[];
@@ -43,7 +24,6 @@ interface CartStore {
 }
 
 const STALE_THRESHOLD_MS = 30 * 60 * 1000; // 30 minutes
-export const MAX_QUANTITY_PER_ITEM = 20;
 
 /**
  * Merges two cart arrays. For the same ID, the one with the later updatedAt wins.

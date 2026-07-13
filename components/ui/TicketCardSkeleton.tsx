@@ -13,8 +13,8 @@ export function TicketCardSkeleton() {
         </div>
       </div>
 
-      {/* Image skeleton — aspect-[4/5] */}
-      <div className="mx-3 mt-2 aspect-[4/5] w-[calc(100%-1.5rem)] overflow-hidden rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
+      {/* Image skeleton — aspect-square */}
+      <div className="mx-3 mt-2 aspect-square w-[calc(100%-1.5rem)] overflow-hidden rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
         <Skeleton className="h-full w-full rounded-none" />
       </div>
 
