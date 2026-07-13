@@ -2,7 +2,8 @@
 import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react";
-import { useCart, MAX_QUANTITY_PER_ITEM, type DiscountInfo } from "@/hooks/use-cart";
+import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
+import type { CartItem, DiscountInfo } from "@/lib/types/cart";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +11,7 @@ import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import { createCheckoutSessionAction } from "@/app/(server)/actions/checkout";
 import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
 import {
-  addToCartAction,
+  getCartAction,
   removeFromCartAction,
   updateCartQuantityAction,
   clearCartAction,
@@ -21,110 +22,36 @@ import Link from "next/link";
 import { toast } from "sonner";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function CartClient({
-  dict,
-  initialCart,
-}: {
-  dict: Record<string, any>;
-  initialCart?: any[] | null;
-}) {
-  const items = useCart((s) => s.items);
-  const updateQuantity = useCart((s) => s.updateQuantity);
-  const removeItem = useCart((s) => s.removeItem);
-  const getTotalPrice = useCart((s) => s.getTotalPrice);
-  const clearCart = useCart((s) => s.clearCart);
-  const clearStaleCart = useCart((s) => s.clearStaleCart);
+export function CartClient({ dict }: { dict: Record<string, any> }) {
+  const [items, setItems] = React.useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const [showIdentityDialog, setShowIdentityDialog] = React.useState(false);
   const [promoCode, setPromoCode] = React.useState("");
   const [promoError, setPromoError] = React.useState("");
   const [promoLoading, setPromoLoading] = React.useState(false);
-  const discount = useCart((s) => s.discount);
-  const setDiscount = useCart((s) => s.setDiscount);
-  const clearDiscount = useCart((s) => s.clearDiscount);
+  const [discount, setDiscount] = React.useState<DiscountInfo | null>(null);
 
-  const totalBeforeDiscount = getTotalPrice();
+  const totalBeforeDiscount = items.reduce(
+    (sum: number, i: CartItem) => sum + i.price * i.quantity,
+    0,
+  );
   const discountAmount = discount
     ? Math.round(totalBeforeDiscount * (discount.discountPercent / 100))
     : 0;
   const total = totalBeforeDiscount - discountAmount;
 
-  /**
-   * 🚩 Phase 2: Server cart synchronization
-   * - If server has items, hydrate Zustand from server (server is source of truth)
-   * - If localStorage has items but server is empty, migrate to server
-   */
-  const performServerCartSync = React.useCallback(async () => {
-    const STORAGE_KEY = "cart-storage";
-
-    const stored = localStorage.getItem(STORAGE_KEY);
-    let localItems: any[] = [];
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        localItems = parsed?.state?.items || [];
-      } catch {
-        // Ignore corrupt localStorage
-      }
-    }
-
-    if (initialCart && initialCart.length > 0) {
-      // Server has items — hydrate Zustand from server (server is source of truth)
-      const currentItems = useCart.getState().items;
-      const currentKeys = new Set(currentItems.map((i: any) => i.id));
-      const needsHydrate =
-        currentItems.length === 0 ||
-        currentItems.length !== initialCart.length ||
-        !initialCart.every((i: any) => currentKeys.has(i.id));
-
-      if (needsHydrate) {
-        useCart.getState().clearCart();
-        for (const item of initialCart) {
-          useCart.setState((state) => {
-            const exists = state.items.find((i) => i.id === item.id);
-            if (exists) return state;
-            return { items: [...state.items, { ...item, updatedAt: Date.now() }] };
-          });
-        }
-      }
-
-      localStorage.removeItem(STORAGE_KEY);
-    } else if (localItems.length > 0) {
-      // Server is empty, localStorage has items — migrate to server
-      for (const item of localItems) {
-        addToCartAction({
-          ticketPriceId: item.ticketId,
-          facilityId: item.facilityId,
-          quantity: item.quantity,
-          title: item.title,
-          price: item.price,
-          currency: item.currency || "RSD",
-          requiresIdentity: item.requiresIdentity,
-          requiresPhoto: item.requiresPhoto,
-          facilityName: item.facilityName,
-          category: item.category,
-          validityType: item.validityType,
-          imageUrl: item.imageUrl || null,
-          minPeople: item.minPeople,
-          maxPeople: item.maxPeople ?? null,
-        }).catch(console.error);
-      }
-    }
-  }, [initialCart]);
-
+  // Load cart from server on mount
   React.useEffect(() => {
-    const timer = requestAnimationFrame(() => {
+    const timer = requestAnimationFrame(async () => {
       setIsMounted(true);
-      clearStaleCart();
-
-      // 🚩 Phase 2: Server-first cart — sync with server
-      if (process.env.NEXT_PUBLIC_CART_V2) {
-        performServerCartSync();
+      const result = await getCartAction();
+      if (result.success && result.data) {
+        setItems((result.data.items || []) as CartItem[]);
       }
     });
     return () => cancelAnimationFrame(timer);
-  }, [clearStaleCart, performServerCartSync]);
+  }, []);
 
   if (!isMounted) return null;
 
@@ -133,6 +60,25 @@ export function CartClient({
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("sr-RS").format(price);
+  };
+
+  const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      setItems((prev) => prev.filter((i) => i.id !== itemId));
+      await removeFromCartAction({ itemId }).catch(console.error);
+    } else {
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === itemId ? { ...i, quantity: newQuantity, updatedAt: Date.now() } : i,
+        ),
+      );
+      await updateCartQuantityAction({ itemId, quantity: newQuantity }).catch(console.error);
+    }
+  };
+
+  const handleRemoveItem = async (itemId: string) => {
+    setItems((prev) => prev.filter((i) => i.id !== itemId));
+    await removeFromCartAction({ itemId }).catch(console.error);
   };
 
   const handleStartCheckout = () => {
@@ -178,384 +124,218 @@ export function CartClient({
       }
 
       if (result.data?.url) {
-        // 🌊 Clear cart immediately so it's empty when they return
-        clearCart();
-        if (process.env.NEXT_PUBLIC_CART_V2) {
-          clearCartAction().catch(console.error);
-        }
+        await clearCartAction().catch(console.error);
+        setItems([]);
         window.location.href = result.data.url;
       } else {
-        throw new Error(result.error || "Checkout endpoint returned no redirect URL");
+        throw new Error("No checkout URL returned");
       }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Something went wrong.";
-      toast.error(message);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      toast.error(dict?.cart?.checkout_error || "Došlo je do greške. Pokušajte ponovo.");
+      console.error("Checkout error:", message);
+    } finally {
       setIsCheckingOut(false);
     }
   };
 
-  if (items.length === 0) {
-    return (
-      <div className="container mx-auto max-w-4xl px-6 py-16 sm:py-32">
-        <div className="flex flex-col items-center justify-center space-y-8 text-center">
-          <div className="bg-muted/50 border-border relative rounded-full border p-8">
-            <div className="bg-primary absolute inset-0 animate-pulse rounded-full opacity-10 blur-3xl" />
-            <Icon name="shopping_bag" className="text-primary relative z-10 h-16 w-16" />
+  return (
+    <div className="mx-auto min-h-screen max-w-7xl px-6 pt-24 pb-32 sm:px-12">
+      <div className="mb-12">
+        <h1 className="mb-3 text-[10px] font-black tracking-[0.2em] uppercase opacity-50">
+          {dict?.cart?.title || "Korpa"}
+        </h1>
+        <h2 className="text-foreground text-3xl leading-none font-black tracking-tighter sm:text-5xl">
+          {items.length > 0
+            ? `${items.length} ${dict?.cart?.items || "stavki"}`
+            : dict?.cart?.empty || "Vaša korpa je prazna"}
+        </h2>
+      </div>
+
+      {items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center pt-20">
+          <div className="bg-muted/20 flex h-24 w-24 items-center justify-center rounded-full">
+            <Icon name="shopping_bag" className="text-muted-foreground/30 text-[40px]" />
           </div>
-          <div className="space-y-4">
-            <h1 className="text-foreground text-4xl font-black tracking-tighter uppercase italic md:text-5xl">
-              Vaša korpa je prazna
-            </h1>
-            <p className="text-muted-foreground font-bold">
-              Izgleda da još uvek niste dodali nijednu Splash ponudu.
-            </p>
-          </div>
-          <Link href={`/akva-parkovi`}>
-            <Button className="bg-primary hover:bg-primary/90 h-16 rounded-full px-12 text-xs font-black tracking-widest text-black uppercase">
-              {dict.facilities.discovery_engine || "Pretraga Objekata"}
+          <p className="text-muted-foreground mt-6 text-sm font-medium">
+            {dict?.cart?.empty_description || "Izgleda da još uvek niste dodali karte."}
+          </p>
+          <Link href="/search">
+            <Button variant="ghost" className="mt-4">
+              {dict?.cart?.browse || "Pretraži akva parkove"}
             </Button>
           </Link>
-
-          <p className="text-muted-foreground mt-12 max-w-xs text-[10px] leading-relaxed font-bold">
-            ℹ️ Korpa Gosta: Vaši izbori se čuvaju lokalno u ovom pretraživaču. Brisanje podataka
-            pretraživača će resetovati vašu korpu.
-          </p>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="container mx-auto max-w-6xl px-6 py-12 sm:py-24">
-      <div className="flex flex-col gap-6 sm:gap-12 lg:flex-row">
-        {/* 🛒 ITEM LIST */}
-        <div className="flex-grow space-y-8">
-          <div className="flex items-center justify-between">
-            <Link
-              href={`/akva-parkovi`}
-              className="text-muted-foreground hover:text-foreground group flex items-center gap-2 transition-colors"
-            >
-              <Icon
-                name="arrow_back"
-                className="text-[16px] transition-transform group-hover:-translate-x-1"
-              />
-              <span className="text-[10px] font-black tracking-widest uppercase">
-                Nazad na karte
-              </span>
-            </Link>
-            <h2 className="text-foreground text-3xl font-black tracking-tighter uppercase italic">
-              Korpa za kupovinu
-            </h2>
-          </div>
-
-          <div className="space-y-4">
+      ) : (
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* Items */}
+          <div className="space-y-6 lg:col-span-2">
             {items.map((item) => (
-              <div key={item.id}>
-                <Card className="border-border hover:border-border group from-background/5 bg-gradient-to-r to-transparent p-4 transition-[border-color] sm:p-6">
-                  <div className="flex flex-col items-center gap-4 sm:gap-8 md:flex-row">
-                    {/* Icon/Image Placeholder */}
-                    <div className="bg-primary/10 border-primary/20 relative flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border transition-transform group-hover:scale-110">
-                      {item.imageUrl ? (
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.title}
-                          fill
-                          sizes="80px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <Icon name="confirmation_number" className="text-primary text-[40px]" />
-                      )}
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex-grow space-y-2 text-center md:text-left">
-                      <div className="flex flex-wrap justify-center gap-2 md:justify-start">
-                        <span className="text-primary/60 text-[10px] font-black tracking-widest uppercase">
-                          {item.facilityName || "Splash Deal"}
-                        </span>
-                        {item.validityType === "SUMMER_SEASON" && (
-                          <span className="bg-secondary/20 text-secondary rounded-full px-2 py-0.5 text-[8px] font-black tracking-tighter uppercase">
-                            Sezonska karta
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="text-foreground text-xl font-black tracking-tight italic">
-                        {item.title}
-                      </h3>
-                      <div className="text-muted-foreground text-sm font-bold">
-                        {formatPrice(item.price)} {item.currency} / po stavci
-                      </div>
-                    </div>
-
-                    {/* Quantity Controls */}
-                    <div className="bg-muted/50 border-border flex items-center gap-6 rounded-2xl border p-2">
-                      <Button
-                        disabled={isCheckingOut || item.quantity <= (item.minPeople || 1)}
-                        onClick={() => {
-                          if (typeof navigator !== "undefined" && "vibrate" in navigator)
-                            navigator.vibrate(10);
-                          updateQuantity(item.id, item.quantity - 1);
-                          if (process.env.NEXT_PUBLIC_CART_V2) {
-                            updateCartQuantityAction({
-                              itemId: item.id,
-                              quantity: item.quantity - 1,
-                            }).catch(console.error);
-                          }
-                        }}
-                        variant="ghost"
-                        size="icon"
-                        className="h-11 w-11 rounded-xl"
-                        aria-label="Smanji količinu"
-                      >
-                        <Icon name="remove" className="text-[16px]" />
-                      </Button>
-                      <span className="text-foreground w-6 text-center text-xl font-black">
-                        {item.quantity}
-                      </span>
-                      <Button
-                        disabled={
-                          isCheckingOut ||
-                          item.quantity >=
-                            Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
-                        }
-                        onClick={() => {
-                          if (typeof navigator !== "undefined" && "vibrate" in navigator)
-                            navigator.vibrate(10);
-                          updateQuantity(item.id, item.quantity + 1);
-                          if (process.env.NEXT_PUBLIC_CART_V2) {
-                            updateCartQuantityAction({
-                              itemId: item.id,
-                              quantity: item.quantity + 1,
-                            }).catch(console.error);
-                          }
-                        }}
-                        variant="ghost"
-                        size="icon"
-                        className="h-11 w-11 rounded-xl"
-                        aria-label="Povećaj količinu"
-                      >
-                        <Icon name="add" className="text-[16px]" />
-                      </Button>
-                    </div>
-
-                    {/* Price & Remove */}
-                    <div className="flex min-w-[120px] flex-col items-end gap-2 pr-4">
-                      <div className="text-foreground text-2xl font-black">
-                        {formatPrice(item.price * item.quantity)}{" "}
-                        <span className="ml-1 text-xs opacity-40">{item.currency}</span>
-                      </div>
-                      <Button
-                        disabled={isCheckingOut}
-                        onClick={() => {
-                          if (typeof navigator !== "undefined" && "vibrate" in navigator)
-                            navigator.vibrate([20, 50, 20]);
-                          removeItem(item.id);
-                          if (process.env.NEXT_PUBLIC_CART_V2) {
-                            removeFromCartAction({ itemId: item.id }).catch(console.error);
-                          }
-                        }}
-                        variant="ghost"
-                        size="default"
-                        className="text-destructive/60 hover:text-destructive flex h-11 items-center gap-1 text-[10px] font-bold tracking-widest uppercase"
-                        aria-label="Ukloni stavku"
-                      >
-                        <Icon name="delete" className="text-[14px]" />
-                        Ukloni
-                      </Button>
-                    </div>
+              <Card key={item.id} className="bg-muted/20 border-border flex items-center gap-6 p-6">
+                {item.imageUrl && (
+                  <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl">
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                      sizes="96px"
+                    />
                   </div>
-                </Card>
-              </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                    {item.category || dict?.categories?.waterpark || "Akva Park"}
+                  </p>
+                  <h3 className="text-foreground mt-1 text-lg font-black tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground mt-0.5 text-xs">{item.facilityName}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="border-border bg-muted/30 flex items-center overflow-hidden rounded-xl border">
+                    <button
+                      onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                      disabled={item.quantity <= (item.minPeople || 1)}
+                      className="text-muted-foreground hover:text-foreground px-3 py-2 transition-colors disabled:opacity-30"
+                    >
+                      <Icon name="remove" className="text-[14px]" />
+                    </button>
+                    <span className="text-foreground min-w-[32px] text-center text-sm font-bold">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                      disabled={
+                        item.quantity >=
+                        Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
+                      }
+                      className="text-muted-foreground hover:text-foreground px-3 py-2 transition-colors disabled:opacity-30"
+                    >
+                      <Icon name="add" className="text-[14px]" />
+                    </button>
+                  </div>
+                  <div className="min-w-[80px] text-right">
+                    <div className="text-foreground text-lg font-black tracking-tight">
+                      {formatPrice(item.price * item.quantity)} RSD
+                    </div>
+                    <button
+                      onClick={() => handleRemoveItem(item.id)}
+                      className="text-muted-foreground/50 hover:text-destructive mt-1 text-[9px] font-black tracking-widest uppercase transition-colors"
+                    >
+                      {dict?.cart?.remove || "Ukloni"}
+                    </button>
+                  </div>
+                </div>
+              </Card>
             ))}
           </div>
-        </div>
 
-        {/* 💳 SUMMARY SIDEBAR */}
-        <div className="w-full space-y-6 lg:w-[400px]">
-          <Card className="border-border bg-navy-deep/50 sticky top-24 space-y-6 p-4 sm:space-y-8 sm:p-8">
-            <div className="space-y-4">
-              <h2 className="text-foreground text-2xl font-black tracking-tighter uppercase italic">
-                Pregled porudžbine
-              </h2>
-              <div className="border-border space-y-3 border-t pt-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground font-bold">Međuzbir</span>
-                  <span className="text-foreground font-black">
-                    {formatPrice(totalBeforeDiscount)} RSD
+          {/* Summary */}
+          <div className="space-y-6">
+            <Card className="bg-muted/20 border-border p-8">
+              <h3 className="text-foreground mb-6 text-[10px] font-black tracking-[0.2em] uppercase">
+                {dict?.cart?.summary || "Sažetak"}
+              </h3>
+
+              <div className="space-y-3">
+                <div className="text-foreground flex justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {dict?.cart?.subtotal || "Međuzbir"}
                   </span>
+                  <span className="font-bold">{formatPrice(totalBeforeDiscount)} RSD</span>
                 </div>
+
                 {discount && (
                   <div className="flex justify-between text-sm">
-                    <span className="font-bold text-green-600">
-                      Popust ({discount.discountPercent}%)
+                    <span className="text-emerald-500">
+                      {dict?.cart?.discount || "Popust"} ({discount.discountPercent}%)
                     </span>
-                    <span className="font-black text-green-600">
+                    <span className="font-bold text-emerald-500">
                       -{formatPrice(discountAmount)} RSD
                     </span>
                   </div>
                 )}
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground font-bold">Naknada za obradu</span>
-                  <span className="text-primary font-black">0 %</span>
-                </div>
-                <div className="border-border flex justify-between border-t pt-4 text-2xl">
-                  <span className="text-foreground font-black tracking-tighter uppercase italic">
-                    Ukupno
-                  </span>
-                  <span className="text-splash font-black">{formatPrice(total)} RSD</span>
+
+                <div className="border-border border-t pt-3">
+                  <div className="flex justify-between text-base">
+                    <span className="text-foreground font-bold">
+                      {dict?.cart?.total || "Ukupno"}
+                    </span>
+                    <span className="text-foreground text-xl font-black tracking-tight">
+                      {formatPrice(total)} RSD
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Promo code */}
-            <div className="border-border space-y-3 border-t pt-4">
-              {discount ? (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-green-600">
-                      Popust: {discount.discountPercent}%
-                    </span>
-                    <code className="bg-muted rounded px-1.5 py-0.5 text-xs">{discount.code}</code>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-destructive/60 hover:text-destructive h-7 text-xs"
-                    onClick={() => clearDiscount()}
-                  >
-                    Ukloni
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
+              {/* Promo Code */}
+              <div className="mt-6 space-y-2">
+                <div className="flex gap-2">
                   <Input
-                    placeholder="Unesi promo kod"
                     value={promoCode}
                     onChange={(e) => {
-                      setPromoCode(e.target.value.toUpperCase());
+                      setPromoCode(e.target.value);
                       setPromoError("");
                     }}
-                    className="h-9 flex-1 text-xs uppercase"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        // Trigger apply
-                        const btn = e.currentTarget
-                          .closest("form")
-                          ?.querySelector("button[type=submit]") as HTMLButtonElement;
-                        btn?.click();
-                      }
-                    }}
+                    placeholder={dict?.cart?.promo_placeholder || "Unesite promo kod"}
+                    className="bg-muted/50 border-border h-11 rounded-xl text-xs"
                   />
                   <Button
-                    type="button"
-                    size="sm"
-                    className="h-9"
-                    disabled={promoLoading || !promoCode.trim()}
+                    disabled={!promoCode || promoLoading}
                     onClick={async () => {
-                      if (!promoCode.trim()) return;
                       setPromoLoading(true);
-                      setPromoError("");
-                      const facilityId = items[0]?.facilityId;
-                      const result = await validatePromoCodeAction(
-                        promoCode.trim(),
-                        facilityId,
-                        totalBeforeDiscount,
-                      );
-                      setPromoLoading(false);
-                      if (result.success && result.data) {
-                        if (result.data.valid) {
+                      try {
+                        const result = await validatePromoCodeAction(promoCode);
+                        if (result.success && result.data?.valid) {
                           setDiscount({
                             campaignId: result.data.campaignId,
-                            code: promoCode.trim(),
+                            code: promoCode,
                             discountPercent: result.data.discountPercent,
                           });
-                          setPromoCode("");
-                          toast.success(`Popust: ${result.data.discountPercent}%`);
+                          toast.success(dict?.cart?.promo_applied || "Popust primenjen!");
                         } else {
-                          setPromoError(result.data.error);
+                          const promoData = result.success ? result.data : null;
+                          const errorMsg =
+                            promoData && !promoData.valid
+                              ? promoData.error
+                              : dict?.cart?.promo_invalid || "Nevažeći promo kod";
+                          setPromoError(errorMsg);
                         }
-                      } else {
-                        setPromoError(result.error || "Greška pri validaciji koda.");
+                      } finally {
+                        setPromoLoading(false);
                       }
                     }}
+                    className="h-11 rounded-xl px-4 text-xs font-bold"
                   >
-                    {promoLoading ? (
-                      <svg className="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
-                    ) : (
-                      "Primeni"
-                    )}
+                    {dict?.cart?.apply || "Primeni"}
                   </Button>
                 </div>
-              )}
-              {promoError && <p className="text-destructive text-xs font-medium">{promoError}</p>}
-            </div>
+                {promoError && (
+                  <p className="text-destructive text-[10px] font-medium">{promoError}</p>
+                )}
+                {discount && (
+                  <button
+                    onClick={() => setDiscount(null)}
+                    className="text-destructive/70 hover:text-destructive text-[9px] font-black tracking-widest uppercase transition-colors"
+                  >
+                    {dict?.cart?.remove || "Ukloni"} {discount.code}
+                  </button>
+                )}
+              </div>
 
-            <div className="space-y-4">
               <Button
                 onClick={handleStartCheckout}
-                disabled={isCheckingOut}
-                className="bg-primary hover:bg-primary/90 shadow-primary/20 h-20 w-full rounded-full text-lg font-black tracking-widest text-black uppercase italic shadow-lg"
+                disabled={isCheckingOut || items.length === 0}
+                className="mt-6 h-14 w-full rounded-2xl text-base font-bold"
               >
-                <span className="flex items-center justify-center gap-3">
-                  {isCheckingOut && (
-                    <svg className="size-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                      />
-                    </svg>
-                  )}
-                  {!isCheckingOut && <Icon name="keyboard_arrow_right" className="text-[20px]" />}
-                  Nastavi na Plaćanje
-                </span>
+                {isCheckingOut
+                  ? dict?.cart?.processing || "Obrada..."
+                  : dict?.cart?.checkout || "Nastavi na Plaćanje"}
               </Button>
+            </Card>
 
-              <div className="flex flex-col gap-3">
-                <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase">
-                  <Icon name="security" className="text-primary text-[16px]" />
-                  Šifrovana i Bezbedna Transakcija
-                </div>
-                <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase">
-                  <Icon name="bolt" className="text-secondary text-[16px]" />
-                  Instant Isporuka Karata
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center gap-4 pt-6 opacity-30 grayscale invert">
-              <Image
-                src="https://cdn.brandfolder.io/5H075830/at/pwhv6m-48v9oo-6fndw6/Stripe_Logo_rev.png"
-                alt="Stripe"
-                width={80}
-                height={16}
-                className="h-4 w-auto"
-                unoptimized
-              />
+            <Card className="bg-muted/20 border-border flex flex-wrap items-center justify-center gap-4 p-6">
               <Image
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png"
                 alt="Visa"
@@ -572,15 +352,23 @@ export function CartClient({
                 className="h-6 w-auto"
                 unoptimized
               />
-            </div>
-          </Card>
+              <Image
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/DinaCard_logo.svg/2560px-DinaCard_logo.svg.png"
+                alt="DinaCard"
+                width={48}
+                height={24}
+                className="h-6 w-auto"
+                unoptimized
+              />
+            </Card>
 
-          <p className="text-muted-foreground px-8 text-center text-[10px] leading-relaxed font-bold">
-            Klikom na &quot;Nastavi na Plaćanje&quot;, prihvatate naše Uslove Korišćenja i Politiku
-            Privatnosti. Sve prodaje digitalnih karata su konačne.
-          </p>
+            <p className="text-muted-foreground px-8 text-center text-[10px] leading-relaxed font-bold">
+              Klikom na &quot;Nastavi na Plaćanje&quot;, prihvatate naše Uslove Korišćenja i
+              Politiku Privatnosti. Sve prodaje digitalnih karata su konačne.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <IdentitySetupDialog
         open={showIdentityDialog}

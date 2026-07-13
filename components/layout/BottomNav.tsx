@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
-import { useCart } from "@/hooks/use-cart";
 import { getCartAction } from "@/app/(server)/actions/cart";
+import type { CartItem } from "@/lib/types/cart";
 
 interface NavItem {
   label: string;
@@ -25,12 +25,10 @@ const SCROLL_THRESHOLD = 10;
 
 /**
  * 📱 BottomNav — Mobile-only bottom navigation bar with scroll-hide.
- * Shows while scrolling up, hides after scrolling down past a threshold.
- * Always visible when near the top of the page.
  */
 export function BottomNav() {
   const pathname = usePathname();
-  const totalItems = useCart((s) => s.getTotalItems());
+  const [totalItems, setTotalItems] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
 
@@ -39,7 +37,6 @@ export function BottomNav() {
       const currentScrollY = window.scrollY;
       const delta = currentScrollY - lastScrollY.current;
 
-      // Always visible near the top
       if (currentScrollY < SCROLL_THRESHOLD) {
         setIsVisible(true);
       } else if (delta > SCROLL_THRESHOLD) {
@@ -53,29 +50,15 @@ export function BottomNav() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
 
-    // 🚩 Phase 2: Sync cart badge count with server on mount
-    if (process.env.NEXT_PUBLIC_CART_V2) {
-      getCartAction()
-        .then((result) => {
-          if (result.success && result.data) {
-            const serverItems = result.data.items || [];
-            const currentCount = useCart.getState().getTotalItems();
-            const serverCount = serverItems.reduce(
-              (sum: number, i: any) => sum + (i.quantity || 0),
-              0,
-            );
-            if (currentCount === 0 && serverCount > 0) {
-              for (const item of serverItems) {
-                useCart.setState((state) => {
-                  if (state.items.find((i) => i.id === item.id)) return state;
-                  return { items: [...state.items, { ...item, updatedAt: Date.now() }] };
-                });
-              }
-            }
-          }
-        })
-        .catch(() => {});
-    }
+    // 🛒 Fetch cart badge count from server
+    getCartAction()
+      .then((result) => {
+        if (result.success && result.data) {
+          const items = (result.data.items || []) as CartItem[];
+          setTotalItems(items.reduce((sum: number, i: CartItem) => sum + (i.quantity || 0), 0));
+        }
+      })
+      .catch(() => {});
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);

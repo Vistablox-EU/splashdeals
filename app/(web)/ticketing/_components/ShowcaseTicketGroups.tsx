@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
+import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { TicketPurchaseModal } from "./TicketPurchaseModal";
@@ -135,9 +135,6 @@ export function ShowcaseTicketGroups({
   const [selectedTicket, setSelectedTicket] = useState<TicketTier | null>(null);
   const [expandedTier, setExpandedTier] = useState<string | null>(null);
 
-  const addItem = useCart((state) => state.addItem);
-  const cartItems = useCart((state) => state.items);
-
   const getQuantity = (id: string) => quantities[id] || 0;
   const setQuantity = (id: string, q: number) => {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -157,9 +154,9 @@ export function ShowcaseTicketGroups({
 
   const activeGroup = groups.find((g) => g.id === activeGroupId) || groups[0];
 
-  // Cart totals from cart state
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  // Cart totals — fetched server-side via cart drawer
+  const totalItems: number = 0;
+  const totalPrice: number = 0;
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8 pb-24 md:pb-0">
@@ -253,9 +250,7 @@ export function ShowcaseTicketGroups({
                   isHighlighted={isFeatured}
                   isExpanded={expandedTier === tier.id}
                   onToggle={() => setExpandedTier(expandedTier === tier.id ? null : tier.id)}
-                  cartCount={cartItems
-                    .filter((i) => i.ticketId === tier.id)
-                    .reduce((a, i) => a + i.quantity, 0)}
+                  cartCount={0}
                   ticketProductMap={ticketProductMap}
                 />
               );
@@ -367,7 +362,6 @@ function MobileTicketAccordion({
         ((Number(tier.originalPrice) - Number(tier.price)) / Number(tier.originalPrice)) * 100,
       )
     : 0;
-  const addItem = useCart((state) => state.addItem);
 
   // ─── Expanded content state ─────────────────────────────────
   const [products, setProducts] = useState<ProductOption[]>([]);
@@ -406,42 +400,22 @@ function MobileTicketAccordion({
       ? "SUMMER_SEASON"
       : "FLEXIBLE_30_DAY";
     const cartTitle = `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`;
-    addItem({
-      ticketId: activePrice.id,
+    addToCartAction({
+      ticketPriceId: activePrice.id,
       facilityId: facility.id,
-      facilityName: facility.name,
-      category: facility.category,
       quantity: qty,
       title: cartTitle,
       price: activePrice.price,
       currency: "RSD",
+      facilityName: facility.name,
+      category: facility.category,
+      validityType,
       requiresIdentity: false,
       requiresPhoto: false,
-      validityType,
       minPeople: activeProduct.minPeople || 1,
       maxPeople: activeProduct.maxPeople || null,
       imageUrl: null,
-    });
-
-    // 🔄 Dual-write: persist to server cart session (fire-and-forget)
-    if (process.env.NEXT_PUBLIC_CART_V2) {
-      addToCartAction({
-        ticketPriceId: activePrice.id,
-        facilityId: facility.id,
-        quantity: qty,
-        title: cartTitle,
-        price: activePrice.price,
-        currency: "RSD",
-        facilityName: facility.name,
-        category: facility.category,
-        validityType,
-        requiresIdentity: false,
-        requiresPhoto: false,
-        minPeople: activeProduct.minPeople || 1,
-        maxPeople: activeProduct.maxPeople || null,
-        imageUrl: null,
-      }).catch(console.error);
-    }
+    }).catch(console.error);
 
     setIsAdding(true);
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);

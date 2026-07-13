@@ -4,21 +4,23 @@ import { Icon } from "@/components/ui/Icon";
 import * as React from "react";
 import { Drawer } from "vaul";
 import { useUIState } from "@/hooks/use-ui-state";
-import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
+import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
+import type { CartItem } from "@/lib/types/cart";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
-import { removeFromCartAction, updateCartQuantityAction } from "@/app/(server)/actions/cart";
+import {
+  getCartAction,
+  removeFromCartAction,
+  updateCartQuantityAction,
+} from "@/app/(server)/actions/cart";
 
 export const CartDrawer = () => {
   const isCartOpen = useUIState((s) => s.isCartOpen);
   const closeCart = useUIState((s) => s.closeCart);
-  const items = useCart((s) => s.items);
-  const removeItem = useCart((s) => s.removeItem);
-  const updateQuantity = useCart((s) => s.updateQuantity);
-  const getTotalPrice = useCart((s) => s.getTotalPrice);
-  const totalPrice = getTotalPrice();
+  const [items, setItems] = React.useState<CartItem[]>([]);
+  const [totalPrice, setTotalPrice] = React.useState(0);
   const [isMounted, setIsMounted] = React.useState(false);
   const [dict, setDict] = React.useState<Dict | null>(null);
 
@@ -26,15 +28,51 @@ export const CartDrawer = () => {
     return new Intl.NumberFormat("sr-RS").format(price);
   };
 
+  const loadCart = React.useCallback(async () => {
+    const result = await getCartAction();
+    if (result.success && result.data) {
+      const serverItems: CartItem[] = (result.data.items || []) as CartItem[];
+      setItems(serverItems);
+      setTotalPrice(
+        serverItems.reduce((sum: number, i: CartItem) => sum + i.price * i.quantity, 0),
+      );
+    }
+  }, []);
+
   React.useEffect(() => {
     const timer = requestAnimationFrame(() => {
       setIsMounted(true);
     });
     getClientDictionary().then(setDict);
+    loadCart();
     return () => cancelAnimationFrame(timer);
-  }, []);
+  }, [loadCart]);
+
+  React.useEffect(() => {
+    if (isCartOpen) {
+      loadCart();
+    }
+  }, [isCartOpen, loadCart]);
 
   if (!isMounted) return null;
+
+  const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      setItems((prev) => prev.filter((i) => i.id !== itemId));
+      await removeFromCartAction({ itemId }).catch(console.error);
+    } else {
+      setItems((prev) => prev.map((i) => (i.id === itemId ? { ...i, quantity: newQuantity } : i)));
+      await updateCartQuantityAction({ itemId, quantity: newQuantity }).catch(console.error);
+    }
+    // Recalculate total
+    const result = await getCartAction();
+    if (result.success && result.data) {
+      const serverItems = (result.data.items || []) as CartItem[];
+      setTotalPrice(
+        serverItems.reduce((sum: number, i: CartItem) => sum + i.price * i.quantity, 0),
+      );
+    }
+  };
 
   return (
     <Drawer.Root open={isCartOpen} onOpenChange={(open) => !open && closeCart()} direction="right">
@@ -109,13 +147,7 @@ export const CartDrawer = () => {
                             onClick={() => {
                               if (typeof navigator !== "undefined" && "vibrate" in navigator)
                                 navigator.vibrate(10);
-                              updateQuantity(item.id, item.quantity - 1);
-                              if (process.env.NEXT_PUBLIC_CART_V2) {
-                                updateCartQuantityAction({
-                                  itemId: item.id,
-                                  quantity: item.quantity - 1,
-                                }).catch(console.error);
-                              }
+                              handleUpdateQuantity(item.id, item.quantity - 1);
                             }}
                             className="p-1.5 text-white/40 transition-colors hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-30"
                           >
@@ -135,13 +167,7 @@ export const CartDrawer = () => {
                             onClick={() => {
                               if (typeof navigator !== "undefined" && "vibrate" in navigator)
                                 navigator.vibrate(10);
-                              updateQuantity(item.id, item.quantity + 1);
-                              if (process.env.NEXT_PUBLIC_CART_V2) {
-                                updateCartQuantityAction({
-                                  itemId: item.id,
-                                  quantity: item.quantity + 1,
-                                }).catch(console.error);
-                              }
+                              handleUpdateQuantity(item.id, item.quantity + 1);
                             }}
                             className="p-1.5 text-white/40 transition-colors hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-30"
                           >
@@ -152,10 +178,7 @@ export const CartDrawer = () => {
                           onClick={() => {
                             if (typeof navigator !== "undefined" && "vibrate" in navigator)
                               navigator.vibrate([20, 50, 20]);
-                            removeItem(item.id);
-                            if (process.env.NEXT_PUBLIC_CART_V2) {
-                              removeFromCartAction({ itemId: item.id }).catch(console.error);
-                            }
+                            handleUpdateQuantity(item.id, 0);
                           }}
                           className="text-[10px] font-black tracking-widest text-red-400/50 uppercase transition-colors hover:text-red-400"
                         >
