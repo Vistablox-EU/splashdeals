@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { LiquidButton } from "@/components/ui/LiquidButton";
+import { authClient } from "@/lib/auth-client";
 
 import type { Dict } from "@/lib/types";
 
@@ -11,15 +13,18 @@ interface AccountButtonProps {
 }
 
 export function AccountButton({ dict }: AccountButtonProps) {
+  const { data: session } = authClient.useSession();
+  const isLoggedIn = !!session;
+
+  const href = isLoggedIn ? "/moje-karte" : "/prijava";
+  const label = isLoggedIn ? dict.nav.account || "Moj Nalog" : dict.nav.login || "Prijava";
+
   return (
-    <LiquidButton
-      variant="ghost"
-      size="sm"
-      className="h-11 px-4 font-medium"
-      aria-label={dict.nav.account || "Moj Nalog"}
-    >
-      <Icon name="person" className="text-primary text-[16px]" />
-      <span className="ml-2 hidden lg:inline">{dict.nav.account || "Moj Nalog"}</span>
-    </LiquidButton>
+    <Link href={href}>
+      <LiquidButton variant="ghost" size="sm" className="h-11 px-4 font-medium" aria-label={label}>
+        <Icon name="person" className="text-primary text-[16px]" />
+        <span className="ml-2 hidden lg:inline">{label}</span>
+      </LiquidButton>
+    </Link>
   );
 }

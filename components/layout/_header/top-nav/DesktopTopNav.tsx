@@ -5,6 +5,7 @@ import { Logo } from "./Logo";
 
 import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
+import { AccountButton } from "./AccountButton";
 import { SearchBox } from "@/app/(web)/_components/SearchBox";
 
 interface DesktopTopNavProps {
@@ -17,6 +18,7 @@ interface DesktopTopNavProps {
   isReducedMotion: boolean;
   isHovered: boolean;
   setIsHovered: (v: boolean) => void;
+  dict: Record<string, unknown>;
 }
 
 export function DesktopTopNav({
@@ -28,6 +30,7 @@ export function DesktopTopNav({
   isReducedMotion,
   isHovered,
   setIsHovered,
+  dict,
 }: DesktopTopNavProps) {
   return (
     <div className="flex h-16 w-full items-center">
@@ -53,6 +56,7 @@ export function DesktopTopNav({
             <SearchBox />
           </div>
           <MegaMenu side="right" />
+          <AccountButton dict={dict} />
           <ThemeToggle />
           <CartButton
             isOnline={isOnline}

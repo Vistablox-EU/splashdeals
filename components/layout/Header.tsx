@@ -43,6 +43,7 @@ export const Header = ({ dict: _dict, cities }: HeaderProps) => {
           isReducedMotion={isReducedMotion}
           isHovered={isHovered}
           setIsHovered={setIsHovered}
+          dict={_dict}
         />
 
         {/* ⚡ Online status dot for tab bar */}

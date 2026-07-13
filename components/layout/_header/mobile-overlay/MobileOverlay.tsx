@@ -33,6 +33,7 @@ export function MobileOverlay({
     { name: dict.nav.explore, href: `/search`, icon: "search" },
     { name: dict.nav.waterparks || "Akva Parkovi", href: `/akva-parkovi`, icon: "location_on" },
     { name: dict.nav.deals || "Akcije", href: `/#deals`, icon: "shopping_bag" },
+    { name: dict.nav.login || "Prijava", href: `/prijava`, icon: "person" },
   ];
 
   return (
