@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { useCart, initCartSync } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useHeaderScroll, DesktopTopNav } from "./_header";
 import { getCartAction } from "@/app/(server)/actions/cart";
 import type { Dict } from "@/lib/types";
+import type { CartItem } from "@/lib/types/cart";
 
 interface HeaderProps {
   dict: Dict;
@@ -14,48 +14,21 @@ interface HeaderProps {
 
 export const Header = ({ dict: _dict, cities }: HeaderProps) => {
   const [isHovered, setIsHovered] = React.useState(false);
+  const [totalItems, setTotalItems] = React.useState(0);
   const openCart = useUIState((state) => state.openCart);
-  const totalItems = useCart((state) => state.getTotalItems());
 
   const { scrolled, isOnline, isTabActive, isReducedMotion, mounted } = useHeaderScroll();
 
-  // Init cart sync on mount
+  // 🛒 Fetch cart item count from server on mount
   React.useEffect(() => {
-    const cleanup = initCartSync();
-
-    // 🚩 Phase 2: Sync cart badge count with server on mount
-    if (process.env.NEXT_PUBLIC_CART_V2) {
-      getCartAction()
-        .then((result) => {
-          if (result.success && result.data) {
-            const serverItems = result.data.items || [];
-            const currentCount = useCart.getState().getTotalItems();
-            const serverCount = serverItems.reduce(
-              (sum: number, i: any) => sum + (i.quantity || 0),
-              0,
-            );
-            if (currentCount !== serverCount) {
-              // Server has different count — update Zustand to match
-              if (serverItems.length === 0) {
-                useCart.getState().clearCart();
-              } else if (currentCount === 0 && serverCount > 0) {
-                // Zustand is empty but server has items — hydrate
-                for (const item of serverItems) {
-                  useCart.setState((state) => {
-                    if (state.items.find((i) => i.id === item.id)) return state;
-                    return { items: [...state.items, { ...item, updatedAt: Date.now() }] };
-                  });
-                }
-              }
-            }
-          }
-        })
-        .catch(() => {
-          // Silently ignore server errors — Zustand is the fallback
-        });
-    }
-
-    return cleanup;
+    getCartAction()
+      .then((result) => {
+        if (result.success && result.data) {
+          const items = (result.data.items || []) as CartItem[];
+          setTotalItems(items.reduce((sum: number, i: CartItem) => sum + (i.quantity || 0), 0));
+        }
+      })
+      .catch(() => {});
   }, []);
 
   return (

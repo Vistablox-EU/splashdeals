@@ -1,7 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useCart } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -30,7 +29,6 @@ interface AddToCartButtonProps {
 }
 
 export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
-  const addItem = useCart((state) => state.addItem);
   const openCart = useUIState((state) => state.openCart);
   const [added, setAdded] = useState(false);
 
@@ -38,42 +36,24 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
     e.preventDefault();
     e.stopPropagation();
 
-    addItem({
-      ticketId: ticket.id,
+    // 🛒 Add to server cart directly
+    addToCartAction({
+      ticketPriceId: ticket.id,
       facilityId: ticket.facility.id,
-      facilityName: ticket.facility.name,
-      category: ticket.facility.category,
       quantity: 1,
       title: ticket.title,
       price: Number(ticket.price),
       currency: ticket.currency,
+      facilityName: ticket.facility.name,
+      category: ticket.facility.category,
       validityType: ticket.validityType,
       requiresIdentity: ticket.requiresIdentity,
       requiresPhoto: ticket.requiresPhoto,
       minPeople: ticket.minPeople,
       maxPeople: ticket.maxPeople,
       imageUrl: ticket.imageUrl,
-    });
+    }).catch(console.error);
 
-    // 🔄 Dual-write: persist to server cart session (fire-and-forget)
-    if (process.env.NEXT_PUBLIC_CART_V2) {
-      addToCartAction({
-        ticketPriceId: ticket.id,
-        facilityId: ticket.facility.id,
-        quantity: 1,
-        title: ticket.title,
-        price: Number(ticket.price),
-        currency: ticket.currency,
-        facilityName: ticket.facility.name,
-        category: ticket.facility.category,
-        validityType: ticket.validityType,
-        requiresIdentity: ticket.requiresIdentity,
-        requiresPhoto: ticket.requiresPhoto,
-        minPeople: ticket.minPeople,
-        maxPeople: ticket.maxPeople,
-        imageUrl: ticket.imageUrl,
-      }).catch(console.error);
-    }
     trackAddToCart({
       ticketId: ticket.id,
       facilityName: ticket.facility.name,

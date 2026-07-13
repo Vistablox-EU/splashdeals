@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
+import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
 import { getDayTypeForDate, filterPricesByDate } from "@/app/(server)/lib/ticket-utils";
@@ -110,7 +110,6 @@ export function TicketPurchaseModal({
 
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const addItem = useCart((state) => state.addItem);
   const openCart = useUIState((state) => state.openCart);
   const router = useRouter();
 
@@ -214,42 +213,22 @@ export function TicketPurchaseModal({
   const handleAddToCart = async () => {
     if (!activePrice || !activeProduct || !facility) return;
 
-    addItem({
-      ticketId: activePrice.id,
+    addToCartAction({
+      ticketPriceId: activePrice.id,
       facilityId: facility.id,
-      facilityName: facility.name,
-      category: facility.category,
       quantity,
       title: `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`,
       price: activePrice.price,
       currency: "RSD",
+      facilityName: facility.name,
+      category: facility.category,
+      validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
       requiresIdentity: activeProduct.requiresIdentity,
       requiresPhoto: activeProduct.requiresPhoto,
-      validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
       minPeople: activeProduct.minPeople,
       maxPeople: activeProduct.maxPeople,
       imageUrl: activeProduct.imageUrl || null,
-    });
-
-    // 🔄 Dual-write: persist to server cart session (fire-and-forget)
-    if (process.env.NEXT_PUBLIC_CART_V2) {
-      addToCartAction({
-        ticketPriceId: activePrice.id,
-        facilityId: facility.id,
-        quantity,
-        title: `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`,
-        price: activePrice.price,
-        currency: "RSD",
-        facilityName: facility.name,
-        category: facility.category,
-        validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
-        requiresIdentity: activeProduct.requiresIdentity,
-        requiresPhoto: activeProduct.requiresPhoto,
-        minPeople: activeProduct.minPeople,
-        maxPeople: activeProduct.maxPeople,
-        imageUrl: activeProduct.imageUrl || null,
-      }).catch(console.error);
-    }
+    }).catch(console.error);
 
     setIsAdding(true);
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
