@@ -28,31 +28,41 @@ export const CartDrawer = () => {
     return new Intl.NumberFormat("sr-RS").format(price);
   };
 
-  const loadCart = React.useCallback(async () => {
-    const result = await getCartAction();
-    if (result.success && result.data) {
-      const serverItems: CartItem[] = (result.data.items || []) as CartItem[];
-      setItems(serverItems);
-      setTotalPrice(
-        serverItems.reduce((sum: number, i: CartItem) => sum + i.price * i.quantity, 0),
-      );
-    }
-  }, []);
-
   React.useEffect(() => {
     const timer = requestAnimationFrame(() => {
       setIsMounted(true);
     });
     getClientDictionary().then(setDict);
-    loadCart();
     return () => cancelAnimationFrame(timer);
-  }, [loadCart]);
+  }, []);
+
+  // Load cart data on mount
+  React.useEffect(() => {
+    let cancelled = false;
+    getCartAction().then((r) => {
+      if (cancelled || !r.success) return;
+      const serverItems = (r.data?.items || []) as CartItem[];
+      setItems(serverItems);
+      setTotalPrice(serverItems.reduce((s, i) => s + i.price * i.quantity, 0));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   React.useEffect(() => {
-    if (isCartOpen) {
-      loadCart();
-    }
-  }, [isCartOpen, loadCart]);
+    if (!isCartOpen) return;
+    let cancelled = false;
+    getCartAction().then((r) => {
+      if (cancelled || !r.success) return;
+      const serverItems = (r.data?.items || []) as CartItem[];
+      setItems(serverItems);
+      setTotalPrice(serverItems.reduce((s, i) => s + i.price * i.quantity, 0));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isCartOpen]);
 
   if (!isMounted) return null;
 

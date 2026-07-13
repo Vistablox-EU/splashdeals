@@ -6,7 +6,6 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { trackAddToCart } from "@/lib/analytics/events";
 import { addToCartAction } from "@/app/(server)/actions/cart";
-import type { CartItem } from "@/lib/types/cart";
 
 interface AddToCartButtonProps {
   ticket: {
