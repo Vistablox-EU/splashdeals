@@ -112,8 +112,15 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     if (targetEmail) {
       const user = await prisma.user.upsert({
         where: { email: targetEmail },
-        update: { name: session.customer_details?.name || "Customer" },
-        create: { email: targetEmail, name: session.customer_details?.name || "Customer" },
+        update: {
+          name: session.customer_details?.name || "Customer",
+          ...(session.customer ? { stripeCustomerId: session.customer as string } : {}),
+        },
+        create: {
+          email: targetEmail,
+          name: session.customer_details?.name || "Customer",
+          ...(session.customer ? { stripeCustomerId: session.customer as string } : {}),
+        },
       });
       userId = user.id;
     }

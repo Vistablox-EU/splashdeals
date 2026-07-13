@@ -2,6 +2,7 @@ import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
+import { FavoriteButton } from "@/components/shared/FavoriteButton";
 interface Facility {
   id: string;
   name: string;
@@ -57,6 +58,8 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
             </div>
           </div>
         )}
+
+        <FavoriteButton facilityId={facility.id} isFavorited={false} />
 
         <div className="absolute inset-0 z-0">
           {backgroundPhoto?.url ? (

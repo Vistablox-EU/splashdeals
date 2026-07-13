@@ -31,6 +31,10 @@ export const auth = betterAuth({
       clientId: process.env.APPLE_CLIENT_ID || "",
       clientSecret: process.env.APPLE_CLIENT_SECRET || "",
     },
+    twitter: {
+      clientId: process.env.X_CLIENT_ID || "",
+      clientSecret: process.env.X_CLIENT_SECRET || "",
+    },
   },
 
   session: {

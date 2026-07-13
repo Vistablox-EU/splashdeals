@@ -21,10 +21,6 @@ export function TicketCardSkeleton() {
       {/* Content skeleton */}
       <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pb-4">
         <Skeleton className="mb-1 h-3 w-2/3 rounded-md" />
-        <div className="mb-2 space-y-1">
-          <Skeleton className="h-2 w-full rounded-md" />
-          <Skeleton className="h-2 w-5/6 rounded-md" />
-        </div>
 
         {/* Footer skeleton */}
         <div className="mt-auto flex items-end justify-between gap-2">

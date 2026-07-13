@@ -12,7 +12,7 @@ export async function proxy(request: NextRequest) {
   });
 
   if (!session) {
-    const signInUrl = new URL("/api/auth/sign-in", request.url);
+    const signInUrl = new URL("/prijava", request.url);
     signInUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
     return NextResponse.redirect(signInUrl);
   }

@@ -69,7 +69,7 @@ async function main() {
 
   // 1. Seed Strategic Cities/Regions
   const citiesData = [
-    { name: "Beograd", slug: "belgrade" },
+    { name: "Beograd", slug: "beograd" },
     { name: "Novi Sad", slug: "novi-sad" },
     { name: "Niš", slug: "nis" },
     { name: "Kragujevac", slug: "kragujevac" },
@@ -200,7 +200,7 @@ async function main() {
       ],
     },
     {
-      name: "Hollywoodland Belgrade",
+      name: "Hollywoodland Beograd",
       slug: "hollywoodland",
       category: "Akva Park",
       city: "Beograd",

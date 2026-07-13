@@ -262,7 +262,7 @@ export function Footer() {
                   <Icon name="location_on" className="group-hover:text-primary text-[16px]" />
                 </div>
                 <span className="group-hover:text-primary text-xs font-bold transition-colors">
-                  Beograd, SRB
+                  Beograd Technology Park, SRB
                 </span>
               </div>
             </div>

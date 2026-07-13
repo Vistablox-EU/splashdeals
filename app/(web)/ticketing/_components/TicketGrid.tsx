@@ -243,7 +243,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
                 <div className="relative z-30 mt-auto flex items-end justify-between gap-2">
                   <div className="flex flex-col">
                     {hasDiscount && (
-                      <span className="text-muted-foreground/40 text-[9px] font-medium line-through">
+                      <span className="text-muted-foreground/40 text-[8px] font-medium line-through sm:text-[9px]">
                         {priceFormat.format(ticket.originalPrice!)}
                       </span>
                     )}
@@ -299,7 +299,6 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
             </div>
             <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pb-4">
               <div className="bg-muted mb-1 h-3 w-2/3 rounded-md" />
-              <div className="bg-muted mb-2 h-2 w-full rounded-md" />
               <div className="mt-auto flex items-end justify-between gap-2">
                 <div className="flex flex-col gap-1">
                   <div className="bg-muted h-2 w-12 rounded-sm" />
