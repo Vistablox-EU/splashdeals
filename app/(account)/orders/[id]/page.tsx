@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
-import { prisma } from "@/server/lib/prisma";
-import { auth } from "@/server/lib/auth";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { OrderDetail } from "./_components/OrderDetail";
 

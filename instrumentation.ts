@@ -9,6 +9,6 @@ export async function register() {
     return;
   }
 
-  const { bootstrapSuperAdmin } = await import("@/server/lib/admin-bootstrap");
+  const { bootstrapSuperAdmin } = await import("@/app/(server)/lib/admin-bootstrap");
   await bootstrapSuperAdmin();
 }

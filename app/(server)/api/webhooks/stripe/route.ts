@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import Stripe from "stripe";
-import { prisma } from "@/server/lib/prisma";
-import { getNextSubscriptionExpiry } from "@/server/lib/utils/seasonal";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { getNextSubscriptionExpiry } from "@/app/(server)/lib/utils/seasonal";
 import { after } from "next/server";
 import { TicketStatus } from "@prisma/client";
 import crypto from "node:crypto";
-import { sendEmail, sendOrderConfirmation } from "@/server/lib/email";
+import { sendEmail, sendOrderConfirmation } from "@/app/(server)/lib/email";
 import {
   buildTicketDeliveryHtml,
   buildTicketDeliveryText,
-} from "@/server/lib/email-templates/ticket-delivery";
+} from "@/app/(server)/lib/email-templates/ticket-delivery";
 import QRCode from "qrcode";
 
 /**

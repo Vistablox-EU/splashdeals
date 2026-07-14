@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getActiveCities } from "@/server/lib/data/discovery";
+import { getActiveCities } from "@/app/(server)/lib/data/discovery";
 
 /**
  * 🏙️ Active Cities Discovery API

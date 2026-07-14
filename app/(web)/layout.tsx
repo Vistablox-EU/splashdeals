@@ -4,8 +4,8 @@ import { NavigationStructuredData } from "@/components/layout/_header/Navigation
 import { BreadcrumbBar } from "@/components/layout/BreadcrumbBar";
 import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
 import { getDictionary } from "@/lib/dictionaries";
-import { getActiveCities } from "@/server/lib/data/discovery";
-import { prisma } from "@/server/lib/prisma";
+import { getActiveCities } from "@/app/(server)/lib/data/discovery";
+import { prisma } from "@/app/(server)/lib/prisma";
 import dynamic from "next/dynamic";
 import { CartLoader } from "@/components/cart/CartLoader";
 import { GAScript } from "@/components/analytics/GoogleAnalytics";

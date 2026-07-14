@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { TableSkeleton } from "@/app/(dashboard)/admin/_common/TableSkeleton";
 import { AdminPageShell } from "@/app/(dashboard)/admin/_common/AdminPageShell";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 import { getCustomerCounts } from "@/lib/data/admin";
 import { CustomersTable } from "./_components/customers-table";
 

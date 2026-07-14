@@ -1,5 +1,5 @@
-import { requireAdmin } from "@/server/lib/auth-guards";
-import { prisma } from "@/server/lib/prisma";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { PostEditor } from "../_components/post-editor";
 import { Button } from "@/components/ui/button";

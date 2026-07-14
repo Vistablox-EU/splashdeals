@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
-import { deleteFacilityAction } from "@/server/actions/facilities";
+import { deleteFacilityAction } from "@/app/(server)/actions/facilities";
 
 interface DangerZoneProps {
   facilityId: string;

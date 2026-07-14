@@ -1,10 +1,10 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
-import { generateApiKey } from "@/server/lib/api-key-auth";
-import { handleServerActionError } from "@/server/lib/server-action-error";
-import { revalidateAdminUsers } from "@/server/lib/revalidation";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
+import { generateApiKey } from "@/app/(server)/lib/api-key-auth";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
+import { revalidateAdminUsers } from "@/app/(server)/lib/revalidation";
 
 export async function getApiKeysAction() {
   try {

@@ -1,8 +1,8 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
-import { requireAdmin } from "@/server/lib/auth-guards";
-import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
+import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 
 /**
  * 🪵 Log a CMS activity entry.

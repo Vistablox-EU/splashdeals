@@ -1,12 +1,12 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
-import { revalidateAdminFacilities } from "@/server/lib/revalidation";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { revalidateAdminFacilities } from "@/app/(server)/lib/revalidation";
 import { FacilityStatus } from "@prisma/client";
-import { facilitySchema, type FacilityFormValues } from "@/server/lib/validations/facility";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { facilitySchema, type FacilityFormValues } from "@/app/(server)/lib/validations/facility";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 
-import { handleServerActionError } from "@/server/lib/server-action-error";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
 
 export async function bulkUpdateFacilityStatusAction(ids: string[], status: FacilityStatus) {
   try {

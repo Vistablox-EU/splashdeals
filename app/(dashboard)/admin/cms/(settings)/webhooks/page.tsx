@@ -1,5 +1,5 @@
-import { requireAdmin } from "@/server/lib/auth-guards";
-import { prisma } from "@/server/lib/prisma";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { WebhooksListClient } from "./_components/webhooks-list-client";
 import type { Metadata } from "next";
 import { connection } from "next/server";

@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { prisma } from "@/server/lib/prisma";
-import { revalidateAdminFacility } from "@/server/lib/revalidation";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { revalidateAdminFacility } from "@/app/(server)/lib/revalidation";
 import {
   updateFacilityGovernanceSchema,
   type UpdateFacilityGovernanceValues,
@@ -10,10 +10,10 @@ import {
   type UpdateFacilityStatusValues,
   updateFacilityOperationsSchema,
   type UpdateFacilityOperationsValues,
-} from "@/server/lib/validations/facility";
-import { validateFacilityAccess } from "@/server/lib/auth-guards";
+} from "@/app/(server)/lib/validations/facility";
+import { validateFacilityAccess } from "@/app/(server)/lib/auth-guards";
 
-import { handleServerActionError } from "@/server/lib/server-action-error";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
 
 const socialLinksSchema = z.object({
   facilityId: z.string(),

@@ -1,13 +1,13 @@
 "use server";
 
-import { createCheckoutSession } from "@/server/lib/stripe-checkout";
-import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
-import { sendOrderConfirmation } from "@/server/lib/email";
+import { createCheckoutSession } from "@/app/(server)/lib/stripe-checkout";
+import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
+import { sendOrderConfirmation } from "@/app/(server)/lib/email";
 import {
   validatePromoCodeAction,
   incrementCampaignUsageAction,
 } from "@/app/(server)/actions/campaigns";
-import { auth } from "@/server/lib/auth";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { setCartLockAction } from "@/app/(server)/actions/cart";
 

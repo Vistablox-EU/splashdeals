@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/server/lib/auth-guards";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
 import { getActivityLogAction } from "@/app/(server)/actions/activity";
 import { connection } from "next/server";
 import type { Metadata } from "next";

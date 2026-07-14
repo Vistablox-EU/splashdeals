@@ -1,7 +1,7 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
-import { requireFacilityOwner } from "@/server/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { requireFacilityOwner } from "@/app/(server)/lib/auth-guards";
 import { getFacilityViews } from "@/app/(server)/lib/analytics";
 
 export async function getOwnerFacilitiesAction() {

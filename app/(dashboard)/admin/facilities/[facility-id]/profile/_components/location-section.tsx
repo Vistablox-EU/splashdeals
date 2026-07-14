@@ -7,7 +7,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility";
+import type { UpdateFacilityGovernanceValues } from "@/app/(server)/lib/validations/facility";
 
 export function LocationSection() {
   const { control, getValues } = useFormContext<UpdateFacilityGovernanceValues>();

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 
 // ---------------------------------------------------------------------------
 // Simple in-memory rate limiter — per IP, max 100 requests per 60-second

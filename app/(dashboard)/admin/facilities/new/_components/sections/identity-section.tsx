@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { FacilityFormValues } from "@/server/lib/validations/facility";
+import type { FacilityFormValues } from "@/app/(server)/lib/validations/facility";
 
 interface IdentitySectionProps {
   isSlugLocked: boolean;

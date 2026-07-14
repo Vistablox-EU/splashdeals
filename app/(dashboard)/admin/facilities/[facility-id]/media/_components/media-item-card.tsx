@@ -7,7 +7,7 @@ import { FacilityMedia } from "@prisma/client";
 import {
   updateMediaCaptionAction,
   updateMediaFocalPointAction,
-} from "@/server/actions/media-actions";
+} from "@/app/(server)/actions/media-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";

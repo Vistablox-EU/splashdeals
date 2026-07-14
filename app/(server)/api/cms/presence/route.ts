@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 
 // Track editor presence — POST stores userId + postId + timestamp
 export async function POST(request: NextRequest) {

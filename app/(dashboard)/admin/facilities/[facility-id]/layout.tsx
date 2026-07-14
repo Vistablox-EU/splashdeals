@@ -1,5 +1,5 @@
 import { ReactNode, Suspense } from "react";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 

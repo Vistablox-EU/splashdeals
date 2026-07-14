@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { getAllSlugs } from "@/lib/routing/categories";
 
 export const revalidate = 3600; // Revalidate sitemap every hour

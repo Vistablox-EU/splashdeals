@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "../server/lib/prisma";
+import { prisma } from "../app/(server)/lib/prisma";
 
 /**
  * 🌊 Splashdeals Admin Seeder

@@ -1,5 +1,5 @@
-import { validateFacilityAccess, type AuthedUser } from "@/server/lib/auth-guards";
-import { handleServerActionError } from "@/server/lib/server-action-error";
+import { validateFacilityAccess, type AuthedUser } from "@/app/(server)/lib/auth-guards";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
 
 /**
  * 🌊 Action Authorization Wrapper

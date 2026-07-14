@@ -1,8 +1,8 @@
 "use server";
 
-import { processImageToWebP } from "@/server/lib/media";
+import { processImageToWebP } from "@/app/(server)/lib/media";
 import { MAX_FILE_SIZE } from "@/lib/constants";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 
 const ALLOWED_TYPES = [
   "image/jpeg",

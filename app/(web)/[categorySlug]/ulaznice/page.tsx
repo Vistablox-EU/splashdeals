@@ -1,4 +1,4 @@
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { TicketGrid as HomeTicketGrid } from "@/app/(web)/ticketing/_components/TicketGrid";
 import Image from "next/image";

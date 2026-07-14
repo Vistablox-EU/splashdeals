@@ -1,4 +1,4 @@
-import { getNavigationMenus } from "@/server/lib/data/navigation";
+import { getNavigationMenus } from "@/app/(server)/lib/data/navigation";
 
 export async function NavigationStructuredData() {
   const menus = await getNavigationMenus();

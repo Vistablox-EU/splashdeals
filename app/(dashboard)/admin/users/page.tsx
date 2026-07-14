@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { TableSkeleton } from "@/app/(dashboard)/admin/_common/TableSkeleton";
 import { AdminPageShell } from "@/app/(dashboard)/admin/_common/AdminPageShell";
 import { UsersList } from "./_components/users-list";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 import { getUserCounts } from "@/lib/data/admin";
 
 export const metadata: Metadata = {

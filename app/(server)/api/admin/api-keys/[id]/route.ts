@@ -1,8 +1,8 @@
 /** @consumer admin-ui -- kept for backward compat; new features should use api-keys.ts Server Action. */
 import { NextResponse } from "next/server";
-import { prisma } from "@/server/lib/prisma";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
-import { handleServerActionError } from "@/server/lib/server-action-error";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
 
 /**
  * 🔑 API Key Revocation

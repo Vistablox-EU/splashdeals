@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/server/lib/prisma";
-import { sendRecoveryEmail } from "@/server/lib/email";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { sendRecoveryEmail } from "@/app/(server)/lib/email";
 
 /**
  * 🛒 Cron Job: Abandoned Cart Recovery

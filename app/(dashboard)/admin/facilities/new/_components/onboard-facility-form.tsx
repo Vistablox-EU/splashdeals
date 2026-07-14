@@ -7,9 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { createFacilityAction } from "@/server/actions/facilities";
+import { createFacilityAction } from "@/app/(server)/actions/facilities";
 import { toast } from "sonner";
-import { facilitySchema, type FacilityFormValues } from "@/server/lib/validations/facility";
+import { facilitySchema, type FacilityFormValues } from "@/app/(server)/lib/validations/facility";
 
 import { IdentitySection } from "./sections/identity-section";
 import { LocalizationSection } from "./sections/localization-section";

@@ -1,4 +1,4 @@
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 
 export async function getAdminDashboardStats() {
   const [revenueRaw, facilityCount, userCount, ticketCount] = await Promise.all([

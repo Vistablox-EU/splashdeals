@@ -37,7 +37,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import {
   updateFacilityAmenitiesAction,
   deleteGlobalAmenityAction,
-} from "@/server/actions/amenity-actions";
+} from "@/app/(server)/actions/amenity-actions";
 
 // 🎨 Icon Resolver for premium, curated visual styling
 const AMENITY_MATERIAL_ICON_MAP: Record<string, string> = {

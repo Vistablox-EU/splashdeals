@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createAdminUserAction } from "@/server/actions/users";
+import { createAdminUserAction } from "@/app/(server)/actions/users";
 import { UserRole } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

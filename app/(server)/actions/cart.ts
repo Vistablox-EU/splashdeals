@@ -2,11 +2,11 @@
 
 import { z } from "zod";
 import type { Prisma } from "@prisma/client";
-import { prisma } from "@/server/lib/prisma";
-import { auth } from "@/server/lib/auth";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
+import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 import { MAX_QUANTITY_PER_ITEM, type CartItem } from "@/lib/types/cart";
 
 // ─── Rate Limiting ───────────────────────────────────────────────────────────

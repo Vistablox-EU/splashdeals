@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { z } from "zod";
 
 const subscribeSchema = z.object({

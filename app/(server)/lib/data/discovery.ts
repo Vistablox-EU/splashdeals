@@ -1,5 +1,5 @@
 import "server-only";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { dbValueToSlug } from "@/lib/routing/categories";
 
 /**

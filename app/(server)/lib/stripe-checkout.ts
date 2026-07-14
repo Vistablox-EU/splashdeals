@@ -1,8 +1,8 @@
 import "server-only";
 import { z } from "zod";
 import Stripe from "stripe";
-import { prisma } from "@/server/lib/prisma";
-import { generateIdempotencyKey, withStripeRetry } from "@/server/lib/stripe-utils";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { generateIdempotencyKey, withStripeRetry } from "@/app/(server)/lib/stripe-utils";
 import {
   validatePromoCodeAction,
   incrementCampaignUsageAction,

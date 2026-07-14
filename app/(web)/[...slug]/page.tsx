@@ -1,6 +1,6 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { Metadata } from "next";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { FacilityShowcaseTemplate } from "@/app/(web)/facility/_components/ShowcaseTemplate";
 import { buildFacilityMetadata } from "@/app/(web)/facility/_data/metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";

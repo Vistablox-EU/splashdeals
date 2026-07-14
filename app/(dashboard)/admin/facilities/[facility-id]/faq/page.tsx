@@ -1,4 +1,4 @@
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { FAQSectionList } from "./_components/faq-section-list";
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
