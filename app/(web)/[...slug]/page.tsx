@@ -5,6 +5,8 @@ import { FacilityShowcaseTemplate } from "@/app/(web)/facility/_components/Showc
 import { buildFacilityMetadata } from "@/app/(web)/facility/_data/metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/app/(server)/lib/routing/discovery";
 import { resolveSlug, resolveLegacyTarget } from "@/app/(server)/lib/routing/resolve-slug";
+import { resolveCategoryKey } from "@/lib/routing/categories";
+import { parseLocaleSegments } from "@/lib/locale";
 
 export async function generateMetadata({
   params,
@@ -13,24 +15,22 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
 
-  // NOTE: connection() is intentionally NOT called here — duplicate connection() calls
-  // across generateMetadata + page component cause RSC resumable slot mismatches
-  // in Next.js 16: "Couldn't find all resumable slots by key/index during replaying".
-  // FacilityShowcaseTemplate (rendered below) calls its own connection() which is sufficient.
-
   // Legacy /en/ and /rs/ prefix routes → resolve final target and 301 directly
   if (slug && (slug[0] === "en" || slug[0] === "rs")) {
     const target = await resolveLegacyTarget(slug);
     if (target) permanentRedirect(target);
   }
 
-  if (slug && slug.length === 1) {
-    const resolved = await resolveSlug(slug[0]);
+  // Locale-aware slug resolution (e.g. /en/aqua-parks)
+  const { locale, segments } = parseLocaleSegments(slug || []);
+
+  if (segments.length === 1) {
+    const resolved = await resolveSlug(segments[0], locale);
     if (resolved) {
       if (resolved.type === "facility") {
-        return await buildFacilityMetadata(slug[0], resolved.category);
+        return await buildFacilityMetadata(segments[0], resolved.category);
       }
-      return await getDiscoveryMetadata(slug[0]);
+      return await getDiscoveryMetadata(segments[0]);
     }
   }
 
@@ -45,7 +45,6 @@ export async function generateMetadata({
   }
 
   // /[facilitySlug]/ticket/[ticketSlug] → 301 to /{facilitySlug}#deals
-  // These URLs are in the sitemap but the ticket purchase UI lives on the facility page.
   if (slug && slug.length === 3 && slug[1] === "ticket") {
     const facility = await prisma.facility.findUnique({
       where: { slug: slug[0], status: "ACTIVE" },
@@ -55,8 +54,6 @@ export async function generateMetadata({
       permanentRedirect(`/${facility.slug}#deals`);
     }
   }
-
-  // /facilities/{category}/{facilitySlug} handled at edge level in next.config.ts redirects()
 
   notFound();
 }
@@ -71,26 +68,24 @@ export async function generateMetadata({
 export default async function CatchAllPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
 
-  // NOTE: connection() is intentionally NOT called here — duplicate connection() calls
-  // across generateMetadata + page component cause RSC resumable slot mismatches
-  // in Next.js 16: "Couldn't find all resumable slots by key/index during replaying".
-  // FacilityShowcaseTemplate (rendered below) calls its own connection() which is sufficient.
-
   // Legacy /en/ and /rs/ prefix routes → resolve final target and 301 directly
   if (slug && (slug[0] === "en" || slug[0] === "rs")) {
     const target = await resolveLegacyTarget(slug);
     if (target) permanentRedirect(target);
   }
 
-  if (slug && slug.length === 1) {
-    const resolved = await resolveSlug(slug[0]);
+  // Locale-aware slug resolution (e.g. /en/aqua-parks → render aqua-parks)
+  const { locale, segments } = parseLocaleSegments(slug || []);
+
+  if (segments.length === 1) {
+    const resolved = await resolveSlug(segments[0], locale);
     if (resolved) {
       if (resolved.type === "facility") {
         return (
           <FacilityShowcaseTemplate
             params={Promise.resolve({
               categorySlug: resolved.category,
-              facilitySlug: slug[0],
+              facilitySlug: segments[0],
             })}
           />
         );
@@ -98,7 +93,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
       return (
         <DiscoveryTemplate
           params={Promise.resolve({
-            categorySlug: slug[0],
+            categorySlug: segments[0],
           })}
         />
       );
@@ -116,8 +111,6 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
   }
 
   // /[facilitySlug]/ticket/[ticketSlug] → 301 to /{facilitySlug}#deals
-  // These URLs were indexed/sitemapped but the ticket UI lives on the facility page.
-  // A 301 consolidates link equity into the canonical facility URL.
   if (slug && slug.length === 3 && slug[1] === "ticket") {
     const facility = await prisma.facility.findUnique({
       where: { slug: slug[0], status: "ACTIVE" },

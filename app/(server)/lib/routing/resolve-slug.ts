@@ -4,21 +4,34 @@
  * Used by both the catch-all route ([...slug]/page.tsx) and the category route ([categorySlug]/page.tsx).
  */
 import { prisma } from "@/app/(server)/lib/prisma";
-import { slugToDbValue, isKnownCategory, dbValueToSlug } from "@/lib/routing/categories";
+import {
+  resolveCategoryKey,
+  slugToDbValue,
+  isKnownCategory,
+  dbValueToSlug,
+  getLocalizedSlug,
+} from "@/lib/routing/categories";
+import type { Locale } from "@/lib/locale";
 
 export type ResolvedType =
-  { type: "category"; category: string } | { type: "facility"; category: string } | null;
+  | { type: "category"; category: string; locale: Locale }
+  | { type: "facility"; category: string; locale: Locale }
+  | null;
 
 /**
  * Resolve a single path segment to determine if it's a known category or facility slug.
+ * Accepts both Serbian and English slugs.
  *
  * Resolution order:
- * 1. Known category slug (from registry) with DB confirmation
+ * 1. Known category slug (from registry, any locale) with DB confirmation
  * 2. Known category slug (from registry, even if DB is empty — e.g. CI)
  * 3. Active facility slug (Prisma lookup)
  */
-export async function resolveSlug(firstSlug: string): Promise<ResolvedType> {
-  const dbValue = slugToDbValue(firstSlug);
+export async function resolveSlug(firstSlug: string, locale: Locale = "sr"): Promise<ResolvedType> {
+  // Map English slug to Serbian key for DB lookup
+  const srKey = resolveCategoryKey(firstSlug);
+  const canonicalSlug = srKey ?? firstSlug;
+  const dbValue = slugToDbValue(canonicalSlug);
 
   // 1. Check if category (DB has facilities matching the mapped value)
   if (dbValue) {
@@ -27,16 +40,16 @@ export async function resolveSlug(firstSlug: string): Promise<ResolvedType> {
       select: { category: true },
     });
     if (hasCategory) {
-      return { type: "category", category: firstSlug.toLowerCase() };
+      return { type: "category", category: canonicalSlug, locale };
     }
   }
 
-  // 2. Check known category slugs (works even when DB is empty, e.g. CI)
-  if (isKnownCategory(firstSlug.toLowerCase())) {
-    return { type: "category", category: firstSlug.toLowerCase() };
+  // 2. Check known category slugs (any locale)
+  if (isKnownCategory(canonicalSlug)) {
+    return { type: "category", category: canonicalSlug, locale };
   }
 
-  // 3. Check if facility
+  // 3. Check if facility (facility slugs are the same across locales)
   const facility = await prisma.facility.findUnique({
     where: { slug: firstSlug, status: "ACTIVE" },
     select: { slug: true, category: true },
@@ -44,7 +57,7 @@ export async function resolveSlug(firstSlug: string): Promise<ResolvedType> {
   if (facility) {
     const catSlug =
       dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
-    return { type: "facility", category: catSlug };
+    return { type: "facility", category: catSlug, locale };
   }
 
   return null;
@@ -54,15 +67,17 @@ export async function resolveSlug(firstSlug: string): Promise<ResolvedType> {
  * Quick check: is a path segment a known facility?
  * Bypasses the category check for direct slug resolution.
  */
-export async function resolveFacilitySlug(slug: string) {
+export async function resolveFacilitySlug(slug: string, locale: Locale = "sr") {
   const facility = await prisma.facility.findUnique({
     where: { slug, status: "ACTIVE" },
     select: { slug: true, category: true },
   });
   if (facility) {
-    const catSlug =
-      dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
-    return { slug: facility.slug, category: catSlug };
+    const cat = getLocalizedSlug(
+      facility.category?.toLowerCase().replace(/\s+/g, "-") || "",
+      locale,
+    );
+    return { slug: facility.slug, category: cat };
   }
   return null;
 }
