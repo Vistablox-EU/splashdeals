@@ -3,6 +3,7 @@ import { prisma } from "@/app/(server)/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { ValidityType, DayType, TimeSlot } from "@prisma/client";
+import { validateFacilityAccess } from "@/app/(server)/lib/auth-guards";
 
 // ─── Zod Schemas ────────────────────────────────────
 
@@ -159,6 +160,7 @@ function revalidate(facilityId: string) {
 // ─── CRUD: Category ────────────────────────────
 
 export async function createCategory(facilityId: string, title: string) {
+  await validateFacilityAccess(facilityId);
   createCategorySchema.parse({ title });
   const maxOrder = await prisma.ticketCategory.aggregate({
     where: { facilityId },
@@ -184,12 +186,14 @@ export async function updateCategory(
   facilityId: string,
   data: { title?: string; isActive?: boolean },
 ) {
+  await validateFacilityAccess(facilityId);
   updateCategorySchema.parse(data);
   await prisma.ticketCategory.update({ where: { id }, data });
   revalidate(facilityId);
 }
 
 export async function deleteCategory(id: string, facilityId: string) {
+  await validateFacilityAccess(facilityId);
   await prisma.ticketCategory.delete({ where: { id } });
   revalidate(facilityId);
 }
@@ -210,6 +214,7 @@ export async function createProduct(
     validityType?: string;
   },
 ) {
+  await validateFacilityAccess(facilityId);
   createProductSchema.parse(data);
   const maxOrder = await prisma.ticketProduct.aggregate({
     where: { categoryId },
@@ -248,12 +253,14 @@ export async function updateProduct(
     imageUrl?: string | null;
   },
 ) {
+  await validateFacilityAccess(facilityId);
   updateProductSchema.parse(data);
   await prisma.ticketProduct.update({ where: { id }, data });
   revalidate(facilityId);
 }
 
 export async function deleteProduct(id: string, facilityId: string) {
+  await validateFacilityAccess(facilityId);
   await prisma.ticketProduct.delete({ where: { id } });
   revalidate(facilityId);
 }
@@ -273,6 +280,7 @@ export async function createPrice(
     validTo?: Date | null;
   },
 ) {
+  await validateFacilityAccess(facilityId);
   createPriceSchema.parse(data);
   const maxOrder = await prisma.ticketPrice.aggregate({
     where: { ticketTypeId },
@@ -307,6 +315,7 @@ export async function updatePrice(
     isActive?: boolean;
   },
 ) {
+  await validateFacilityAccess(facilityId);
   updatePriceSchema.parse(data);
   await prisma.ticketPrice.update({
     where: { id },
@@ -323,6 +332,7 @@ export async function updatePrice(
 }
 
 export async function deletePrice(id: string, facilityId: string) {
+  await validateFacilityAccess(facilityId);
   await prisma.ticketPrice.delete({ where: { id } });
   revalidate(facilityId);
 }
