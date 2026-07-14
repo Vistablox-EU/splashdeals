@@ -98,7 +98,7 @@ interface ShowcaseTicketGroupsProps {
   facilitySlug: string;
   facilityName: string;
   category: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   dict: Record<string, any>;
   facility?: {
     id: string;

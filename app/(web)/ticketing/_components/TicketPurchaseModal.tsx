@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import { useUIState } from "@/hooks/use-ui-state";
-import { useRouter } from "next/navigation";
 import { getDayTypeForDate, filterPricesByDate } from "@/app/(server)/lib/ticket-utils";
 import { addToCartAction } from "@/app/(server)/actions/cart";
 
@@ -111,8 +110,6 @@ export function TicketPurchaseModal({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const openCart = useUIState((state) => state.openCart);
-  const router = useRouter();
-
   // Helper: find the best discount price in a product's prices
   const findBestDeal = (prices: PriceOption[]) => {
     const best = [...prices]

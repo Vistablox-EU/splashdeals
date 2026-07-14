@@ -28,7 +28,7 @@ export interface NavItemData {
 }
 
 export async function getNavigationMenus(): Promise<NavMenuData[]> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Prisma @@schema("marketing") causes type mismatch
+   
   const menus = await (prisma as any).navigationMenu.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },

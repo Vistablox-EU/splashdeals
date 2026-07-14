@@ -19,7 +19,7 @@ interface Facility {
 }
 interface FacilityCardProps {
   facility: Facility;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   dict: Record<string, any>;
   fromLabel: string;
   isPriority?: boolean;

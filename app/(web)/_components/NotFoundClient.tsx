@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/SEO/JsonLd";
 
 export function NotFoundClient() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const [dict, setDict] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {

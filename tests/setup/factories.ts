@@ -1,5 +1,4 @@
-import { DayType, TimeSlot } from "@prisma/client";
-import type { Prisma } from "@prisma/client";
+import { DayType } from "@prisma/client";
 
 /**
  * Test data factories for building consistent test fixtures.

@@ -34,40 +34,40 @@ const STARS = [1, 2, 3, 4, 5];
 
 export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityReviewsProps) {
   const router = useRouter();
-  const [reviews, setReviews] = React.useState<Review[]>(initialReviews);
+  const [reviews] = React.useState<Review[]>(initialReviews);
   const [rating, setRating] = React.useState(0);
   const [hoverRating, setHoverRating] = React.useState(0);
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const t = dict?.reviews || {};
+  const t = (dict?.reviews || {}) as Record<string, string>;
 
   const { data: session } = authClient.useSession();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (rating === 0) {
-      toast.error((t as any).select_rating || "Izaberite ocenu.");
+      toast.error(t.select_rating || "Izaberite ocenu.");
       return;
     }
     if (!session) {
-      toast.error((t as any).login_required || "Morate biti prijavljeni.");
+      toast.error(t.login_required || "Morate biti prijavljeni.");
       return;
     }
     setIsSubmitting(true);
     try {
       const result = await submitReviewAction(facilityId, rating, title, content);
       if (result.success) {
-        toast.success((t as any).submitted || "Recenzija poslata na pregled.");
+        toast.success(t.submitted || "Recenzija poslata na pregled.");
         setRating(0);
         setTitle("");
         setContent("");
         router.refresh();
       } else {
-        toast.error(result.error || (t as any).error || "Greška pri slanju recenzije.");
+        toast.error(result.error || t.error || "Greška pri slanju recenzije.");
       }
     } catch {
-      toast.error((t as any).error || "Greška pri slanju recenzije.");
+      toast.error(t.error || "Greška pri slanju recenzije.");
     } finally {
       setIsSubmitting(false);
     }
@@ -87,7 +87,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
       <div className="flex items-center gap-3">
         <Icon name="star" className="text-yellow-500 size-5" />
         <h2 className="text-foreground text-xl font-black tracking-tight uppercase italic">
-          {(t as any).title || "Recenzije"}
+          {t.title || "Recenzije"}
         </h2>
         {reviews.length > 0 && (
           <Badge variant="secondary" className="text-[10px]">
@@ -111,7 +111,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
               ))}
             </div>
             <span className="text-muted-foreground text-[10px] font-medium">
-              {reviews.length} {(t as any).reviews_count || "recenzija"}
+              {reviews.length} {t.reviews_count || "recenzija"}
             </span>
           </div>
           <div className="flex-1 space-y-1">
@@ -145,7 +145,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <p className="text-foreground/70 mb-2 text-[10px] font-bold tracking-wider uppercase">
-              {(t as any).your_rating || "Vaša ocena"}
+              {t.your_rating || "Vaša ocena"}
             </p>
             <div className="flex gap-1">
               {STARS.map((star) => (
@@ -171,7 +171,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
           </div>
           <div>
             <Input
-              placeholder={(t as any).title_placeholder || "Naslov recenzije (opcionalno)"}
+              placeholder={t.title_placeholder || "Naslov recenzije (opcionalno)"}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="h-9 text-sm"
@@ -180,7 +180,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
           </div>
           <div>
             <Textarea
-              placeholder={(t as any).content_placeholder || "Vaš utisak..."}
+              placeholder={t.content_placeholder || "Vaš utisak..."}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[80px] resize-none text-sm"
@@ -201,17 +201,17 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
             ) : (
               <Icon name="send" className="size-3.5" />
             )}
-            {(t as any).submit || "Pošalji recenziju"}
+            {t.submit || "Pošalji recenziju"}
           </Button>
         </form>
       ) : (
         <Card className="border-border/50 bg-muted/20 p-4 text-center">
           <p className="text-muted-foreground text-xs font-medium">
-            {(t as any).login_prompt || "Prijavite se da biste ostavili recenziju."}
+            {t.login_prompt || "Prijavite se da biste ostavili recenziju."}
           </p>
           <Button asChild variant="link" size="sm" className="mt-1 h-auto text-xs font-bold">
             <Link href="/prijava">
-              {(t as any).login_link || "Prijavi se"}
+              {t.login_link || "Prijavi se"}
             </Link>
           </Button>
         </Card>

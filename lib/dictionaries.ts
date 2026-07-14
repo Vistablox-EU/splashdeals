@@ -58,7 +58,7 @@ function deepMerge(
  */
 export const getDictionary = async <L extends Locale = "rs">(
   locale: L = "rs" as L,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
 ): Promise<any> => {
   const loader = loaders[locale];
 

@@ -84,20 +84,20 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
     }
 
     // Sort
-    const orderBy: Record<string, string> =
+    const orderBy =
       params.sort === "oldest"
-        ? { createdAt: "asc" }
+        ? { createdAt: "asc" as const }
         : params.sort === "name_asc"
-          ? { filename: "asc" }
+          ? { filename: "asc" as const }
           : params.sort === "name_desc"
-            ? { filename: "desc" }
+            ? { filename: "desc" as const }
             : params.sort === "largest"
-              ? { size: "desc" }
+              ? { size: "desc" as const }
               : params.sort === "smallest"
-                ? { size: "asc" }
-                : { createdAt: "desc" };
+                ? { size: "asc" as const }
+                : { createdAt: "desc" as const };
 
-    const items = await (prisma as any).cmsMedia.findMany({
+    const items = await prisma.cmsMedia.findMany({
       where,
       orderBy,
       take: params.limit + 1,
@@ -151,15 +151,15 @@ export async function listCollectionsAction(): Promise<ActionResult<string[]>> {
   try {
     await requireAdmin();
 
-    const result = await (prisma as any).cmsMedia.findMany({
+    const result = await prisma.cmsMedia.findMany({
       where: { deletedAt: null, collection: { not: null } },
       select: { collection: true },
       distinct: ["collection"],
     });
 
     const collections = result
-      .map((r: { collection: string }) => r.collection)
-      .filter(Boolean)
+      .map((r: { collection: string | null }) => r.collection)
+      .filter((c): c is string => c !== null)
       .sort();
 
     return { success: true, data: collections };
@@ -191,7 +191,7 @@ export async function uploadMediaAction(
     const fileHash = createHash("sha256").update(buffer).digest("hex");
 
     // Check for existing duplicate
-    const existing = await (prisma as any).cmsMedia.findFirst({
+    const existing = await prisma.cmsMedia.findFirst({
       where: { fileHash, deletedAt: null },
       select: { id: true, filename: true, url: true },
     });
@@ -241,7 +241,7 @@ export async function uploadMediaAction(
       cacheControlMaxAge: 31536000,
     });
 
-    const media = await (prisma as any).cmsMedia.create({
+    const media = await prisma.cmsMedia.create({
       data: {
         url: blob.url,
         filename: file.name,
@@ -320,23 +320,23 @@ export async function getMediaAction(id: string): Promise<
   try {
     await requireAdmin();
 
-    const media = await (prisma as any).cmsMedia.findUnique({ where: { id } });
+    const media = await prisma.cmsMedia.findUnique({ where: { id } });
     if (!media) return { success: false, error: "Medija nije pronađena." };
 
     const [postRefs, pageRefs] = await Promise.all([
-      (prisma as any).$queryRawUnsafe(
+      prisma.$queryRawUnsafe<Array<{ id: string; title: string }>>(
         `SELECT id, title FROM marketing.blog_posts WHERE content LIKE $1 OR "coverImage" = $2 OR "featuredImage" = $3 OR "ogImage" = $4`,
         `%${media.url}%`,
         media.url,
         media.url,
         media.url,
-      ) as Promise<Array<{ id: string; title: string }>>,
-      (prisma as any).$queryRawUnsafe(
+      ),
+      prisma.$queryRawUnsafe<Array<{ id: string; title: string }>>(
         `SELECT id, title FROM marketing.pages WHERE content LIKE $1 OR "coverImage" = $2 OR "ogImage" = $3`,
         `%${media.url}%`,
         media.url,
         media.url,
-      ) as Promise<Array<{ id: string; title: string }>>,
+      ),
     ]);
 
     const usedIn = [
@@ -384,7 +384,7 @@ export async function updateMediaAction(
     await requireAdmin();
     const params = updateMediaSchema.parse(input);
 
-    await (prisma as any).cmsMedia.update({
+    await prisma.cmsMedia.update({
       where: { id: params.id },
       data: {
         ...(params.altText !== undefined && { altText: params.altText }),
@@ -412,19 +412,19 @@ export async function checkMediaReferencesAction(url: string): Promise<
     await requireAdmin();
 
     const [posts, pages] = await Promise.all([
-      (prisma as any).$queryRawUnsafe(
+      prisma.$queryRawUnsafe<Array<{ id: string; title: string; status: string }>>(
         `SELECT id, title, status FROM marketing.blog_posts WHERE content LIKE $1 OR "coverImage" = $2 OR "featuredImage" = $3 OR "ogImage" = $4`,
         `%${url}%`,
         url,
         url,
         url,
-      ) as Promise<Array<{ id: string; title: string; status: string }>>,
-      (prisma as any).$queryRawUnsafe(
+      ),
+      prisma.$queryRawUnsafe<Array<{ id: string; title: string; status: string }>>(
         `SELECT id, title, status FROM marketing.pages WHERE content LIKE $1 OR "coverImage" = $2 OR "ogImage" = $3`,
         `%${url}%`,
         url,
         url,
-      ) as Promise<Array<{ id: string; title: string; status: string }>>,
+      ),
     ]);
 
     return {
@@ -452,14 +452,14 @@ export async function deleteMediaAction(
     const isHardDelete = options?.permanent === true || options?.force === true;
     if (isHardDelete) await requireSuperAdmin();
 
-    const media = await (prisma as any).cmsMedia.findUnique({ where: { id } });
+    const media = await prisma.cmsMedia.findUnique({ where: { id } });
     if (!media) return { success: false, error: "Medija nije pronađena." };
 
     // Check references for hard delete
     if (isHardDelete || options?.force) {
       // Hard delete: remove from Blob + DB
       await del(media.url);
-      await (prisma as any).cmsMedia.delete({ where: { id } });
+      await prisma.cmsMedia.delete({ where: { id } });
       revalidatePath("/admin/media");
 
       return { success: true, data: { deleted: true } };
@@ -491,7 +491,7 @@ export async function deleteMediaAction(
     }
 
     // No references → safe to soft delete
-    await (prisma as any).cmsMedia.update({
+    await prisma.cmsMedia.update({
       where: { id },
       data: { deletedAt: new Date() },
     });
@@ -515,7 +515,7 @@ export async function batchMediaUsageAction(
       return { success: false, error: "Između 1 i 100 medija po zahtevu." };
     }
 
-    const mediaItems = await (prisma as any).cmsMedia.findMany({
+    const mediaItems = await prisma.cmsMedia.findMany({
       where: { id: { in: mediaIds } },
       select: { id: true, url: true },
     });
@@ -525,20 +525,20 @@ export async function batchMediaUsageAction(
     if (urls.length === 0) return { success: true, data: {} };
 
     const [postRefs, pageRefs] = await Promise.all([
-      (prisma as any).$queryRawUnsafe(
+      prisma.$queryRawUnsafe<Array<{ id: string; title: string; ref_url: string }>>(
         `SELECT id, title, "ogImage" as ref_url FROM marketing.blog_posts WHERE "ogImage" = ANY($1::text[])
          UNION
          SELECT id, title, "coverImage" as ref_url FROM marketing.blog_posts WHERE "coverImage" = ANY($1::text[])
          UNION
          SELECT id, title, "featuredImage" as ref_url FROM marketing.blog_posts WHERE "featuredImage" = ANY($1::text[])`,
         urls,
-      ) as Promise<Array<{ id: string; title: string; ref_url: string }>>,
-      (prisma as any).$queryRawUnsafe(
+      ),
+      prisma.$queryRawUnsafe<Array<{ id: string; title: string; ref_url: string }>>(
         `SELECT id, title, "ogImage" as ref_url FROM marketing.pages WHERE "ogImage" = ANY($1::text[])
          UNION
          SELECT id, title, "coverImage" as ref_url FROM marketing.pages WHERE "coverImage" = ANY($1::text[])`,
         urls,
-      ) as Promise<Array<{ id: string; title: string; ref_url: string }>>,
+      ),
     ]);
 
     const urlToId = new Map<string, string>(
@@ -587,7 +587,7 @@ export async function batchDeleteMediaAction(
     await requireSuperAdmin();
     const params = batchDeleteMediaSchema.parse(input);
 
-    const mediaItems = await (prisma as any).cmsMedia.findMany({
+    const mediaItems = await prisma.cmsMedia.findMany({
       where: { id: { in: params.ids } },
     });
 
@@ -611,7 +611,7 @@ export async function batchDeleteMediaAction(
         }
 
         await del(media.url);
-        await (prisma as any).cmsMedia.delete({ where: { id: media.id } });
+        await prisma.cmsMedia.delete({ where: { id: media.id } });
         deleted.push(media.id);
       } catch (err) {
         errors.push({
@@ -643,7 +643,7 @@ export async function reconcileMediaAction(): Promise<
   try {
     await requireSuperAdmin();
 
-    const dbRecords = await (prisma as any).cmsMedia.findMany({
+    const dbRecords = await prisma.cmsMedia.findMany({
       orderBy: { createdAt: "desc" },
     });
     const dbUrls = new Set(dbRecords.map((r: { url: string }) => r.url));
@@ -698,7 +698,7 @@ export async function purgeTrashedMediaAction(): Promise<ActionResult<{ purged: 
 
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    const expired = await (prisma as any).cmsMedia.findMany({
+    const expired = await prisma.cmsMedia.findMany({
       where: {
         deletedAt: { not: null, lte: thirtyDaysAgo },
       },
@@ -711,7 +711,7 @@ export async function purgeTrashedMediaAction(): Promise<ActionResult<{ purged: 
       } catch {
         // Blob may already be gone — ignore, delete the record anyway
       }
-      await (prisma as any).cmsMedia.delete({ where: { id: media.id } });
+      await prisma.cmsMedia.delete({ where: { id: media.id } });
     }
 
     if (expired.length > 0) revalidatePath("/admin/media");
@@ -728,11 +728,11 @@ export async function restoreMediaAction(id: string): Promise<ActionResult> {
   try {
     await requireAdmin();
 
-    const media = await (prisma as any).cmsMedia.findUnique({ where: { id } });
+    const media = await prisma.cmsMedia.findUnique({ where: { id } });
     if (!media) return { success: false, error: "Medija nije pronađena." };
     if (!media.deletedAt) return { success: false, error: "Medija nije obrisana." };
 
-    await (prisma as any).cmsMedia.update({
+    await prisma.cmsMedia.update({
       where: { id },
       data: { deletedAt: null },
     });
@@ -769,8 +769,8 @@ export async function listOrphanedMediaAction(): Promise<ActionResult<OrphanedMe
     if (urls.length === 0) return { success: true, data: [] };
 
     // Find which URLs are referenced in blog posts or pages
-    const [postRefs, pageRefs] = await Promise.all([
-      (prisma as any).$queryRawUnsafe(
+    const [postRefs] = await Promise.all([
+      prisma.$queryRawUnsafe<Array<{ url: string }>>(
         `SELECT DISTINCT url FROM (
           SELECT "coverImage" as url FROM marketing.blog_posts WHERE "coverImage" = ANY($1::text[])
           UNION
@@ -779,39 +779,33 @@ export async function listOrphanedMediaAction(): Promise<ActionResult<OrphanedMe
           SELECT "ogImage" as url FROM marketing.blog_posts WHERE "ogImage" = ANY($1::text[])
         ) sub`,
         urls,
-      ) as Promise<Array<{ url: string }>>,
-      (prisma as any).$queryRawUnsafe(
-        `SELECT DISTINCT url FROM (
-          SELECT url FROM marketing.cms_media WHERE url = ANY($1::text[])
-        ) sub`,
-        urls,
-      ) as Promise<Array<{ url: string }>>,
+      ),
     ]);
 
     // Check also content field (expensive — only do for small sets)
     const usedUrls = new Set<string>();
-    for (const r of postRefs as Array<{ url: string }>) usedUrls.add(r.url);
+    for (const r of postRefs) usedUrls.add(r.url);
 
     // Check content column for URL references
-    const contentPostRefs = (await (prisma as any).$queryRawUnsafe(
+    const contentPostRefs = await prisma.$queryRawUnsafe<Array<{ id: string }>>(
       `SELECT DISTINCT id FROM marketing.blog_posts WHERE content LIKE ANY($1::text[])`,
       urls.map((u: string) => `%${u}%`),
-    )) as Array<{ id: string }>;
+    );
 
     if (contentPostRefs.length > 0) {
       // If any post references these URLs, we can't be sure which ones
       // So let's do a per-URL content check for accuracy
       for (const media of allMedia) {
-        const contentMatches = (await (prisma as any).$queryRawUnsafe(
+        const contentMatches = await prisma.$queryRawUnsafe<Array<Record<string, unknown>>>(
           `SELECT 1 FROM marketing.blog_posts WHERE content LIKE $1 LIMIT 1`,
           `%${media.url}%`,
-        )) as Array<Record<string, unknown>>;
+        );
         if (contentMatches.length > 0) usedUrls.add(media.url);
 
-        const pageContentMatches = (await (prisma as any).$queryRawUnsafe(
+        const pageContentMatches = await prisma.$queryRawUnsafe<Array<Record<string, unknown>>>(
           `SELECT 1 FROM marketing.pages WHERE content LIKE $1 LIMIT 1`,
           `%${media.url}%`,
-        )) as Array<Record<string, unknown>>;
+        );
         if (pageContentMatches.length > 0) usedUrls.add(media.url);
       }
     }

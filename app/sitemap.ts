@@ -4,8 +4,6 @@ import { getAllSlugs } from "@/lib/routing/categories";
 
 export const revalidate = 3600;
 
-const LOCALES = ["sr", "en"] as const;
-const DEFAULT_LOCALE = "sr";
 const BASE_URL = "https://www.splashdeals.rs";
 
 /**

@@ -2,7 +2,7 @@ import { prisma } from "@/app/(server)/lib/prisma";
 import { FacilityCard } from "./FacilityCard";
 
 interface FacilityGridProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   dict: Record<string, any>;
   fromLabel: string;
   category?: string;

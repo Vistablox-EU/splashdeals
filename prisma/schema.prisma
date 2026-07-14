@@ -674,6 +674,7 @@ model CmsMedia {
   mimeType   String
   fileHash   String?
   altText    String?
+  license    String?
   width      Int?
   height     Int?
   collection String?

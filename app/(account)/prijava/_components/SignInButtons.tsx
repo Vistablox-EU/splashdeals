@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 
 interface SignInButtonsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   dict: Record<string, any>;
 }
 

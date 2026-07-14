@@ -16,7 +16,7 @@ import type { CartItem, DiscountInfo } from "@/lib/types/cart";
 interface CheckoutFormProps {
   initialItems: CartItem[];
   totalBeforeDiscount: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   dict: Record<string, any>;
 }
 
