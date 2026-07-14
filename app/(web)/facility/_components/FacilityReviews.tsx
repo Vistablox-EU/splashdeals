@@ -10,6 +10,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { submitReviewAction } from "@/app/(server)/actions/reviews";
 import { authClient } from "@/lib/auth-client";
 
@@ -209,9 +210,9 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
             {(t as any).login_prompt || "Prijavite se da biste ostavili recenziju."}
           </p>
           <Button asChild variant="link" size="sm" className="mt-1 h-auto text-xs font-bold">
-            <a href="/prijava">
+            <Link href="/prijava">
               {(t as any).login_link || "Prijavi se"}
-            </a>
+            </Link>
           </Button>
         </Card>
       )}
