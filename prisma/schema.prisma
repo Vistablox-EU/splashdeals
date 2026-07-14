@@ -139,6 +139,7 @@ model Facility {
   campaignLinks     CampaignFacility[]
   reviews           Review[]
   pageViews         FacilityPageView[]
+  translations      FacilityTranslation[]
   favoritedBy       UserFavorite[]
 
   @@schema("partners")
@@ -569,6 +570,7 @@ model BlogPost {
   /// Author as Person (reusable)
   authorPersonId String?
   authorPerson   Person?   @relation(fields: [authorPersonId], references: [id])
+  translations   BlogPostTranslation[]
 
   @@index([status, publishedAt])
   @@index([slug])
@@ -655,6 +657,7 @@ model Page {
   expiresAt  DateTime?
   reviewedAt DateTime?
   createdAt   DateTime   @default(now())
+  translations PageTranslation[]
   updatedAt   DateTime   @updatedAt
 
   @@index([slug, status])
@@ -919,6 +922,7 @@ model FacilityFAQ {
   category     String   @default("opšte")
   displayOrder Int      @default(0)
   createdAt    DateTime @default(now())
+  translations FacilityFAQTranslation[]
   updatedAt    DateTime @updatedAt
 
   @@index([facilityId, displayOrder])
@@ -1061,5 +1065,77 @@ model Redirect {
 
   @@index([source, isActive])
   @@map("redirects")
+  @@schema("marketing")
+}
+
+
+// ── Translation models for multi-locale support ────────────────────────
+
+/// Model Facility translations — Serbian is source of truth
+model FacilityTranslation {
+  id           String   @id @default(uuid())
+  facilityId   String
+  locale       String
+  name         String?
+  description  String?  @db.Text
+  seoArticle   String?  @db.Text
+  transitGuide String?  @db.Text
+
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@unique([facilityId, locale])
+  @@index([facilityId])
+  @@map("facility_translations")
+  @@schema("partners")
+}
+
+/// Model Facility FAQ translations
+model FacilityFAQTranslation {
+  id       String @id @default(uuid())
+  faqId    String
+  locale   String
+  question String?
+  answer   String? @db.Text
+
+  faq FacilityFAQ @relation(fields: [faqId], references: [id], onDelete: Cascade)
+
+  @@unique([faqId, locale])
+  @@index([faqId])
+  @@map("facility_faq_translations")
+  @@schema("partners")
+}
+
+/// Model Blog post translations
+model BlogPostTranslation {
+  id      String  @id @default(uuid())
+  postId  String
+  locale  String
+  title   String?
+  content String? @db.Text
+  excerpt String? @db.Text
+  slug    String?
+
+  post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, locale])
+  @@index([postId])
+  @@map("blog_post_translations")
+  @@schema("marketing")
+}
+
+/// Model CMS Page translations
+model PageTranslation {
+  id      String  @id @default(uuid())
+  pageId  String
+  locale  String
+  title   String?
+  content String? @db.Text
+  excerpt String? @db.Text
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, locale])
+  @@index([pageId])
+  @@map("page_translations")
   @@schema("marketing")
 }
