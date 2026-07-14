@@ -151,14 +151,13 @@ export function PostsListClient({
   );
 
   const toggleSelectAll = useCallback(() => {
-    const allIds = (table.getFilteredRowModel().rows ?? []).map((r) => r.original.id);
+    const allIds = (posts as Array<Record<string, unknown>>).map((p) => p.id as string);
     if (selectedIds.size === allIds.length && allIds.length > 0) {
       setSelectedIds(new Set());
     } else {
       setSelectedIds(new Set(allIds));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedIds]);
+  }, [selectedIds, posts]);
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) => {
