@@ -20,6 +20,7 @@ function isDeletedFacility(slug: string): boolean {
 // 🏝️ Islands: Client Components for interactive portions
 import { ShowcaseHero } from "./ShowcaseHero";
 import { FaqAccordion, type FAQCategory } from "./FaqAccordion";
+import { FacilityReviews } from "./FacilityReviews";
 import { OperationalPortal } from "./OperationalPortal";
 import { TicketGridSkeleton } from "./ShowcaseSkeletons";
 import { HeroActionPill } from "./HeroActionPill";
@@ -380,6 +381,16 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 answer: f.answer,
                 category: inferFaqCategory(f.question),
               }))}
+            />
+          </div>
+        )}
+
+        {facility.reviews && facility.reviews.length > 0 && (
+          <div className="mx-auto w-full max-w-3xl space-y-8 px-6 py-8 md:px-12">
+            <FacilityReviews
+              facilityId={facility.id}
+              initialReviews={facility.reviews}
+              dict={dict}
             />
           </div>
         )}
