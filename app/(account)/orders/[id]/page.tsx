@@ -5,6 +5,7 @@ import { prisma } from "@/app/(server)/lib/prisma";
 import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { OrderDetail } from "./_components/OrderDetail";
+import { getDictionary } from "@/lib/dictionaries";
 
 export const metadata: Metadata = {
   title: "Porudžbina | Splashdeals",
@@ -47,10 +48,11 @@ export default async function OrderPage(props: { params: Promise<{ id: string }>
   }
 
   const serialized = JSON.parse(JSON.stringify(transaction));
+  const dict = await getDictionary();
 
   return (
     <div className="container mx-auto min-h-screen max-w-4xl px-4 py-12">
-      <OrderDetail transaction={serialized} />
+      <OrderDetail transaction={serialized} dict={dict} />
     </div>
   );
 }

@@ -2,52 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-
-// ── Static page labels ─────────────────────────────────────────────
-const STATIC_LABELS: Record<string, string> = {
-  "how-it-works": "Kako Funcioniše",
-  terms: "Uslovi Korišćenja",
-  privacy: "Privatnost",
-  support: "Podrška",
-  cookies: "Kolačići",
-  cart: "Korpa",
-  checkout: "Plaćanje",
-  search: "Pretraga",
-  success: "Uspešna Porudžbina",
-  blog: "Blog",
-};
-
-// ── Known category slugs → display names ───────────────────────────
-const CATEGORY_NAMES: Record<string, string> = {
-  "akva-parkovi": "Akva Parkovi",
-  "termalne-rivijere": "Termalne Rivijere",
-  bazeni: "Bazeni",
-  banje: "Banje",
-  "wellness-i-spa": "Wellness i Spa",
-  jezera: "Jezera",
-  "plaze-i-kupalista": "Plaže i Kupališta",
-  "vodeni-sportovi": "Vodeni Sportovi",
-};
-
-// ── DB values → category slug lookup ───────────────────────────────
-const DB_TO_SLUG: Record<string, string> = {
-  "akva park": "akva-parkovi",
-  "termalna rivijera": "termalne-rivijere",
-  bazen: "bazeni",
-  "otvoreni bazen": "bazeni",
-  "zatvoreni bazen": "bazeni",
-  "javni bazen": "bazeni",
-  banja: "banje",
-  "wellness i spa": "wellness-i-spa",
-  jezero: "jezera",
-  "gradska plaza": "plaze-i-kupalista",
-  kupaliste: "plaze-i-kupalista",
-  reka: "plaze-i-kupalista",
-  "vodeni sport": "vodeni-sportovi",
-  rafting: "vodeni-sportovi",
-};
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import type { Dict } from "@/lib/types";
 
 interface BreadcrumbItem {
   label: string;
@@ -68,23 +26,80 @@ interface FacilityMap {
  */
 export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap }) {
   const pathname = usePathname();
+  const [dict, setDict] = useState<Dict | null>(null);
+
+  useEffect(() => {
+    getClientDictionary().then(setDict);
+  }, []);
+
+  // Static page labels derived from dict
+  const STATIC_LABELS = useMemo(() => {
+    const bc = dict?.breadcrumb;
+    if (!bc) return null;
+    return {
+      "how-it-works": bc.how_it_works || "Kako Funkcioniše",
+      terms: bc.terms || "Uslovi Korišćenja",
+      privacy: bc.privacy || "Privatnost",
+      support: bc.support || "Podrška",
+      cookies: bc.cookies || "Kolačići",
+      cart: bc.cart || "Korpa",
+      checkout: bc.checkout || "Plaćanje",
+      search: bc.search || "Pretraga",
+      success: bc.success || "Uspešna Porudžbina",
+      blog: bc.blog || "Blog",
+    } as Record<string, string>;
+  }, [dict]);
+
+  // Category names derived from dict
+  const CATEGORY_NAMES = useMemo(() => {
+    const cats = dict?.breadcrumb?.categories;
+    if (!cats) return null;
+    return {
+      "akva-parkovi": cats.akva_parkovi || "Akva Parkovi",
+      "termalne-rivijere": cats.termalne_rivijere || "Termalne Rivijere",
+      bazeni: cats.bazeni || "Bazeni",
+      banje: cats.banje || "Banje",
+      "wellness-i-spa": cats.wellness_i_spa || "Wellness i Spa",
+      jezera: cats.jezera || "Jezera",
+      "plaze-i-kupalista": cats.plaze_i_kupalista || "Plaže i Kupališta",
+      "vodeni-sportovi": cats.vodeni_sportovi || "Vodeni Sportovi",
+    } as Record<string, string>;
+  }, [dict]);
+
   const trail = useMemo<{ items: BreadcrumbItem[]; backHref?: string }>(() => {
     const segments = pathname.split("/").filter(Boolean);
-    const items: BreadcrumbItem[] = [{ label: "Početna", href: "/" }];
+    const items: BreadcrumbItem[] = [{ label: dict?.breadcrumb?.home || "Početna", href: "/" }];
     let backHref: string | undefined;
 
     if (segments.length >= 1) {
       const slug = segments[0].toLowerCase();
 
-      if (STATIC_LABELS[slug]) {
+      if (STATIC_LABELS?.[slug]) {
         items.push({ label: STATIC_LABELS[slug] });
-      } else if (CATEGORY_NAMES[slug]) {
+      } else if (CATEGORY_NAMES?.[slug]) {
         items.push({ label: CATEGORY_NAMES[slug] });
       } else if (facilityMap[slug]) {
         const fac = facilityMap[slug];
         // Map DB category value → slug → display name
-        const catSlug = DB_TO_SLUG[fac.category.toLowerCase()];
-        const catName = catSlug ? CATEGORY_NAMES[catSlug] : fac.category;
+        const dbLower = fac.category.toLowerCase();
+        const DB_TO_SLUG: Record<string, string> = {
+          "akva park": "akva-parkovi",
+          "termalna rivijera": "termalne-rivijere",
+          bazen: "bazeni",
+          "otvoreni bazen": "bazeni",
+          "zatvoreni bazen": "bazeni",
+          "javni bazen": "bazeni",
+          banja: "banje",
+          "wellness i spa": "wellness-i-spa",
+          jezero: "jezera",
+          "gradska plaza": "plaze-i-kupalista",
+          kupaliste: "plaze-i-kupalista",
+          reka: "plaze-i-kupalista",
+          "vodeni sport": "vodeni-sportovi",
+          rafting: "vodeni-sportovi",
+        };
+        const catSlug = DB_TO_SLUG[dbLower];
+        const catName = catSlug && CATEGORY_NAMES ? CATEGORY_NAMES[catSlug] : fac.category;
 
         if (catSlug) {
           items.push({ label: catName, href: `/${catSlug}` });
@@ -97,7 +112,7 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
     }
 
     return { items, backHref };
-  }, [pathname, facilityMap]);
+  }, [pathname, facilityMap, dict, STATIC_LABELS, CATEGORY_NAMES]);
 
   const { items, backHref } = trail;
   const isLastItem = (idx: number) => idx === items.length - 1;
@@ -110,10 +125,10 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
           <Link
             href={backHref}
             className="mr-3 flex h-full shrink-0 items-center justify-center border-r border-white/5 pr-3 text-slate-400 transition-colors hover:text-white"
-            aria-label="Nazad"
+            aria-label={dict?.breadcrumb?.back_aria || "Nazad"}
           >
             <Icon name="arrow_back" className="text-[14px]" />
-            <span className="sr-only">Nazad</span>
+            <span className="sr-only">{dict?.breadcrumb?.back_aria || "Nazad"}</span>
           </Link>
         )}
 

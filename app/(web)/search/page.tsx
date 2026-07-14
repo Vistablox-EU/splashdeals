@@ -1,4 +1,5 @@
 import { prisma } from "@/app/(server)/lib/prisma";
+import { getDictionary } from "@/lib/dictionaries";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -43,8 +44,9 @@ export default async function SearchPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
+  const dict = await getDictionary();
   if (!q || q.trim().length < 2) {
-    return <EmptyState />;
+    return <EmptyState dict={dict} />;
   }
 
   const query = q.trim();
@@ -97,24 +99,34 @@ export default async function SearchPage({
       {/* Header */}
       <div className="mb-10">
         <h1 className="text-foreground text-3xl font-bold tracking-tight">
-          Rezultati pretrage za: <span className="text-primary">{query}</span>
+          {dict.search.results_for || "Rezultati pretrage za"}:{" "}
+          <span className="text-primary">{query}</span>
         </h1>
         <p className="text-muted-foreground mt-2 text-sm">
-          Pronađeno {totalResults} rezultat{totalResults !== 1 ? "a" : ""}
+          {(dict.search.results_found || "Pronađeno {count} rezultata").replace(
+            "{count}",
+            String(totalResults),
+          )}
         </p>
       </div>
 
       {totalResults === 0 ? (
         <div className="text-muted-foreground py-20 text-center">
-          <p className="text-lg">Nema rezultata za: {query}.</p>
-          <p className="mt-1 text-sm">Pokušajte druge ključne reči.</p>
+          <p className="text-lg">
+            {dict.search.no_results_for || "Nema rezultata za"}: {query}.
+          </p>
+          <p className="mt-1 text-sm">
+            {dict.search.try_other_keywords || "Pokušajte druge ključne reči."}
+          </p>
         </div>
       ) : (
         <div className="space-y-12">
           {/* Facilities */}
           {facilities.length > 0 && (
             <section>
-              <h2 className="mb-4 text-xl font-semibold">Objekti</h2>
+              <h2 className="mb-4 text-xl font-semibold">
+                {dict.search.section_facilities || "Objekti"}
+              </h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {facilities.map((f) => (
                   <Link key={f.id} href={`/facility/${f.slug}`} className="block">
@@ -138,7 +150,7 @@ export default async function SearchPage({
           {/* Blog posts */}
           {posts.length > 0 && (
             <section>
-              <h2 className="mb-4 text-xl font-semibold">Blog</h2>
+              <h2 className="mb-4 text-xl font-semibold">{dict.search.section_blog || "Blog"}</h2>
               <div className="space-y-3">
                 {posts.map((post) => (
                   <Link key={post.id} href={`/blog/${post.slug}`} className="block">
@@ -163,7 +175,9 @@ export default async function SearchPage({
           {/* Static pages */}
           {pages.length > 0 && (
             <section>
-              <h2 className="mb-4 text-xl font-semibold">Stranice</h2>
+              <h2 className="mb-4 text-xl font-semibold">
+                {dict.search.section_pages || "Stranice"}
+              </h2>
               <div className="space-y-3">
                 {pages.map((page) => (
                   <Link key={page.id} href={`/${page.slug}`} className="block">
@@ -192,12 +206,15 @@ export default async function SearchPage({
 
 // ─── Empty state ─────────────────────────────────────────────────────────────
 
-function EmptyState() {
+function EmptyState({ dict }: { dict: Record<string, any> }) {
   return (
     <div className="mx-auto max-w-xl px-4 py-24 text-center">
-      <h1 className="text-foreground mb-3 text-3xl font-bold tracking-tight">Pretraga</h1>
+      <h1 className="text-foreground mb-3 text-3xl font-bold tracking-tight">
+        {dict.search.heading || "Pretraga"}
+      </h1>
       <p className="text-muted-foreground">
-        Unesite najmanje 2 karaktera da biste započeli pretragu objekata, blog postova i stranica.
+        {dict.search.min_chars ||
+          "Unesite najmanje 2 karaktera da biste započeli pretragu objekata, blog postova i stranica."}
       </p>
     </div>
   );

@@ -62,7 +62,7 @@ async function WebLayoutContent({
         href="#main-content"
         className="focus:bg-primary focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[9999] focus:rounded-xl focus:px-4 focus:py-3 focus:text-xs focus:font-black focus:tracking-widest focus:uppercase focus:shadow-lg focus:outline-none"
       >
-        Preskoči na sadržaj
+        {dict.layout.skip_to_content || "Preskoči na sadržaj"}
       </a>
       <GlobalAmbient />
       <NavigationStructuredData />

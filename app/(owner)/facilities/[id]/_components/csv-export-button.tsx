@@ -13,11 +13,14 @@ interface SaleRow {
 interface Props {
   sales: SaleRow[];
   facilityName: string;
+  dict: Record<string, unknown>;
 }
 
-export function CsvExportButton({ sales, facilityName }: Props) {
+export function CsvExportButton({ sales, facilityName, dict }: Props) {
+  const t = dict.owner as Record<string, string>;
+
   const handleExport = () => {
-    const headers = ["ID transakcije", "Datum", "Iznos (RSD)", "Broj karata"];
+    const headers = [t.csv_id, t.csv_date, t.csv_amount, t.csv_tickets];
     const rows = sales.map((tx) => [
       tx.id,
       new Date(tx.createdAt).toISOString().slice(0, 10),
@@ -30,14 +33,14 @@ export function CsvExportButton({ sales, facilityName }: Props) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `transakcije-${facilityName.replace(/\s+/g, "-")}.csv`;
+    a.download = `${t.csv_filename_prefix}${facilityName.replace(/\s+/g, "-")}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   return (
     <Button variant="outline" size="sm" onClick={handleExport}>
-      Izvezi CSV
+      {t.export_csv}
     </Button>
   );
 }

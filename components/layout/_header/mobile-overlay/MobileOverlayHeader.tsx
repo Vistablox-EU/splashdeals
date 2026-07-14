@@ -3,12 +3,14 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
+import type { Dict } from "@/lib/types";
 
 interface MobileOverlayHeaderProps {
   onClose: () => void;
+  dict?: Dict;
 }
 
-export function MobileOverlayHeader({ onClose }: MobileOverlayHeaderProps) {
+export function MobileOverlayHeader({ onClose, dict }: MobileOverlayHeaderProps) {
   return (
     <div className="mb-8 flex items-center justify-between">
       <div className="animate-float flex items-center tracking-[-0.1em] select-none">
@@ -32,7 +34,7 @@ export function MobileOverlayHeader({ onClose }: MobileOverlayHeaderProps) {
         size="icon"
         onClick={onClose}
         className="hover:border-primary/20 active:bg-primary/20 active:border-primary/30 border-border/10 bg-muted/10 text-muted-foreground shadow-foreground/10 flex h-11 w-11 items-center justify-center rounded-xl border shadow-md transition-all duration-300 active:scale-90"
-        aria-label="Zatvori meni"
+        aria-label={dict?.nav?.close_menu ?? "Zatvori meni"}
       >
         <Icon name="close" className="text-primary text-[20px]" />
       </Button>

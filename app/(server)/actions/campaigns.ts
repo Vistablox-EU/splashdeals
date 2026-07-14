@@ -88,7 +88,7 @@ export async function getCampaignAction(id: string): Promise<ActionResult<Campai
     });
 
     if (!campaign) {
-      return { success: false, error: "Kampanja nije pronađena." };
+      return { success: false, error: "Campaign not found." };
     }
 
     return { success: true, data: serializeCampaign(campaign) };
@@ -106,16 +106,16 @@ export async function createCampaignAction(
     await requireAdmin();
 
     if (!data.name.trim()) {
-      return { success: false, error: "Naziv kampanje je obavezan." };
+      return { success: false, error: "Campaign name is required." };
     }
     if (!data.code.trim()) {
-      return { success: false, error: "Kod kampanje je obavezan." };
+      return { success: false, error: "Campaign code is required." };
     }
     if (data.discountPercent <= 0 || data.discountPercent > 100) {
-      return { success: false, error: "Popust mora biti između 1 i 100." };
+      return { success: false, error: "Discount must be between 1 and 100." };
     }
     if (!data.validFrom || !data.validTo) {
-      return { success: false, error: "Datumi važenja su obavezni." };
+      return { success: false, error: "Validity dates are required." };
     }
 
     const campaign = await prisma.campaign.create({
@@ -153,7 +153,7 @@ export async function updateCampaignAction(
 
     const existing = await prisma.campaign.findUnique({ where: { id } });
     if (!existing) {
-      return { success: false, error: "Kampanja nije pronađena." };
+      return { success: false, error: "Campaign not found." };
     }
 
     // Build update data
@@ -203,7 +203,7 @@ export async function deleteCampaignAction(id: string): Promise<ActionResult> {
 
     const existing = await prisma.campaign.findUnique({ where: { id } });
     if (!existing) {
-      return { success: false, error: "Kampanja nije pronađena." };
+      return { success: false, error: "Campaign not found." };
     }
 
     await prisma.campaign.delete({ where: { id } });
@@ -228,7 +228,7 @@ export async function validatePromoCodeAction(
 > {
   try {
     if (!code.trim()) {
-      return { success: true, data: { valid: false, error: "Unesite promo kod." } };
+      return { success: true, data: { valid: false, error: "Enter a promo code." } };
     }
 
     const campaign = await prisma.campaign.findUnique({
@@ -237,29 +237,32 @@ export async function validatePromoCodeAction(
     });
 
     if (!campaign) {
-      return { success: true, data: { valid: false, error: "Nepostojeći ili istekao kod." } };
+      return { success: true, data: { valid: false, error: "Invalid or expired code." } };
     }
 
     // Check if active
     if (!campaign.isActive) {
-      return { success: true, data: { valid: false, error: "Kod više nije aktivan." } };
+      return { success: true, data: { valid: false, error: "Code is no longer active." } };
     }
 
     const now = new Date();
 
     // Check validFrom
     if (campaign.validFrom > now) {
-      return { success: true, data: { valid: false, error: "Kod još uvek nije aktivan." } };
+      return { success: true, data: { valid: false, error: "Code is not yet active." } };
     }
 
     // Check validTo
     if (campaign.validTo < now) {
-      return { success: true, data: { valid: false, error: "Kod je istekao." } };
+      return { success: true, data: { valid: false, error: "Code has expired." } };
     }
 
     // Check usage limit
     if (campaign.usageLimit !== null && campaign.usedCount >= campaign.usageLimit) {
-      return { success: true, data: { valid: false, error: "Kod je iskorišćen do maksimuma." } };
+      return {
+        success: true,
+        data: { valid: false, error: "Code has reached its maximum usage." },
+      };
     }
 
     // Check min purchase amount
@@ -269,7 +272,7 @@ export async function validatePromoCodeAction(
           success: true,
           data: {
             valid: false,
-            error: `Minimalni iznos za ovaj kod je ${Number(campaign.minPurchaseAmount)} RSD.`,
+            error: `Minimum amount for this code is ${Number(campaign.minPurchaseAmount)} RSD.`,
           },
         };
       }
@@ -281,7 +284,7 @@ export async function validatePromoCodeAction(
       if (!isAllowed) {
         return {
           success: true,
-          data: { valid: false, error: "Kod ne važi za izabrani objekat." },
+          data: { valid: false, error: "Code is not valid for the selected facility." },
         };
       }
     }

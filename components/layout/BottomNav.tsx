@@ -6,20 +6,8 @@ import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { getCartAction } from "@/app/(server)/actions/cart";
 import type { CartItem } from "@/lib/types/cart";
-
-interface NavItem {
-  label: string;
-  href: string;
-  icon: string;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: "Početna", href: "/", icon: "home" },
-  { label: "Istraži", href: "/akva-parkovi", icon: "explore" },
-  { label: "Ponude", href: "/#deals", icon: "local_fire_department" },
-  { label: "Korpa", href: "/cart", icon: "shopping_bag" },
-  { label: "Podrška", href: "/support", icon: "support_agent" },
-] as const;
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import type { Dict } from "@/lib/types";
 
 const SCROLL_THRESHOLD = 10;
 
@@ -30,7 +18,20 @@ export function BottomNav() {
   const pathname = usePathname();
   const [totalItems, setTotalItems] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [dict, setDict] = useState<Dict | null>(null);
   const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    getClientDictionary().then(setDict);
+  }, []);
+
+  const NAV_ITEMS = [
+    { label: dict?.nav?.home || "Početna", href: "/", icon: "home" },
+    { label: dict?.nav?.explore || "Istraži", href: "/akva-parkovi", icon: "explore" },
+    { label: dict?.nav?.offers || "Ponude", href: "/#deals", icon: "local_fire_department" },
+    { label: dict?.nav?.cart_mobile || "Korpa", href: "/cart", icon: "shopping_bag" },
+    { label: dict?.nav?.support_mobile || "Podrška", href: "/support", icon: "support_agent" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,7 +74,7 @@ export function BottomNav() {
     <nav
       className="border-border/50 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-0 z-[998] border-t backdrop-blur-[40px] transition-transform duration-300 ease-in-out md:hidden"
       style={{ transform: isVisible ? "translateY(0)" : "translateY(100%)" }}
-      aria-label="Mobilna navigacija"
+      aria-label={dict?.layout?.mobile_nav_aria || "Mobilna navigacija"}
     >
       <div className="mx-auto flex h-16 max-w-lg items-center justify-around px-2">
         {NAV_ITEMS.map((item) => {

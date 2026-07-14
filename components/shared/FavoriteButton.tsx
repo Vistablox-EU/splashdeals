@@ -4,8 +4,10 @@ import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 import { addFavoriteAction, removeFavoriteAction } from "@/app/(server)/actions/favorites";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useTransition, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import type { Dict } from "@/lib/types";
 
 interface FavoriteButtonProps {
   facilityId: string;
@@ -18,19 +20,24 @@ interface FavoriteButtonProps {
  */
 export function FavoriteButton({ facilityId, isFavorited, className = "" }: FavoriteButtonProps) {
   const [isPending, startTransition] = useTransition();
+  const [dict, setDict] = useState<Dict | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    getClientDictionary().then(setDict);
+  }, []);
 
   const handleToggle = () => {
     startTransition(async () => {
       if (isFavorited) {
         const result = await removeFavoriteAction(facilityId);
         if (!result.success) {
-          toast.error(result.error || "Greška pri uklanjanju");
+          toast.error(result.error || dict?.favorites?.remove_error || "Greška pri uklanjanju");
         }
       } else {
         const result = await addFavoriteAction(facilityId);
         if (!result.success) {
-          toast.error(result.error || "Greška pri dodavanju");
+          toast.error(result.error || dict?.favorites?.add_error || "Greška pri dodavanju");
         }
       }
       router.refresh();
@@ -46,7 +53,11 @@ export function FavoriteButton({ facilityId, isFavorited, className = "" }: Favo
       className={`hover:bg-background/20 absolute top-2 left-2 z-30 size-8 rounded-full backdrop-blur-sm transition-all ${
         isFavorited ? "text-red-500" : "text-white/70 hover:text-white"
       } ${className}`}
-      aria-label={isFavorited ? "Ukloni iz omiljenih" : "Dodaj u omiljene"}
+      aria-label={
+        isFavorited
+          ? dict?.favorites?.remove_aria || "Ukloni iz omiljenih"
+          : dict?.favorites?.add_aria || "Dodaj u omiljene"
+      }
     >
       <Icon
         name={isFavorited ? "favorite" : "favorite_border"}

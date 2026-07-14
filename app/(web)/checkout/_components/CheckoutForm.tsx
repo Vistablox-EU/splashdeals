@@ -194,8 +194,8 @@ export function CheckoutForm({ initialItems, totalBeforeDiscount, dict }: Checko
           </Card>
 
           <p className="text-muted-foreground px-4 text-center text-[10px] leading-relaxed font-bold">
-            Klikom na &quot;Potvrdi i Plati&quot;, prihvatate naše Uslove Korišćenja i Politiku
-            Privatnosti. Sve prodaje digitalnih karata su konačne.
+            {dict?.checkout?.terms_notice ||
+              'Klikom na "Potvrdi i Plati", prihvatate naše Uslove Korišćenja i Politiku Privatnosti. Sve prodaje digitalnih karata su konačne.'}
           </p>
         </div>
       </div>

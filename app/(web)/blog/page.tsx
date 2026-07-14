@@ -1,4 +1,5 @@
 import { prisma } from "@/app/(server)/lib/prisma";
+import { getDictionary } from "@/lib/dictionaries";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
@@ -25,6 +26,7 @@ export default async function BlogPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const { page: pageStr } = await searchParams;
+  const dict = await getDictionary();
   const currentPage = Math.max(1, parseInt(pageStr || "1", 10) || 1);
   const perPage = 12;
 
@@ -48,9 +50,10 @@ export default async function BlogPage({
     <div className="mx-auto max-w-6xl px-4 py-12">
       {/* Header */}
       <div className="mb-12 text-center">
-        <h1 className="mb-3 text-4xl font-bold tracking-tight">Blog</h1>
+        <h1 className="mb-3 text-4xl font-bold tracking-tight">{dict.blog.heading || "Blog"}</h1>
         <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-          Saveti, vodiči i novosti iz sveta akva parkova, bazena i wellness centara u Srbiji.
+          {dict.blog.description ||
+            "Saveti, vodiči i novosti iz sveta akva parkova, bazena i wellness centara u Srbiji."}
         </p>
       </div>
 
@@ -58,8 +61,8 @@ export default async function BlogPage({
       {posts.length === 0 ? (
         <div className="text-muted-foreground py-20 text-center">
           <Icon name="article" className="mx-auto mb-4 size-12 opacity-50" />
-          <p className="text-lg">Još uvek nema objava.</p>
-          <p className="mt-1 text-sm">Vrati se uskoro!</p>
+          <p className="text-lg">{dict.blog.no_posts || "Još uvek nema objava."}</p>
+          <p className="mt-1 text-sm">{dict.blog.come_back || "Vrati se uskoro!"}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -142,7 +145,7 @@ export default async function BlogPage({
               className="hover:bg-accent inline-flex min-h-[44px] items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
             >
               <Icon name="chevron_left" className="size-4" />
-              Prethodna
+              {dict.blog.previous || "Prethodna"}
             </Link>
           )}
           <span className="text-muted-foreground px-3 text-sm">
@@ -153,7 +156,7 @@ export default async function BlogPage({
               href={`/blog?page=${currentPage + 1}`}
               className="hover:bg-accent inline-flex min-h-[44px] items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
             >
-              Sledeća
+              {dict.blog.next || "Sledeća"}
               <Icon name="chevron_right" className="size-4" />
             </Link>
           )}

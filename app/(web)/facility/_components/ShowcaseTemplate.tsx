@@ -277,6 +277,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               facilitySlug={facility.slug}
               facilityName={facility.name}
               category={facility.category}
+              dict={dict}
               facility={facility}
               ticketProductMap={serialize(ticketProductMap)}
             />

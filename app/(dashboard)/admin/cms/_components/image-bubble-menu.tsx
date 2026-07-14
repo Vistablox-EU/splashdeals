@@ -14,6 +14,7 @@ interface ImageBubbleMenuProps {
 }
 
 export function ImageBubbleMenu({ editor, dict }: ImageBubbleMenuProps) {
+  const t = (dict as Record<string, any>) || {};
   const [altValue, setAltValue] = useState("");
   const altTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -63,7 +64,7 @@ export function ImageBubbleMenu({ editor, dict }: ImageBubbleMenuProps) {
       <div className="flex items-center gap-1">
         <Input
           defaultValue={currentAlt}
-          placeholder="Alt tekst..."
+          placeholder={t.image_menu_alt_placeholder || "Alt tekst..."}
           onChange={(e) => handleAltChange(e.target.value)}
           className="h-7 w-[140px] text-xs"
         />
@@ -71,12 +72,12 @@ export function ImageBubbleMenu({ editor, dict }: ImageBubbleMenuProps) {
 
       {/* Replace */}
       <MediaLibraryDialog
-        dict={dict || {}}
+        dict={(dict?.media_library as Record<string, any>) || {}}
         onInsert={handleReplace}
         trigger={
           <Button type="button" variant="ghost" size="sm" className="h-7 gap-1 px-2 text-xs">
             <Icon name="photo_library" className="size-3" />
-            Zameni
+            {t.image_menu_replace || "Zameni"}
           </Button>
         }
       />
@@ -90,7 +91,7 @@ export function ImageBubbleMenu({ editor, dict }: ImageBubbleMenuProps) {
         className="text-destructive hover:text-destructive h-7 gap-1 px-2 text-xs"
       >
         <Icon name="delete" className="size-3" />
-        Obriši
+        {t.image_menu_delete || "Obriši"}
       </Button>
     </BubbleMenu>
   );

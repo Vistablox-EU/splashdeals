@@ -60,6 +60,9 @@ export interface SuccessDictionary {
     email_notice: string;
     protocol: string;
   };
+  resend_sent: string;
+  resend_error: string;
+  resend_button: string;
 }
 
 export function SuccessClient({
@@ -317,10 +320,10 @@ export function SuccessClient({
               className={`mr-3 text-[20px] ${isPending ? "animate-spin" : ""}`}
             />
             {resendStatus === "sent"
-              ? "Poslato! ✅"
+              ? dict.resend_sent
               : resendStatus === "error"
-                ? "Greška"
-                : "Pošalji ponovo na email"}
+                ? dict.resend_error
+                : dict.resend_button}
           </Button>
         </div>
 

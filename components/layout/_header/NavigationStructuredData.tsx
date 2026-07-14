@@ -1,7 +1,8 @@
 import { getNavigationMenus } from "@/app/(server)/lib/data/navigation";
+import { getDictionary } from "@/lib/dictionaries";
 
 export async function NavigationStructuredData() {
-  const menus = await getNavigationMenus();
+  const [menus, dict] = await Promise.all([getNavigationMenus(), getDictionary()]);
 
   if (menus.length === 0) return null;
 
@@ -32,7 +33,7 @@ export async function NavigationStructuredData() {
       {
         "@type": "SiteNavigationElement",
         "@id": `${siteUrl}/#navigation`,
-        name: "Glavna navigacija",
+        name: dict.mega_menu.main_nav_aria ?? "Glavna navigacija",
         hasPart: navItems.map((item) => ({
           "@type": "SiteNavigationElement",
           name: item.name,
@@ -55,6 +56,7 @@ export async function NavigationStructuredData() {
         url: siteUrl,
         name: "Splashdeals",
         description:
+          dict.seo.home.description ??
           "Akva parkovi, bazeni, wellness i spa u Srbiji - najbolje ponude na jednom mestu.",
         inLanguage: "sr",
         potentialAction: {

@@ -176,8 +176,8 @@ export async function renameMediaAction(mediaId: string, facilityId: string, new
 
     // Get the current media record
     const media = await prisma.facilityMedia.findUnique({ where: { id: mid } });
-    if (!media) throw new Error("Medij nije pronađen");
-    if (media.facilityId !== fid) throw new Error("Medij ne pripada ovom objektu");
+    if (!media) throw new Error("Media not found");
+    if (media.facilityId !== fid) throw new Error("Media does not belong to this facility");
 
     // Parse URL to extract extension
     const urlObj = new URL(media.url);
@@ -188,7 +188,7 @@ export async function renameMediaAction(mediaId: string, facilityId: string, new
 
     // Fetch existing blob
     const response = await fetch(media.url);
-    if (!response.ok) throw new Error("Neuspešno preuzimanje postojećeg fajla sa storage-a");
+    if (!response.ok) throw new Error("Failed to download existing file from storage");
     const buffer = Buffer.from(await response.arrayBuffer());
 
     // Upload with new name (keep directory and extension)

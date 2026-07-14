@@ -35,7 +35,7 @@ export async function submitReviewAction(
     });
 
     if (!facility) {
-      return { success: false, error: "Objekat nije pronađen." };
+      return { success: false, error: "Facility not found." };
     }
 
     const review = await prisma.review.create({
@@ -68,7 +68,7 @@ export async function approveReviewAction(id: string): Promise<ActionResult> {
     });
 
     if (!review) {
-      return { success: false, error: "Recenzija nije pronađena." };
+      return { success: false, error: "Review not found." };
     }
 
     await prisma.review.update({
@@ -96,7 +96,7 @@ export async function deleteReviewAction(id: string): Promise<ActionResult> {
     });
 
     if (!review) {
-      return { success: false, error: "Recenzija nije pronađena." };
+      return { success: false, error: "Review not found." };
     }
 
     await prisma.review.delete({

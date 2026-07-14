@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 
-export function SearchBox() {
+export function SearchBox({ dict }: { dict?: Record<string, any> }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -22,7 +22,7 @@ export function SearchBox() {
         type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Pretraži objekte, blog..."
+        placeholder={dict?.search?.short_placeholder || "Pretraži objekte, blog..."}
         className="w-32 lg:w-48"
       />
     </form>

@@ -102,7 +102,7 @@ export function Footer() {
                       <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
                     </svg>
                   ),
-                  label: "Pratite nas na Instagramu",
+                  label: dict?.footer?.instagram_aria || "Pratite nas na Instagramu",
                   href: "https://www.instagram.com/splashdeals",
                 },
                 {
@@ -119,7 +119,7 @@ export function Footer() {
                       <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                     </svg>
                   ),
-                  label: "Pratite nas na Facebooku",
+                  label: dict?.footer?.facebook_aria || "Pratite nas na Facebooku",
                   href: "https://www.facebook.com/splashdeals.rs/",
                 },
                 {
@@ -136,7 +136,7 @@ export function Footer() {
                       <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
                     </svg>
                   ),
-                  label: "Pratite nas na X (Twitter)",
+                  label: dict?.footer?.twitter_aria || "Pratite nas na X (Twitter)",
                   href: "https://x.com/splashdeals",
                 },
                 {
@@ -153,7 +153,7 @@ export function Footer() {
                       <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
                     </svg>
                   ),
-                  label: "Pogledajte naš GitHub",
+                  label: dict?.footer?.github_aria || "Pogledajte naš GitHub",
                   href: "https://github.com/splashdeals",
                 },
               ].map(({ icon: IconComponent, label, href }, idx) => (
@@ -262,7 +262,7 @@ export function Footer() {
                   <Icon name="location_on" className="group-hover:text-primary text-[16px]" />
                 </div>
                 <span className="group-hover:text-primary text-xs font-bold transition-colors">
-                  Beograd Technology Park, SRB
+                  {dict?.footer?.location_text || "Beograd Technology Park, SRB"}
                 </span>
               </div>
             </div>
@@ -284,7 +284,7 @@ export function Footer() {
 
           <div className="flex items-center gap-8">
             <div className="text-muted-foreground text-center text-xs font-bold tracking-widest uppercase">
-              Najbolji Akva Parkovi u Srbiji
+              {dict?.footer?.best_parks_badge || "Najbolji Akva Parkovi u Srbiji"}
             </div>
             <div className="text-muted-foreground flex items-center gap-4 text-[10px] font-black tracking-widest uppercase">
               <span>{dict?.footer?.security_first || "Sigurnost na Prvom Mestu"}</span>
@@ -338,7 +338,7 @@ function NewsletterForm({ dict }: { dict: Dict | null }) {
       <div className="flex gap-2">
         <div className="relative flex-1">
           <label htmlFor="newsletter-email" className="sr-only">
-            E-mail adresa za obaveštenja
+            {dict?.footer?.newsletter_sr || "E-mail adresa za obaveštenja"}
           </label>
           <Input
             id="newsletter-email"
@@ -359,7 +359,7 @@ function NewsletterForm({ dict }: { dict: Dict | null }) {
           size="sm"
           disabled={isPending}
           className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-11 min-w-[80px] items-center justify-center px-6 text-xs font-black tracking-tighter uppercase transition-all disabled:opacity-50"
-          aria-label="Pretplatite se na obaveštenja"
+          aria-label={dict?.footer?.newsletter_aria || "Pretplatite se na obaveštenja"}
         >
           {isPending ? (
             <Icon name="progress_activity" className="animate-spin text-[16px]" />
