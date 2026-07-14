@@ -87,6 +87,12 @@ export const adminNavData = {
           icon: "alt_route",
         },
         {
+          title: "Provera linkova",
+          url: "/admin/cms/broken-links",
+          icon: "link_off",
+          requiredRole: "SUPER_ADMIN",
+        },
+        {
           title: "Recenzije",
           url: "/admin/cms/reviews",
           icon: "star",
@@ -122,6 +128,12 @@ export const adminNavData = {
           title: "API dokumentacija",
           url: "/admin/cms/api-docs",
           icon: "api",
+          requiredRole: "SUPER_ADMIN",
+        },
+        {
+          title: "404 greške",
+          url: "/admin/cms/not-found-logs",
+          icon: "error_outline",
           requiredRole: "SUPER_ADMIN",
         },
         {
