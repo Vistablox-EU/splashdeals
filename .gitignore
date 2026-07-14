@@ -145,8 +145,8 @@ next-fix.d.ts
 # Test artifacts
 # ──────────────────────────────────────────────
 
-playwright-report/
-test-results/
+tests/reports/
+tests/results/
 
 # ──────────────────────────────────────────────
 # IDE

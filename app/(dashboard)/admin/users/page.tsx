@@ -5,7 +5,7 @@ import { TableSkeleton } from "@/app/(dashboard)/admin/_common/TableSkeleton";
 import { AdminPageShell } from "@/app/(dashboard)/admin/_common/AdminPageShell";
 import { UsersList } from "./_components/users-list";
 import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
-import { getUserCounts } from "@/lib/data/admin";
+import { getUserCounts } from "@/app/(server)/lib/data/admin";
 
 export const metadata: Metadata = {
   title: "Korisnici | Splashdeals Admin",

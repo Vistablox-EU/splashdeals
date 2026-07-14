@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/app/(server)/lib/prisma";
 import { FacilityShowcaseTemplate } from "@/app/(web)/facility/_components/ShowcaseTemplate";
 import { buildFacilityMetadata } from "@/app/(web)/facility/_data/metadata";
-import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
-import { resolveFacilitySlug } from "@/lib/routing/resolve-slug";
+import { DiscoveryTemplate, getDiscoveryMetadata } from "@/app/(server)/lib/routing/discovery";
+import { resolveFacilitySlug } from "@/app/(server)/lib/routing/resolve-slug";
 import { isKnownCategory, slugToDbValue, getAllSlugs } from "@/lib/routing/categories";
 
 // ── ISR: Revalidate every hour for SEO freshness ────────────────────

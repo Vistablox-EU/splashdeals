@@ -4,7 +4,7 @@
  * Used by both the catch-all route ([...slug]/page.tsx) and the category route ([categorySlug]/page.tsx).
  */
 import { prisma } from "@/app/(server)/lib/prisma";
-import { slugToDbValue, isKnownCategory, dbValueToSlug } from "./categories";
+import { slugToDbValue, isKnownCategory, dbValueToSlug } from "@/lib/routing/categories";
 
 export type ResolvedType =
   { type: "category"; category: string } | { type: "facility"; category: string } | null;

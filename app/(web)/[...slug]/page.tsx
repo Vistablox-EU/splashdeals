@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import { prisma } from "@/app/(server)/lib/prisma";
 import { FacilityShowcaseTemplate } from "@/app/(web)/facility/_components/ShowcaseTemplate";
 import { buildFacilityMetadata } from "@/app/(web)/facility/_data/metadata";
-import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
-import { resolveSlug, resolveLegacyTarget } from "@/lib/routing/resolve-slug";
+import { DiscoveryTemplate, getDiscoveryMetadata } from "@/app/(server)/lib/routing/discovery";
+import { resolveSlug, resolveLegacyTarget } from "@/app/(server)/lib/routing/resolve-slug";
 
 export async function generateMetadata({
   params,

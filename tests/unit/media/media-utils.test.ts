@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { filenameFromBlobUrl } from "./media-utils";
+import { filenameFromBlobUrl } from "@/app/(dashboard)/admin/facilities/[facility-id]/media/_components/_lib/media-utils";
 
 describe("filenameFromBlobUrl", () => {
   it("extracts filename from a standard Vercel Blob URL", () => {
