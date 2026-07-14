@@ -47,6 +47,7 @@ const ShowcaseAmenities = dynamic(
 );
 
 import { FacilityReviews } from "./FacilityReviews";
+import { BackToTop } from "./BackToTop";
 import { PartnerBranding } from "./PartnerBranding";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -398,6 +399,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
           </article>
         )}
       </main>
+
+      <BackToTop />
     </div>
   );
 }
