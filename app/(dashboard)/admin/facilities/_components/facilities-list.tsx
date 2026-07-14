@@ -1,4 +1,4 @@
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { Prisma } from "@prisma/client";

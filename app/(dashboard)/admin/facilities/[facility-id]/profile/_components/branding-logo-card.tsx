@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Card } from "@/components/ui/card";
 import { FacilityLogoUpload } from "./facility-logo-upload";
-import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility";
+import type { UpdateFacilityGovernanceValues } from "@/app/(server)/lib/validations/facility";
 
 interface BrandingLogoCardProps {
   facilityId: string;

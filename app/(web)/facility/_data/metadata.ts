@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Prisma } from "@prisma/client";
 import { cache } from "react";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { serialize } from "@/lib/serialize";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
 import { getCategoryLabel, SITE_URL } from "./schemas";

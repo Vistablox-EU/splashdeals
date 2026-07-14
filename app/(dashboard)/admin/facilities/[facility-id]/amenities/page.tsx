@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { CompactAmenitiesTableContainer } from "./_components";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

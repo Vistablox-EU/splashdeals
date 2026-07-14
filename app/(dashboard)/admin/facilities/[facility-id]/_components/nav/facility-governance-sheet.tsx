@@ -37,7 +37,7 @@ const adminGovernanceSchema = z.object({
 type AdminGovernanceValues = z.infer<typeof adminGovernanceSchema>;
 
 // Import the dedicated status action for efficiency
-import { updateFacilityStatusAction } from "@/server/actions/governance";
+import { updateFacilityStatusAction } from "@/app/(server)/actions/governance";
 import {
   Select,
   SelectContent,

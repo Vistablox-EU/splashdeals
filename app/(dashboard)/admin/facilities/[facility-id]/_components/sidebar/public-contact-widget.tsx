@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { updateFacilityContactAction } from "@/server/actions/governance";
+import { updateFacilityContactAction } from "@/app/(server)/actions/governance";
 import { toast } from "sonner";
 
 interface PublicContactWidgetProps {

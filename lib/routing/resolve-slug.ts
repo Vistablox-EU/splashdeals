@@ -3,7 +3,7 @@
  * Single source of truth for resolving path segments into category or facility types.
  * Used by both the catch-all route ([...slug]/page.tsx) and the category route ([categorySlug]/page.tsx).
  */
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { slugToDbValue, isKnownCategory, dbValueToSlug } from "./categories";
 
 export type ResolvedType =

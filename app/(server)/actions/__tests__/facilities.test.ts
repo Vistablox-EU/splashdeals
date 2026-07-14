@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@/server/lib/prisma", () => ({
+vi.mock("@/app/(server)/lib/prisma", () => ({
   prisma: {
     facility: {
       updateMany: vi.fn(),
@@ -13,7 +13,7 @@ vi.mock("@/server/lib/prisma", () => ({
   },
 }));
 
-vi.mock("@/server/lib/auth-guards", () => ({
+vi.mock("@/app/(server)/lib/auth-guards", () => ({
   requireSuperAdmin: vi.fn(),
 }));
 
@@ -27,7 +27,7 @@ describe("facilities actions", () => {
   });
 
   it("loads the server actions module", async () => {
-    const mod = await import("@/server/actions/facilities");
+    const mod = await import("@/app/(server)/actions/facilities");
     expect(mod.bulkUpdateFacilityStatusAction).toBeDefined();
     expect(mod.createFacilityAction).toBeDefined();
     expect(mod.deleteFacilityAction).toBeDefined();

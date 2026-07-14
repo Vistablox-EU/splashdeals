@@ -1,13 +1,13 @@
 "use server";
 
 import { z } from "zod";
-import { prisma } from "@/server/lib/prisma";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 import { revalidatePath } from "next/cache";
 import { UserRole } from "@prisma/client";
-import { auth } from "@/server/lib/auth";
+import { auth } from "@/app/(server)/lib/auth";
 
-import { handleServerActionError } from "@/server/lib/server-action-error";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
 
 const createAdminUserSchema = z.object({
   name: z.string().min(1, "Name is required"),

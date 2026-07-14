@@ -2,14 +2,14 @@
 
 import { z } from "zod";
 import { put, del } from "@vercel/blob";
-import { prisma } from "@/server/lib/prisma";
-import { processImageToWebP } from "@/server/lib/media";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { processImageToWebP } from "@/app/(server)/lib/media";
 import { MediaType, MediaPurpose } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { handleServerActionError } from "@/server/lib/server-action-error";
-import { validateAction } from "@/server/lib/actions/validator";
-import { validateFacilityAccess } from "@/server/lib/auth-guards";
-import { renameMediaSchema } from "@/server/lib/validations/media";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
+import { validateAction } from "@/app/(server)/lib/actions/validator";
+import { validateFacilityAccess } from "@/app/(server)/lib/auth-guards";
+import { renameMediaSchema } from "@/app/(server)/lib/validations/media";
 
 const updateMediaPurposeSchema = z.object({
   mediaId: z.string().uuid(),
@@ -112,7 +112,7 @@ export async function uploadMediaAction(formData: FormData) {
 
         // Generate and upload 400x400 WebP thumbnail
         try {
-          const { generateThumbnail } = await import("@/server/lib/media");
+          const { generateThumbnail } = await import("@/app/(server)/lib/media");
           const thumbBuffer = await generateThumbnail(buffer);
           const thumbFilename = `facilities/${facilityId}/photos/thumbnails/${Date.now()}-${file.name.split(".")[0]}.webp`;
           const thumbBlob = await put(thumbFilename, thumbBuffer, {

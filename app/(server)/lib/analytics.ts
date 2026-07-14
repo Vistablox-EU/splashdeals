@@ -1,6 +1,6 @@
 import "server-only";
 
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 
 /**
  * Track a page view for a facility by incrementing or creating a daily counter.

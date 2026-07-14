@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { FacilityProfileForm } from "./_components/facility-profile-form";
 import { CityLabels } from "./_components/city-labels";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import { auth } from "@/server/lib/auth";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";

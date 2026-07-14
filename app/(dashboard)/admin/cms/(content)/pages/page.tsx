@@ -1,5 +1,5 @@
-import { requireAdmin } from "@/server/lib/auth-guards";
-import { prisma } from "@/server/lib/prisma";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { PagesListClient } from "./_components/pages-list-client";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";

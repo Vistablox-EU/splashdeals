@@ -1,8 +1,8 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
-import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
-import { requireSuperAdmin, requireAdmin } from "@/server/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
+import { requireSuperAdmin, requireAdmin } from "@/app/(server)/lib/auth-guards";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 

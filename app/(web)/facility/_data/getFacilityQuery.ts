@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { serialize } from "@/lib/serialize";
 
 // ── Types ────────────────────────────────────────────────────────

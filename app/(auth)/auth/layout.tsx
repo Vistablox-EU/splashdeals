@@ -2,7 +2,7 @@ import "./globals.css";
 import { type ReactNode, Suspense } from "react";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { auth } from "@/server/lib/auth";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";

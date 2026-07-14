@@ -1,7 +1,7 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
-import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 
 type TicketInfo = {
   id: string;

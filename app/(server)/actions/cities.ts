@@ -1,11 +1,11 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireAdmin } from "@/server/lib/auth-guards";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
 
-import { handleServerActionError } from "@/server/lib/server-action-error";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
 
 const citySchema = z.object({
   id: z.string().optional(),

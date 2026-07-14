@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth } from "@/server/lib/auth";
+import { auth } from "@/app/(server)/lib/auth";
 
 export const config = {
   matcher: ["/(account)/:path*"],

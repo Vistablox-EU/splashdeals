@@ -8,7 +8,7 @@ import { BreadcrumbProvider } from "@/app/(dashboard)/admin/_common/breadcrumb-c
 import { AdminLayoutShell } from "./_components/AdminLayoutShell";
 import { CommandPalette } from "@/app/(dashboard)/admin/_common/CommandPalette";
 import { AdminSkeleton } from "@/app/(dashboard)/admin/_common/AdminSkeleton";
-import { auth } from "@/server/lib/auth";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";

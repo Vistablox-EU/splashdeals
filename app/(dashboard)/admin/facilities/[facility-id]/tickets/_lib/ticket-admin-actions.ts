@@ -1,5 +1,5 @@
 "use server";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { ValidityType, DayType, TimeSlot } from "@prisma/client";

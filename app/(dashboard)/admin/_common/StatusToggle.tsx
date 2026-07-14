@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { FacilityStatus } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import { updateFacilityStatusAction } from "@/server/actions/governance";
+import { updateFacilityStatusAction } from "@/app/(server)/actions/governance";
 
 interface StatusToggleProps {
   facilityId: string;

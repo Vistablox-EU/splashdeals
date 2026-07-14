@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui/Icon";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 

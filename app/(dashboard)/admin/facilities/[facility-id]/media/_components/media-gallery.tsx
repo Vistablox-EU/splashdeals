@@ -14,7 +14,7 @@ import {
   toggleMediaGalleryVisibilityAction,
   bulkUpdateMediaCaptionAction,
   renameMediaAction,
-} from "@/server/actions/media-actions";
+} from "@/app/(server)/actions/media-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

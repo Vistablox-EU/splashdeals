@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { FacilityFormValues } from "@/server/lib/validations/facility";
+import type { FacilityFormValues } from "@/app/(server)/lib/validations/facility";
 
 export function LocalizationSection() {
   const { control } = useFormContext<FacilityFormValues>();

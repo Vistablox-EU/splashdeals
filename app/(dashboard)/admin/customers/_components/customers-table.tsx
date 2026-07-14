@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getCustomersAction } from "@/server/actions/users";
+import { getCustomersAction } from "@/app/(server)/actions/users";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 

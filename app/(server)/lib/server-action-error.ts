@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
-import { AUTH_ERROR } from "@/server/lib/error-messages";
+import { AUTH_ERROR } from "@/app/(server)/lib/error-messages";
 
 export interface ActionResult<T = void> {
   success: boolean;

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { processScheduledAmenitiesAction } from "@/server/actions/amenity-actions";
+import { processScheduledAmenitiesAction } from "@/app/(server)/actions/amenity-actions";
 
 /**
  * 🛰️ Infrastructure Pulse: Scheduled Amenity Activation

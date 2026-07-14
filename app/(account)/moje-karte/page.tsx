@@ -1,5 +1,5 @@
-import { prisma } from "@/server/lib/prisma";
-import { auth } from "@/server/lib/auth";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { getDictionary } from "@/lib/dictionaries";
 import Image from "next/image";

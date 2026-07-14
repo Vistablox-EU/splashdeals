@@ -1,5 +1,5 @@
-import { prisma } from "@/server/lib/prisma";
-import { requireAdmin } from "@/server/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
 import { NavigationManager } from "./_components/NavigationManager";
 import type { MenuWithSections } from "./_components/types";
 

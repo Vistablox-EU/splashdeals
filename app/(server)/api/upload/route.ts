@@ -1,9 +1,9 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { MediaType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/server/lib/auth-guards";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
 import { MAX_FILE_SIZE } from "@/lib/constants";
 
 /**

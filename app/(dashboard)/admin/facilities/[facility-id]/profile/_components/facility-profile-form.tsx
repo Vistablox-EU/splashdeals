@@ -17,8 +17,8 @@ import { cn } from "@/lib/utils";
 import {
   updateFacilityGovernanceSchema,
   type UpdateFacilityGovernanceValues,
-} from "@/server/lib/validations/facility";
-import { updateFacilityGovernanceAction } from "@/server/actions/governance";
+} from "@/app/(server)/lib/validations/facility";
+import { updateFacilityGovernanceAction } from "@/app/(server)/actions/governance";
 import { ProfileAndSEO } from "./profile-and-seo";
 import { BrandingLogoCard } from "./branding-logo-card";
 import { LocationSection } from "./location-section";

@@ -1,7 +1,7 @@
 "use server";
 
-import { requireAdmin } from "@/server/lib/auth-guards";
-import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
+import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 
 interface AIContentResult {
   title: string;

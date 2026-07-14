@@ -1,8 +1,8 @@
 import { connection } from "next/server";
 import type { Metadata } from "next";
 import { AdminPageShell } from "@/app/(dashboard)/admin/_common/AdminPageShell";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
-import { prisma } from "@/server/lib/prisma";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { CartViewer } from "./_components/CartViewer";
 
 export const metadata: Metadata = {

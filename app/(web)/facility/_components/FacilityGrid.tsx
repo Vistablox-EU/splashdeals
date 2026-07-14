@@ -1,4 +1,4 @@
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { FacilityCard } from "./FacilityCard";
 
 interface FacilityGridProps {

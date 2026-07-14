@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/server/lib/auth-guards";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
 import { PageEditor } from "../_components/page-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";

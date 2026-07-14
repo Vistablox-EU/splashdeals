@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { connection } from "next/server";
-import { prisma } from "@/server/lib/prisma";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 import { ApiKeysClient } from "./api-keys-client";
 
 export const metadata: Metadata = {

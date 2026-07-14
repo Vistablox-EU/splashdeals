@@ -2,11 +2,11 @@
 
 import { z } from "zod";
 import { del } from "@vercel/blob";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { handleServerActionError } from "@/server/lib/server-action-error";
-import { validateAction } from "@/server/lib/actions/validator";
-import { validateFacilityAccess } from "@/server/lib/auth-guards";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
+import { validateAction } from "@/app/(server)/lib/actions/validator";
+import { validateFacilityAccess } from "@/app/(server)/lib/auth-guards";
 
 const bulkDeleteMediaSchema = z.object({
   facilityId: z.string().uuid(),

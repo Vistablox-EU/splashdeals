@@ -29,7 +29,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { updateUserRoleAction, deleteUserAction } from "@/server/actions/users";
+import { updateUserRoleAction, deleteUserAction } from "@/app/(server)/actions/users";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";

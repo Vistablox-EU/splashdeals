@@ -7,10 +7,10 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { checkSlugAvailabilityAction } from "@/server/actions/governance";
+import { checkSlugAvailabilityAction } from "@/app/(server)/actions/governance";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility";
+import type { UpdateFacilityGovernanceValues } from "@/app/(server)/lib/validations/facility";
 
 interface ProfileAndSEOProps {
   facilityId: string;

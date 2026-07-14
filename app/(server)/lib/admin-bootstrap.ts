@@ -10,7 +10,7 @@
  */
 
 import "server-only";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 
 function getBootstrapConfig(): { email: string; password: string } | null {
   const email = process.env.ADMIN_BOOTSTRAP_EMAIL || process.env.ADMIN_SEED_EMAIL || "";

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 
 /**
  * 🌊 Embed widget API endpoint for facility pages.

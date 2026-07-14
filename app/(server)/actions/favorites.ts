@@ -1,10 +1,10 @@
 "use server";
 
-import { prisma } from "@/server/lib/prisma";
-import { auth } from "@/server/lib/auth";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
+import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 
 /**
  * ⭐ Add a facility to the user's favorites.

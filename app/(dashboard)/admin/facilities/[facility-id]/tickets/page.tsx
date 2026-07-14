@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { getTicketHierarchy } from "./_lib/ticket-admin-actions";
 import { TicketManagementV2 } from "./_components/ticket-management-v2";
 

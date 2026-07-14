@@ -1,8 +1,8 @@
 /** @consumer external-agent -- called by external tools/agents via API key. Admin UI uses Server Actions instead. */
 import { NextResponse } from "next/server";
-import { authenticateRequest } from "@/server/lib/api-key-auth";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
-import { sendEmail } from "@/server/lib/email";
+import { authenticateRequest } from "@/app/(server)/lib/api-key-auth";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
+import { sendEmail } from "@/app/(server)/lib/email";
 import { z } from "zod";
 
 const sendEmailSchema = z.object({

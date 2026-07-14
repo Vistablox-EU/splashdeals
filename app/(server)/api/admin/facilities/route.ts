@@ -1,10 +1,10 @@
 /** @consumer external-agent -- called by external tools/agents via API key. Admin UI uses Server Actions instead. */
 import { NextResponse } from "next/server";
-import { prisma } from "@/server/lib/prisma";
-import { authenticateRequest } from "@/server/lib/api-key-auth";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
-import { facilitySchema } from "@/server/lib/validations/facility";
-import { handleServerActionError } from "@/server/lib/server-action-error";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { authenticateRequest } from "@/app/(server)/lib/api-key-auth";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
+import { facilitySchema } from "@/app/(server)/lib/validations/facility";
+import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
 
 /**
  * 🏢 Facilities API - List & Create

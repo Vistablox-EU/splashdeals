@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import Image from "next/image";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";

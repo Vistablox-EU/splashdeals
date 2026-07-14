@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MediaGallery } from "./_components/media-gallery";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { connection } from "next/server";
 import { MediaPurpose } from "@prisma/client";
 

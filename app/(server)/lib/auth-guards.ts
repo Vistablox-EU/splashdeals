@@ -1,8 +1,8 @@
-import { auth } from "@/server/lib/auth";
+import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { prisma } from "@/server/lib/prisma";
-import { AUTH_ERROR } from "@/server/lib/error-messages";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { AUTH_ERROR } from "@/app/(server)/lib/error-messages";
 
 export type AuthedUser = {
   id: string;

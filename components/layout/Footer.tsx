@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useActionState } from "react";
-import { subscribeToNewsletter } from "@/server/lib/actions/newsletter";
+import { subscribeToNewsletter } from "@/app/(server)/lib/actions/newsletter";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
 

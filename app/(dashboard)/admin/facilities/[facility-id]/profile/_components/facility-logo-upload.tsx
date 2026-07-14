@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { upload } from "@vercel/blob/client";
 import { cn } from "@/lib/utils";
-import { updateFacilityLogoAction } from "@/server/actions/governance";
+import { updateFacilityLogoAction } from "@/app/(server)/actions/governance";
 import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer";
 
 interface FacilityLogoUploadProps {

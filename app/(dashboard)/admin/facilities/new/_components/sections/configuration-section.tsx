@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { FacilityFormValues } from "@/server/lib/validations/facility";
+import type { FacilityFormValues } from "@/app/(server)/lib/validations/facility";
 
 export function ConfigurationSection() {
   const { control } = useFormContext<FacilityFormValues>();

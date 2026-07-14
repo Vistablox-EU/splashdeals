@@ -1,5 +1,5 @@
-import { requireAdmin } from "@/server/lib/auth-guards";
-import { prisma } from "@/server/lib/prisma";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { CampaignsListClient } from "./_components/campaigns-list-client";
 import type { Metadata } from "next";
 import { connection } from "next/server";

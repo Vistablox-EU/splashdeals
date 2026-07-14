@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/server/lib/auth-guards";
+import { requireAdmin } from "@/app/(server)/lib/auth-guards";
 import { listRedirectsAction } from "@/app/(server)/actions/redirects";
 import { RedirectManager } from "./_components/redirect-manager";
 import { connection } from "next/server";

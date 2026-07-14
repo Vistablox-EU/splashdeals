@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility";
-import { updateFacilityOperationsAction } from "@/server/actions/governance";
+import { UpdateFacilityGovernanceValues } from "@/app/(server)/lib/validations/facility";
+import { updateFacilityOperationsAction } from "@/app/(server)/actions/governance";
 import { DAYS_SR_OBJECTS } from "@/lib/utils/date-time";
 
 const DAYS = DAYS_SR_OBJECTS;

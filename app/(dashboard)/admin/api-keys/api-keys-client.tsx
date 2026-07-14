@@ -28,7 +28,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { useAction } from "@/hooks/use-action";
 import { z } from "zod";
-import { createApiKeyAction, deleteApiKeyAction } from "@/server/actions/api-keys";
+import { createApiKeyAction, deleteApiKeyAction } from "@/app/(server)/actions/api-keys";
 
 interface ApiKey {
   id: string;

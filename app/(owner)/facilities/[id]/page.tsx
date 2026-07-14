@@ -4,7 +4,7 @@ import {
   getOwnerAnalyticsAction,
 } from "@/app/(server)/actions/owner";
 import { notFound } from "next/navigation";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/utils";

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { OnboardFacilityForm } from "./_components/onboard-facility-form";
 import type { Metadata } from "next";
 import { connection } from "next/server";
-import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 
 export const metadata: Metadata = {
   title: "Onboard Facility | Splashdeals Admin",

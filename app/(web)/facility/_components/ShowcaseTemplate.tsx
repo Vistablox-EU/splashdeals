@@ -64,10 +64,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { serialize } from "@/lib/serialize";
 import { JsonLd } from "@/components/SEO/JsonLd";
-import { validateDiscoverySlug } from "@/server/lib/data/discovery";
+import { validateDiscoverySlug } from "@/app/(server)/lib/data/discovery";
 import { getCategoryLabel, buildFacilitySchema, TierEntry } from "../_data";
 import { getFacility, buildTicketGroups, flattenActivePrices } from "../_data";
-import { getWeather } from "@/server/lib/weather";
+import { getWeather } from "@/app/(server)/lib/weather";
 
 /**
  * Infer the FAQ category from question text when the data source doesn't

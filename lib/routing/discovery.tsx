@@ -12,7 +12,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { prisma } from "@/server/lib/prisma";
+import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { slugToDbValue, slugToName, isKnownCategory } from "@/lib/routing/categories";
