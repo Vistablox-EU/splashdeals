@@ -80,7 +80,10 @@ async function assertCartNotLocked(
     orderBy: { updatedAt: "desc" },
   });
   if (cartSession?.locked) {
-    return { success: false, error: "Naplata je već u toku. Sačekajte da se završi." };
+    return {
+      success: false,
+      error: "Checkout is already in progress. Please wait for it to complete.",
+    };
   }
   return null;
 }
@@ -110,12 +113,12 @@ export async function addToCartAction(
 
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return { success: false, error: "Morate biti prijavljeni da biste dodali stavku u korpu." };
+      return { success: false, error: "You must be logged in to add items to your cart." };
     }
 
     // ⏱ Rate limit check
     if (!checkRateLimit(session.user.id)) {
-      return { success: false, error: "Previše zahteva. Sačekajte trenutak." };
+      return { success: false, error: "Too many requests. Please wait a moment." };
     }
 
     // 🔒 Cart lock check
@@ -137,16 +140,16 @@ export async function addToCartAction(
     });
 
     if (!ticketPrice || !ticketPrice.isActive) {
-      return { success: false, error: "Izabrana ulaznica nije dostupna." };
+      return { success: false, error: "Selected ticket is not available." };
     }
 
     const facility = ticketPrice.ticketType.category.facility;
     if (facility.status !== "ACTIVE") {
-      return { success: false, error: "Objekat trenutno nije aktivan." };
+      return { success: false, error: "Facility is currently inactive." };
     }
 
     if (facility.id !== data.facilityId) {
-      return { success: false, error: "Ulaznica ne pripada izabranom objektu." };
+      return { success: false, error: "Ticket does not belong to the selected facility." };
     }
 
     // Build and persist item
@@ -212,11 +215,11 @@ export async function removeFromCartAction(
 
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return { success: false, error: "Morate biti prijavljeni." };
+      return { success: false, error: "You must be logged in." };
     }
 
     if (!checkRateLimit(session.user.id)) {
-      return { success: false, error: "Previše zahteva. Sačekajte trenutak." };
+      return { success: false, error: "Too many requests. Please wait a moment." };
     }
 
     const lockError = await assertCartNotLocked(session.user.id);
@@ -248,11 +251,11 @@ export async function updateCartQuantityAction(
 
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return { success: false, error: "Morate biti prijavljeni." };
+      return { success: false, error: "You must be logged in." };
     }
 
     if (!checkRateLimit(session.user.id)) {
-      return { success: false, error: "Previše zahteva. Sačekajte trenutak." };
+      return { success: false, error: "Too many requests. Please wait a moment." };
     }
 
     const lockError = await assertCartNotLocked(session.user.id);
@@ -274,7 +277,7 @@ export async function updateCartQuantityAction(
 
     const existingIdx = currentItems.findIndex((i) => i.id === data.itemId);
     if (existingIdx === -1) {
-      return { success: false, error: "Stavka nije pronađena u korpi." };
+      return { success: false, error: "Item not found in cart." };
     }
 
     const cappedQuantity = Math.min(data.quantity, MAX_QUANTITY_PER_ITEM);
@@ -303,7 +306,7 @@ export async function getCartAction(): Promise<
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return { success: false, error: "Morate biti prijavljeni." };
+      return { success: false, error: "You must be logged in." };
     }
 
     const cartSession = await prisma.cartSession.findFirst({
@@ -379,7 +382,7 @@ export async function clearCartAction(): Promise<ActionResult<{ cleared: boolean
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return { success: false, error: "Morate biti prijavljeni." };
+      return { success: false, error: "You must be logged in." };
     }
 
     const cartSession = await prisma.cartSession.findFirst({
@@ -411,7 +414,7 @@ export async function setCartLockAction(
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return { success: false, error: "Morate biti prijavljeni." };
+      return { success: false, error: "You must be logged in." };
     }
 
     const cartSession = await prisma.cartSession.findFirst({

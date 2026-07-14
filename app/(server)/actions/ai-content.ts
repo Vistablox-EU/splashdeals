@@ -14,14 +14,14 @@ export async function generateContentAction(topic: string): Promise<ActionResult
     await requireAdmin();
 
     if (!topic || topic.trim().length < 2) {
-      return { success: false, error: "Unesite temu (najmanje 2 karaktera)." };
+      return { success: false, error: "Enter a topic (at least 2 characters)." };
     }
 
     const apiKey = process.env.OPENAI_API_KEY;
     const baseUrl = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
 
     if (!apiKey) {
-      return { success: false, error: "OPENAI_API_KEY nije podešena. Dodajte je u .env." };
+      return { success: false, error: "OPENAI_API_KEY is not set. Add it to your .env file." };
     }
 
     const prompt = `Napiši blog objavu na srpskom jeziku na temu: "${topic}".
@@ -62,7 +62,7 @@ Excerpt treba da sadrži ključne reči i bude zanimljiv za čitaoca.`;
       const errBody = await response.text().catch(() => "");
       return {
         success: false,
-        error: `AI API greška (${response.status}): ${errBody || response.statusText}`,
+        error: `AI API error (${response.status}): ${errBody || response.statusText}`,
       };
     }
 
@@ -70,7 +70,7 @@ Excerpt treba da sadrži ključne reči i bude zanimljiv za čitaoca.`;
     const rawContent = data.choices?.[0]?.message?.content;
 
     if (!rawContent) {
-      return { success: false, error: "AI nije vratio sadržaj." };
+      return { success: false, error: "AI did not return any content." };
     }
 
     // Try to parse JSON from the response

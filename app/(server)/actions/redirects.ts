@@ -44,7 +44,7 @@ export async function createRedirectAction(data: {
 
     // Basic validation
     if (!data.source || !data.destination) {
-      return { success: false, error: "Source i destination su obavezni." };
+      return { success: false, error: "Source and destination are required." };
     }
 
     const source = createSchema.source(data.source as string);
@@ -120,7 +120,7 @@ export async function toggleRedirectAction(id: string): Promise<ActionResult> {
 
     const existing = await prisma.redirect.findUnique({ where: { id } });
     if (!existing) {
-      return { success: false, error: "Redirect nije pronađen." };
+      return { success: false, error: "Redirect not found." };
     }
 
     await prisma.redirect.update({

@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
+import type { Dict } from "@/lib/types";
 
 interface BreadcrumbItem {
   label: string;
@@ -13,9 +14,10 @@ interface BreadcrumbProps {
   breadcrumbItems: BreadcrumbItem[];
   backHref?: string;
   hasBreadcrumbs: boolean;
+  dict?: Dict;
 }
 
-export function Breadcrumb({ breadcrumbItems, backHref, hasBreadcrumbs }: BreadcrumbProps) {
+export function Breadcrumb({ breadcrumbItems, backHref, hasBreadcrumbs, dict }: BreadcrumbProps) {
   return (
     <>
       {hasBreadcrumbs && (
@@ -26,10 +28,10 @@ export function Breadcrumb({ breadcrumbItems, backHref, hasBreadcrumbs }: Breadc
               <Link
                 href={backHref}
                 className="border-border/10 text-muted-foreground hover:text-foreground active:bg-muted/10 flex h-full shrink-0 items-center justify-center border-r px-4 transition-colors"
-                aria-label="Nazad"
+                aria-label={dict?.breadcrumb?.back_aria ?? "Nazad"}
               >
                 <Icon name="arrow_back" className="text-[14px]" />
-                <span className="sr-only">Nazad</span>
+                <span className="sr-only">{dict?.breadcrumb?.back_aria ?? "Nazad"}</span>
               </Link>
             )}
 

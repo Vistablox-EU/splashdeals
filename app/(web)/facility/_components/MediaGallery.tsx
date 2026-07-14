@@ -56,7 +56,8 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           })()}
         </h2>
         <p className="text-muted-foreground font-medium">
-          Uronite u atmosferu naše destinacije kroz objektiv naših posetilaca.
+          {dict?.media_gallery?.description ||
+            "Uronite u atmosferu naše destinacije kroz objektiv naših posetilaca."}
         </p>
       </div>
 
@@ -130,7 +131,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
             size="icon"
             className="border-border bg-muted/20 text-muted-foreground hover:bg-muted/30 absolute top-8 right-8 z-[2010] rounded-full border"
             onClick={() => setSelectedIdx(null)}
-            aria-label="Zatvori galeriju"
+            aria-label={dict?.media_gallery?.close || "Zatvori galeriju"}
           >
             <Icon name="close" className="text-[24px]" />
           </Button>

@@ -105,10 +105,23 @@ export const CartDrawer = () => {
               </div>
               <div>
                 <h2 className="text-xl leading-none font-black tracking-tighter text-white uppercase italic">
-                  Vaša <span className="text-splash">Korpa</span>
+                  {(dict?.cart?.title || "Vaša Korpa")
+                    .split(" ")
+                    .map((word: string, i: number, arr: string[]) =>
+                      i === arr.length - 1 ? (
+                        <span key={i} className="text-splash">
+                          {word}
+                        </span>
+                      ) : (
+                        <React.Fragment key={i}>{word} </React.Fragment>
+                      ),
+                    )}
                 </h2>
                 <p className="mt-1 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
-                  {items.length} stavki izabrano
+                  {(dict?.cart?.items_count || "{count} stavki izabrano").replace(
+                    "{count}",
+                    String(items.length),
+                  )}
                 </p>
               </div>
             </div>
@@ -128,9 +141,11 @@ export const CartDrawer = () => {
                   <Icon name="shopping_bag" className="text-[32px] text-white/20" />
                 </div>
                 <div className="space-y-1">
-                  <p className="font-black text-white uppercase italic">Korpa je prazna</p>
+                  <p className="font-black text-white uppercase italic">
+                    {dict?.cart?.empty_title || "Korpa je prazna"}
+                  </p>
                   <p className="text-xs font-bold tracking-widest text-slate-500 uppercase">
-                    Započnite putovanje
+                    {dict?.cart?.empty_subtitle || "Započnite putovanje"}
                   </p>
                 </div>
               </div>
@@ -144,12 +159,12 @@ export const CartDrawer = () => {
                     <div className="min-w-0 flex-1">
                       <p className="mb-1 text-[10px] font-black tracking-widest text-cyan-500/80 uppercase">
                         {item.category === "Waterpark"
-                          ? "Akva Park"
+                          ? dict?.categories?.waterpark_label || "Akva Park"
                           : item.category === "Pool"
-                            ? "Bazen"
+                            ? dict?.categories?.pool || "Bazen"
                             : item.category === "Spa"
-                              ? "Spa Centar"
-                              : item.category || "Akva Park"}
+                              ? dict?.categories?.spa || "Spa Centar"
+                              : item.category || dict?.categories?.waterpark_label || "Akva Park"}
                       </p>
                       <h3 className="mb-1 truncate text-sm leading-none font-black text-white uppercase italic">
                         {item.title}
@@ -224,7 +239,7 @@ export const CartDrawer = () => {
             <div className="bg-navy-deep/80 space-y-6 border-t border-white/5 p-8 backdrop-blur-xl">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-black tracking-[0.2em] text-slate-500 uppercase">
-                  Ukupno za uplatu
+                  {dict?.cart?.total_label || "Ukupno za uplatu"}
                 </span>
                 <div className="text-3xl font-black tracking-tighter text-white italic">
                   {formatPrice(totalPrice)}
@@ -234,7 +249,7 @@ export const CartDrawer = () => {
 
               <Link href="/cart" onClick={closeCart}>
                 <LiquidButton className="group h-16 w-full text-lg">
-                  Nastavi na Plaćanje
+                  {dict?.cart?.checkout_button || "Nastavi na Plaćanje"}
                   <Icon
                     name="arrow_forward"
                     className="ml-2 text-[20px] transition-transform group-hover:translate-x-1"
@@ -244,7 +259,8 @@ export const CartDrawer = () => {
 
               <div className="text-center">
                 <p className="text-[8px] font-black tracking-[0.3em] text-slate-600 uppercase">
-                  Bezbedna transakcija šifrovana sa 256-bitnom enkripcijom
+                  {dict?.cart?.security_notice ||
+                    "Bezbedna transakcija šifrovana sa 256-bitnom enkripcijom"}
                 </p>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
+import { getDictionary } from "@/lib/dictionaries";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
@@ -58,6 +59,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
+  const dict = await getDictionary();
 
   // Check for preview mode — allow viewing DRAFT content
   const post = await prisma.blogPost.findUnique({
@@ -99,7 +101,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-1 text-sm transition-colors"
       >
         <Icon name="arrow_back" className="size-4" />
-        Nazad na blog
+        {dict.blog.back_to_blog || "Nazad na blog"}
       </Link>
 
       <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-8">
@@ -133,7 +135,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {post.readingTime && (
                 <span className="flex items-center gap-1">
                   <Icon name="schedule" className="size-3.5" />
-                  {post.readingTime} min čitanja
+                  {post.readingTime} {dict.blog.min_read || "min čitanja"}
                 </span>
               )}
               {post.author && (
@@ -184,7 +186,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Related posts */}
           {relatedPosts.length > 0 && (
             <section className="mt-16 border-t pt-8">
-              <h2 className="mb-6 text-2xl font-bold">Povezane objave</h2>
+              <h2 className="mb-6 text-2xl font-bold">
+                {dict.blog.related_posts || "Povezane objave"}
+              </h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 {relatedPosts.map((rp) => (
                   <Link
@@ -224,7 +228,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="sticky top-24">
               <nav className="border-muted max-h-[calc(100vh-8rem)] overflow-y-auto border-l pl-4">
                 <h3 className="text-foreground mb-3 text-xs font-semibold tracking-wider uppercase">
-                  Sadržaj
+                  {dict.blog.toc_heading || "Sadržaj"}
                 </h3>
                 <ul className="space-y-1.5">
                   {tocItems.map((item, i) => (

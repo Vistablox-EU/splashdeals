@@ -57,16 +57,16 @@ export async function sendOrderConfirmation(transactionId: string): Promise<void
   );
   await sendEmail(
     transaction.user.email,
-    `Tvoje karte za ${transaction.facility.name} su spremne!`,
+    `Your tickets for ${transaction.facility.name} are ready!`,
     html,
   );
 }
 
 export async function sendRecoveryEmail(email: string, items: any[]) {
-  const html = `<p>Pre nego što zaboraviš — tvoje karte još čekaju:</p>
+  const html = `<p>Before you forget — your tickets are still waiting:</p>
     <ul>${items.map((i: any) => `<li>${i.quantity}x ${i.title}</li>`).join("")}</ul>
-    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/cart" style="display:block;padding:12px;background:#000;color:#fff;text-align:center;border-radius:8px;">Vidi korpu</a>`;
-  await sendEmail(email, "Ostali su ti kartice u korpi!", html);
+    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/cart" style="display:block;padding:12px;background:#000;color:#fff;text-align:center;border-radius:8px;">View cart</a>`;
+  await sendEmail(email, "Your tickets are still in your cart!", html);
 }
 
 function buildTicketEmailHtml(
@@ -80,15 +80,15 @@ function buildTicketEmailHtml(
 <html><head><meta charset="utf-8"></head>
 <body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:24px">
   <div style="max-width:600px;margin:0 auto;background:white;border-radius:12px;padding:24px">
-    <h1 style="color:#1a1a1a">Hvala na kupovini!</h1>
-    <p style="color:#666">Tvoje karte su spremne.</p>
+    <h1 style="color:#1a1a1a">Thank you for your purchase!</h1>
+    <p style="color:#666">Your tickets are ready.</p>
     <table style="width:100%;border-collapse:collapse;margin:16px 0">
-      <tr><td style="padding:8px 0;color:#666">Objekat:</td><td style="text-align:right;font-weight:bold">${facilityName}</td></tr>
-      ${ticketRows.map((t: any) => `<tr><td style="padding:8px 0;color:#666">${t.type || "Ulaznica"}</td><td style="text-align:right;font-weight:bold">${t.quantity}x ${Number(t.price).toLocaleString("sr-RS")} RSD</td></tr>`).join("")}
-      <tr><td style="border-top:1px solid #ddd;padding:8px 0;color:#666">Ukupno:</td><td style="border-top:1px solid #ddd;text-align:right;font-weight:bold">${total.toLocaleString("sr-RS")} RSD</td></tr>
+      <tr><td style="padding:8px 0;color:#666">Facility:</td><td style="text-align:right;font-weight:bold">${facilityName}</td></tr>
+      ${ticketRows.map((t: any) => `<tr><td style="padding:8px 0;color:#666">${t.type || "Ticket"}</td><td style="text-align:right;font-weight:bold">${t.quantity}x ${Number(t.price).toLocaleString("sr-RS")} RSD</td></tr>`).join("")}
+      <tr><td style="border-top:1px solid #ddd;padding:8px 0;color:#666">Total:</td><td style="border-top:1px solid #ddd;text-align:right;font-weight:bold">${total.toLocaleString("sr-RS")} RSD</td></tr>
     </table>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:24px 0">${qrImages}</div>
-    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/success?session=${sessionId}" style="display:block;background:#1a1a1a;color:white;text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:bold">Preuzmi svoje karte</a>
+    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/success?session=${sessionId}" style="display:block;background:#1a1a1a;color:white;text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:bold">Download your tickets</a>
   </div>
 </body></html>`;
 }

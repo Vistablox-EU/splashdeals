@@ -1,20 +1,21 @@
 import { getOwnerFacilitiesAction } from "@/app/(server)/actions/owner";
+import { getDictionary } from "@/lib/dictionaries";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icon } from "@/components/ui/Icon";
 
 export default async function OwnerFacilitiesPage() {
   const facilities = await getOwnerFacilitiesAction();
+  const dict = await getDictionary();
+  const t = dict.owner as Record<string, string>;
 
   if (facilities.length === 0) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <Card className="mx-auto max-w-md">
           <CardHeader>
-            <CardTitle className="text-center">Nemate dodeljenih objekata</CardTitle>
-            <CardDescription className="text-center">
-              Kontaktirajte administratora da bi vam dodelili objekat.
-            </CardDescription>
+            <CardTitle className="text-center">{t.no_facilities}</CardTitle>
+            <CardDescription className="text-center">{t.no_facilities_desc}</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -24,10 +25,8 @@ export default async function OwnerFacilitiesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Moji objekti</h1>
-        <p className="text-muted-foreground text-sm">
-          Izaberite objekat za upravljanje cenama i pregled prodaje.
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight">{t.facilities}</h1>
+        <p className="text-muted-foreground text-sm">{t.select_facility}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

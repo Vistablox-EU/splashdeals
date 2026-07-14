@@ -111,6 +111,7 @@ function Toolbar({
   dict?: Record<string, unknown>;
   source?: "blog" | "stranica";
 }) {
+  const t = (dict as Record<string, any>) || {};
   const linkUrlRef = useRef<HTMLInputElement>(null);
   const [pendingImageUrl, setPendingImageUrl] = useState<string | null>(null);
   const [pendingAltText, setPendingAltText] = useState("");
@@ -138,23 +139,23 @@ function Toolbar({
       formData.append("file", file);
       if (source) formData.append("collection", source === "blog" ? "Blog" : "Stranica");
 
-      const toastId = toast.loading("Otpremanje slike...");
+      const toastId = toast.loading(t.editor_uploading || "Otpremanje slike...");
       try {
         const { uploadMediaAction } = await import("@/app/(server)/actions/cms-media");
         const res = await uploadMediaAction(formData);
         if (res.success && res.data?.url) {
           toast.dismiss(toastId);
-          toast.success("Slika je otpremljena.");
+          toast.success(t.editor_upload_success || "Slika je otpremljena.");
           setPendingImageUrl(res.data.url);
           setPendingAltText("");
           setTimeout(() => altInputRef.current?.focus(), 150);
         } else {
           toast.dismiss(toastId);
-          toast.error(res.error || "Greška pri otpremanju slike.");
+          toast.error(res.error || t.editor_upload_error || "Greška pri otpremanju slike.");
         }
       } catch (err) {
         toast.dismiss(toastId);
-        toast.error("Greška pri otpremanju slike.");
+        toast.error(t.editor_upload_error || "Greška pri otpremanju slike.");
         console.error("[CMS Image Upload]", err);
       }
     };
@@ -199,13 +200,13 @@ function Toolbar({
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
           icon="undo"
-          label="Poništi"
+          label={t.editor_undo || "Poništi"}
         />
         <ToolbarButton
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
           icon="redo"
-          label="Ponovi"
+          label={t.editor_redo || "Ponovi"}
         />
 
         <Separator orientation="vertical" className="mx-1 h-6" />
@@ -215,7 +216,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("bold")}
           onPressedChange={() => editor.chain().focus().toggleBold().run()}
-          aria-label="Podebljano"
+          aria-label={t.editor_bold || "Podebljano"}
         >
           <Icon name="bold" className="size-4" />
         </Toggle>
@@ -223,7 +224,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("italic")}
           onPressedChange={() => editor.chain().focus().toggleItalic().run()}
-          aria-label="Kurziv"
+          aria-label={t.editor_italic || "Kurziv"}
         >
           <Icon name="italic" className="size-4" />
         </Toggle>
@@ -231,7 +232,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("strike")}
           onPressedChange={() => editor.chain().focus().toggleStrike().run()}
-          aria-label="Precrtano"
+          aria-label={t.editor_strike || "Precrtano"}
         >
           <Icon name="strikethrough" className="size-4" />
         </Toggle>
@@ -243,7 +244,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("heading", { level: 1 })}
           onPressedChange={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          aria-label="Naslov 1"
+          aria-label={t.editor_h1 || "Naslov 1"}
         >
           <span className="text-xs font-bold">H1</span>
         </Toggle>
@@ -251,7 +252,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("heading", { level: 2 })}
           onPressedChange={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          aria-label="Naslov 2"
+          aria-label={t.editor_h2 || "Naslov 2"}
         >
           <span className="text-xs font-bold">H2</span>
         </Toggle>
@@ -259,7 +260,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("heading", { level: 3 })}
           onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          aria-label="Naslov 3"
+          aria-label={t.editor_h3 || "Naslov 3"}
         >
           <span className="text-xs font-bold">H3</span>
         </Toggle>
@@ -271,7 +272,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("bulletList")}
           onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
-          aria-label="Nenumerisana lista"
+          aria-label={t.editor_bullet_list || "Nenumerisana lista"}
         >
           <Icon name="list" className="size-4" />
         </Toggle>
@@ -279,7 +280,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("orderedList")}
           onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
-          aria-label="Numerisana lista"
+          aria-label={t.editor_ordered_list || "Numerisana lista"}
         >
           <Icon name="list_ordered" className="size-4" />
         </Toggle>
@@ -291,7 +292,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("blockquote")}
           onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
-          aria-label="Citat"
+          aria-label={t.editor_blockquote || "Citat"}
         >
           <Icon name="format_quote" className="size-4" />
         </Toggle>
@@ -299,7 +300,7 @@ function Toolbar({
           size="sm"
           pressed={editor.isActive("codeBlock")}
           onPressedChange={() => editor.chain().focus().toggleCodeBlock().run()}
-          aria-label="Kod"
+          aria-label={t.editor_code || "Kod"}
         >
           <Icon name="code" className="size-4" />
         </Toggle>
@@ -309,17 +310,23 @@ function Toolbar({
         {/* Link */}
         <Popover>
           <PopoverTrigger asChild>
-            <Toggle size="sm" pressed={editor.isActive("link")} aria-label="Link">
+            <Toggle
+              size="sm"
+              pressed={editor.isActive("link")}
+              aria-label={t.editor_link || "Link"}
+            >
               <Icon name="link" className="size-4" />
             </Toggle>
           </PopoverTrigger>
           <PopoverContent className="w-72 p-3" side="bottom" align="start">
             <div className="flex flex-col gap-2">
-              <p className="text-muted-foreground text-xs font-medium">Link URL</p>
+              <p className="text-muted-foreground text-xs font-medium">
+                {t.editor_link_url || "Link URL"}
+              </p>
               <div className="flex gap-2">
                 <Input ref={linkUrlRef} placeholder="https://..." className="h-8 text-xs" />
                 <Button size="sm" onClick={setLink} className="h-8">
-                  Sačuvaj
+                  {t.editor_link_save || "Sačuvaj"}
                 </Button>
               </div>
             </div>
@@ -327,7 +334,7 @@ function Toolbar({
         </Popover>
 
         {/* Image — opens file picker */}
-        <ToolbarButton onClick={addImage} icon="image" label="Slike" />
+        <ToolbarButton onClick={addImage} icon="image" label={t.editor_image || "Slike"} />
 
         {/* Media Library — opens dialog */}
         <MediaLibraryDialog
@@ -340,7 +347,11 @@ function Toolbar({
               .run();
           }}
           trigger={
-            <ToolbarButton onClick={() => {}} icon="photo_library" label="Media biblioteka" />
+            <ToolbarButton
+              onClick={() => {}}
+              icon="photo_library"
+              label={t.editor_media_library || "Media biblioteka"}
+            />
           }
         />
       </div>
@@ -349,17 +360,17 @@ function Toolbar({
       <AlertDialog open={!!pendingImageUrl} onOpenChange={handleAltDialogOpenChange}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Alt tekst za sliku</AlertDialogTitle>
+            <AlertDialogTitle>{t.editor_alt_title || "Alt tekst za sliku"}</AlertDialogTitle>
             <AlertDialogDescription>
-              Dodaj opis slike koji će biti prikazan ako se slika ne učita. Ovo poboljšava
-              pristupačnost i SEO.
+              {t.editor_alt_description ||
+                "Dodaj opis slike koji će biti prikazan ako se slika ne učita. Ovo poboljšava pristupačnost i SEO."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Input
             ref={altInputRef}
             value={pendingAltText}
             onChange={(e) => setPendingAltText(e.target.value)}
-            placeholder="Opis slike..."
+            placeholder={t.editor_alt_placeholder || "Opis slike..."}
             className="w-full"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -369,8 +380,12 @@ function Toolbar({
             }}
           />
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleAltDialogSkip}>Preskoči</AlertDialogCancel>
-            <AlertDialogAction onClick={handleAltDialogConfirm}>Dodaj</AlertDialogAction>
+            <AlertDialogCancel onClick={handleAltDialogSkip}>
+              {t.editor_alt_skip || "Preskoči"}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleAltDialogConfirm}>
+              {t.editor_alt_add || "Dodaj"}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

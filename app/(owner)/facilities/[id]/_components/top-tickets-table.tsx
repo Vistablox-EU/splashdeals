@@ -10,15 +10,14 @@ interface TicketType {
 
 interface Props {
   data: TicketType[];
+  dict: Record<string, unknown>;
 }
 
-export function TopTicketsTable({ data }: Props) {
+export function TopTicketsTable({ data, dict }: Props) {
+  const t = dict.owner as Record<string, string>;
+
   if (data.length === 0) {
-    return (
-      <p className="text-muted-foreground py-4 text-center text-sm">
-        Nema podataka o prodaji karata.
-      </p>
-    );
+    return <p className="text-muted-foreground py-4 text-center text-sm">{t.no_sales_data}</p>;
   }
 
   const totalCount = data.reduce((sum, t) => sum + t.count, 0);
@@ -28,10 +27,10 @@ export function TopTicketsTable({ data }: Props) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b text-left">
-            <th className="pb-2 font-medium">Tip ulaznice</th>
-            <th className="pb-2 text-right font-medium">Prodata</th>
+            <th className="pb-2 font-medium">{t.type_ticket}</th>
+            <th className="pb-2 text-right font-medium">{t.sold_col}</th>
             <th className="pb-2 text-right font-medium">%</th>
-            <th className="pb-2 text-right font-medium">Prihod</th>
+            <th className="pb-2 text-right font-medium">{t.revenue_col}</th>
           </tr>
         </thead>
         <tbody>

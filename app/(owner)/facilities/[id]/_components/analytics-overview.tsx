@@ -11,6 +11,7 @@ interface Props {
   totalRevenue: number;
   revenue7d: number;
   conversionRate: number;
+  dict: Record<string, unknown>;
 }
 
 export function AnalyticsOverview({
@@ -21,27 +22,29 @@ export function AnalyticsOverview({
   totalRevenue,
   revenue7d,
   conversionRate,
+  dict,
 }: Props) {
+  const t = dict.owner as Record<string, string>;
   const cards = [
     {
-      title: "Pregleda (7 dana)",
+      title: t.views_7d,
       value: views7d.toLocaleString("sr-RS"),
-      subtitle: `${totalViews.toLocaleString("sr-RS")} ukupno`,
+      subtitle: `${totalViews.toLocaleString("sr-RS")} ${t.total_suffix}`,
     },
     {
-      title: "Prodaja (7 dana)",
+      title: t.sales_7d,
       value: sales7d.toLocaleString("sr-RS"),
-      subtitle: `${totalSales.toLocaleString("sr-RS")} ukupno`,
+      subtitle: `${totalSales.toLocaleString("sr-RS")} ${t.total_suffix}`,
     },
     {
-      title: "Prihod (7 dana)",
+      title: t.revenue_7d,
       value: formatCurrency(revenue7d),
-      subtitle: `${formatCurrency(totalRevenue)} ukupno`,
+      subtitle: `${formatCurrency(totalRevenue)} ${t.total_suffix}`,
     },
     {
-      title: "Stopa konverzije",
+      title: t.conversion_rate,
       value: `${(conversionRate * 100).toFixed(2)}%`,
-      subtitle: "prodaja / pregledi",
+      subtitle: t.conversion_subtitle,
     },
   ];
 

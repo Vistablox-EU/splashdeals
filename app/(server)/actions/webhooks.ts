@@ -93,7 +93,7 @@ export async function getWebhookAction(
 
     const webhook = await prisma.webhook.findUnique({ where: { id } });
     if (!webhook) {
-      return { success: false, error: "Vebhuk nije pronađen." };
+      return { success: false, error: "Webhook not found." };
     }
 
     const logs = await prisma.webhookLog.findMany({
@@ -125,13 +125,13 @@ export async function createWebhookAction(data: {
     await requireAdmin();
 
     if (!data.name.trim()) {
-      return { success: false, error: "Naziv je obavezan." };
+      return { success: false, error: "Name is required." };
     }
     if (!data.url.trim()) {
-      return { success: false, error: "URL je obavezan." };
+      return { success: false, error: "URL is required." };
     }
     if (!data.events.length) {
-      return { success: false, error: "Izaberite barem jedan događaj." };
+      return { success: false, error: "Select at least one event." };
     }
 
     const webhook = await prisma.webhook.create({
@@ -159,13 +159,13 @@ export async function updateWebhookAction(
     await requireAdmin();
 
     if (!data.name.trim()) {
-      return { success: false, error: "Naziv je obavezan." };
+      return { success: false, error: "Name is required." };
     }
     if (!data.url.trim()) {
-      return { success: false, error: "URL je obavezan." };
+      return { success: false, error: "URL is required." };
     }
     if (!data.events.length) {
-      return { success: false, error: "Izaberite barem jedan događaj." };
+      return { success: false, error: "Select at least one event." };
     }
 
     await prisma.webhook.update({
@@ -208,7 +208,7 @@ export async function testWebhookAction(
 
     const webhook = await prisma.webhook.findUnique({ where: { id } });
     if (!webhook) {
-      return { success: false, error: "Vebhuk nije pronađen." };
+      return { success: false, error: "Webhook not found." };
     }
 
     // Send a test POST request to the webhook URL
