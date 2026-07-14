@@ -6,7 +6,7 @@ import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
-import { MAX_QUANTITY_PER_ITEM, type CartItem, type CartItemInput } from "@/lib/types/cart";
+import { MAX_QUANTITY_PER_ITEM, type CartItem } from "@/lib/types/cart";
 
 // ─── DB-backed Rate Limiting ─────────────────────────────────────────────────
 
