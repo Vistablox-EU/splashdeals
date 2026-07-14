@@ -98,7 +98,7 @@ interface ShowcaseTicketGroupsProps {
   facilitySlug: string;
   facilityName: string;
   category: string;
-   
+
   dict: Record<string, any>;
   facility?: {
     id: string;

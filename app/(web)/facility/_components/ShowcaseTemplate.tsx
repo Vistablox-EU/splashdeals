@@ -244,7 +244,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         </div>
       </section>
 
-      <main className="relative z-20 mx-auto -mt-16 max-w-7xl space-y-12 px-6 pb-24 sm:space-y-32 sm:pb-48 md:-mt-24 md:px-12 [scroll-padding-top:8rem]">
+      <main className="relative z-20 mx-auto -mt-16 max-w-7xl [scroll-padding-top:8rem] space-y-12 px-6 pb-24 sm:space-y-32 sm:pb-48 md:-mt-24 md:px-12">
         <div id="deals" className="scroll-mt-32 space-y-8 sm:space-y-12 md:pt-12">
           <div className="mb-8 flex flex-col items-center space-y-4 text-center sm:mb-16">
             <div className="brand-divider mb-2 w-16" />

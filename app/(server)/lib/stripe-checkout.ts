@@ -66,7 +66,15 @@ export async function createCheckoutSession(params: {
   promoCode?: string | null;
   campaignId?: string | null;
 }): Promise<CreateCheckoutSessionResult> {
-  const { items, userId, email, holderName, holderPhotoUrl, promoCode, campaignId: _campaignId } = params;
+  const {
+    items,
+    userId,
+    email,
+    holderName,
+    holderPhotoUrl,
+    promoCode,
+    campaignId: _campaignId,
+  } = params;
 
   // 1. Validate input at runtime (defence-in-depth beyond TypeScript)
   checkoutSchema.parse(params);

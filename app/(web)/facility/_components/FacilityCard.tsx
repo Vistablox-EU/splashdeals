@@ -19,7 +19,7 @@ interface Facility {
 }
 interface FacilityCardProps {
   facility: Facility;
-   
+
   dict: Record<string, any>;
   fromLabel: string;
   isPriority?: boolean;

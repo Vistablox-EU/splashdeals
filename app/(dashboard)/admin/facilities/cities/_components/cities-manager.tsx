@@ -53,9 +53,7 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
   const handleCreate = useCallback(() => {
     if (!newName.trim() || !newSlug.trim()) return;
     startTransition(async () => {
-      const result = await manageCitiesAction([
-        { name: newName.trim(), slug: newSlug.trim() },
-      ]);
+      const result = await manageCitiesAction([{ name: newName.trim(), slug: newSlug.trim() }]);
       if (result.success) {
         toast.success("Grad kreiran");
         setNewName("");
@@ -260,8 +258,8 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Obriši grad</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Da li ste sigurni da želite da obrišete grad &quot;{city.name}&quot;?
-                                  Ova radnja je nepovratna.
+                                  Da li ste sigurni da želite da obrišete grad &quot;{city.name}
+                                  &quot;? Ova radnja je nepovratna.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>

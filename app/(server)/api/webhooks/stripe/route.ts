@@ -239,7 +239,6 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
           // CartSession may not exist; that's fine
         });
 
-       
       await sendTicketConfirmationEmail(targetEmail, transaction as any, session.id).catch(
         (err) => {
           console.error(

@@ -66,7 +66,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           <button
             key={m.id}
             onClick={() => setSelectedIdx(i)}
-            className="group border-border animate-fade-in-up bg-muted/5 relative overflow-hidden rounded-2xl md:rounded-[2.5rem] border"
+            className="group border-border animate-fade-in-up bg-muted/5 relative overflow-hidden rounded-2xl border md:rounded-[2.5rem]"
             style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
             aria-label={`${dict?.media_gallery?.expand_view || "Open image"} ${i + 1}`}
           >

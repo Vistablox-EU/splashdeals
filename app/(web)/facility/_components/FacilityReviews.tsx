@@ -74,18 +74,14 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
   }
 
   const avgRating =
-    reviews.length > 0
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-      : 0;
+    reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
 
-  const ratingCounts = STARS.map(
-    (star) => reviews.filter((r) => r.rating === star).length,
-  );
+  const ratingCounts = STARS.map((star) => reviews.filter((r) => r.rating === star).length);
 
   return (
     <section className="space-y-6">
       <div className="flex items-center gap-3">
-        <Icon name="star" className="text-yellow-500 size-5" />
+        <Icon name="star" className="size-5 text-yellow-500" />
         <h2 className="text-foreground text-xl font-black tracking-tight uppercase italic">
           {t.title || "Recenzije"}
         </h2>
@@ -106,7 +102,11 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                 <Icon
                   key={star}
                   name="star"
-                  className={star <= Math.round(avgRating) ? "text-yellow-500 size-3.5" : "text-muted-foreground/20 size-3.5"}
+                  className={
+                    star <= Math.round(avgRating)
+                      ? "size-3.5 text-yellow-500"
+                      : "text-muted-foreground/20 size-3.5"
+                  }
                 />
               ))}
             </div>
@@ -123,10 +123,10 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                   <span className="text-muted-foreground w-4 text-right text-[10px] font-bold">
                     {star}
                   </span>
-                  <Icon name="star" className="text-yellow-500 size-2.5" />
+                  <Icon name="star" className="size-2.5 text-yellow-500" />
                   <div className="bg-muted-foreground/10 h-1.5 flex-1 overflow-hidden rounded-full">
                     <div
-                      className="bg-yellow-500 h-full rounded-full transition-all"
+                      className="h-full rounded-full bg-yellow-500 transition-all"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -161,7 +161,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                     name="star"
                     className={
                       star <= (hoverRating || rating)
-                        ? "text-yellow-500 size-9 md:size-6"
+                        ? "size-9 text-yellow-500 md:size-6"
                         : "text-muted-foreground/20 size-9 md:size-6"
                     }
                   />
@@ -197,7 +197,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
             disabled={isSubmitting || rating === 0}
           >
             {isSubmitting ? (
-              <Icon name="progress_activity" className="animate-spin size-3.5" />
+              <Icon name="progress_activity" className="size-3.5 animate-spin" />
             ) : (
               <Icon name="send" className="size-3.5" />
             )}
@@ -210,9 +210,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
             {t.login_prompt || "Prijavite se da biste ostavili recenziju."}
           </p>
           <Button asChild variant="link" size="sm" className="mt-1 h-auto text-xs font-bold">
-            <Link href="/prijava">
-              {t.login_link || "Prijavi se"}
-            </Link>
+            <Link href="/prijava">{t.login_link || "Prijavi se"}</Link>
           </Button>
         </Card>
       )}
@@ -238,7 +236,11 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                     <Icon
                       key={star}
                       name="star"
-                      className={star <= review.rating ? "text-yellow-500 size-3" : "text-muted-foreground/20 size-3"}
+                      className={
+                        star <= review.rating
+                          ? "size-3 text-yellow-500"
+                          : "text-muted-foreground/20 size-3"
+                      }
                     />
                   ))}
                 </div>

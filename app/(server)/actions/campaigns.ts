@@ -34,7 +34,6 @@ export interface CampaignFormData {
   facilityIds?: string[];
 }
 
- 
 function serializeCampaign(c: any): CampaignData {
   return {
     id: c.id,

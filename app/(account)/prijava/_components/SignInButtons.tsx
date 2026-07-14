@@ -4,7 +4,6 @@ import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 
 interface SignInButtonsProps {
-   
   dict: Record<string, any>;
 }
 

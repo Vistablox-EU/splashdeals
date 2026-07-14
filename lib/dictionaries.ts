@@ -58,7 +58,6 @@ function deepMerge(
  */
 export const getDictionary = async <L extends Locale = "rs">(
   locale: L = "rs" as L,
-   
 ): Promise<any> => {
   const loader = loaders[locale];
 

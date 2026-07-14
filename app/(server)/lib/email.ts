@@ -18,7 +18,6 @@ const sesClient = new SESClient({
 const FROM = process.env.SMTP_FROM || "Splashdeals <noreply@splashdeals.rs>";
 
 export async function sendEmail(to: string, subject: string, html: string): Promise<void> {
-   
   await sesClient.send(
     new SendEmailCommand({
       Source: FROM,
@@ -32,7 +31,6 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
 }
 
 export async function sendOrderConfirmation(transactionId: string): Promise<void> {
-   
   const dict = await getDictionary();
   const e = dict.email;
 

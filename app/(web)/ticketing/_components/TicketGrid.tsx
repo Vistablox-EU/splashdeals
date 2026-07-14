@@ -124,7 +124,6 @@ async function getTickets() {
     .filter((t): t is NonNullable<typeof t> => t !== null);
 }
 
- 
 export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
   const allTickets = await getTickets();
   const tickets = allTickets.slice(0, 6);

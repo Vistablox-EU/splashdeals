@@ -122,7 +122,10 @@ export function FacilityClosuresSection({
         <div className="border-border/50 bg-muted/20 space-y-4 rounded-lg border p-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="closure-start" className="text-[10px] font-bold uppercase tracking-wider">
+              <Label
+                htmlFor="closure-start"
+                className="text-[10px] font-bold tracking-wider uppercase"
+              >
                 Start Date
               </Label>
               <Input
@@ -134,7 +137,10 @@ export function FacilityClosuresSection({
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="closure-end" className="text-[10px] font-bold uppercase tracking-wider">
+              <Label
+                htmlFor="closure-end"
+                className="text-[10px] font-bold tracking-wider uppercase"
+              >
                 End Date
               </Label>
               <Input
@@ -147,7 +153,10 @@ export function FacilityClosuresSection({
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="closure-reason" className="text-[10px] font-bold uppercase tracking-wider">
+            <Label
+              htmlFor="closure-reason"
+              className="text-[10px] font-bold tracking-wider uppercase"
+            >
               Reason (optional)
             </Label>
             <Textarea
@@ -167,7 +176,7 @@ export function FacilityClosuresSection({
             onClick={handleAdd}
           >
             {isSubmitting ? (
-              <Icon name="progress_activity" className="animate-spin size-3.5" />
+              <Icon name="progress_activity" className="size-3.5 animate-spin" />
             ) : (
               <Icon name="check" className="size-3.5" />
             )}

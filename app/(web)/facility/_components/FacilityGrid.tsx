@@ -2,7 +2,6 @@ import { prisma } from "@/app/(server)/lib/prisma";
 import { FacilityCard } from "./FacilityCard";
 
 interface FacilityGridProps {
-   
   dict: Record<string, any>;
   fromLabel: string;
   category?: string;

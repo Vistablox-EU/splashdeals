@@ -100,7 +100,6 @@ async function getTickets() {
     .filter((t): t is NonNullable<typeof t> => t !== null);
 }
 
- 
 export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
   const allTickets = await getTickets();
   // Limit to max 4 cards as per user request for a single compact row

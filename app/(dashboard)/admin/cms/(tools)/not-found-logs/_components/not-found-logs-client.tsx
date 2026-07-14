@@ -39,9 +39,7 @@ export function NotFoundLogsClient({ logs }: { logs: NotFoundLog[] }) {
       setClearingId(id);
       startTransition(async () => {
         try {
-          const { clearNotFoundLogAction } = await import(
-            "@/app/(server)/actions/cms/tools"
-          );
+          const { clearNotFoundLogAction } = await import("@/app/(server)/actions/cms/tools");
           const result = await clearNotFoundLogAction(id);
           if (result.success) {
             toast.success("Zapis obrisan.");
@@ -65,20 +63,20 @@ export function NotFoundLogsClient({ logs }: { logs: NotFoundLog[] }) {
     setError(null);
     startTransition(async () => {
       try {
-        const { getNotFoundLogsAction } = await import(
-          "@/app/(server)/actions/cms/tools"
-        );
+        const { getNotFoundLogsAction } = await import("@/app/(server)/actions/cms/tools");
         const result = await getNotFoundLogsAction();
         if (result.success && result.data) {
           setItems(
-            (result.data as Array<{
-              id: string;
-              path: string;
-              referrer: string | null;
-              count: number;
-              firstSeen: Date;
-              lastSeen: Date;
-            }>).map((log) => ({
+            (
+              result.data as Array<{
+                id: string;
+                path: string;
+                referrer: string | null;
+                count: number;
+                firstSeen: Date;
+                lastSeen: Date;
+              }>
+            ).map((log) => ({
               id: log.id,
               path: log.path,
               referrer: log.referrer,
@@ -135,9 +133,7 @@ export function NotFoundLogsClient({ logs }: { logs: NotFoundLog[] }) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
         <Icon name="check_circle" className="size-12 text-green-500" />
-        <p className="text-muted-foreground text-sm">
-          Nema evidentiranih 404 grešaka.
-        </p>
+        <p className="text-muted-foreground text-sm">Nema evidentiranih 404 grešaka.</p>
       </div>
     );
   }
@@ -158,35 +154,25 @@ export function NotFoundLogsClient({ logs }: { logs: NotFoundLog[] }) {
         <TableBody>
           {items.map((log) => (
             <TableRow key={log.id}>
-              <TableCell className="font-mono max-w-[300px] truncate text-sm">
-                {log.path}
-              </TableCell>
-              <TableCell className="max-w-[200px] truncate text-sm text-muted-foreground">
+              <TableCell className="max-w-[300px] truncate font-mono text-sm">{log.path}</TableCell>
+              <TableCell className="text-muted-foreground max-w-[200px] truncate text-sm">
                 {log.referrer ? (
-                  <span
-                    className="cursor-pointer underline decoration-dotted"
-                    title={log.referrer}
-                  >
-                    {log.referrer.length > 40
-                      ? `${log.referrer.slice(0, 40)}...`
-                      : log.referrer}
+                  <span className="cursor-pointer underline decoration-dotted" title={log.referrer}>
+                    {log.referrer.length > 40 ? `${log.referrer.slice(0, 40)}...` : log.referrer}
                   </span>
                 ) : (
                   <span className="text-xs italic opacity-60">nema</span>
                 )}
               </TableCell>
               <TableCell className="text-center">
-                <Badge
-                  variant={log.count > 10 ? "destructive" : "secondary"}
-                  className="text-xs"
-                >
+                <Badge variant={log.count > 10 ? "destructive" : "secondary"} className="text-xs">
                   {log.count}
                 </Badge>
               </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
+              <TableCell className="text-muted-foreground text-sm">
                 {formatDate(log.firstSeen)}
               </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
+              <TableCell className="text-muted-foreground text-sm">
                 {formatDate(log.lastSeen)}
               </TableCell>
               <TableCell>

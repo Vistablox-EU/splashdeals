@@ -28,7 +28,6 @@ export interface NavItemData {
 }
 
 export async function getNavigationMenus(): Promise<NavMenuData[]> {
-   
   const menus = await (prisma as any).navigationMenu.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },

@@ -30,9 +30,7 @@ export function BackToTop() {
       aria-label="Nazad na vrh"
       className={cn(
         "bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/30 fixed right-5 bottom-24 z-50 flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition-all duration-300 active:scale-90 md:bottom-8",
-        visible
-          ? "translate-y-0 opacity-100"
-          : "pointer-events-none translate-y-4 opacity-0",
+        visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
       )}
     >
       <Icon name="arrow_upward" className="text-[20px]" />

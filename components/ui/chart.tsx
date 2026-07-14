@@ -118,7 +118,7 @@ function ChartTooltipContent({
     labelKey?: string;
   }) {
   const { config } = useChart();
-   
+
   const { payload, label } = props as any;
 
   const tooltipLabel = React.useMemo(() => {
@@ -163,9 +163,9 @@ function ChartTooltipContent({
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
         {payload
-           
+
           .filter((item: any) => item.type !== "none")
-           
+
           .map((item: any, index: number) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`;
             const itemConfig = getPayloadConfigFromPayload(config, item, key);
@@ -245,7 +245,7 @@ function ChartLegendContent({
   nameKey,
 }: React.ComponentProps<"div"> & {
   hideIcon?: boolean;
-   
+
   payload?: any[];
   nameKey?: string;
   verticalAlign?: "bottom" | "top";
