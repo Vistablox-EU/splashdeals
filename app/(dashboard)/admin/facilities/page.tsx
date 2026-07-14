@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { TableSkeleton } from "@/app/(dashboard)/admin/_common/TableSkeleton";
 import { AdminPageShell } from "@/app/(dashboard)/admin/_common/AdminPageShell";
 import { FacilitiesList } from "./_components/facilities-list";
-import { getFacilityCounts } from "@/lib/data/admin";
+import { getFacilityCounts } from "@/app/(server)/lib/data/admin";
 
 export const metadata: Metadata = {
   title: "Objekti | Splashdeals Admin",

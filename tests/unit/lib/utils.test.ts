@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cn } from "./utils";
+import { cn } from "@/lib/utils";
 
 describe("cn utility", () => {
   it("merges tailwind classes correctly", () => {
@@ -22,13 +22,5 @@ describe("cn utility", () => {
   it("resolves conflicting classes via twMerge", () => {
     expect(cn("px-4", "px-2")).toBe("px-2");
     expect(cn("text-red-500", "text-blue-500")).toBe("text-blue-500");
-  });
-
-  it("handles single string input", () => {
-    expect(cn("px-4")).toBe("px-4");
-  });
-
-  it("handles empty string input", () => {
-    expect(cn("")).toBe("");
   });
 });

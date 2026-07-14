@@ -1,7 +1,7 @@
 import { connection } from "next/server";
 import { DashboardClient } from "./_components/DashboardClient";
 import type { Metadata } from "next";
-import { getAdminDashboardStats, getRecentActivity } from "@/lib/data/admin";
+import { getAdminDashboardStats, getRecentActivity } from "@/app/(server)/lib/data/admin";
 
 export const metadata: Metadata = {
   title: "Command Center | Governance Hub",

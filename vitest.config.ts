@@ -7,7 +7,11 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   test: {
-    environment: "node",
-    include: ["lib/**/*.test.ts", "app/**/*.test.ts"],
+    include: ["tests/**/*.test.{ts,tsx}"],
+    coverage: {
+      reportsDirectory: "tests/reports/coverage",
+      provider: "v8",
+      include: ["lib/**", "app/**"],
+    },
   },
 });
