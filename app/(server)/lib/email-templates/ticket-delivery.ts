@@ -6,8 +6,8 @@ interface TicketDeliveryData {
   customerName: string;
   tickets: Array<{
     title: string;
-    qrDataUrl: string; // base64 PNG data URL OR CID reference (e.g. cid:ticket-qr-0)
-    qrHash?: string; // Optional raw QR hash for plain text fallback
+    qrDataUrl: string;
+    qrHash?: string;
     expiryDate: Date;
     usageLimit: number;
   }>;
@@ -16,7 +16,12 @@ interface TicketDeliveryData {
   successPageUrl: string;
 }
 
-export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
+export function buildTicketDeliveryHtml(
+  data: TicketDeliveryData,
+  dict: Record<string, any>,
+): string {
+  const e = dict.email;
+
   const formattedAmount = new Intl.NumberFormat("sr-RS", {
     style: "currency",
     currency: "RSD",
@@ -33,8 +38,8 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
 
       const usageText =
         ticket.usageLimit > 10
-          ? "Season pass (Unlimited)"
-          : `Maximum entries: ${ticket.usageLimit}`;
+          ? e.ticket_delivery_season_pass
+          : e.ticket_delivery_max_entries.replace("{count}", String(ticket.usageLimit));
 
       return `
       <!-- Ticket Card -->
@@ -45,7 +50,7 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
               <tr>
                 <td align="center" style="padding-bottom: 16px;">
                   <span style="display: inline-block; padding: 4px 12px; background-color: #0e7490; color: #38bdf8; font-size: 11px; font-weight: bold; text-transform: uppercase; border-radius: 9999px; letter-spacing: 0.05em; font-family: sans-serif;">
-                    Ticket #${index + 1}
+                    ${e.ticket_delivery_ticket_label.replace("{number}", String(index + 1))}
                   </span>
                   <h3 style="margin: 8px 0 0 0; color: #f8fafc; font-size: 20px; font-weight: bold; letter-spacing: -0.025em; font-family: sans-serif;">
                     ${ticket.title}
@@ -54,16 +59,15 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
               </tr>
               <tr>
                 <td align="center" style="padding: 8px 0;">
-                  <!-- QR Code Container -->
                   <div style="display: inline-block; padding: 12px; background-color: #ffffff; border-radius: 8px;">
-                    <img src="${ticket.qrDataUrl}" alt="QR Code for ${ticket.title}" width="180" height="180" style="display: block; border: 0;" />
+                    <img src="${ticket.qrDataUrl}" alt="${e.ticket_delivery_qr_alt.replace("{title}", ticket.title)}" width="180" height="180" style="display: block; border: 0;" />
                   </div>
                 </td>
               </tr>
               <tr>
                 <td style="padding-top: 16px; font-family: sans-serif; font-size: 14px; line-height: 20px; color: #94a3b8; text-align: center;">
                   <p style="margin: 0 0 4px 0; font-weight: 600; color: #38bdf8; font-family: sans-serif;">${usageText}</p>
-                  <p style="margin: 0; font-size: 12px; color: #64748b; font-family: sans-serif;">Valid until: <strong style="color: #cbd5e1;">${formattedDate}</strong></p>
+                  <p style="margin: 0; font-size: 12px; color: #64748b; font-family: sans-serif;">${e.ticket_delivery_valid_until.replace("{date}", formattedDate)}</p>
                 </td>
               </tr>
             </table>
@@ -79,16 +83,15 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Splashdeals Tickets Are Ready!</title>
+  <title>${e.ticket_delivery_subject.replace("{facility}", data.facilityName)}</title>
   <style type="text/css">${EMAIL_COMMON_STYLES}</style>
 </head>
 <body style="margin: 0; padding: 0; background-color: ${EMAIL_THEME.bgBody};">
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #020617; min-height: 100vh; padding: 24px 0;">
     <tr>
       <td align="center" valign="top">
-        <!-- Main Email Container -->
         <table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width: 600px; background-color: #020617; border-collapse: separate;">
-          
+
           <!-- Header (Logo) -->
           <tr>
             <td align="center" style="padding: 24px 0 32px 0;">
@@ -109,58 +112,56 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
             <td style="padding: 32px; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 16px; margin-bottom: 24px; text-align: center; font-family: sans-serif;">
               <span style="font-size: 40px; display: inline-block; margin-bottom: 16px;">🎫</span>
               <h1 style="margin: 0 0 12px 0; color: #f8fafc; font-size: 26px; font-weight: 800; line-height: 32px; letter-spacing: -0.025em; font-family: sans-serif;">
-                Your Tickets Are Ready!
+                ${e.ticket_delivery_title}
               </h1>
               <p style="margin: 0; color: #94a3b8; font-size: 16px; line-height: 24px; font-family: sans-serif;">
-                Thank you for your purchase through <strong>Splashdeals</strong>. Your tickets with QR codes have been created and are ready for use.
+                ${e.ticket_delivery_intro}
               </p>
             </td>
           </tr>
 
-          <!-- Spacing -->
           <tr><td style="height: 24px; font-size: 0; line-height: 0;">&nbsp;</td></tr>
 
           <!-- Transaction Info Box -->
           <tr>
             <td style="padding: 24px; background-color: #020617; border: 1px solid #1e293b; border-radius: 12px; margin-bottom: 24px; font-family: sans-serif;">
               <h4 style="margin: 0 0 16px 0; color: #38bdf8; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; font-family: sans-serif;">
-                Order Details
+                ${e.ticket_delivery_order_details}
               </h4>
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-size: 14px; line-height: 22px; color: #94a3b8; font-family: sans-serif;">
                 <tr>
-                  <td style="padding: 6px 0; color: #64748b; font-weight: 500; font-family: sans-serif;">Facility:</td>
+                  <td style="padding: 6px 0; color: #64748b; font-weight: 500; font-family: sans-serif;">${e.ticket_delivery_facility}</td>
                   <td style="padding: 6px 0; text-align: right; color: #f8fafc; font-weight: 600; font-family: sans-serif;">${data.facilityName}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; color: #64748b; font-weight: 500; font-family: sans-serif;">Address:</td>
+                  <td style="padding: 6px 0; color: #64748b; font-weight: 500; font-family: sans-serif;">${e.ticket_delivery_address}</td>
                   <td style="padding: 6px 0; text-align: right; color: #cbd5e1; font-family: sans-serif;">${data.facilityAddress}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; color: #64748b; font-weight: 500; font-family: sans-serif;">Reference:</td>
+                  <td style="padding: 6px 0; color: #64748b; font-weight: 500; font-family: sans-serif;">${e.ticket_delivery_reference}</td>
                   <td style="padding: 6px 0; text-align: right; font-family: monospace; color: #cbd5e1;">#${data.orderRef}</td>
                 </tr>
                 <tr>
                   <td colspan="2" style="padding-top: 12px; border-bottom: 1px solid #1e293b; font-size: 0; line-height: 0;">&nbsp;</td>
                 </tr>
                 <tr>
-                  <td style="padding: 12px 0 0 0; color: #64748b; font-weight: bold; font-size: 15px; font-family: sans-serif;">Total paid:</td>
+                  <td style="padding: 12px 0 0 0; color: #64748b; font-weight: bold; font-size: 15px; font-family: sans-serif;">${e.ticket_delivery_total}</td>
                   <td style="padding: 12px 0 0 0; text-align: right; color: #06b6d4; font-weight: 800; font-size: 18px; font-family: sans-serif;">${formattedAmount}</td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Spacing -->
           <tr><td style="height: 24px; font-size: 0; line-height: 0;">&nbsp;</td></tr>
 
           <!-- Header for Tickets -->
           <tr>
             <td style="padding: 0 0 12px 0; font-family: sans-serif;">
               <h2 style="margin: 0; color: #f8fafc; font-size: 18px; font-weight: bold; letter-spacing: -0.02em; font-family: sans-serif;">
-                Your Tickets
+                ${e.ticket_delivery_your_tickets}
               </h2>
               <p style="margin: 4px 0 0 0; color: #64748b; font-size: 13px; font-family: sans-serif;">
-                Present the QR code below at the venue entrance for scanning.
+                ${e.ticket_delivery_scan_instructions}
               </p>
             </td>
           </tr>
@@ -182,7 +183,7 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
                 <tr>
                   <td align="center" style="background-color: #06b6d4; border-radius: 8px;">
                     <a href="${data.successPageUrl}" target="_blank" style="display: inline-block; padding: 14px 28px; font-family: sans-serif; font-size: 15px; font-weight: bold; color: #020617; text-decoration: none; border-radius: 8px;">
-                      View Tickets on Site
+                      ${e.ticket_delivery_view_online}
                     </a>
                   </td>
                 </tr>
@@ -197,13 +198,13 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
           <tr>
             <td style="padding: 32px 0 16px 0; border-top: 1px solid #1e293b; text-align: center; font-size: 12px; line-height: 18px; color: #64748b; font-family: sans-serif;">
               <p style="margin: 0 0 8px 0; font-family: sans-serif;">
-                This email was automatically sent after your purchase on the Splashdeals platform.
+                ${e.ticket_delivery_footer_auto}
               </p>
               <p style="margin: 0 0 12px 0; font-family: sans-serif;">
-                For support and questions, feel free to contact us at <a href="mailto:support@splashdeals.rs" style="color: #38bdf8; text-decoration: none;">support@splashdeals.rs</a>.
+                ${e.ticket_delivery_footer_support.replace("{email}", '<a href="mailto:support@splashdeals.rs" style="color: #38bdf8; text-decoration: none;">support@splashdeals.rs</a>')}
               </p>
               <p style="margin: 0; font-weight: bold; color: #475569; font-family: sans-serif;">
-                &copy; ${new Date().getFullYear()} Splashdeals. All rights reserved.
+                ${e.ticket_delivery_footer_copyright.replace("{year}", String(new Date().getFullYear()))}
               </p>
             </td>
           </tr>
@@ -216,39 +217,48 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
 </html>`;
 }
 
-export function buildTicketDeliveryText(data: TicketDeliveryData): string {
+export function buildTicketDeliveryText(
+  data: TicketDeliveryData,
+  dict: Record<string, any>,
+): string {
+  const e = dict.email;
+
   const ticketsList = data.tickets
     .map((t, i) => {
       const usageText =
-        t.usageLimit > 10 ? "Season pass (Unlimited)" : `Maximum entries: ${t.usageLimit}`;
+        t.usageLimit > 10
+          ? e.ticket_delivery_season_pass
+          : e.ticket_delivery_max_entries.replace("{count}", String(t.usageLimit));
       const formattedDate = new Date(t.expiryDate).toLocaleDateString("sr-RS");
-      const hashText = t.qrHash ? `\n   - Code: ${t.qrHash}` : "";
-      return `${i + 1}. ${t.title}${hashText}\n   - ${usageText}\n   - Valid until: ${formattedDate}`;
+      const hashText = t.qrHash
+        ? `\n   - ${e.ticket_delivery_code_label.replace("{hash}", t.qrHash)}`
+        : "";
+      return `${i + 1}. ${t.title}${hashText}\n   - ${usageText}\n   - ${e.ticket_delivery_valid_until.replace("{date}", formattedDate)}`;
     })
     .join("\n\n");
 
   return `
-Your Splashdeals tickets are ready! 🎫
-=========================================
+${e.ticket_delivery_text_intro}
+${"=".repeat(41)}
 
-Thank you for your purchase through Splashdeals. Your tickets with QR codes have been created and are ready for use.
+${e.ticket_delivery_text_thanks}
 
-ORDER DETAILS
-------------------
-Facility: ${data.facilityName}
-Address: ${data.facilityAddress}
-Reference: #${data.orderRef}
-Total paid: ${data.totalAmount.toFixed(2)} RSD
+${e.ticket_delivery_text_order}
+${"-".repeat(18)}
+${e.ticket_delivery_text_facility.replace("{name}", data.facilityName)}
+${e.ticket_delivery_text_address.replace("{address}", data.facilityAddress)}
+${e.ticket_delivery_text_reference.replace("{ref}", data.orderRef)}
+${e.ticket_delivery_text_total.replace("{amount}", data.totalAmount.toFixed(2))}
 
-YOUR TICKETS
--------------
+${e.ticket_delivery_text_tickets}
+${"-".repeat(13)}
 ${ticketsList}
 
-To view your QR codes and ticket details on our website, visit the following link:
-${data.successPageUrl || "Splashdeals website"}
+${e.ticket_delivery_text_view_link}
+${data.successPageUrl || "Splashdeals sajt"}
 
------------------------------------------
-Support: support@splashdeals.rs
-(c) ${new Date().getFullYear()} Splashdeals. All rights reserved.
+${"-".repeat(42)}
+${e.ticket_delivery_text_support}
+${e.ticket_delivery_text_copyright.replace("{year}", String(new Date().getFullYear()))}
   `;
 }

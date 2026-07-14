@@ -12,15 +12,17 @@ export interface ActionResult<T = void> {
 }
 
 /**
- * 🌊 Standardized Server Action Error Handler
- * Maps low-level exceptions to user-friendly Serbian messages and field-level feedback.
- * @param context Optional action name for logging (e.g., "createFacility").
+ * Standardized Server Action Error Handler
+ * Maps low-level exceptions to user-friendly messages.
+ * When `dict` is provided, uses dictionary keys for localized error messages.
  */
 export function handleServerActionError<T = void>(
   error: unknown,
   context?: string,
+  dict?: Record<string, any>,
 ): ActionResult<T> {
   const tag = context ? `[ServerAction:${context}]` : "[ServerAction]";
+  const msg = dict?.errors;
 
   if (error instanceof ZodError) {
     const fieldErrors: Record<string, string[]> = {};
@@ -33,7 +35,7 @@ export function handleServerActionError<T = void>(
     return {
       success: false,
       fieldErrors,
-      error: "Please check your input.",
+      error: msg?.validation || "Please check your input.",
     };
   }
 
@@ -43,35 +45,42 @@ export function handleServerActionError<T = void>(
       const target = (error.meta?.target as string[])?.join(", ");
       return {
         success: false,
-        error: `An entry with the same value already exists (${target || "unique key"}).`,
+        error: msg?.unique_violation
+          ? msg.unique_violation.replace("{key}", target || "unique key")
+          : `An entry with the same value already exists (${target || "unique key"}).`,
       };
     }
     if (error.code === "P2025") {
       return {
         success: false,
-        error: "Record not found.",
+        error: msg?.not_found || "Record not found.",
       };
     }
     if (error.code === "P2003") {
       return {
         success: false,
-        error: "Referenced record does not exist (invalid city ID or relation).",
+        error:
+          msg?.reference_invalid ||
+          "Referenced record does not exist (invalid city ID or relation).",
       };
     }
     return {
       success: false,
-      error: "A database error occurred.",
+      error: msg?.database || "A database error occurred.",
     };
   }
 
   if (error instanceof Error) {
     if (error.message === AUTH_ERROR.REQUIRED) {
       console.warn(`${tag} Auth required`);
-      return { success: false, error: "You are not logged in." };
+      return { success: false, error: msg?.auth_required || "You are not logged in." };
     }
     if (error.message?.startsWith("Unauthorized")) {
       console.warn(`${tag} Unauthorized: ${error.message}`);
-      return { success: false, error: "You do not have permission for this action." };
+      return {
+        success: false,
+        error: msg?.forbidden || "You do not have permission for this action.",
+      };
     }
 
     console.warn(`${tag} ${error.message}`);
@@ -79,5 +88,5 @@ export function handleServerActionError<T = void>(
   }
 
   console.error(`${tag} Unhandled error:`, error);
-  return { success: false, error: "An unexpected error occurred." };
+  return { success: false, error: msg?.unexpected || "An unexpected error occurred." };
 }
