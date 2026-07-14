@@ -1,0 +1,12 @@
+{
+  "common": {
+    "welcome": "Welcome to Splashdeals",
+    "search": "Search..."
+  },
+  "home": {
+    "title_splash": "Unlocked.",
+    "subtitle": "Skip the lines, jump into the fun. Get your tickets in seconds and head straight to the pool with your Apple or Google Wallet.",
+    "facilities_btn": "Get Tickets",
+    "how_it_works": "How it works?"
+  }
+}

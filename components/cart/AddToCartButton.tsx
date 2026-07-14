@@ -2,10 +2,12 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useUIState } from "@/hooks/use-ui-state";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { trackAddToCart } from "@/lib/analytics/events";
 import { addToCartAction } from "@/app/(server)/actions/cart";
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import type { Dict } from "@/lib/types";
 
 interface AddToCartButtonProps {
   ticket: {
@@ -31,6 +33,11 @@ interface AddToCartButtonProps {
 export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
   const openCart = useUIState((state) => state.openCart);
   const [added, setAdded] = useState(false);
+  const [dict, setDict] = useState<Dict | null>(null);
+
+  useEffect(() => {
+    getClientDictionary().then(setDict);
+  }, []);
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -92,8 +99,19 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
           : "hover:bg-primary bg-white/5 text-slate-100 hover:scale-110 hover:text-slate-950",
         className,
       )}
-      title={added ? "Dodato" : "Dodaj u korpu"}
-      aria-label={added ? `Usponešno dodato: ${ticket.title}` : `Dodaj ${ticket.title} u korpu`}
+      title={
+        added
+          ? dict?.product?.added_to_cart || "Dodato"
+          : dict?.product?.add_to_cart || "Dodaj u korpu"
+      }
+      aria-label={
+        added
+          ? (dict?.product?.added_aria || "Uspešno dodato: {title}").replace(
+              "{title}",
+              ticket.title,
+            )
+          : (dict?.product?.add_aria || "Dodaj {title} u korpu").replace("{title}", ticket.title)
+      }
       aria-live="polite"
     >
       {added ? (

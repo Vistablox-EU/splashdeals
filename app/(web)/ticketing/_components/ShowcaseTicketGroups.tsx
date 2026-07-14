@@ -98,6 +98,8 @@ interface ShowcaseTicketGroupsProps {
   facilitySlug: string;
   facilityName: string;
   category: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dict: Record<string, any>;
   facility?: {
     id: string;
     name: string;
@@ -126,6 +128,7 @@ export function ShowcaseTicketGroups({
   facilitySlug,
   facilityName,
   category,
+  dict,
   facility,
   ticketProductMap,
 }: ShowcaseTicketGroupsProps) {
@@ -147,7 +150,9 @@ export function ShowcaseTicketGroups({
     return (
       <div className="w-full space-y-4 py-24 text-center">
         <Icon name="shopping_bag" className="text-foreground mx-auto text-[48px]" />
-        <p className="text-muted-foreground italic">Trenutno nema dostupnih ponuda.</p>
+        <p className="text-muted-foreground italic">
+          {dict?.ticketing?.no_offers || "Trenutno nema dostupnih ponuda."}
+        </p>
       </div>
     );
   }
@@ -265,11 +270,14 @@ export function ShowcaseTicketGroups({
           <div className="mobile-glass flex items-center justify-between gap-4 rounded-3xl p-4 shadow-[0_0_25px_hsl(var(--primary)/0.1)]">
             <div className="space-y-0.5">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-                Korpa
+                {dict?.ticketing?.cart_label || "Korpa"}
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-foreground text-sm font-black">
-                  {totalItems} {totalItems === 1 ? "ulaznica" : "ulaznice"}
+                  {totalItems}{" "}
+                  {totalItems === 1
+                    ? dict?.ticketing?.ticket_singular || "ulaznica"
+                    : dict?.ticketing?.ticket_plural || "ulaznice"}
                 </span>
                 <span className="text-primary text-xs font-bold">
                   {totalPrice.toLocaleString("sr-Latn")} RSD
@@ -280,7 +288,7 @@ export function ShowcaseTicketGroups({
               onClick={() => (window.location.href = "/cart")}
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
             >
-              <span>Kupi</span>
+              <span>{dict?.ticketing?.buy || "Kupi"}</span>
               <Icon name="arrow_forward" className="text-[16px]" />
             </Button>
           </div>
@@ -293,10 +301,13 @@ export function ShowcaseTicketGroups({
           <div className="bg-background/80 border-border mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-x px-8 py-4 shadow-[0_-4px_30px_hsl(var(--primary)/0.08)] backdrop-blur-xl">
             <div className="flex items-baseline gap-3">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-                U korpi
+                {dict?.ticketing?.in_cart || "U korpi"}
               </span>
               <span className="text-foreground text-sm font-black">
-                {totalItems} {totalItems === 1 ? "ulaznica" : "ulaznice"}
+                {totalItems}{" "}
+                {totalItems === 1
+                  ? dict?.ticketing?.ticket_singular || "ulaznica"
+                  : dict?.ticketing?.ticket_plural || "ulaznice"}
               </span>
               <span className="bg-border mx-2 h-4 w-px" />
               <span className="text-primary text-base font-bold">
@@ -307,7 +318,7 @@ export function ShowcaseTicketGroups({
               onClick={() => (window.location.href = "/cart")}
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-8 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
             >
-              <span>Kupi</span>
+              <span>{dict?.ticketing?.buy || "Kupi"}</span>
               <Icon name="arrow_forward" className="text-[16px]" />
             </Button>
           </div>
@@ -457,7 +468,7 @@ function MobileTicketAccordion({
               {discountPercent}
             </span>
           )}
-          {isHighlighted && <Badge variant="secondary">Najpopularnije</Badge>}
+          {isHighlighted && <Badge variant="secondary">{"Najpopularnije"}</Badge>}
           {cartCount > 0 && (
             <span className="bg-primary text-primary-foreground inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-black">
               {cartCount}
@@ -489,14 +500,14 @@ function MobileTicketAccordion({
             </div>
           ) : !activeProduct || activeProduct.prices.length === 0 ? (
             <p className="text-muted-foreground py-4 text-center text-xs italic">
-              Nema dostupnih varijanti.
+              {"Nema dostupnih varijanti."}
             </p>
           ) : (
             <div className="space-y-3">
               {/* Variation options */}
               <div className="divide-border/40 divide-y">
                 <span className="text-muted-foreground block pb-1.5 text-[8px] font-black tracking-widest uppercase">
-                  Izaberite varijantu
+                  {"Izaberite varijantu"}
                 </span>
                 {activeProduct.prices.map((p) => {
                   const isSel = selectedPrice === p.id;
@@ -533,9 +544,9 @@ function MobileTicketAccordion({
                           </span>
                           {hasDisc && (
                             <span className="text-muted-foreground flex items-center gap-1 text-[9px]">
-                              Ušteda {discPct}%
+                              {"Ušteda"} {discPct}%
                               {p.id === bestDealId && (
-                                <Badge variant="secondary">Najbolja ponuda</Badge>
+                                <Badge variant="secondary">{"Najbolja ponuda"}</Badge>
                               )}
                             </span>
                           )}
@@ -560,7 +571,7 @@ function MobileTicketAccordion({
               {/* Quantity + Total + CTA */}
               <div className="flex items-center justify-between pt-2">
                 <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-                  Količina
+                  {"Količina"}
                 </span>
                 <div className="bg-muted/60 border-border flex items-center rounded-2xl border p-1 shadow-inner">
                   <Button
@@ -569,7 +580,7 @@ function MobileTicketAccordion({
                     onClick={() => setQty(Math.max(activeProduct.minPeople || 1, qty - 1))}
                     disabled={isAdding || isAdded || qty <= (activeProduct.minPeople || 1)}
                     className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-11 w-11 rounded-xl active:scale-90"
-                    aria-label="Smanji količinu"
+                    aria-label={"Smanji količinu"}
                   >
                     <Icon name="remove" className="text-[12px]" />
                   </Button>
@@ -588,7 +599,7 @@ function MobileTicketAccordion({
                       qty >= (activeProduct.maxPeople ?? MAX_QUANTITY_PER_ITEM)
                     }
                     className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-11 w-11 rounded-xl active:scale-90"
-                    aria-label="Povećaj količinu"
+                    aria-label={"Povećaj količinu"}
                   >
                     <Icon name="add" className="text-[12px]" />
                   </Button>

@@ -8,13 +8,14 @@ interface DailyData {
 
 interface Props {
   data: DailyData[];
+  dict: Record<string, unknown>;
 }
 
-export function SalesChart({ data }: Props) {
+export function SalesChart({ data, dict }: Props) {
+  const t = dict.owner as Record<string, string>;
+
   if (data.length === 0) {
-    return (
-      <p className="text-muted-foreground py-8 text-center text-sm">Nema podataka za prikaz.</p>
-    );
+    return <p className="text-muted-foreground py-8 text-center text-sm">{t.no_chart_data}</p>;
   }
 
   const maxSales = Math.max(...data.map((d) => d.sales), 1);
@@ -27,9 +28,7 @@ export function SalesChart({ data }: Props) {
     <div className="space-y-6">
       {/* Sales bar chart */}
       <div>
-        <h3 className="text-muted-foreground mb-3 text-sm font-medium">
-          Prodaja po danu (30 dana)
-        </h3>
+        <h3 className="text-muted-foreground mb-3 text-sm font-medium">{t.sales_per_day}</h3>
         <div className="flex h-40 items-end gap-[2px]">
           {data.map((d) => {
             const heightPct = (d.sales / maxSales) * 100;
@@ -65,7 +64,7 @@ export function SalesChart({ data }: Props) {
 
       {/* Revenue bar chart */}
       <div>
-        <h3 className="text-muted-foreground mb-3 text-sm font-medium">Prihod po danu (30 dana)</h3>
+        <h3 className="text-muted-foreground mb-3 text-sm font-medium">{t.revenue_per_day}</h3>
         <div className="flex h-40 items-end gap-[2px]">
           {data.map((d) => {
             const heightPct = (d.revenue / maxRevenue) * 100;

@@ -50,7 +50,7 @@ export async function getDiscoveryMetadata(categorySlug: string): Promise<Metada
   const canonicalUrl = `https://www.splashdeals.rs/${categorySlug}`;
   return {
     title: `${catName} u Srbiji | ${dict.facilities.best_label} Splash Deals`,
-    description: `Istražite najbolju kolekciju ${catName} objekata širom Srbije. Brzo rezervišite digitalne ulaznice i uživajte bez čekanja u redu uz Splashdeals.`,
+    description: `Explore the best collection of ${catName} venues across Serbia. Book digital tickets instantly and skip the line with Splashdeals.`,
     robots: { index: true, follow: true },
     alternates: {
       canonical: canonicalUrl,
@@ -62,7 +62,7 @@ export async function getDiscoveryMetadata(categorySlug: string): Promise<Metada
     },
     openGraph: {
       title: `${catName} u Srbiji | Splashdeals`,
-      description: `Istražite najbolju kolekciju ${catName} objekata širom Srbije.`,
+      description: `Explore the best collection of ${catName} venues across Serbia.`,
       images: ["/og-image.png"],
       locale: "sr_RS",
       type: "website",
@@ -70,7 +70,7 @@ export async function getDiscoveryMetadata(categorySlug: string): Promise<Metada
     twitter: {
       card: "summary_large_image",
       title: `${catName} u Srbiji | Splashdeals`,
-      description: `Istražite najbolju kolekciju ${catName} objekata širom Srbije.`,
+      description: `Explore the best collection of ${catName} venues across Serbia.`,
       images: ["/og-image.png"],
     },
   };

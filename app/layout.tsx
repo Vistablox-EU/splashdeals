@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { alternates } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
     "Preskočite redove i uskočite u zabavu. Kupite digitalne karte za Petroland i druge najbolje akva parkove u Srbiji instant.",
   alternates: {
     canonical: "https://www.splashdeals.rs",
+    languages: alternates("/"),
   },
   openGraph: {
     images: ["/og-image.png"],

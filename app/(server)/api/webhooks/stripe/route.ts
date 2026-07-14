@@ -11,6 +11,7 @@ import {
   buildTicketDeliveryHtml,
   buildTicketDeliveryText,
 } from "@/app/(server)/lib/email-templates/ticket-delivery";
+import { getDictionary } from "@/lib/dictionaries";
 import QRCode from "qrcode";
 
 /**
@@ -271,6 +272,8 @@ async function sendTicketConfirmationEmail(
   transaction: { id: string; totalAmount: number },
   sessionId: string,
 ) {
+  const dict = await getDictionary();
+  const e = dict.email;
   // 1. Fetch all issued tickets with their ticketPrice + ticketType + facility data
   const issuedTickets = await prisma.issuedTicket.findMany({
     where: { transactionId: transaction.id },
@@ -341,26 +344,32 @@ async function sendTicketConfirmationEmail(
   const successPageUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://splashdeals.rs"}/success?session_id=${sessionId}`;
 
   // 5. Build HTML & Text content
-  const html = buildTicketDeliveryHtml({
-    facilityName,
-    facilityAddress,
-    customerName: "",
-    tickets: ticketData,
-    totalAmount: Number(transaction.totalAmount),
-    orderRef: transaction.id.slice(0, 8),
-    successPageUrl,
-  });
+  const html = buildTicketDeliveryHtml(
+    {
+      facilityName,
+      facilityAddress,
+      customerName: "",
+      tickets: ticketData,
+      totalAmount: Number(transaction.totalAmount),
+      orderRef: transaction.id.slice(0, 8),
+      successPageUrl,
+    },
+    dict,
+  );
 
-  const text = buildTicketDeliveryText({
-    facilityName,
-    facilityAddress,
-    customerName: "",
-    tickets: ticketData,
-    totalAmount: Number(transaction.totalAmount),
-    orderRef: transaction.id.slice(0, 8),
-    successPageUrl,
-  });
+  const text = buildTicketDeliveryText(
+    {
+      facilityName,
+      facilityAddress,
+      customerName: "",
+      tickets: ticketData,
+      totalAmount: Number(transaction.totalAmount),
+      orderRef: transaction.id.slice(0, 8),
+      successPageUrl,
+    },
+    dict,
+  );
 
   // 6. Send the email using lib/email.ts
-  await sendEmail(email, "Vaše Splashdeals karte su spremne! 🎫", html);
+  await sendEmail(email, e.ticket_delivery_subject.replace("{facility}", facilityName), html);
 }

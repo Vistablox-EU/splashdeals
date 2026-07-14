@@ -4,6 +4,8 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import type { Dict } from "@/lib/types";
 
 interface IdentityCollectorProps {
   requiresIdentity: boolean;
@@ -31,6 +33,11 @@ export function IdentityCollector({
   const [file, setFile] = React.useState<File | null>(null);
   const [preview, setPreview] = React.useState<string | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
+  const [dict, setDict] = React.useState<Dict | null>(null);
+
+  React.useEffect(() => {
+    getClientDictionary().then(setDict);
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -45,14 +52,14 @@ export function IdentityCollector({
   const handleNext = () => {
     if (step === "name") {
       if (!name.trim()) {
-        toast.error("Unesite ime i prezime.");
+        toast.error(dict?.identity?.name_required_error || "Unesite ime i prezime.");
         return;
       }
       if (requiresPhoto) setStep("photo");
       else setStep("review");
     } else if (step === "photo") {
       if (!file) {
-        toast.error("Dodajte fotografiju.");
+        toast.error(dict?.identity?.add_photo_error || "Dodajte fotografiju.");
         return;
       }
       setStep("review");
@@ -79,7 +86,7 @@ export function IdentityCollector({
         holderPhotoUrl: photoUrl || undefined,
       });
     } catch {
-      toast.error("Greška pri čuvanju. Pokušajte ponovo.");
+      toast.error(dict?.identity?.save_error || "Greška pri čuvanju. Pokušajte ponovo.");
     } finally {
       setIsUploading(false);
     }
@@ -90,11 +97,13 @@ export function IdentityCollector({
       {step === "name" && requiresIdentity && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-bold text-white">Ime i prezime</label>
+            <label className="text-sm font-bold text-white">
+              {dict?.identity?.name_label || "Ime i prezime"}
+            </label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Pera Perić"
+              placeholder={dict?.identity?.name_placeholder || "Pera Perić"}
               className="border-white/10 bg-white/5 text-white"
             />
           </div>
@@ -102,7 +111,7 @@ export function IdentityCollector({
             onClick={handleNext}
             className="h-14 w-full rounded-2xl bg-white font-bold text-black hover:bg-zinc-200"
           >
-            Dalje
+            {dict?.identity?.next || "Dalje"}
           </Button>
         </div>
       )}
@@ -110,7 +119,9 @@ export function IdentityCollector({
       {step === "photo" && requiresPhoto && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-bold text-white">Fotografija</label>
+            <label className="text-sm font-bold text-white">
+              {dict?.identity?.photo_label || "Fotografija"}
+            </label>
             {preview ? (
               <div className="relative h-40 w-full overflow-hidden rounded-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -133,7 +144,7 @@ export function IdentityCollector({
                   onChange={handleFileChange}
                   className="hidden"
                 />
-                Kliknite za dodavanje fotografije
+                {dict?.identity?.click_to_add_photo || "Kliknite za dodavanje fotografije"}
               </label>
             )}
           </div>
@@ -143,13 +154,13 @@ export function IdentityCollector({
               className="h-14 flex-1 rounded-2xl border-white/10 bg-transparent hover:bg-white/5"
               onClick={() => setStep(requiresIdentity ? ("name" as const) : ("photo" as const))}
             >
-              Nazad
+              {dict?.identity?.back || "Nazad"}
             </Button>
             <Button
               onClick={file ? handleNext : handleSubmit}
               className="h-14 flex-1 rounded-2xl bg-white font-bold text-black hover:bg-zinc-200"
             >
-              {file ? "Dalje" : "Preskoči"}
+              {file ? dict?.identity?.next || "Dalje" : dict?.identity?.skip || "Preskoči"}
             </Button>
           </div>
         </div>
@@ -159,7 +170,10 @@ export function IdentityCollector({
         <div className="space-y-4">
           {name && (
             <div className="text-sm text-white/70">
-              <span className="font-bold text-white">Ime:</span> {name}
+              <span className="font-bold text-white">
+                {dict?.identity?.name_preview_label || "Ime:"}
+              </span>{" "}
+              {name}
             </div>
           )}
           {preview && (
@@ -174,14 +188,16 @@ export function IdentityCollector({
               className="h-14 flex-1 rounded-2xl border-white/10 bg-transparent hover:bg-white/5"
               onClick={() => setStep(requiresPhoto ? "photo" : "name")}
             >
-              Nazad
+              {dict?.identity?.back || "Nazad"}
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={isUploading}
               className="h-14 flex-1 rounded-2xl bg-white font-bold text-black hover:bg-zinc-200"
             >
-              {isUploading ? "Slanje..." : "Potvrdi"}
+              {isUploading
+                ? dict?.identity?.sending || "Slanje..."
+                : dict?.identity?.confirm || "Potvrdi"}
             </Button>
           </div>
         </div>
@@ -192,7 +208,7 @@ export function IdentityCollector({
           onClick={onCancel}
           className="w-full text-center text-xs text-white/30 transition-colors hover:text-white/50"
         >
-          Otkaži
+          {dict?.identity?.cancel || "Otkaži"}
         </button>
       )}
     </div>

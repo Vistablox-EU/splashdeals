@@ -22,23 +22,25 @@ interface TicketPrice {
 interface Props {
   prices: TicketPrice[];
   facilityId: string;
+  dict: Record<string, unknown>;
 }
 
-export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
+export function OwnerTicketPricesClient({ prices, facilityId, dict }: Props) {
   const router = useRouter();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [updating, setUpdating] = useState<string | null>(null);
+  const t = dict.owner as Record<string, string>;
 
   const handleToggleActive = async (priceId: string, currentActive: boolean) => {
     setUpdating(priceId);
     try {
       const { updateTicketPriceAction } = await import("@/app/(server)/actions/owner");
       await updateTicketPriceAction(priceId, { isActive: !currentActive }, facilityId);
-      toast.success(currentActive ? "Cena deaktivirana" : "Cena aktivirana");
+      toast.success(currentActive ? t.ticket_deactivated : t.ticket_activated);
       router.refresh();
     } catch {
-      toast.error("Greška pri ažuriranju");
+      toast.error(t.update_error);
     } finally {
       setUpdating(null);
     }
@@ -47,7 +49,7 @@ export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
   const handleSavePrice = async (priceId: string) => {
     const newPrice = parseFloat(editValue);
     if (isNaN(newPrice) || newPrice <= 0) {
-      toast.error("Unesite validnu cenu");
+      toast.error(t.invalid_price);
       return;
     }
 
@@ -55,22 +57,18 @@ export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
     try {
       const { updateTicketPriceAction } = await import("@/app/(server)/actions/owner");
       await updateTicketPriceAction(priceId, { price: newPrice }, facilityId);
-      toast.success("Cena ažurirana");
+      toast.success(t.price_updated);
       setEditingId(null);
       router.refresh();
     } catch {
-      toast.error("Greška pri ažuriranju cene");
+      toast.error(t.price_update_error);
     } finally {
       setUpdating(null);
     }
   };
 
   if (prices.length === 0) {
-    return (
-      <p className="text-muted-foreground py-4 text-center text-sm">
-        Nema aktivnih cena ulaznica za ovaj objekat.
-      </p>
-    );
+    return <p className="text-muted-foreground py-4 text-center text-sm">{t.no_prices}</p>;
   }
 
   return (
@@ -78,11 +76,11 @@ export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b text-left">
-            <th className="pb-2 font-medium">Kategorija</th>
-            <th className="pb-2 font-medium">Tip</th>
-            <th className="pb-2 font-medium">Oznaka</th>
-            <th className="pb-2 font-medium">Cena (RSD)</th>
-            <th className="pb-2 font-medium">Aktivna</th>
+            <th className="pb-2 font-medium">{t.category_header}</th>
+            <th className="pb-2 font-medium">{t.type_header}</th>
+            <th className="pb-2 font-medium">{t.label_header}</th>
+            <th className="pb-2 font-medium">{t.price_header}</th>
+            <th className="pb-2 font-medium">{t.active_header}</th>
             <th className="pb-2 font-medium" />
           </tr>
         </thead>
@@ -109,10 +107,10 @@ export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
                       onClick={() => handleSavePrice(price.id)}
                       disabled={updating === price.id}
                     >
-                      Sačuvaj
+                      {t.save}
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>
-                      Otkaži
+                      {t.cancel}
                     </Button>
                   </div>
                 ) : (
@@ -140,7 +138,7 @@ export function OwnerTicketPricesClient({ prices, facilityId }: Props) {
               </td>
               <td className="py-2">
                 {updating === price.id && (
-                  <span className="text-muted-foreground text-xs">Ažuriranje...</span>
+                  <span className="text-muted-foreground text-xs">{t.updating}</span>
                 )}
               </td>
             </tr>

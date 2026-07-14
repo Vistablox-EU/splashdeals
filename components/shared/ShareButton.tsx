@@ -1,9 +1,11 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import type { Dict } from "@/lib/types";
 
 interface ShareButtonProps {
   title: string;
@@ -13,6 +15,11 @@ interface ShareButtonProps {
 
 export function ShareButton({ title, text }: ShareButtonProps) {
   const [copied, setCopied] = useState(false);
+  const [dict, setDict] = useState<Dict | null>(null);
+
+  useEffect(() => {
+    getClientDictionary().then(setDict);
+  }, []);
 
   const handleShare = async () => {
     // 📳 HTML5 Vibration API: Feedback loop
@@ -22,7 +29,7 @@ export function ShareButton({ title, text }: ShareButtonProps) {
 
     const shareData = {
       title: title,
-      text: text || `Pogledajte ovu ulaznicu na Splashdeals!`,
+      text: text || dict?.share?.default_text || "Pogledajte ovu ulaznicu na Splashdeals!",
       url: window.location.href,
     };
 
@@ -42,10 +49,10 @@ export function ShareButton({ title, text }: ShareButtonProps) {
       try {
         await navigator.clipboard.writeText(window.location.href);
         setCopied(true);
-        toast.success("Link kopiran u clipboard!");
+        toast.success(dict?.share?.link_copied || "Link kopiran u clipboard!");
         setTimeout(() => setCopied(false), 2000);
       } catch {
-        toast.error("Nije moguće kopirati link.");
+        toast.error(dict?.share?.copy_error || "Nije moguće kopirati link.");
       }
     }
   };
@@ -56,7 +63,7 @@ export function ShareButton({ title, text }: ShareButtonProps) {
       variant="ghost"
       size="icon"
       className="group shrink-0 rounded-full border border-white/10 bg-white/5 transition-all duration-300 hover:bg-cyan-500/20 hover:text-cyan-400"
-      aria-label="Podeli ulaznicu"
+      aria-label={dict?.share?.share_aria || "Podeli ulaznicu"}
     >
       {copied ? (
         <Icon

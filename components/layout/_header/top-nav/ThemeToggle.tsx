@@ -4,8 +4,13 @@ import { useTheme } from "next-themes";
 import * as React from "react";
 import { Icon } from "@/components/ui/Icon";
 import { LiquidButton } from "@/components/ui/LiquidButton";
+import type { Dict } from "@/lib/types";
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  dict?: Dict;
+}
+
+export function ThemeToggle({ dict }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
@@ -35,7 +40,11 @@ export function ThemeToggle() {
       variant="ghost"
       size="sm"
       className="h-11 px-4"
-      aria-label={isDark ? "Prebaci na svetlu temu" : "Prebaci na tamnu temu"}
+      aria-label={
+        isDark
+          ? (dict?.theme?.switch_light ?? "Prebaci na svetlu temu")
+          : (dict?.theme?.switch_dark ?? "Prebaci na tamnu temu")
+      }
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
       <Icon name={isDark ? "light_mode" : "dark_mode"} className="text-primary text-[16px]" />

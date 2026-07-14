@@ -3,6 +3,7 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { prisma } from "@/app/(server)/lib/prisma";
 import { generateIdempotencyKey, withStripeRetry } from "@/app/(server)/lib/stripe-utils";
+import { getDictionary } from "@/lib/dictionaries";
 import {
   validatePromoCodeAction,
   incrementCampaignUsageAction,
@@ -73,6 +74,9 @@ export async function createCheckoutSession(params: {
   // 1. Validate input at runtime (defence-in-depth beyond TypeScript)
   checkoutSchema.parse(params);
 
+  // 1b. Load i18n dictionary for user-facing error messages
+  const dict = await getDictionary();
+
   // 2. Bootstrap Stripe
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   if (!stripeSecret) {
@@ -106,7 +110,7 @@ export async function createCheckoutSession(params: {
     });
 
     if (!tp || !tp.isActive) {
-      throw new Error(`Karta nije dostupna.`);
+      throw new Error(dict.validations.ticket_unavailable);
     }
 
     const ticketType = tp.ticketType;
@@ -117,7 +121,7 @@ export async function createCheckoutSession(params: {
       (ticketType.requiresIdentity && !holderName) ||
       (ticketType.requiresPhoto && !holderPhotoUrl)
     ) {
-      throw new Error("Personalizovane karte zahtevaju identifikaciju nosioca.");
+      throw new Error(dict.validations.identity_required);
     }
 
     const facilityName = facility.name;
@@ -164,7 +168,7 @@ export async function createCheckoutSession(params: {
       throw new Error(
         validation.data && "error" in validation.data
           ? validation.data.error
-          : "Promo kod nije validan.",
+          : dict.validations.promo_invalid,
       );
     }
 

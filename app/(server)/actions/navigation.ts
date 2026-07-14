@@ -345,7 +345,7 @@ export async function getDiscoveryAction(): Promise<ActionResult<DiscoveryMenuDa
         startingPrice: cheapestPrice ? Number(cheapestPrice.price) : null,
         description:
           featuredFacility.description?.slice(0, 100) ||
-          "Doživite nezaboravnu letnju avanturu na najboljim bazenima u Srbiji.",
+          "Experience an unforgettable summer adventure at the best pools in Serbia.",
       };
     }
 

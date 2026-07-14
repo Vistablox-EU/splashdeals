@@ -75,7 +75,7 @@ export async function verifyTicketAction(hash: string): Promise<ActionResult<Tic
     });
 
     if (!ticket) {
-      return { success: false, error: "Karta nije pronađena." };
+      return { success: false, error: "Ticket not found." };
     }
 
     return {
@@ -124,15 +124,15 @@ export async function useTicketAction(
     });
 
     if (!ticket) {
-      return { success: false, error: "Karta nije pronađena." };
+      return { success: false, error: "Ticket not found." };
     }
 
     if (ticket.status === "EXPIRED") {
-      return { success: false, error: "Karta je istekla." };
+      return { success: false, error: "Ticket has expired." };
     }
 
     if (ticket.usageCount >= ticket.usageLimit) {
-      return { success: false, error: "Karta je već iskorišćena (maksimalan broj ulazaka)." };
+      return { success: false, error: "Ticket has already been used (maximum entries reached)." };
     }
 
     const newUsageCount = ticket.usageCount + 1;

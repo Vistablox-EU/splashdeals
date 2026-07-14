@@ -6,27 +6,28 @@ import { Icon } from "@/components/ui/Icon";
 import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { ScannerBlock, ClubCardBlock } from "./visual-blocks";
 import type { LinkMetadata, NavigationMenuData, NavigationMenuSectionData } from "./types";
+import type { Dict } from "@/lib/types";
 
 // ── Helpers ───────────────────────────────────────────────────────────
 
-function BadgeChip({ badge }: { badge: LinkMetadata["badge"] }) {
+function BadgeChip({ badge, dict }: { badge: LinkMetadata["badge"]; dict?: Dict }) {
   if (!badge) return null;
 
   const config: Record<string, { label: string; className: string }> = {
     new: {
-      label: badge.text || "Novo",
+      label: badge.text ?? dict?.mega_menu?.badge_new ?? "Novo",
       className: "bg-primary/15 text-primary border-primary/20",
     },
     sale: {
-      label: badge.text || "Akcija",
+      label: badge.text ?? dict?.mega_menu?.badge_sale ?? "Akcija",
       className: "bg-destructive/15 text-destructive border-destructive/20",
     },
     popular: {
-      label: badge.text || "Popularno",
+      label: badge.text ?? dict?.mega_menu?.badge_popular ?? "Popularno",
       className: "bg-warning/15 text-warning border-warning/20",
     },
     soon: {
-      label: badge.text || "Uskoro",
+      label: badge.text ?? dict?.mega_menu?.badge_soon ?? "Uskoro",
       className: "bg-muted/15 text-muted-foreground border-muted/20 border-dashed",
     },
     custom: {
@@ -61,12 +62,14 @@ export function NavItemLink({
   title,
   desc,
   metadata,
+  dict,
 }: {
   href: string | null;
   icon?: string | null;
   title: string;
   desc?: string | null;
   metadata?: LinkMetadata | null;
+  dict?: Dict;
 }) {
   const md = metadata || {};
   const isFeatured = md.variant === "featured";
@@ -86,7 +89,7 @@ export function NavItemLink({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="block truncate font-medium">{title}</span>
-          <BadgeChip badge={md.badge} />
+          <BadgeChip badge={md.badge} dict={dict} />
           {isExternal && (
             <Icon name="open_in_new" className="text-muted-foreground size-3 shrink-0" />
           )}
@@ -204,10 +207,12 @@ export function SectionRenderer({
   section,
   menu,
   sortedCities,
+  dict,
 }: {
   section: NavigationMenuSectionData;
   menu: NavigationMenuData;
   sortedCities: { id: string; name: string; slug: string }[];
+  dict?: Dict;
 }) {
   const config = section.config as Record<string, unknown> | null;
 
@@ -234,6 +239,7 @@ export function SectionRenderer({
               title={item.label}
               desc={item.desc}
               metadata={item.metadata}
+              dict={dict}
             />
           ))}
 
@@ -259,7 +265,7 @@ export function SectionRenderer({
             {sortedCities.length > ((config?.maxItems as number) || 10) && (
               <MenuDotLink
                 href={(config?.basePath as string) || "/akva-parkovi"}
-                label={`+${sortedCities.length - ((config?.maxItems as number) || 10)} gradova`}
+                label={`+${sortedCities.length - ((config?.maxItems as number) || 10)} ${dict?.mega_menu?.cities_suffix ?? "gradova"}`}
               />
             )}
           </>

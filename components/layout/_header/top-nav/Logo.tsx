@@ -4,15 +4,17 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import type { Dict } from "@/lib/types";
 
 interface LogoProps {
   isTabActive: boolean;
   isReducedMotion: boolean;
   isHovered: boolean;
   setIsHovered: (v: boolean) => void;
+  dict?: Dict;
 }
 
-export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: LogoProps) {
+export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered, dict }: LogoProps) {
   return (
     <Link
       href="/"
@@ -22,12 +24,12 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: 
         "group relative flex min-h-[44px] items-center gap-2.5 py-1",
         isTabActive && "opacity-100",
       )}
-      aria-label="Splashdeals početna"
+      aria-label={dict?.brand?.logo_aria ?? "Splashdeals početna"}
     >
       {/* Brand Logo Image */}
       <Image
         src="/logo-splashdeals.webp"
-        alt="SplashDeals - digitalne ulaznice za vodene parkove Srbija"
+        alt={dict?.brand?.logo_alt ?? "SplashDeals - digitalne ulaznice za vodene parkove Srbija"}
         width={331}
         height={112}
         className={cn(

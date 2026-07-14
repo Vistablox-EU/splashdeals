@@ -200,7 +200,7 @@ export async function updateBlogPostAction(
       return {
         success: true,
         conflict: true,
-        message: "Neko je već izmenio ovu objavu. Osveži stranicu.",
+        message: "Someone else has already modified this entry. Refresh the page.",
       };
     }
 
@@ -312,7 +312,7 @@ export async function getBlogPostRevisionAction(
       select: { title: true, content: true, excerpt: true },
     });
     if (!revision) {
-      return { success: false, error: "Revizija nije pronađena." };
+      return { success: false, error: "Revision not found." };
     }
     return { success: true, data: revision };
   } catch (error) {
@@ -353,7 +353,7 @@ export async function getBlogPostAction(id: string): Promise<
     });
 
     if (!post) {
-      return { success: false, error: "Blog post nije pronađen." };
+      return { success: false, error: "Blog post not found." };
     }
 
     const tagIds = post.tags.map((t) => t.tagId);
@@ -458,7 +458,7 @@ export async function updatePageAction(
       return {
         success: true,
         conflict: true,
-        message: "Neko je već izmenio ovu objavu. Osveži stranicu.",
+        message: "Someone else has already modified this entry. Refresh the page.",
       };
     }
 
@@ -514,7 +514,7 @@ export async function getPageAction(id: string): Promise<ActionResult<Record<str
   try {
     await requireAdmin();
     const page = await prisma.page.findUnique({ where: { id } });
-    if (!page) return { success: false, error: "Strana nije pronađena." };
+    if (!page) return { success: false, error: "Page not found." };
     return { success: true, data: page as unknown as Record<string, unknown> };
   } catch (error) {
     return handleServerActionError(error, "cms/getPage");

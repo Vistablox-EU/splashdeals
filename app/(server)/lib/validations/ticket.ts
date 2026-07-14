@@ -41,7 +41,7 @@ export const ticketSchema = z
       return true;
     },
     {
-      message: "Kraj prodaje mora biti posle početka",
+      message: "Sale end must be after sale start",
       path: ["saleEnd"],
     },
   );

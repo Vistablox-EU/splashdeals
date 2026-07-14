@@ -7,20 +7,29 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { useState } from "react";
-
-const navItems = [
-  {
-    title: "Moji objekti",
-    href: "/owner/facilities",
-    icon: "store",
-  },
-];
+import { useEffect, useState } from "react";
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import type { Dict } from "@/lib/types";
 
 export default function OwnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [dict, setDict] = useState<Dict | null>(null);
+
+  useEffect(() => {
+    getClientDictionary().then(setDict);
+  }, []);
+
+  const t = dict?.owner as Record<string, string> | undefined;
+
+  const navItems = [
+    {
+      title: t?.facilities ?? "Moji objekti",
+      href: "/owner/facilities",
+      icon: "store",
+    },
+  ];
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -46,7 +55,7 @@ export default function OwnerLayout({ children }: { children: React.ReactNode })
           <div className="flex items-center gap-6">
             <Link href="/owner/facilities" className="flex items-center gap-2 font-bold">
               <span className="text-lg">🏪</span>
-              <span className="hidden sm:inline">Vlasnički panel</span>
+              <span className="hidden sm:inline">{t?.title ?? "Vlasnički panel"}</span>
             </Link>
             <nav className="flex items-center gap-1">
               {navItems.map((item) => (
@@ -65,7 +74,7 @@ export default function OwnerLayout({ children }: { children: React.ReactNode })
           </div>
           <Button variant="ghost" size="sm" onClick={handleLogout} disabled={isLoggingOut}>
             <Icon name="logout" className="mr-1 size-4" />
-            {isLoggingOut ? "Odjavljivanje..." : "Odjava"}
+            {isLoggingOut ? (t?.logging_out ?? "Odjavljivanje...") : (t?.logout ?? "Odjava")}
           </Button>
         </div>
       </header>

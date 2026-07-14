@@ -47,7 +47,14 @@ interface TransactionData {
   issuedTickets: TicketData[];
 }
 
-export function OrderDetail({ transaction }: { transaction: TransactionData }) {
+export function OrderDetail({
+  transaction,
+  dict,
+}: {
+  transaction: TransactionData;
+  dict?: Record<string, any>;
+}) {
+  const t = (dict?.order_detail as Record<string, any>) || {};
   const statusColor =
     transaction.status === "COMPLETED"
       ? "text-emerald-500"
@@ -69,9 +76,9 @@ export function OrderDetail({ transaction }: { transaction: TransactionData }) {
   const handleResend = async () => {
     const result = await resendConfirmationAction(transaction.id);
     if (result.success) {
-      toast.success("Email sa kartama je ponovo poslat!");
+      toast.success(t.resend_success || "Email sa kartama je ponovo poslat!");
     } else {
-      toast.error("Greška pri slanju email-a.");
+      toast.error(t.resend_error || "Greška pri slanju email-a.");
     }
   };
 
@@ -81,7 +88,7 @@ export function OrderDetail({ transaction }: { transaction: TransactionData }) {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-foreground text-3xl font-black tracking-tighter uppercase italic">
-            Porudžbina
+            {t.title || "Porudžbina"}
           </h1>
           <p className="text-muted-foreground mt-1 text-sm">
             #{transaction.orderRef || transaction.id.slice(0, 8)}
@@ -90,27 +97,27 @@ export function OrderDetail({ transaction }: { transaction: TransactionData }) {
         <div className={`flex items-center gap-2 text-sm font-bold ${statusColor}`}>
           <span className="flex h-2 w-2 rounded-full bg-current" />
           {transaction.status === "COMPLETED"
-            ? "Završeno"
+            ? t.status_completed || "Završeno"
             : transaction.status === "PENDING"
-              ? "U obradi"
-              : "Otkazano"}
+              ? t.status_pending || "U obradi"
+              : t.status_cancelled || "Otkazano"}
         </div>
       </div>
 
       {/* Summary */}
       <Card className="bg-muted/20 border-border space-y-4 p-6">
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Datum kupovine</span>
+          <span className="text-muted-foreground">{t.purchase_date || "Datum kupovine"}</span>
           <span className="text-foreground font-medium">{formatDate(transaction.createdAt)}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Objekat</span>
+          <span className="text-muted-foreground">{t.facility || "Objekat"}</span>
           <span className="text-foreground font-medium">
-            {transaction.facility?.name || "Nepoznato"}
+            {transaction.facility?.name || t.unknown_facility || "Nepoznato"}
           </span>
         </div>
         <div className="border-border flex justify-between border-t pt-4 text-base">
-          <span className="text-foreground font-bold">Ukupno plaćeno</span>
+          <span className="text-foreground font-bold">{t.total_paid || "Ukupno plaćeno"}</span>
           <span className="text-foreground text-xl font-black tracking-tight">
             {formatPrice(Number(transaction.totalAmount))} {transaction.currency}
           </span>
@@ -120,7 +127,7 @@ export function OrderDetail({ transaction }: { transaction: TransactionData }) {
       {/* Tickets */}
       <div className="space-y-4">
         <h2 className="text-foreground text-sm font-black tracking-widest uppercase">
-          Ulaznice ({transaction.issuedTickets.length})
+          {t.tickets_label || "Ulaznice"} ({transaction.issuedTickets.length})
         </h2>
         {transaction.issuedTickets.map((ticket) => (
           <Card key={ticket.id} className="bg-muted/20 border-border overflow-hidden">
@@ -148,10 +155,10 @@ export function OrderDetail({ transaction }: { transaction: TransactionData }) {
                     }`}
                   >
                     {ticket.status === "ACTIVE"
-                      ? "Aktivna"
+                      ? t.ticket_active || "Aktivna"
                       : ticket.status === "USED"
-                        ? "Iskorišćena"
-                        : "Nevažeća"}
+                        ? t.ticket_used || "Iskorišćena"
+                        : t.ticket_invalid || "Nevažeća"}
                   </span>
                 </div>
               </div>
@@ -166,7 +173,7 @@ export function OrderDetail({ transaction }: { transaction: TransactionData }) {
                 <div className="flex items-center gap-1.5 text-xs">
                   <Icon name="calendar_today" className="text-muted-foreground text-[14px]" />
                   <span className="text-muted-foreground">
-                    Važi do: {formatDate(ticket.expiryDate)}
+                    {t.valid_until || "Važi do:"} {formatDate(ticket.expiryDate)}
                   </span>
                 </div>
               </div>
@@ -179,11 +186,11 @@ export function OrderDetail({ transaction }: { transaction: TransactionData }) {
       <div className="flex flex-wrap gap-4">
         <LiquidButton variant="secondary" size="sm" onClick={handleResend}>
           <Icon name="mail" className="text-[16px]" />
-          Pošalji ponovo email
+          {t.resend_email || "Pošalji ponovo email"}
         </LiquidButton>
         <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-2">
           <Icon name="print" className="text-[16px]" />
-          Štampaj
+          {t.print || "Štampaj"}
         </Button>
         {transaction.issuedTickets.map((t) => (
           <Link

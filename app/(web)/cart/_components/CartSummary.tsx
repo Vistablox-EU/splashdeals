@@ -141,8 +141,8 @@ export function CartSummary({
       </Card>
 
       <p className="text-muted-foreground px-8 text-center text-[10px] leading-relaxed font-bold">
-        Klikom na &quot;Nastavi na Plaćanje&quot;, prihvatate naše Uslove Korišćenja i Politiku
-        Privatnosti. Sve prodaje digitalnih karata su konačne.
+        {dict?.cart?.terms_notice ||
+          'Klikom na "Nastavi na Plaćanje", prihvatate naše Uslove Korišćenja i Politiku Privatnosti. Sve prodaje digitalnih karata su konačne.'}
       </p>
     </div>
   );

@@ -1,6 +1,8 @@
 import { EMAIL_THEME } from "./theme";
 
-export function buildResetPasswordHtml(url: string): string {
+export function buildResetPasswordHtml(url: string, dict: Record<string, any>): string {
+  const e = dict.email;
+
   return `
   <html>
     <body style="font-family: ${EMAIL_THEME.font}; background-color: ${EMAIL_THEME.bgBody}; color: ${EMAIL_THEME.textPrimary}; padding: 40px;">
@@ -9,13 +11,13 @@ export function buildResetPasswordHtml(url: string): string {
           <h1 style="color: ${EMAIL_THEME.accentText}; font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Splashdeals <span style="color: ${EMAIL_THEME.textSecondary};">Admin</span></h1>
         </div>
         <p style="font-size: 16px; line-height: 1.6; color: ${EMAIL_THEME.textSecondary}; margin-bottom: 24px;">
-          A password reset was requested for your Splashdeals Admin account. Click the button below to set a new password. This link expires in 1 hour.
+          ${e.reset_password_intro}
         </p>
         <div style="text-align: center; margin-bottom: 32px;">
-          <a href="${url}" style="display: inline-block; background-color: ${EMAIL_THEME.accentText}; color: ${EMAIL_THEME.bgBody}; padding: 14px 32px; font-size: 14px; font-weight: 800; text-decoration: none; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Reset Password</a>
+          <a href="${url}" style="display: inline-block; background-color: ${EMAIL_THEME.accentText}; color: ${EMAIL_THEME.bgBody}; padding: 14px 32px; font-size: 14px; font-weight: 800; text-decoration: none; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.05em;">${e.reset_password_button}</a>
         </div>
         <p style="font-size: 12px; color: ${EMAIL_THEME.textDarkMuted}; text-align: center; margin: 0;">
-          If you didn't request this, you can safely ignore this email.
+          ${e.reset_password_footer}
         </p>
       </div>
       <div style="text-align: center; margin-top: 24px; color: ${EMAIL_THEME.textDarkMuted}; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;">

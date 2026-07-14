@@ -13,13 +13,18 @@ import { Icon } from "@/components/ui/Icon";
 import { SectionRenderer } from "./sections";
 import type { NavigationMenuData, DiscoveryMenuData } from "./types";
 import { getMenusAction, getDiscoveryAction } from "@/app/(server)/actions/navigation";
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import type { Dict } from "@/lib/types";
 
 // ── Skeleton ─────────────────────────────────────────────────────────
 
-function MenuSkeleton() {
+function MenuSkeleton({ dict }: { dict: Dict | null }) {
   return (
     <div className="text-muted-foreground flex items-center gap-2 px-3 py-1.5 text-xs">
-      <div className="bg-muted h-5 w-32 animate-pulse rounded" aria-label="Učitavanje menija" />
+      <div
+        className="bg-muted h-5 w-32 animate-pulse rounded"
+        aria-label={dict?.mega_menu?.loading_aria || "Učitavanje menija"}
+      />
     </div>
   );
 }
@@ -42,6 +47,11 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
   const [discovery, setDiscovery] = useState<DiscoveryMenuData>({ cities: [], featured: null });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dict, setDict] = useState<Dict | null>(null);
+
+  useEffect(() => {
+    getClientDictionary().then(setDict);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -123,10 +133,10 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
 
   if (loading) {
     return (
-      <nav aria-label="Glavna navigacija">
+      <nav aria-label={dict?.mega_menu?.main_nav_aria || "Glavna navigacija"}>
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
-            <MenuSkeleton />
+            <MenuSkeleton dict={dict} />
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
