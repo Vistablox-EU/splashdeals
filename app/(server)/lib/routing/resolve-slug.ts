@@ -74,7 +74,7 @@ export async function resolveFacilitySlug(slug: string, locale: Locale = "sr") {
   });
   if (facility) {
     const cat = getLocalizedSlug(
-      facility.category?.toLowerCase().replace(/\s+/g, "-") || "",
+      dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-"),
       locale,
     );
     return { slug: facility.slug, category: cat };
