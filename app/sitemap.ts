@@ -2,50 +2,61 @@ import { MetadataRoute } from "next";
 import { prisma } from "@/app/(server)/lib/prisma";
 import { getAllSlugs } from "@/lib/routing/categories";
 
-export const revalidate = 3600; // Revalidate sitemap every hour
+export const revalidate = 3600;
+
+const LOCALES = ["sr", "en"] as const;
+const DEFAULT_LOCALE = "sr";
+const BASE_URL = "https://www.splashdeals.rs";
 
 /**
- * 🌊 Dynamic Sitemap Generator
- * Indexes all public routes using the canonical prefix-free URL structure.
- * Legacy /facilities/* routes are NOT indexed here — they 301 redirect automatically
- * or return 410 Gone if permanently deleted.
+ * Build hreflang alternates for a given path.
+ * The Serbian (default) locale uses the bare URL, English uses /en/ prefix.
  */
+function alternatesFor(path: string): Record<string, string> {
+  const clean = path.replace(/^\//, "");
+  const sr = `${BASE_URL}/${clean}`.replace(/\/$/, "");
+  const en = `${BASE_URL}/en/${clean}`.replace(/\/$/, "");
+  return {
+    sr,
+    en,
+    "x-default": sr,
+  };
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://www.splashdeals.rs";
-
-  // 1. Static Core Routes (canonical URLs only — no legacy /facilities)
   const staticRoutes = ["", "/how-it-works", "/terms", "/privacy", "/support", "/cookies"];
-
   const sitemapEntries: MetadataRoute.Sitemap = [];
   const staticLastMod = new Date();
 
+  // ── Static core routes (per locale) ─────────────────────────────────
   for (const route of staticRoutes) {
+    // Serbian (canonical — bare path)
     sitemapEntries.push({
-      url: `${baseUrl}${route}`,
+      url: `${BASE_URL}${route}`,
       lastModified: staticLastMod,
       changeFrequency: route === "" ? "daily" : "weekly",
       priority: route === "" ? 1.0 : 0.7,
+      alternates: { languages: alternatesFor(route) },
     });
   }
 
-  // 2. Category Discovery Routes (from registry — auto-syncs with categories.ts)
+  // ── Category Discovery Routes (per locale) ──────────────────────────
   for (const slug of getAllSlugs()) {
     sitemapEntries.push({
-      url: `${baseUrl}/${slug}`,
+      url: `${BASE_URL}/${slug}`,
       lastModified: staticLastMod,
       changeFrequency: "weekly",
       priority: 0.9,
+      alternates: { languages: alternatesFor(`/${slug}`) },
     });
   }
 
-  // 4. Dynamic Facility Detail Routes (canonical — short URL: /[facilitySlug])
+  // ── Dynamic Facility Detail Routes (per locale) ─────────────────────
   try {
     const facilities = await prisma.facility.findMany({
       where: { status: "ACTIVE" },
       select: {
         slug: true,
-        name: true,
-        description: true,
         updatedAt: true,
         media: {
           select: { url: true, type: true },
@@ -56,66 +67,46 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     for (const facility of facilities) {
       const photos = facility.media
-        .filter((m: any) => m.type === "PHOTO")
-        .map((m: any) => m.url)
+        .filter((m) => m.type === "PHOTO")
+        .map((m) => m.url)
         .slice(0, 5);
 
-      const videos = facility.media
-        .filter((m: any) => m.type === "VIDEO")
-        .map((m: any) => m.url)
-        .slice(0, 1);
-
       sitemapEntries.push({
-        url: `${baseUrl}/${facility.slug}`,
+        url: `${BASE_URL}/${facility.slug}`,
         lastModified: facility.updatedAt,
         changeFrequency: "daily",
         priority: 0.95,
+        alternates: { languages: alternatesFor(`/${facility.slug}`) },
         images: photos,
-        // Only include video entries when we have a thumbnail (empty thumbnail_loc = XML error = sitemap rejected)
-        videos:
-          videos.length > 0 && photos[0]
-            ? videos.map((v: string) => ({
-                title: facility.name,
-                thumbnail_loc: photos[0],
-                description: facility.description || "",
-                content_loc: v,
-              }))
-            : undefined,
       });
     }
   } catch (error) {
     console.error("Sitemap Error: Could not fetch facilities", error);
   }
 
-  // 5. Blog Posts
+  // ── Blog Posts (per locale) ─────────────────────────────────────────
   try {
     const blogPosts = await prisma.blogPost.findMany({
       where: { status: "PUBLISHED" },
-      select: {
-        slug: true,
-        updatedAt: true,
-        publishedAt: true,
-        coverImage: true,
-        title: true,
-        excerpt: true,
-      },
+      select: { slug: true, updatedAt: true, coverImage: true },
       orderBy: { publishedAt: "desc" },
     });
 
-    // Blog index page
     sitemapEntries.push({
-      url: `${baseUrl}/blog`,
+      url: `${BASE_URL}/blog`,
       lastModified: blogPosts[0]?.updatedAt || staticLastMod,
       changeFrequency: "daily",
       priority: 0.8,
+      alternates: { languages: alternatesFor("/blog") },
     });
 
     for (const post of blogPosts) {
       sitemapEntries.push({
-        url: `${baseUrl}/blog/${post.slug}`,
+        url: `${BASE_URL}/blog/${post.slug}`,
         lastModified: post.updatedAt,
         changeFrequency: "monthly",
         priority: 0.7,
+        alternates: { languages: alternatesFor(`/blog/${post.slug}`) },
         images: post.coverImage ? [post.coverImage] : undefined,
       });
     }
@@ -123,11 +114,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Sitemap Error: Could not fetch blog posts", error);
   }
 
-  // 6. Dynamic City Listing Pages (from navigation DYNAMIC_CITIES)
-  // Removed — city-specific pages live under /akva-parkovi?city=... which are not sitemapped individually
-  // to keep the sitemap focused on canonical facility and category pages.
-
-  // 7. Navigation Menu Item URLs (unique pages from the mega menu)
+  // ── Navigation Menu Items (per locale) ──────────────────────────────
   try {
     const items = await prisma.navigationMenuItem.findMany({
       where: {
@@ -135,20 +122,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         href: { not: null, notIn: ["#", ""] },
         section: { menu: { isActive: true } },
       },
-      select: { href: true, label: true },
+      select: { href: true },
     });
 
     const seen = new Set(sitemapEntries.map((e) => e.url));
     for (const item of items) {
       const href = item.href as string;
-      const fullUrl = `${baseUrl}${href}`;
-      if (href.startsWith("/") && !seen.has(fullUrl)) {
-        seen.add(fullUrl);
+      if (href.startsWith("/") && !seen.has(`${BASE_URL}${href}`)) {
+        seen.add(`${BASE_URL}${href}`);
         sitemapEntries.push({
-          url: fullUrl,
+          url: `${BASE_URL}${href}`,
           lastModified: staticLastMod,
           changeFrequency: "weekly",
           priority: 0.65,
+          alternates: { languages: alternatesFor(href) },
         });
       }
     }
