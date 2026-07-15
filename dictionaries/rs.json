@@ -92,7 +92,14 @@
     "location_discovery": "Strateški Regioni",
     "best_in": "Najbolje Destinacije u",
     "no_results_hint": "Pokušajte da prilagodite filtere ili istražite druge kategorije.",
-    "ticket_prices": "Cene Ulaznica"
+    "ticket_prices": "Cene Ulaznica",
+    "experience_label": "Iskustvo",
+    "fun_unlocked": "Zabava",
+    "fun_unlocked_accent": "Otključana.",
+    "browse_all": "Pregledaj sve",
+    "view_prices": "Pogledaj cene",
+    "back": "Nazad",
+    "default_description": "Digitalna ulaznica za premium pristup sadržajima parka."
   },
   "nav": {
     "home": "Početna",
@@ -889,7 +896,9 @@
     "default_text": "Pogledajte ovu ulaznicu na Splashdeals!",
     "link_copied": "Link kopiran u clipboard!",
     "copy_error": "Nije moguće kopirati link.",
-    "share_aria": "Podeli ulaznicu"
+    "share_aria": "Podeli ulaznicu",
+    "copied_aria": "Kopirano!",
+    "facility_share_text": "Pogledajte {title} na Splashdeals!"
   },
   "breadcrumb": {
     "home": "Početna",
@@ -1128,7 +1137,7 @@
     "decrease_quantity": "Smanji količinu",
     "increase_quantity": "Povećaj količinu",
     "total": "Ukupno",
-    "added_to_cart": "Dodato u korpu!",
+    "added_to_cart": "Dodato u korpu",
     "adding": "Dodavanje...",
     "add_to_cart": "Dodaj u korpu",
     "add": "Dodaj",
@@ -1160,7 +1169,23 @@
     "photo_required": "Potrebna fotografija",
     "buy_on_facility_page": "Kupi na stranici objekta",
     "select_on_facility_page": "Odaberite varijantu i količinu na stranici objekta",
-    "view_cart": "Pogledaj korpu"
+    "view_cart": "Pogledaj korpu",
+    "tickets_label": "Ulaznice",
+    "tickets_for_facility": "Ulaznice — {name}",
+    "more_variants": "+ {count} varijanti",
+    "buy_on_facility": "Kupi sada",
+    "buy_on_facility_hint": "Otvara izbor količine i varijante na stranici objekta",
+    "requires_id": "Potrebna lična karta",
+    "requires_photo": "Potrebna fotografija",
+    "min_people": "Min. {count} osobe",
+    "savings_pct": "Ušteda {pct}%",
+    "added_to_cart_exclaim": "Dodato u korpu!",
+    "day_all": "Svi dani",
+    "day_weekday": "Radni dan",
+    "day_weekend": "Vikend",
+    "time_full_day": "Ceo dan",
+    "time_after_16h": "Posle 16h",
+    "time_three_hour": "3 sata"
   },
   "showcase": {
     "experience_eyebrow": "Iskustvo",
@@ -1242,5 +1267,16 @@
     "text_template": "Pogledajte {title} na Splashdeals!",
     "copied": "Kopirano!",
     "share": "Podeli"
+  },
+  "reviews": {
+    "select_rating": "Izaberite ocenu.",
+    "login_required": "Morate biti prijavljeni.",
+    "submitted": "Recenzija poslata na pregled.",
+    "error": "Greška pri slanju recenzije.",
+    "title": "Recenzije",
+    "submit": "Pošalji recenziju",
+    "login_prompt": "Prijavite se da biste ostavili recenziju.",
+    "login_link": "Prijavi se",
+    "rating_aria": "Ocena {n} od 5"
   }
 }

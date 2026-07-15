@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -5,18 +6,54 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/Icon";
+import { getDictionary } from "@/lib/dictionaries";
+import { SITE_URL } from "@/app/(web)/facility/_data/schemas";
+
+export const revalidate = 3600;
+
+interface PageProps {
+  params: Promise<{ categorySlug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { categorySlug } = await params;
+  const facility = await prisma.facility.findUnique({
+    where: { slug: categorySlug, status: "ACTIVE" },
+    select: { name: true, slug: true, city: true, description: true },
+  });
+  if (!facility) notFound();
+
+  const title = `Ulaznice — ${facility.name}`;
+  const description =
+    facility.description?.slice(0, 155) ||
+    `Pregledajte sve ulaznice i cene za ${facility.name}${facility.city ? ` u ${facility.city}` : ""} na Splashdeals.`;
+  const canonical = `${SITE_URL}/${facility.slug}/ulaznice`;
+
+  return {
+    title,
+    description,
+    robots: { index: true, follow: true },
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: "Splashdeals",
+      locale: "sr_RS",
+      type: "website",
+      images: [`${SITE_URL}/api/og/facility/${facility.slug}`],
+    },
+  };
+}
 
 /**
  * 🎫 Ticket Browse Page
  * Route: /[facilitySlug]/ulaznice
- * Shows all ticket categories, products, and prices for a facility in a full-page browse layout.
  */
-export default async function FacilityTicketsPage({
-  params,
-}: {
-  params: Promise<{ categorySlug: string }>;
-}) {
+export default async function FacilityTicketsPage({ params }: PageProps) {
   const { categorySlug } = await params;
+  const dict = await getDictionary();
+  const t = (dict.ticketing || {}) as Record<string, string>;
   const facility = await prisma.facility.findUnique({
     where: { slug: categorySlug, status: "ACTIVE" },
     select: { id: true, name: true, slug: true, category: true },
@@ -45,10 +82,11 @@ export default async function FacilityTicketsPage({
       <div className="mx-auto flex min-h-[60vh] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center">
         <Icon name="shopping_bag" className="text-muted-foreground mb-6 text-[64px]" />
         <h1 className="text-foreground mb-4 text-3xl font-black tracking-tighter uppercase italic">
-          Ulaznice — {facility.name}
+          {t.tickets_for_facility?.replace("{name}", facility.name) ||
+            `${t.tickets_label || "Ulaznice"} — ${facility.name}`}
         </h1>
         <p className="text-muted-foreground text-lg font-medium">
-          Trenutno nema dostupnih ponuda za ovaj objekat.
+          {t.no_offers || "Trenutno nema dostupnih ponuda za ovaj objekat."}
         </p>
       </div>
     );
@@ -56,7 +94,6 @@ export default async function FacilityTicketsPage({
 
   return (
     <div className="text-foreground mx-auto min-h-screen max-w-7xl px-6 pt-24 pb-32 sm:px-12">
-      {/* Header */}
       <div className="mb-12">
         <div className="mb-4 flex items-center gap-2 text-sm">
           <Link
@@ -67,15 +104,14 @@ export default async function FacilityTicketsPage({
           </Link>
           <span className="text-muted-foreground/40">/</span>
           <span className="text-primary text-xs font-black tracking-widest uppercase">
-            Ulaznice
+            {t.tickets_label || "Ulaznice"}
           </span>
         </div>
         <h1 className="text-foreground text-4xl leading-[0.9] font-black tracking-tighter uppercase italic md:text-6xl">
-          Ulaznice — <span className="text-primary">{facility.name}</span>
+          {t.tickets_label || "Ulaznice"} — <span className="text-primary">{facility.name}</span>
         </h1>
       </div>
 
-      {/* Ticket Categories */}
       <div className="space-y-16">
         {categories.map((category) => (
           <section key={category.id} id={`cat-${category.slug || category.id}`}>
@@ -92,49 +128,39 @@ export default async function FacilityTicketsPage({
                 const hasDiscount =
                   bestPrice?.originalPrice &&
                   Number(bestPrice.originalPrice) > Number(bestPrice.price);
+                const productPath = product.slug || product.id;
 
                 return (
                   <Link
                     key={product.id}
-                    href={`/${facility.slug}/ulaznice/${product.slug || product.id}`}
+                    href={`/${facility.slug}/ulaznice/${productPath}`}
                     className="group block"
                   >
-                    <Card className="border-border hover:border-primary/30 group relative flex h-full flex-col overflow-hidden transition-[border-color,transform,box-shadow] duration-500 hover:-translate-y-1">
+                    <Card className="border-border bg-muted/20 hover:border-primary/30 h-full overflow-hidden transition-colors">
                       {product.imageUrl && (
-                        <div className="relative h-40 w-full overflow-hidden">
+                        <div className="relative aspect-[16/10] w-full overflow-hidden">
                           <Image
                             src={product.imageUrl}
                             alt={product.title}
                             fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, 33vw"
                           />
                         </div>
                       )}
-                      <div className="flex flex-1 flex-col p-6">
-                        <div className="mb-2 flex items-start justify-between gap-4">
-                          <h3 className="text-foreground group-hover:text-primary text-lg leading-tight font-black tracking-tight uppercase italic transition-colors">
-                            {product.title}
-                          </h3>
+                      <div className="flex flex-col p-5">
+                        <div className="mb-2 flex flex-wrap gap-2">
                           {product.isSeasonPass && (
-                            <Badge
-                              variant="default"
-                              className="border-primary/20 bg-primary/10 text-primary shrink-0 text-[9px] font-black tracking-widest uppercase"
-                            >
-                              Sezonska
+                            <Badge variant="secondary" className="text-[10px] font-black uppercase">
+                              {t.season_pass || "Sezonska karta"}
                             </Badge>
                           )}
                         </div>
-
-                        {product.description && (
-                          <p className="text-muted-foreground mb-4 line-clamp-2 text-xs leading-relaxed font-medium">
-                            {product.description}
-                          </p>
-                        )}
-
-                        {/* Price summary */}
+                        <h3 className="text-foreground text-lg font-black tracking-tight uppercase italic">
+                          {product.title}
+                        </h3>
                         {bestPrice && (
-                          <div className="border-border group-hover:border-border/80 mt-auto flex items-baseline gap-2 border-t pt-4 transition-colors">
+                          <div className="mt-3 flex items-baseline gap-2">
                             {hasDiscount && (
                               <span className="text-muted-foreground/40 text-xs font-medium line-through">
                                 {Number(bestPrice.originalPrice).toLocaleString("sr-RS")}
@@ -148,11 +174,12 @@ export default async function FacilityTicketsPage({
                             </span>
                           </div>
                         )}
-
-                        {/* Price variations count */}
                         {product.prices.length > 1 && (
                           <span className="text-muted-foreground mt-2 text-[10px] font-bold tracking-widest uppercase">
-                            + {product.prices.length - 1} varijanti
+                            {(t.more_variants || "+ {count} varijanti").replace(
+                              "{count}",
+                              String(product.prices.length - 1),
+                            )}
                           </span>
                         )}
                       </div>

@@ -128,8 +128,12 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
   const categoryLabel = getCategoryLabel(facility.category);
 
-  // 🕵️ Validate that the URL slug matches the facility's category or city
-  validateDiscoverySlug(categorySlug, facility);
+  // 🕵️ Validate that the URL slug matches the facility's category or city.
+  // Never 500 — redirect to the canonical short facility path when invalid.
+  const discovery = validateDiscoverySlug(categorySlug, facility);
+  if (!discovery.valid) {
+    permanentRedirect(discovery.canonicalPath);
+  }
 
   // Build ticket groups and price data
   const mappedGroups = buildTicketGroups(facility);
@@ -273,19 +277,18 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             <Card className="brand-card flex min-h-0 flex-col justify-center">
               <CardHeader className="gap-6 p-6 pb-0 sm:p-12 sm:pb-0 md:p-16 md:pb-0">
                 <div className="text-primary hidden items-center gap-3 text-xs font-black tracking-[0.2em] uppercase md:flex">
-                  <Icon name="auto_awesome" aria-hidden="true" className="text-[16px]" /> Iskustvo
+                  <Icon name="auto_awesome" aria-hidden="true" className="text-[16px]" />{" "}
+                  {dict.facilities?.experience_label}
                 </div>
                 <div className="brand-divider mb-4 hidden w-24 md:block" />
                 <CardTitle className="text-foreground hidden text-2xl leading-tight font-black tracking-tighter uppercase italic md:block md:text-5xl">
-                  Zabava <span className="text-splash">Otključana.</span>
+                  {dict.facilities?.fun_unlocked}{" "}
+                  <span className="text-splash">{dict.facilities?.fun_unlocked_accent}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 p-6 sm:p-12 md:p-16">
                 <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed font-medium italic opacity-90 md:text-xl">
-                  <span>
-                    {facility.description ||
-                      "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
-                  </span>
+                  <span>{facility.description || dict.facilities?.default_description}</span>
                 </p>
 
                 {facility.amenities && facility.amenities.length > 0 && (
@@ -297,7 +300,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                       href="#amenities"
                       className="text-primary hover:text-primary/80 text-[10px] font-black tracking-wider uppercase underline underline-offset-4 transition-colors"
                     >
-                      Pregledaj sve
+                      {dict.facilities?.browse_all}
                     </a>
                   </div>
                 )}
@@ -308,7 +311,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                     className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-[44px] items-center gap-2 rounded-full px-6 py-3 text-xs font-black tracking-wider uppercase shadow-lg transition-all"
                   >
                     <Icon name="confirmation_number" className="text-[14px]" />
-                    Pogledaj cene
+                    {dict.facilities?.view_prices}
                   </a>
                 </div>
               </CardContent>

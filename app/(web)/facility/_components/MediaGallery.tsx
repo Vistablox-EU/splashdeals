@@ -68,7 +68,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
             onClick={() => setSelectedIdx(i)}
             className="group border-border animate-fade-in-up bg-muted/5 relative overflow-hidden rounded-2xl border md:rounded-[2.5rem]"
             style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
-            aria-label={`${dict?.media_gallery?.expand_view || "Open image"} ${i + 1}`}
+            aria-label={`${dict?.media_gallery?.expand_view} ${i + 1}`}
           >
             {m.type === "VIDEO" ? (
               <div className="relative h-full w-full">

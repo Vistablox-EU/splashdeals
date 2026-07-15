@@ -63,6 +63,7 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
         className,
       )}
       title={copied ? "Kopirano!" : "Podeli"}
+      aria-label={copied ? "Kopirano!" : "Podeli"}
       aria-live="polite"
     >
       {copied ? (

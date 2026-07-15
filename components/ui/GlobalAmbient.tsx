@@ -12,7 +12,7 @@ export const GlobalAmbient = () => {
       <div className="bg-primary/10 animate-kinetic-2 absolute right-[-10%] bottom-[-10%] h-[70%] w-[70%] rounded-full blur-[120px]" />
 
       {/* 🌫️ Subsurface Noise Scrim */}
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay brightness-100 contrast-125" />
+      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay brightness-100 contrast-125" />
 
       {/* Dynamic Scrim based on scroll to fade the top/bottom */}
       <div className="from-background to-background absolute inset-0 bg-gradient-to-b via-transparent opacity-80" />

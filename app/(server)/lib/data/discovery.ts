@@ -1,6 +1,13 @@
 import "server-only";
 import { prisma } from "@/app/(server)/lib/prisma";
-import { dbValueToSlug } from "@/lib/routing/categories";
+import {
+  getDiscoverySlugValidation,
+  type DiscoverySlugFacility,
+  type DiscoverySlugValidation,
+} from "@/lib/routing/discovery-slug";
+
+export type { DiscoverySlugFacility, DiscoverySlugValidation };
+export { getDiscoverySlugValidation };
 
 /**
  * 🏙️ Active Cities
@@ -45,30 +52,11 @@ export async function getDiscoveryCategories() {
 /**
  * 🕵️ Discovery Slug Validator
  * Ensures the URL discovery slug (category or city) matches the actual facility data.
- * Prevents duplicate content and enforces SEO canonical paths.
+ * Never throws — callers must redirect/notFound when valid is false.
  */
 export function validateDiscoverySlug(
   currentSlug: string,
-  facility: {
-    category: string;
-    slug: string;
-    marketplaceCities?: { city: { slug: string } }[];
-  },
-): { isCategory: boolean; isCity: boolean; canonicalPath: string } {
-  const canonicalCategory =
-    dbValueToSlug(facility.category) ?? facility.category.toLowerCase().replace(/\s+/g, "-");
-  const citySlugs = facility.marketplaceCities?.map((mc) => mc.city.slug) || [];
-
-  const currentSlugLower = currentSlug.toLowerCase();
-  const isValid = currentSlugLower === canonicalCategory || citySlugs.includes(currentSlugLower);
-
-  if (!isValid) {
-    throw new Error(`Invalid discovery slug: "${currentSlug}"`);
-  }
-
-  return {
-    isCategory: currentSlugLower === canonicalCategory,
-    isCity: citySlugs.includes(currentSlugLower),
-    canonicalPath: `/${facility.slug}`,
-  };
+  facility: DiscoverySlugFacility,
+): DiscoverySlugValidation {
+  return getDiscoverySlugValidation(currentSlug, facility);
 }

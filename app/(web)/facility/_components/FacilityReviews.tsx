@@ -9,10 +9,11 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { submitReviewAction } from "@/app/(server)/actions/reviews";
 import { authClient } from "@/lib/auth-client";
+import { buildPrijavaUrl } from "@/lib/auth/callback-url";
 
 interface Review {
   id: string;
@@ -34,6 +35,7 @@ const STARS = [1, 2, 3, 4, 5];
 
 export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityReviewsProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [reviews] = React.useState<Review[]>(initialReviews);
   const [rating, setRating] = React.useState(0);
   const [hoverRating, setHoverRating] = React.useState(0);
@@ -47,27 +49,27 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (rating === 0) {
-      toast.error(t.select_rating || "Izaberite ocenu.");
+      toast.error(t.select_rating);
       return;
     }
     if (!session) {
-      toast.error(t.login_required || "Morate biti prijavljeni.");
+      toast.error(t.login_required);
       return;
     }
     setIsSubmitting(true);
     try {
       const result = await submitReviewAction(facilityId, rating, title, content);
       if (result.success) {
-        toast.success(t.submitted || "Recenzija poslata na pregled.");
+        toast.success(t.submitted);
         setRating(0);
         setTitle("");
         setContent("");
         router.refresh();
       } else {
-        toast.error(result.error || t.error || "Greška pri slanju recenzije.");
+        toast.error(result.error || t.error);
       }
     } catch {
-      toast.error(t.error || "Greška pri slanju recenzije.");
+      toast.error(t.error);
     } finally {
       setIsSubmitting(false);
     }
@@ -81,9 +83,9 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
   return (
     <section className="space-y-6">
       <div className="flex items-center gap-3">
-        <Icon name="star" className="size-5 text-yellow-500" />
+        <Icon name="star" className="text-warning size-5" />
         <h2 className="text-foreground text-xl font-black tracking-tight uppercase italic">
-          {t.title || "Recenzije"}
+          {t.title}
         </h2>
         {reviews.length > 0 && (
           <Badge variant="secondary" className="text-[10px]">
@@ -104,7 +106,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                   name="star"
                   className={
                     star <= Math.round(avgRating)
-                      ? "size-3.5 text-yellow-500"
+                      ? "text-warning size-3.5"
                       : "text-muted-foreground/20 size-3.5"
                   }
                 />
@@ -123,10 +125,10 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                   <span className="text-muted-foreground w-4 text-right text-[10px] font-bold">
                     {star}
                   </span>
-                  <Icon name="star" className="size-2.5 text-yellow-500" />
+                  <Icon name="star" className="text-warning size-2.5" />
                   <div className="bg-muted-foreground/10 h-1.5 flex-1 overflow-hidden rounded-full">
                     <div
-                      className="h-full rounded-full bg-yellow-500 transition-all"
+                      className="bg-warning h-full rounded-full transition-all"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -156,12 +158,13 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                   onMouseLeave={() => setHoverRating(0)}
                   onClick={() => setRating(star)}
                   className="transition-transform hover:scale-110"
+                  aria-label={(t.rating_aria || "Ocena {n} od 5").replace("{n}", String(star))}
                 >
                   <Icon
                     name="star"
                     className={
                       star <= (hoverRating || rating)
-                        ? "size-9 text-yellow-500 md:size-6"
+                        ? "text-warning size-9 md:size-6"
                         : "text-muted-foreground/20 size-9 md:size-6"
                     }
                   />
@@ -201,16 +204,14 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
             ) : (
               <Icon name="send" className="size-3.5" />
             )}
-            {t.submit || "Pošalji recenziju"}
+            {t.submit}
           </Button>
         </form>
       ) : (
         <Card className="border-border/50 bg-muted/20 p-4 text-center">
-          <p className="text-muted-foreground text-xs font-medium">
-            {t.login_prompt || "Prijavite se da biste ostavili recenziju."}
-          </p>
+          <p className="text-muted-foreground text-xs font-medium">{t.login_prompt}</p>
           <Button asChild variant="link" size="sm" className="mt-1 h-auto text-xs font-bold">
-            <Link href="/prijava">{t.login_link || "Prijavi se"}</Link>
+            <Link href={buildPrijavaUrl(pathname || "/")}>{t.login_link}</Link>
           </Button>
         </Card>
       )}
@@ -238,7 +239,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                       name="star"
                       className={
                         star <= review.rating
-                          ? "size-3 text-yellow-500"
+                          ? "text-warning size-3"
                           : "text-muted-foreground/20 size-3"
                       }
                     />

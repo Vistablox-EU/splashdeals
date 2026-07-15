@@ -123,8 +123,21 @@ const nextConfig: NextConfig = withBundleAnalyzer({
           {
             key: "Content-Security-Policy",
             value:
-              // TODO: Use nonce-based CSP for stricter script-src in production
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com; font-src 'self' data:; connect-src 'self' https://www.splashdeals.rs https://vercel.com https://blob.vercel-storage.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+              // Local noise.svg + GA4 (gtag) + optional Cloudflare insights beacon.
+              // TODO: nonce-based CSP for stricter script-src in production
+              [
+                "default-src 'self'",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com",
+                "style-src 'self' 'unsafe-inline'",
+                "img-src 'self' data: blob: https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com https://www.google-analytics.com https://www.googletagmanager.com",
+                "font-src 'self' data:",
+                "connect-src 'self' https://www.splashdeals.rs https://vercel.com https://blob.vercel-storage.com https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://region1.google-analytics.com https://static.cloudflareinsights.com https://cloudflareinsights.com",
+                "frame-src 'none'",
+                "object-src 'none'",
+                "base-uri 'self'",
+                "form-action 'self'",
+                "frame-ancestors 'none'",
+              ].join("; "),
           },
         ],
       },

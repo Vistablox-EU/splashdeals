@@ -13,6 +13,8 @@ import { persistCartItem } from "@/lib/cart/persist-cart-item";
 import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
 import { openCartIfDesktop } from "@/lib/cart/open-cart-if-desktop";
 import { toast } from "sonner";
+import { getClientDictionary } from "@/lib/client-dictionaries";
+import { getDayTypeLabel, getTimeSlotLabel } from "@/lib/ticketing/day-time-labels";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -80,18 +82,6 @@ interface CategoryOption {
   products: ProductOption[];
 }
 
-const DAY_LABELS: Record<string, string> = {
-  ALL: "Svi dani",
-  WEEKDAY: "Radni dan",
-  WEEKEND: "Vikend",
-};
-
-const TIME_LABELS: Record<string, string> = {
-  FULL_DAY: "Ceo dan",
-  AFTER_16H: "Posle 16h",
-  THREE_HOUR: "3 sata",
-};
-
 export function TicketPurchaseModal({
   isOpen,
   onClose,
@@ -109,6 +99,7 @@ export function TicketPurchaseModal({
   const [isAdded, setIsAdded] = useState(false);
   const [closing, setClosing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [addedLabel, setAddedLabel] = useState<string | undefined>(undefined);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -126,6 +117,12 @@ export function TicketPurchaseModal({
       })[0];
     return best?.id ?? prices[0]?.id ?? null;
   };
+
+  useEffect(() => {
+    getClientDictionary().then((d) => {
+      setAddedLabel(d?.ticketing?.added_to_cart as string | undefined);
+    });
+  }, []);
 
   // Fetch hierarchy on open
   useEffect(() => {
@@ -230,7 +227,7 @@ export function TicketPurchaseModal({
     await new Promise((r) => setTimeout(r, 700));
     setIsAdding(false);
     setIsAdded(true);
-    toast.success("Dodato u korpu");
+    toast.success(addedLabel);
     await new Promise((r) => setTimeout(r, 800));
     setIsAdded(false);
     setClosing(true);
@@ -348,10 +345,8 @@ export function TicketPurchaseModal({
                     ((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) * 100,
                   )
                 : 0;
-              const dayLabel = computedDayType
-                ? DAY_LABELS[computedDayType]
-                : DAY_LABELS[p.dayType ?? "ALL"];
-              const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"];
+              const dayLabel = getDayTypeLabel(computedDayType ?? p.dayType);
+              const timeLabel = getTimeSlotLabel(p.timeSlot);
               const displayLabel = p.label || `${dayLabel} — ${timeLabel}`;
 
               return (
@@ -468,7 +463,7 @@ export function TicketPurchaseModal({
           {isAdded ? (
             <>
               <Icon name="check" className="animate-scale-in text-[16px]" />
-              <span>Dodato u korpu!</span>
+              <span>{addedLabel}</span>
             </>
           ) : isAdding ? (
             <>

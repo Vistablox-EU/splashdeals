@@ -13,9 +13,9 @@ const geistSans = Geist({
 
 export const viewport: Viewport = {
   themeColor: "#06b6d4",
+  width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // WCAG 1.4.4 — allow pinch-zoom; never lock maximumScale / userScalable
 };
 
 export const metadata: Metadata = {
@@ -64,8 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Splashdeals" />
-        <link rel="preconnect" href="https://grainy-gradients.vercel.app" />
-        <link rel="preload" as="image" href="https://grainy-gradients.vercel.app/noise.svg" />
+        <link rel="preload" as="image" href="/noise.svg" />
         <link
           rel="preconnect"
           href="https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com"

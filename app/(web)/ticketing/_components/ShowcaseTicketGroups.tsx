@@ -158,6 +158,31 @@ export function ShowcaseTicketGroups({
   const [selectedTicket, setSelectedTicket] = useState<TicketTier | null>(null);
   const [expandedTier, setExpandedTier] = useState<string | null>(null);
 
+  // Deep-link from product page: /{facility}?product={id}#deals
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const productId = new URLSearchParams(window.location.search).get("product");
+    if (!productId) return;
+
+    let tier: TicketTier | null = null;
+    for (const group of groups) {
+      const found = group.tiers.find((item) => item.id === productId);
+      if (found) {
+        tier = found;
+        break;
+      }
+    }
+    if (!tier) return;
+
+    const timer = window.setTimeout(() => {
+      setSelectedTicket(tier);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("product");
+      window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash || "#deals"}`);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [groups]);
+
   // Shared server cart totals (badge + sticky mini-cart) — hooks before any return
   const totalItems = useServerCart((s) => s.totalItems);
   const totalPrice = useServerCart((s) => s.totalPrice);
@@ -276,6 +301,7 @@ export function ShowcaseTicketGroups({
                   onToggle={() => setExpandedTier(expandedTier === tier.id ? null : tier.id)}
                   cartCount={0}
                   ticketProductMap={ticketProductMap}
+                  addedToCartLabel={dict?.ticketing?.added_to_cart as string | undefined}
                 />
               );
             })}
@@ -371,6 +397,7 @@ function MobileTicketAccordion({
   onToggle,
   cartCount,
   ticketProductMap,
+  addedToCartLabel,
 }: {
   tier: TicketTier;
   facility: { id: string; name: string; category: string };
@@ -389,6 +416,7 @@ function MobileTicketAccordion({
       prices: PriceOption[];
     }
   >;
+  addedToCartLabel?: string;
 }) {
   const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
   const discountPercent = hasDiscount
@@ -444,7 +472,7 @@ function MobileTicketAccordion({
     // Keep shared badge/bottom-nav cart in sync (mobile single cart destination: /cart)
     await useServerCart.getState().refresh();
     broadcastCartUpdated();
-    toast.success("Dodato u korpu");
+    toast.success(addedToCartLabel);
 
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
     setTimeout(() => {
@@ -649,7 +677,7 @@ function MobileTicketAccordion({
                 {isAdded ? (
                   <>
                     <Icon name="check" className="animate-scale-in text-[16px]" />
-                    <span>Dodato u korpu!</span>
+                    <span>{addedToCartLabel}</span>
                   </>
                 ) : isAdding ? (
                   <>
