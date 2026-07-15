@@ -8,6 +8,10 @@ export default defineConfig({
   },
   test: {
     include: ["tests/**/*.test.{ts,tsx}"],
+    // Parent shells (e.g. NODE_ENV=production) strip React.act; force test mode.
+    env: {
+      NODE_ENV: "test",
+    },
     coverage: {
       reportsDirectory: "tests/reports/coverage",
       provider: "v8",

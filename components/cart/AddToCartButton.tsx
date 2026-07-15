@@ -10,6 +10,8 @@ import type { Dict } from "@/lib/types";
 import { persistCartItem } from "@/lib/cart/persist-cart-item";
 import { useServerCart } from "@/hooks/use-server-cart";
 import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
+import { openCartIfDesktop } from "@/lib/cart/open-cart-if-desktop";
+import { toast } from "sonner";
 
 interface AddToCartButtonProps {
   ticket: {
@@ -65,7 +67,9 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
     broadcastCartUpdated();
 
     setAdded(true);
-    openCart();
+    // Mobile: single cart destination is /cart (bottom nav). Desktop: open drawer.
+    openCartIfDesktop(openCart);
+    toast.success(dict?.product?.added_to_cart || "Dodato u korpu");
 
     // 📳 Haptic Feedback (PWA standard)
     if (typeof navigator !== "undefined" && navigator.vibrate) {
