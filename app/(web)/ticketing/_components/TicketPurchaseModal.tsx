@@ -7,8 +7,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import { useUIState } from "@/hooks/use-ui-state";
+import { useServerCart } from "@/hooks/use-server-cart";
 import { getDayTypeForDate, filterPricesByDate } from "@/app/(server)/lib/ticket-utils";
 import { persistCartItem } from "@/lib/cart/persist-cart-item";
+import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
+import { openCartIfDesktop } from "@/lib/cart/open-cart-if-desktop";
+import { toast } from "sonner";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -110,6 +114,7 @@ export function TicketPurchaseModal({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const openCart = useUIState((state) => state.openCart);
+  const refreshCart = useServerCart((state) => state.refresh);
   // Helper: find the best discount price in a product's prices
   const findBestDeal = (prices: PriceOption[]) => {
     const best = [...prices]
@@ -219,17 +224,21 @@ export function TicketPurchaseModal({
       setIsAdding(false);
       return;
     }
+    await refreshCart();
+    broadcastCartUpdated();
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
     await new Promise((r) => setTimeout(r, 700));
     setIsAdding(false);
     setIsAdded(true);
+    toast.success("Dodato u korpu");
     await new Promise((r) => setTimeout(r, 800));
     setIsAdded(false);
     setClosing(true);
     await new Promise((r) => setTimeout(r, 300));
     setClosing(false);
     onClose();
-    openCart();
+    // Mobile: /cart via bottom nav. Desktop: open side drawer.
+    openCartIfDesktop(openCart);
   };
 
   const renderLoading = () => (

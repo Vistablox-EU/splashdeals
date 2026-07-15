@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { TicketPurchaseModal } from "./TicketPurchaseModal";
 import { persistCartItem } from "@/lib/cart/persist-cart-item";
+import { useServerCart } from "@/hooks/use-server-cart";
+import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
+import { toast } from "sonner";
 
 interface TicketTier {
   id: string;
@@ -417,6 +420,11 @@ function MobileTicketAccordion({
       setIsAdding(false);
       return;
     }
+
+    // Keep shared badge/bottom-nav cart in sync (mobile single cart destination: /cart)
+    await useServerCart.getState().refresh();
+    broadcastCartUpdated();
+    toast.success("Dodato u korpu");
 
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
     setTimeout(() => {

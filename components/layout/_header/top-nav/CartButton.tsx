@@ -15,8 +15,9 @@ interface CartButtonProps {
 }
 
 export function CartButton({ isOnline, mounted, totalItems, openCart, dict }: CartButtonProps) {
+  // Mobile uses BottomNav → /cart as the only cart entry. Desktop keeps the drawer trigger.
   return (
-    <div className="relative flex items-center gap-2">
+    <div className="relative hidden items-center gap-2 md:flex">
       {/* Offline Indicator — CSS transition on mount/unmount */}
       {!isOnline && (
         <div className="bg-destructive/10 border-destructive/20 text-destructive flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[9px] font-black tracking-wider uppercase shadow-lg transition-all duration-300">

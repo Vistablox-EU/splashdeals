@@ -37,8 +37,13 @@ export const CartDrawer = () => {
 
   React.useEffect(() => {
     if (!isCartOpen) return;
+    // Mobile single-cart IA: never keep the drawer open below md.
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
+      closeCart();
+      return;
+    }
     void refresh();
-  }, [isCartOpen, refresh]);
+  }, [isCartOpen, refresh, closeCart]);
 
   if (!isMounted) return null;
 
