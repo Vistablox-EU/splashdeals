@@ -58,7 +58,20 @@ describe("success page authorization", () => {
       }),
     ).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(mocks.redirect).toHaveBeenCalledWith("/prijava");
+    expect(mocks.redirect).toHaveBeenCalledWith(
+      "/prijava?callbackUrl=%2Fsuccess%3Fsession_id%3Dcs_private",
+    );
     expect(mocks.transactionFindFirst).not.toHaveBeenCalled();
+  });
+
+  it("redirects unauthenticated visitors without session_id to prijava with success return", async () => {
+    await expect(
+      SuccessPage({
+        params: Promise.resolve({}),
+        searchParams: Promise.resolve({}),
+      }),
+    ).rejects.toThrow("NEXT_REDIRECT");
+
+    expect(mocks.redirect).toHaveBeenCalledWith("/prijava?callbackUrl=%2Fsuccess");
   });
 });

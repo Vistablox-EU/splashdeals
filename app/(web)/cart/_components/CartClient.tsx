@@ -23,9 +23,12 @@ import {
 } from "@/app/(server)/actions/guest-cart-claim";
 import { trackBeginCheckout } from "@/lib/analytics/events";
 import { useServerCart } from "@/hooks/use-server-cart";
+import { authClient } from "@/lib/auth-client";
+import { buildPrijavaUrl } from "@/lib/auth/callback-url";
 import { CartItemList } from "./CartItemList";
 import { CartSummary } from "./CartSummary";
 import { GuestCartConflictModal } from "./GuestCartConflictModal";
+import { useRouter } from "next/navigation";
 
 export function CartClient({
   dict,
@@ -34,6 +37,8 @@ export function CartClient({
   dict: Record<string, any>;
   checkoutCancelled?: boolean;
 }) {
+  const router = useRouter();
+  const { data: authSession, isPending: isAuthPending } = authClient.useSession();
   const items = useServerCart((s) => s.items);
   const refresh = useServerCart((s) => s.refresh);
   const notifyUpdated = useServerCart((s) => s.notifyUpdated);
@@ -205,6 +210,12 @@ export function CartClient({
   };
 
   const handleStartCheckout = () => {
+    // Guest must sign in before Stripe — preserve cart via guest claim after login.
+    if (!isAuthPending && !authSession?.user) {
+      router.push(buildPrijavaUrl("/cart"));
+      return;
+    }
+
     trackBeginCheckout({
       items: items.map((i) => ({
         ticketId: i.ticketId,
@@ -230,6 +241,11 @@ export function CartClient({
     holderPhotoUrl?: string;
   }) => {
     try {
+      if (!isAuthPending && !authSession?.user) {
+        router.push(buildPrijavaUrl("/cart"));
+        return;
+      }
+
       setIsCheckingOut(true);
       setShowIdentityDialog(false);
 
@@ -239,7 +255,14 @@ export function CartClient({
         promoCode: discount?.code ?? null,
       });
 
-      if (!result.success) throw new Error(result.error || "Pokretanje plaćanja nije uspelo.");
+      if (!result.success) {
+        // Fallback: server auth failure still routes to login with return path
+        if (result.error?.toLowerCase().includes("prijavljen")) {
+          router.push(buildPrijavaUrl("/cart"));
+          return;
+        }
+        throw new Error(result.error || "Pokretanje plaćanja nije uspelo.");
+      }
 
       if (result.data?.url) {
         // The exact server cart remains locked until Stripe confirms, cancels, or expires.
