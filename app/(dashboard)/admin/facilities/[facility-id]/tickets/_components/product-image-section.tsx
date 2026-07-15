@@ -90,7 +90,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
             size="sm"
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="bg-primary/10 text-primary hover:bg-primary/20 h-7 gap-1 rounded-lg px-3 text-[10px] font-bold transition-all disabled:opacity-50"
+            className="bg-primary/10 text-primary hover:bg-primary/20 h-7 gap-1 rounded-lg px-3 text-[10px] font-bold transition-colors disabled:opacity-50"
             aria-label="Add image"
           >
             <Icon name="add_photo" className="text-[12px]" />
@@ -108,13 +108,13 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 200px"
             />
-            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
+            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 opacity-0 transition-colors group-hover:bg-black/40 group-hover:opacity-100">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="text-foreground bg-background/90 h-8 w-8 rounded-full transition-all hover:bg-white"
+                className="text-foreground bg-background/90 hover:bg-background h-8 w-8 rounded-full transition-colors"
                 aria-label="Replace image"
               >
                 <Icon name="refresh" className="text-[14px]" />
@@ -123,7 +123,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
                 variant="ghost"
                 size="icon"
                 onClick={handleDelete}
-                className="text-destructive bg-background/90 h-8 w-8 rounded-full transition-all hover:bg-white"
+                className="text-destructive bg-background/90 hover:bg-background h-8 w-8 rounded-full transition-colors"
                 aria-label="Delete image"
               >
                 <Icon name="delete" className="text-[14px]" />

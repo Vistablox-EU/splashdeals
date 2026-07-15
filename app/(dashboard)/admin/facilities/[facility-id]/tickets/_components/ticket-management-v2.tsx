@@ -39,7 +39,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     initialCategories[0]?.id ?? null,
   );
   const [selectedProductId, setSelectedProductId] = React.useState<string | null>(null);
-  const [mobileView, setMobileView] = React.useState<"cats" | "prods" | "prices">("cats");
   const [newCatTitle, setNewCatTitle] = React.useState("");
   const [newProdTitle, setNewProdTitle] = React.useState("");
   const [showNewCat, setShowNewCat] = React.useState(false);
@@ -268,7 +267,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       <div
         className={cn(
           "lg:border-border/50 lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:border-r",
-          mobileView === "cats" ? "flex flex-1 flex-col" : "hidden",
+          "flex",
         )}
       >
         <div className="border-border/50 border-b p-3">
@@ -307,7 +306,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               key={cat.id}
               onClick={() => {
                 setSelectedCategoryId(cat.id);
-                setMobileView("prods");
               }}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -327,7 +325,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               }}
               variant="ghost"
               className={cn(
-                "group flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition-all",
+                "group flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition-colors",
                 selectedCategoryId === cat.id
                   ? "bg-primary/10 text-primary border-primary/20 border"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/20 border border-transparent",
@@ -354,7 +352,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   {cat.title}
                 </span>
               )}
-              <div className="flex items-center gap-0.5 opacity-0 transition-all group-hover:opacity-100">
+              <div className="flex items-center gap-0.5 opacity-0 transition-colors group-hover:opacity-100">
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -389,7 +387,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       <div
         className={cn(
           "lg:border-border/50 lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-r",
-          mobileView === "prods" ? "flex flex-1 flex-col" : "hidden",
+          "flex",
         )}
       >
         <div className="border-border/50 border-b p-3">
@@ -438,14 +436,13 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               }}
               onDragEnd={() => {}}
               className={cn(
-                "cursor-grab rounded-xl border p-3 transition-all active:cursor-grabbing",
+                "cursor-grab rounded-xl border p-3 transition-colors active:cursor-grabbing",
                 selectedProductId === prod.id
                   ? "bg-primary/5 border-primary/30"
                   : "bg-muted/5 border-border hover:border-primary/20",
               )}
               onClick={() => {
                 setSelectedProductId(prod.id);
-                setMobileView("prices");
               }}
             >
               <div className="mb-1 flex items-center justify-between">
@@ -506,12 +503,12 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               )}
               <div className="flex flex-wrap gap-1">
                 {prod.requiresPhoto && (
-                  <span className="text-warning rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold">
+                  <span className="text-warning bg-warning/10 rounded px-1.5 py-0.5 text-[8px] font-bold">
                     📸
                   </span>
                 )}
                 {prod.requiresIdentity && (
-                  <span className="text-warning rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold">
+                  <span className="text-warning bg-warning/10 rounded px-1.5 py-0.5 text-[8px] font-bold">
                     🆔
                   </span>
                 )}
@@ -538,12 +535,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       </div>
 
       {/* ─── Price Panel ────────────────────────────── */}
-      <div
-        className={cn(
-          "lg:flex lg:min-w-0 lg:flex-1 lg:flex-col",
-          mobileView === "prices" ? "flex flex-1 flex-col" : "hidden",
-        )}
-      >
+      <div className={cn("lg:flex lg:min-w-0 lg:flex-1 lg:flex-col", "flex")}>
         <div className="border-border/50 flex items-center justify-between border-b p-3">
           <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
             {selectedProduct ? `${selectedProduct.title} → Cene` : "Cene"}
@@ -670,25 +662,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Mobile nav dots */}
-      <div className="bg-background/80 border-border/50 fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 gap-1.5 rounded-full border px-3 py-2 shadow-lg backdrop-blur-md lg:hidden">
-        {(["cats", "prods", "prices"] as const).map((v, _i) => (
-          <Button
-            key={v}
-            variant="ghost"
-            size="sm"
-            onClick={() => setMobileView(v)}
-            className={cn(
-              "h-2 w-2 rounded-full p-0 transition-all",
-              mobileView === v ? "bg-primary w-6" : "bg-muted-foreground/30",
-            )}
-            aria-label={v === "cats" ? "Kategorije" : v === "prods" ? "Tipovi" : "Cene"}
-          />
-        ))}
-      </div>
     </div>
   );
 }
-
-// ─── Product Image Section ──────────────────────────

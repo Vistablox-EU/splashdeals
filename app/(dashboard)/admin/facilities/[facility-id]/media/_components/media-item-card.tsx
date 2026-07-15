@@ -61,7 +61,7 @@ function MediaItemCard({
   return (
     <div
       className={cn(
-        "group bg-muted/40 border-border/50 flex flex-col overflow-hidden rounded-2xl border transition-all duration-300",
+        "group bg-muted/40 border-border/50 flex flex-col overflow-hidden rounded-2xl border transition-colors duration-300",
         isSelected &&
           "ring-primary ring-offset-background shadow-[0_0_30px_hsl(var(--primary)/0.3)] ring-2 ring-offset-2",
         isOverlay && "scale-105 opacity-90 shadow-2xl",
@@ -131,7 +131,7 @@ function MediaItemCard({
                 e.stopPropagation();
                 onToggleFocalPoint?.();
               }}
-              className="bg-muted/50 text-foreground absolute right-2 bottom-2 size-5 rounded-md hover:bg-white/20"
+              className="bg-muted/50 text-foreground hover:bg-background/20 absolute right-2 bottom-2 size-5 rounded-md"
               aria-label="Close focal point"
             >
               <Icon name="close" className="size-3" />
@@ -208,7 +208,7 @@ function MediaItemCard({
           <div className="absolute top-3 left-3 z-30">
             <div
               className={cn(
-                "flex size-6 items-center justify-center rounded-full border-2 transition-all",
+                "flex size-6 items-center justify-center rounded-full border-2 transition-colors",
                 isSelected ? "bg-primary border-primary" : "border-border bg-black/40",
               )}
             >
@@ -244,7 +244,7 @@ function MediaItemCard({
               e.stopPropagation();
               onDelete?.();
             }}
-            className="absolute right-3 bottom-3 z-30 size-8 rounded-xl opacity-60 transition-all group-hover:opacity-100 focus-visible:opacity-100"
+            className="absolute right-3 bottom-3 z-30 size-8 rounded-xl opacity-60 transition-colors group-hover:opacity-100 focus-visible:opacity-100"
             aria-label="Delete media"
           >
             <Icon name="delete" className="size-4" />

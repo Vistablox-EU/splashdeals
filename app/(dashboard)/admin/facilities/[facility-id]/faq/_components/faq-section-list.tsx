@@ -172,7 +172,7 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
             onDragOver={(e) => handleDragOver(e, faq.id)}
             onDragEnd={handleDragEnd}
             className={cn(
-              "bg-card rounded-xl border transition-all",
+              "bg-card rounded-xl border transition-colors",
               dragId === faq.id && "ring-primary opacity-50 ring-2",
               isExpanded
                 ? "border-primary/30 shadow-sm"
@@ -234,7 +234,7 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
                   e.stopPropagation();
                   handleDelete(faq.id, faq.question);
                 }}
-                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 shrink-0 rounded-lg transition-all"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 shrink-0 rounded-lg transition-colors"
                 aria-label="Obriši"
               >
                 <Icon name="delete" className="size-3.5" />

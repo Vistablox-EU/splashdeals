@@ -285,7 +285,7 @@ function OperationsTableInner({
                           size="icon"
                           type="button"
                           onClick={() => remove(index)}
-                          className="text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:text-rose-500"
+                          className="text-muted-foreground hover:text-destructive opacity-0 transition-colors group-hover:opacity-100"
                         >
                           <Icon name="delete" className="text-[12px]" />
                         </Button>

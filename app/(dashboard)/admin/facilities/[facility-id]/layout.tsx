@@ -1,15 +1,16 @@
 import { ReactNode, Suspense } from "react";
-import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import Link from "next/link";
+import type { Metadata } from "next";
 
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { FacilityNav, FacilityNavSkeleton } from "./_components/nav";
 import { FacilityActionSidebar, FacilityActionSidebarSkeleton } from "./_components/sidebar";
 import { SlotError } from "./_components/slot-error";
-import type { Metadata } from "next";
 import { FacilityLayoutContextHandler } from "./_components/facility-layout-context-handler";
 import { FacilityProvider } from "./_components/facility-context";
+import { getFacilityAdminShell } from "./_lib/get-facility-admin";
 
 interface FacilityLayoutData {
   id: string;
@@ -24,14 +25,11 @@ export async function generateMetadata({
   params: Promise<{ "facility-id": string }>;
 }): Promise<Metadata> {
   const { "facility-id": facilityId } = await params;
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: { name: true },
-  });
+  const facility = await getFacilityAdminShell(facilityId);
 
   return {
-    title: `${facility?.name || "Facility"} | Splashdeals Admin`,
-    description: `Manage operations, tickets, and media for ${facility?.name || "this facility"}.`,
+    title: `${facility?.name || "Objekat"} | Splashdeals Admin`,
+    description: `Upravljajte operacijama, ulaznicama i medijima za ${facility?.name || "ovaj objekat"}.`,
   };
 }
 
@@ -44,32 +42,7 @@ export default async function FacilityManagementLayout({
 }) {
   await connection();
   const { "facility-id": facilityId } = await params;
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: {
-      id: true,
-      name: true,
-      status: true,
-      slug: true,
-      category: true,
-      updatedAt: true,
-      socialLinks: true,
-      publicPhone: true,
-      publicEmail: true,
-      description: true,
-      metaTitle: true,
-      metaDescription: true,
-      hours: true,
-      _count: {
-        select: {
-          ticketCategories: true,
-          media: true,
-          amenities: true,
-          faqs: true,
-        },
-      },
-    },
-  });
+  const facility = await getFacilityAdminShell(facilityId);
 
   if (!facility) notFound();
 
@@ -81,16 +54,36 @@ export default async function FacilityManagementLayout({
         status: facility.status,
         slug: facility.slug,
         category: facility.category,
+        streetName: facility.streetName,
+        streetNumber: facility.streetNumber,
+        city: facility.city,
+        lat: facility.lat,
+        lng: facility.lng,
+        counts: {
+          ticketCategories: facility._count.ticketCategories,
+          media: facility._count.media,
+          amenities: facility._count.amenities,
+          faq: facility._count.faqs,
+        },
       }}
     >
       <div className="bg-background relative flex h-full flex-1 flex-col overflow-hidden">
         <FacilityLayoutContextHandler facilityId={facilityId} facilityName={facility.name} />
 
-        {/* Immersive Ambient Glow */}
         <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 -mt-64 -mr-64 h-[500px] w-[500px] rounded-full blur-[120px]" />
         <div className="bg-accent/5 pointer-events-none absolute bottom-0 left-0 -mb-48 -ml-48 h-[400px] w-[400px] rounded-full blur-[100px]" />
 
-        {/* 🧭 Unified Master Command Bar */}
+        <nav
+          aria-label="Putanja"
+          className="text-muted-foreground border-border/40 relative z-20 border-b px-4 py-2 text-xs"
+        >
+          <Link href="/admin/facilities" className="hover:text-foreground transition-colors">
+            Objekti
+          </Link>
+          <span className="mx-1.5">/</span>
+          <span className="text-foreground font-medium">{facility.name}</span>
+        </nav>
+
         <ErrorBoundary fallback={<SlotError reset={() => {}} title="Navigacija nije učitana" />}>
           <Suspense fallback={<FacilityNavSkeleton />}>
             <FacilityNav
@@ -106,14 +99,14 @@ export default async function FacilityManagementLayout({
         </ErrorBoundary>
 
         <div className="relative z-10 w-full flex-1 overflow-y-auto p-4 md:p-8">
-          <div className="animate-in fade-in slide-in-from-bottom-2 grid grid-cols-1 items-start gap-8 duration-700 xl:grid-cols-12">
-            <div className="space-y-8 xl:col-span-9">
+          <div className="animate-in fade-in slide-in-from-bottom-2 grid grid-cols-1 items-start gap-8 duration-700 lg:grid-cols-12">
+            <div className="space-y-8 lg:col-span-9">
               <Suspense fallback={<div className="bg-muted/50 h-96 animate-pulse rounded-xl" />}>
                 {children}
               </Suspense>
             </div>
 
-            <aside className="sticky top-8 hidden xl:col-span-3 xl:block">
+            <aside className="sticky top-8 hidden lg:col-span-3 lg:block">
               <ErrorBoundary fallback={<SlotError reset={() => {}} title="Sidebar nije učitan" />}>
                 <Suspense fallback={<FacilityActionSidebarSkeleton />}>
                   <FacilityActionSidebar facility={facility as FacilityLayoutData} />

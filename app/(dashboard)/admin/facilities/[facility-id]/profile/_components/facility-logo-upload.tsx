@@ -172,7 +172,7 @@ export function FacilityLogoUpload({
           <div
             onClick={() => fileInputRef.current?.click()}
             className={cn(
-              "relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden rounded-2xl border shadow-lg transition-all",
+              "relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden rounded-2xl border shadow-lg transition-colors",
               previewBg === "dark"
                 ? "bg-background/40 border-border hover:border-primary/40"
                 : "bg-muted/50 border-muted/70 hover:border-primary",
@@ -202,7 +202,7 @@ export function FacilityLogoUpload({
                     e.stopPropagation();
                     removeImage();
                   }}
-                  className="text-foreground border-destructive/30 bg-destructive/20 hover:bg-destructive absolute top-2 right-2 scale-90 rounded-lg border p-1.5 transition-all hover:scale-100"
+                  className="text-foreground border-destructive/30 bg-destructive/20 hover:bg-destructive absolute top-2 right-2 scale-90 rounded-lg border p-1.5 transition-colors hover:scale-100"
                   title="Remove asset"
                 >
                   <Icon name="close" className="text-[12px]" />
@@ -221,7 +221,7 @@ export function FacilityLogoUpload({
               setPreviewBg((p) => (p === "dark" ? "light" : "dark"));
             }}
             className={cn(
-              "absolute bottom-2 left-2 z-20 rounded-md border p-1 shadow-sm backdrop-blur-md transition-all",
+              "absolute bottom-2 left-2 z-20 rounded-md border p-1 shadow-sm backdrop-blur-md transition-colors",
               previewBg === "dark"
                 ? "bg-muted/60 border-border text-muted-foreground hover:text-foreground"
                 : "border-muted/50 text-muted-foreground/80 hover:text-foreground bg-background/80",
@@ -239,7 +239,7 @@ export function FacilityLogoUpload({
         <div
           onClick={() => fileInputRef.current?.click()}
           className={cn(
-            "bg-background/30 hover:bg-background/60 group/drop relative mx-auto box-border flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-4 text-center transition-all duration-300",
+            "bg-background/30 hover:bg-background/60 group/drop relative mx-auto box-border flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-4 text-center transition-colors duration-300",
             isDragging
               ? "border-primary bg-primary/10 shadow-primary/15 scale-[1.02]"
               : "border-border/50 hover:border-primary/30",
@@ -247,7 +247,7 @@ export function FacilityLogoUpload({
         >
           <div
             className={cn(
-              "mb-2 rounded-xl p-2.5 transition-all duration-300",
+              "mb-2 rounded-xl p-2.5 transition-colors duration-300",
               isDragging
                 ? "bg-primary/20 text-primary scale-110"
                 : "bg-muted/50 text-muted-foreground group-hover/drop:bg-primary/10 group-hover/drop:text-primary",

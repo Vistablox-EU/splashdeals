@@ -144,7 +144,7 @@ export function DangerZone({
                 <Button
                   variant="outline"
                   type="button"
-                  className="border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground h-10 shrink-0 rounded-xl px-6 text-[9px] font-black tracking-widest uppercase transition-all duration-300"
+                  className="border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground h-10 shrink-0 rounded-xl px-6 text-[9px] font-black tracking-widest uppercase transition-colors duration-300"
                 >
                   <Icon name="delete" className="mr-2 size-3.5" />
                   Obriši objekat
@@ -201,7 +201,7 @@ export function DangerZone({
                       setIsOpen(false);
                       setConfirmName("");
                     }}
-                    className="border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground h-10 rounded-xl text-[9px] font-black tracking-widest uppercase transition-all"
+                    className="border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground h-10 rounded-xl text-[9px] font-black tracking-widest uppercase transition-colors"
                     disabled={isPending}
                   >
                     Otkaži
@@ -210,7 +210,7 @@ export function DangerZone({
                     type="button"
                     onClick={handleDelete}
                     disabled={isPending || confirmName !== facilityName}
-                    className="text-destructive-foreground bg-destructive hover:bg-destructive/90 disabled:bg-destructive/20 disabled:text-destructive/50 flex h-10 min-w-[120px] items-center justify-center rounded-xl text-[9px] font-black tracking-widest uppercase transition-all"
+                    className="text-destructive-foreground bg-destructive hover:bg-destructive/90 disabled:bg-destructive/20 disabled:text-destructive/50 flex h-10 min-w-[120px] items-center justify-center rounded-xl text-[9px] font-black tracking-widest uppercase transition-colors"
                   >
                     {isPending ? (
                       <Icon name="progress_activity" className="size-3.5 animate-spin" />

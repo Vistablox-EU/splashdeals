@@ -39,7 +39,7 @@ export default function FacilitiesError({
           <Button
             onClick={reset}
             variant="outline"
-            className="bg-muted/30 hover:bg-muted/50 border-border/50 flex w-full items-center justify-center gap-2 rounded-xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
+            className="bg-muted/30 hover:bg-muted/50 border-border/50 flex w-full items-center justify-center gap-2 rounded-xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-colors"
           >
             <Icon name="refresh" className="text-[16px]" />
             Pokušaj ponovo
@@ -47,7 +47,7 @@ export default function FacilitiesError({
           <Button
             asChild
             variant="secondary"
-            className="bg-muted/80 hover:bg-foreground/10 text-foreground flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
+            className="bg-muted/80 hover:bg-foreground/10 text-foreground flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-colors"
           >
             <Link href="/admin/facilities">
               <Icon name="apartment" className="text-[16px]" />

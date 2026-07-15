@@ -14,10 +14,10 @@ export const metadata: Metadata = {
 export default async function FacilitiesDirectoryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string; limit?: string }>;
+  searchParams: Promise<{ q?: string; page?: string; limit?: string; status?: string }>;
 }) {
   await connection();
-  const { q, page, limit } = await searchParams;
+  const { q, page, limit, status } = await searchParams;
 
   const counts = await getFacilityCounts();
 
@@ -51,12 +51,12 @@ export default async function FacilitiesDirectoryPage({
   return (
     <AdminPageShell
       title="Objekti"
-      subtitle="Manage all waterpark entities, onboard new locations, and overview global status."
+      subtitle="Upravljajte objektima, dodajte nove lokacije i pratite globalni status."
       cta={{ label: "Novi objekat", href: "/admin/facilities/new", icon: "add" }}
       stats={stats}
     >
-      <Suspense key={`${q}-${page}-${limit}`} fallback={<TableSkeleton />}>
-        <FacilitiesList q={q} page={page} limit={limit} />
+      <Suspense key={`${q}-${page}-${limit}-${status}`} fallback={<TableSkeleton />}>
+        <FacilitiesList q={q} page={page} limit={limit} status={status} />
       </Suspense>
     </AdminPageShell>
   );

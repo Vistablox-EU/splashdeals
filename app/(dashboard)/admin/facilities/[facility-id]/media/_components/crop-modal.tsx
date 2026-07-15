@@ -219,7 +219,7 @@ export function CropModal({
                   type="button"
                   onClick={() => setAspectRatio(ratio.id as typeof aspectRatio)}
                   className={cn(
-                    "rounded-lg py-1.5 text-[9px] font-black tracking-widest uppercase transition-all",
+                    "rounded-lg py-1.5 text-[9px] font-black tracking-widest uppercase transition-colors",
                     aspectRatio === ratio.id
                       ? "border-primary bg-primary/20 text-primary border"
                       : "bg-muted/10 border-border/50 text-muted-foreground hover:text-foreground border",

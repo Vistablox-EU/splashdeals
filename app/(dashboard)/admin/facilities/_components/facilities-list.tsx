@@ -1,40 +1,49 @@
 import { prisma } from "@/app/(server)/lib/prisma";
-import { DataTable } from "./data-table";
+import { DataTable } from "./table/data-table";
 import { columns } from "./columns";
-import { Prisma } from "@prisma/client";
+import { FacilityStatus, Prisma } from "@prisma/client";
 
 interface FacilitiesListProps {
   q?: string;
   page?: string;
   limit?: string;
+  status?: string;
 }
 
+const STATUS_VALUES = new Set<string>(Object.values(FacilityStatus));
+
 /**
- * 🌊 Facilities Registry Extraction
- * Server-side pagination and filtering to minimize bandwidth.
+ * Server-side pagination + search + status filter for the facilities registry.
  */
-export async function FacilitiesList({ q, page, limit }: FacilitiesListProps) {
+export async function FacilitiesList({ q, page, limit, status }: FacilitiesListProps) {
   const currentPage = Number(page) || 1;
   const pageSize = Number(limit) || 15;
   const skip = (currentPage - 1) * pageSize;
 
-  const filter: Prisma.FacilityWhereInput = q
-    ? {
-        OR: [
-          { name: { contains: q, mode: "insensitive" } },
-          { slug: { contains: q, mode: "insensitive" } },
-          { city: { contains: q, mode: "insensitive" } },
-        ],
-      }
-    : {};
+  const and: Prisma.FacilityWhereInput[] = [];
 
-  // 🚀 Parallel Execution: Data + Total Count
-  const [partners, totalCount] = await Promise.all([
+  if (q) {
+    and.push({
+      OR: [
+        { name: { contains: q, mode: "insensitive" } },
+        { slug: { contains: q, mode: "insensitive" } },
+        { city: { contains: q, mode: "insensitive" } },
+      ],
+    });
+  }
+
+  if (status && STATUS_VALUES.has(status)) {
+    and.push({ status: status as FacilityStatus });
+  }
+
+  const filter: Prisma.FacilityWhereInput = and.length ? { AND: and } : {};
+
+  const [facilities, totalCount] = await Promise.all([
     prisma.facility.findMany({
       where: filter,
       orderBy: { createdAt: "desc" },
       take: pageSize,
-      skip: skip,
+      skip,
     }),
     prisma.facility.count({ where: filter }),
   ]);
@@ -42,11 +51,12 @@ export async function FacilitiesList({ q, page, limit }: FacilitiesListProps) {
   return (
     <DataTable
       columns={columns}
-      data={partners}
+      data={facilities}
       totalCount={totalCount}
       currentPage={currentPage}
       pageSize={pageSize}
       initialQ={q}
+      initialStatus={status && STATUS_VALUES.has(status) ? status : "all"}
     />
   );
 }

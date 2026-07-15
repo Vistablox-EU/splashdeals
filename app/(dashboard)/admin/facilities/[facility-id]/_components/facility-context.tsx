@@ -2,12 +2,23 @@
 
 import * as React from "react";
 
-type FacilityData = {
+export type FacilityData = {
   id: string;
   name: string;
   status: string;
   slug: string;
   category: string;
+  streetName?: string;
+  streetNumber?: string;
+  city?: string;
+  lat?: number | null;
+  lng?: number | null;
+  counts?: {
+    ticketCategories: number;
+    media: number;
+    amenities: number;
+    faq: number;
+  };
 };
 
 const FacilityContext = React.createContext<FacilityData | null>(null);

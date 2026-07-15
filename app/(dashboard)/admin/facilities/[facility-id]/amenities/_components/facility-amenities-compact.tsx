@@ -39,27 +39,7 @@ import {
   deleteGlobalAmenityAction,
 } from "@/app/(server)/actions/amenity-actions";
 
-// 🎨 Icon Resolver for premium, curated visual styling
-const AMENITY_MATERIAL_ICON_MAP: Record<string, string> = {
-  Waves: "waves",
-  Droplets: "water_drop",
-  Sun: "wb_sunny",
-  Flame: "local_fire_department",
-  ShieldAlert: "verified_user",
-  Clock: "schedule",
-  Utensils: "restaurant",
-  Wifi: "wifi",
-  Coffee: "local_cafe",
-  Wind: "air",
-  wind: "air",
-  Car: "directions_car",
-  car: "directions_car",
-};
-
-function AmenityIcon({ iconName, className }: { iconName: string; className?: string }) {
-  const symbol = AMENITY_MATERIAL_ICON_MAP[iconName] || "circle";
-  return <Icon name={symbol} className={className} />;
-}
+import { AmenityIcon } from "./amenity-icon";
 
 interface AmenityItem {
   id: string;
@@ -486,7 +466,7 @@ export function CompactAmenitiesTable({
                             >
                               <Icon
                                 name="star"
-                                className={`text-[16px] transition-all duration-200 ${
+                                className={`text-[16px] transition-colors duration-200 ${
                                   item.isFeatured
                                     ? "text-primary fill-primary drop-shadow-warning/30 scale-110"
                                     : "text-muted-foreground/60 hover:text-muted-foreground"

@@ -93,7 +93,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                   </FormLabel>
                   <div
                     className={cn(
-                      "rounded-md border px-1.5 py-0.5 text-[8px] font-black tracking-widest uppercase transition-all duration-500",
+                      "rounded-md border px-1.5 py-0.5 text-[8px] font-black tracking-widest uppercase transition-colors duration-500",
                       slugAvailability === "loading" &&
                         "bg-muted/10 border-muted/20 text-muted-foreground",
                       slugAvailability === "available" &&
@@ -156,7 +156,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
           <Icon name="bar_chart" className="text-primary size-3.5 opacity-50" />
         </header>
 
-        <div className="bg-background/80 border-border/50 group/serp hover:border-primary/20 relative overflow-hidden rounded-xl border p-4 transition-all">
+        <div className="bg-background/80 border-border/50 group/serp hover:border-primary/20 relative overflow-hidden rounded-xl border p-4 transition-colors">
           <div className="mb-1.5 flex items-center gap-2 opacity-60">
             <Icon name="language" className="text-primary text-[12px]" />
             <span className="text-muted-foreground font-mono text-[9px]">
