@@ -930,6 +930,8 @@
     "retry": "Pokušaj ponovo",
     "retry_aria": "Pokušaj ponovo",
     "main_nav_aria": "Glavna navigacija",
+    "load_failed": "Učitavanje navigacije nije uspelo",
+    "load_failed_generic": "Učitavanje menija nije uspelo",
     "badge_new": "Novo",
     "badge_sale": "Akcija",
     "badge_popular": "Popularno",
@@ -955,7 +957,8 @@
   },
   "theme": {
     "switch_light": "Prebaci na svetlu temu",
-    "switch_dark": "Prebaci na tamnu temu"
+    "switch_dark": "Prebaci na tamnu temu",
+    "toggle_aria": "Prebaci temu"
   },
   "actions": {
     "checkin": {

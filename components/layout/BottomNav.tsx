@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { useServerCart } from "@/hooks/use-server-cart";
 import { getClientDictionary } from "@/lib/client-dictionaries";
+import { isBottomNavActive } from "@/lib/layout/bottom-nav-active";
 import type { Dict } from "@/lib/types";
 
 const SCROLL_THRESHOLD = 10;
@@ -52,12 +53,6 @@ export function BottomNav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isActive = (href: string): boolean => {
-    if (href === "/") return pathname === "/";
-    if (href.startsWith("/#")) return pathname === href.split("#")[0];
-    return pathname.startsWith(href);
-  };
-
   return (
     <nav
       className="border-border/50 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-0 z-[998] border-t backdrop-blur-[40px] transition-transform duration-300 ease-in-out md:hidden"
@@ -66,13 +61,13 @@ export function BottomNav() {
     >
       <div className="mx-auto flex h-16 max-w-lg items-center justify-around px-2">
         {NAV_ITEMS.map((item) => {
-          const active = isActive(item.href);
+          const active = isBottomNavActive(pathname, item.href);
 
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex min-h-[44px] min-w-[56px] flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1 transition-all duration-200 ${
+              className={`relative flex min-h-[44px] min-w-[56px] flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1 transition-colors duration-200 ${
                 active
                   ? "text-primary"
                   : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-muted/30"

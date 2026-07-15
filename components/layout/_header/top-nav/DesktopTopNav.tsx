@@ -7,9 +7,9 @@ import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
 import { AccountButton } from "./AccountButton";
 import { SearchBox } from "@/app/(web)/_components/SearchBox";
+import type { Dict } from "@/lib/types";
 
 interface DesktopTopNavProps {
-  cities: { id: string; name: string; slug: string }[];
   mounted: boolean;
   totalItems: number;
   isOnline: boolean;
@@ -18,7 +18,7 @@ interface DesktopTopNavProps {
   isReducedMotion: boolean;
   isHovered: boolean;
   setIsHovered: (v: boolean) => void;
-  dict: Record<string, unknown>;
+  dict: Dict;
 }
 
 export function DesktopTopNav({
@@ -47,6 +47,7 @@ export function DesktopTopNav({
             isReducedMotion={isReducedMotion}
             isHovered={isHovered}
             setIsHovered={setIsHovered}
+            dict={dict}
           />
         </div>
 
@@ -57,12 +58,13 @@ export function DesktopTopNav({
           </div>
           <MegaMenu side="right" />
           <AccountButton dict={dict} />
-          <ThemeToggle />
+          <ThemeToggle dict={dict} />
           <CartButton
             isOnline={isOnline}
             mounted={mounted}
             totalItems={totalItems}
             openCart={openCart}
+            dict={dict}
           />
         </div>
       </nav>

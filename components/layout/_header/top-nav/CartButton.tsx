@@ -2,7 +2,8 @@
 
 import React from "react";
 import { Icon } from "@/components/ui/Icon";
-import { LiquidButton } from "@/components/ui/LiquidButton";
+import { Button } from "@/components/ui/button";
+import { OfflineIndicator } from "./OfflineIndicator";
 import { cn } from "@/lib/utils";
 import type { Dict } from "@/lib/types";
 
@@ -16,42 +17,41 @@ interface CartButtonProps {
 
 export function CartButton({ isOnline, mounted, totalItems, openCart, dict }: CartButtonProps) {
   // Mobile uses BottomNav → /cart as the only cart entry. Desktop keeps the drawer trigger.
+  // Empty cart still shows the control so desktop users can open the empty drawer.
+  const label = dict?.nav?.checkout ?? "Korpa";
+  const aria =
+    mounted && totalItems > 0 ? `${label} - ${totalItems}` : label;
+
   return (
     <div className="relative hidden items-center gap-2 md:flex">
-      {/* Offline Indicator — CSS transition on mount/unmount */}
-      {!isOnline && (
-        <div className="bg-destructive/10 border-destructive/20 text-destructive flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[9px] font-black tracking-wider uppercase shadow-lg transition-all duration-300">
-          <Icon name="cloud_off" className="animate-pulse text-[12px]" />
-          {dict?.nav?.offline ?? "Nema Mreže"}
-        </div>
-      )}
+      <OfflineIndicator isOnline={isOnline} dict={dict} />
 
-      {mounted && totalItems > 0 ? (
-        <LiquidButton
-          variant="primary"
-          size="sm"
-          className={cn(
-            "group h-11 px-5 transition-all",
-            !isOnline && "cursor-not-allowed opacity-50 grayscale",
-          )}
-          onClick={() => {
-            if (!isOnline) return;
-            openCart();
-            if ("vibrate" in navigator) navigator.vibrate(10);
-          }}
-          aria-label={`${dict?.nav?.checkout ?? "Korpa"} - ${totalItems}`}
-        >
-          <div className="relative">
-            <Icon name="shopping_bag" className="text-[16px]" />
-            <span className="text-background bg-background absolute -top-3 -right-3 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-black shadow-lg transition-all duration-300">
-              {totalItems}
+      <Button
+        variant={totalItems > 0 ? "default" : "ghost"}
+        size="sm"
+        className={cn(
+          "group h-11 min-h-11 gap-2 px-4 font-medium transition-colors",
+          !isOnline && "cursor-not-allowed opacity-50 grayscale",
+          !mounted && "opacity-70",
+        )}
+        onClick={() => {
+          if (!isOnline) return;
+          openCart();
+          if ("vibrate" in navigator) navigator.vibrate(10);
+        }}
+        disabled={!mounted || !isOnline}
+        aria-label={aria}
+      >
+        <div className="relative">
+          <Icon name="shopping_bag" className="text-[16px]" />
+          {mounted && totalItems > 0 && (
+            <span className="bg-primary-foreground text-primary absolute -top-3 -right-3 flex h-4 min-w-4 items-center justify-center rounded-full px-0.5 text-[10px] font-black shadow-sm transition-opacity duration-300">
+              {totalItems > 99 ? "99+" : totalItems}
             </span>
-          </div>
-          <span className="hidden sm:inline">{dict?.nav?.checkout ?? "Korpa"}</span>
-        </LiquidButton>
-      ) : (
-        <div className="invisible h-11 w-[106px]" />
-      )}
+          )}
+        </div>
+        <span className="hidden sm:inline">{label}</span>
+      </Button>
     </div>
   );
 }

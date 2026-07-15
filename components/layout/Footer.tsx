@@ -1,18 +1,24 @@
 "use client";
+
 import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useActionState } from "react";
 import { subscribeToNewsletter } from "@/app/(server)/lib/actions/newsletter";
 import { getClientDictionary } from "@/lib/client-dictionaries";
+import { cn } from "@/lib/utils";
 import type { Dict } from "@/lib/types";
 
 /**
  * 🌊 Footer Component
  * Integrated with Aquastream design system.
+ *
+ * Client shell loads dictionary + hosts hover/newsletter islands.
+ * Brand logo uses the same asset as the header.
  */
 export function Footer() {
   const [isHovered, setIsHovered] = React.useState(false);
@@ -33,15 +39,27 @@ export function Footer() {
           {/* Logo & Vision Section */}
           <div className="space-y-6">
             <Link
-              href={``}
+              href="/"
               className="group animate-float mb-4 inline-flex items-center tracking-[-0.08em] select-none [animation-delay:0.5s] hover:[animation-play-state:paused]"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
+              aria-label={dict?.brand?.logo_aria ?? "Splashdeals početna"}
             >
               <div className="group/logo relative overflow-hidden">
-                <span className="text-splash relative z-10 text-3xl font-black uppercase italic">
-                  Splash
-                </span>
+                <Image
+                  src="/logo-splashdeals.webp"
+                  alt={
+                    dict?.brand?.logo_alt ??
+                    "SplashDeals - digitalne ulaznice za vodene parkove Srbija"
+                  }
+                  width={220}
+                  height={74}
+                  className={cn(
+                    "h-10 w-auto object-contain sm:h-12",
+                    "transition-[transform,filter] duration-300",
+                    isHovered && "scale-105 brightness-110",
+                  )}
+                />
                 {/* ⚡ Composited Glint Overlay */}
                 <div className="group-hover/logo:animate-logo-shimmer pointer-events-none absolute inset-0 z-20 translate-x-[-100%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               </div>
@@ -62,22 +80,19 @@ export function Footer() {
                         "--y": `${((i * 41) % 60) - 30}px`,
                       } as React.CSSProperties
                     }
-                    className="absolute top-1/2 left-1/2 h-[5px] w-[5px] rounded-full bg-cyan-400 opacity-0 blur-[1px]"
+                    className="bg-primary absolute top-1/2 left-1/2 h-[5px] w-[5px] rounded-full opacity-0 blur-[1px]"
                   />
                 ))}
                 {/* Ripple ring */}
                 <div
                   style={{ animation: "splash-ripple 0.6s ease-out forwards" }}
-                  className="absolute inset-0 rounded-xl bg-cyan-400/30 opacity-0 blur-lg"
+                  className="bg-primary/30 absolute inset-0 rounded-xl opacity-0 blur-lg"
                 />
               </div>
 
-              <span className="text-foreground group-hover:text-primary -ml-1 text-3xl font-black uppercase italic transition-colors">
-                deals
-              </span>
               <div className="relative mt-3 ml-1">
-                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-500" />
-                <div className="absolute inset-0 h-1.5 w-1.5 animate-ping rounded-full bg-cyan-400 opacity-50 blur-[2px]" />
+                <div className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full" />
+                <div className="bg-primary/50 absolute inset-0 h-1.5 w-1.5 animate-ping rounded-full opacity-50 blur-[2px]" />
               </div>
             </Link>
             <p className="text-muted-foreground max-w-xs text-sm leading-relaxed font-medium">
@@ -162,7 +177,7 @@ export function Footer() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-muted/50 border-border text-muted-foreground hover:text-primary hover:bg-muted hover:border-primary/30 flex h-11 w-11 items-center justify-center rounded-lg border transition-all duration-300"
+                  className="bg-muted/50 border-border text-muted-foreground hover:text-primary hover:bg-muted hover:border-primary/30 flex h-11 w-11 items-center justify-center rounded-lg border transition-colors duration-300"
                   aria-label={label}
                 >
                   <IconComponent className="h-5 w-5" />
@@ -195,7 +210,7 @@ export function Footer() {
                   >
                     <Icon
                       name="arrow_forward"
-                      className="mr-2 -ml-5 text-[12px] opacity-0 transition-all group-hover:ml-0 group-hover:opacity-100"
+                      className="mr-2 -ml-5 text-[12px] opacity-0 transition-[margin,opacity] group-hover:ml-0 group-hover:opacity-100"
                     />
                     {item.name}
                   </Link>
@@ -222,7 +237,7 @@ export function Footer() {
                   >
                     <Icon
                       name="arrow_forward"
-                      className="mr-2 -ml-5 text-[12px] opacity-0 transition-all group-hover:ml-0 group-hover:opacity-100"
+                      className="mr-2 -ml-5 text-[12px] opacity-0 transition-[margin,opacity] group-hover:ml-0 group-hover:opacity-100"
                     />
                     {item.name}
                   </Link>
@@ -292,8 +307,8 @@ export function Footer() {
               <span>{dict?.footer?.instant_delivery || "Trenutna Isporuka"}</span>
             </div>
             <div className="hidden items-center gap-2 sm:flex">
-              <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-              <span className="text-[10px] font-black tracking-widest text-emerald-500 uppercase">
+              <div className="bg-primary h-2 w-2 animate-pulse rounded-full shadow-[0_0_8px_color-mix(in_oklab,var(--primary)_50%,transparent)]" />
+              <span className="text-primary text-[10px] font-black tracking-widest uppercase">
                 {dict?.footer?.marketplace_online || "Marketplace na Mreži"}
               </span>
             </div>
@@ -358,7 +373,7 @@ function NewsletterForm({ dict }: { dict: Dict | null }) {
           type="submit"
           size="sm"
           disabled={isPending}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-11 min-w-[80px] items-center justify-center px-6 text-xs font-black tracking-tighter uppercase transition-all disabled:opacity-50"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-11 min-w-[80px] items-center justify-center px-6 text-xs font-black tracking-tighter uppercase transition-opacity disabled:opacity-50"
           aria-label={dict?.footer?.newsletter_aria || "Pretplatite se na obaveštenja"}
         >
           {isPending ? (
@@ -372,9 +387,10 @@ function NewsletterForm({ dict }: { dict: Dict | null }) {
       </div>
       {state?.message && (
         <p
-          className={`mt-2 text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${
-            state.success ? "text-emerald-400" : "text-red-400"
-          }`}
+          className={cn(
+            "mt-2 text-[10px] font-black tracking-widest uppercase transition-opacity duration-300",
+            state.success ? "text-primary" : "text-destructive",
+          )}
         >
           {state.message}
         </p>

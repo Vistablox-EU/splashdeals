@@ -4,7 +4,6 @@ import { NavigationStructuredData } from "@/components/layout/_header/Navigation
 import { BreadcrumbBar } from "@/components/layout/BreadcrumbBar";
 import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
 import { getDictionary } from "@/lib/dictionaries";
-import { getActiveCities } from "@/app/(server)/lib/data/discovery";
 import { prisma } from "@/app/(server)/lib/prisma";
 import dynamic from "next/dynamic";
 import { CartLoader } from "@/components/cart/CartLoader";
@@ -45,7 +44,6 @@ async function WebLayoutContent({
   modal?: React.ReactNode;
 }) {
   const dict = await getDictionary();
-  const cities = await getActiveCities();
 
   // Pre-fetch facility map for client-side breadcrumb resolution
   const facilities = await prisma.facility.findMany({
@@ -67,7 +65,8 @@ async function WebLayoutContent({
       </a>
       <GlobalAmbient />
       <NavigationStructuredData />
-      <Header dict={dict} cities={cities} />
+      {/* Stacking contract: Header z-999 · Breadcrumb sticky z-100 · BottomNav z-998 · facility sticky cart z-999 */}
+      <Header dict={dict} />
 
       {/* 🧭 Breadcrumb bar — always visible just below the top nav header */}
       <BreadcrumbBar facilityMap={facilityMap} />

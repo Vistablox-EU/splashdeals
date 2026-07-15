@@ -3,7 +3,7 @@
 import { useTheme } from "next-themes";
 import * as React from "react";
 import { Icon } from "@/components/ui/Icon";
-import { LiquidButton } from "@/components/ui/LiquidButton";
+import { Button } from "@/components/ui/button";
 import type { Dict } from "@/lib/types";
 
 interface ThemeToggleProps {
@@ -19,27 +19,29 @@ export function ThemeToggle({ dict }: ThemeToggleProps) {
     setMounted(true);
   }, []);
 
+  const toggleAria = dict?.theme?.toggle_aria ?? "Prebaci temu";
+
   if (!mounted) {
     return (
-      <LiquidButton
+      <Button
         variant="ghost"
         size="sm"
-        className="h-11 px-4"
-        aria-label="Toggle theme"
+        className="h-11 min-h-11 px-4 transition-colors"
+        aria-label={toggleAria}
         disabled
       >
         <span className="size-[16px]" />
-      </LiquidButton>
+      </Button>
     );
   }
 
   const isDark = theme === "dark";
 
   return (
-    <LiquidButton
+    <Button
       variant="ghost"
       size="sm"
-      className="h-11 px-4"
+      className="h-11 min-h-11 px-4 transition-colors"
       aria-label={
         isDark
           ? (dict?.theme?.switch_light ?? "Prebaci na svetlu temu")
@@ -48,6 +50,6 @@ export function ThemeToggle({ dict }: ThemeToggleProps) {
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
       <Icon name={isDark ? "light_mode" : "dark_mode"} className="text-primary text-[16px]" />
-    </LiquidButton>
+    </Button>
   );
 }

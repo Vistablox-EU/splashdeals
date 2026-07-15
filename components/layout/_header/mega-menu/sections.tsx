@@ -78,7 +78,7 @@ export function NavItemLink({
   const isDisabled = !href || href === "#";
 
   const linkContent = (
-    <div className="group flex w-full flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none">
+    <div className="group flex w-full flex-row items-start gap-2 rounded-sm p-2 text-sm transition-colors">
       {md.accentColor && (
         <span
           className="mt-0.5 w-0.5 shrink-0 self-stretch rounded-full"
@@ -135,7 +135,11 @@ export function NavItemLink({
       <NavigationMenuLink asChild>
         <Link
           href={href}
-          className={cn("flex", isFeatured && "bg-accent/30", isCta && "text-primary font-medium")}
+          className={cn(
+            "flex rounded-sm focus-visible:ring-ring/50 focus-visible:ring-3 focus-visible:outline-none",
+            isFeatured && "bg-accent/30",
+            isCta && "text-primary font-medium",
+          )}
           {...(isExternal ? { target: "_blank", rel: "noopener noreferrer nofollow" } : {})}
           prefetch={true}
           title={desc || title}
@@ -159,7 +163,7 @@ export function MenuDotLink({
   const isDisabled = !href || href === "#";
 
   const dotLinkContent = (
-    <span className="group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-all outline-none">
+    <span className="group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors">
       <span className="bg-muted-foreground/40 size-1.5 shrink-0 rounded-full" aria-hidden="true" />
       <span className="flex-1 truncate">{label}</span>
       {count != null && count > 0 && (
@@ -181,7 +185,12 @@ export function MenuDotLink({
   return (
     <li role="none">
       <NavigationMenuLink asChild>
-        <Link href={href} className="flex" prefetch={true} title={label}>
+        <Link
+          href={href}
+          className="focus-visible:ring-ring/50 flex rounded-sm focus-visible:ring-3 focus-visible:outline-none"
+          prefetch={true}
+          title={label}
+        >
           {dotLinkContent}
         </Link>
       </NavigationMenuLink>

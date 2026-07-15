@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from "react";
 
+interface NetworkInformationLike {
+  saveData?: boolean;
+}
+
+interface NavigatorWithConnection extends Navigator {
+  connection?: NetworkInformationLike;
+  mozConnection?: NetworkInformationLike;
+  webkitConnection?: NetworkInformationLike;
+}
+
 interface UseHeaderScrollReturn {
   isOnline: boolean;
   isTabActive: boolean;
@@ -46,11 +56,8 @@ export function useHeaderScroll(): UseHeaderScrollReturn {
       document.addEventListener("visibilitychange", handleVisibility);
 
       // 4. Network Information API (Save Data Protocol)
-
-      const connection =
-        (navigator as any).connection ||
-        (navigator as any).mozConnection ||
-        (navigator as any).webkitConnection;
+      const nav = navigator as NavigatorWithConnection;
+      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
       if (connection?.saveData) Promise.resolve().then(() => setIsReducedMotion(true));
 
       // 5. Prefers Reduced Motion Media API

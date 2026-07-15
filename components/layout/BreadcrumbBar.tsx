@@ -118,13 +118,13 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
   const isLastItem = (idx: number) => idx === items.length - 1;
 
   return (
-    <div className="bg-background/98 sticky top-16 z-[100] w-full border-b border-white/5 backdrop-blur-[40px]">
+    <div className="bg-background/98 sticky top-16 z-[100] w-full border-b border-border/40 backdrop-blur-[40px]">
       <div className="mx-auto flex h-10 w-full max-w-7xl items-center gap-0 px-4 md:px-12">
         {/* Back button */}
         {backHref && (
           <Link
             href={backHref}
-            className="text-muted-foreground hover:text-foreground mr-3 flex h-11 min-w-11 shrink-0 items-center justify-center border-r border-white/5 pr-3 transition-colors"
+            className="text-muted-foreground hover:text-foreground mr-3 flex h-11 min-w-11 shrink-0 items-center justify-center border-r border-border/40 pr-3 transition-colors"
             aria-label={dict?.breadcrumb?.back_aria || "Nazad"}
           >
             <Icon name="arrow_back" className="text-[16px]" />
@@ -139,14 +139,14 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
               {idx > 0 && (
                 <Icon
                   name="keyboard_arrow_right"
-                  className="mx-1.5 shrink-0 text-[12px] text-slate-600"
+                  className="text-muted-foreground mx-1.5 shrink-0 text-[12px]"
                 />
               )}
               {item.href && !isLastItem(idx) ? (
                 item.href === "/" ? (
                   <Link
                     href={item.href}
-                    className="flex shrink-0 items-center gap-1 text-[10px] font-bold tracking-wider text-slate-400 uppercase transition-colors hover:text-cyan-400"
+                    className="text-muted-foreground hover:text-primary flex shrink-0 items-center gap-1 text-[10px] font-bold tracking-wider uppercase transition-colors"
                     aria-label={item.label}
                   >
                     <Icon name="home" className="text-[12px]" />
@@ -155,13 +155,13 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
                 ) : (
                   <Link
                     href={item.href}
-                    className="shrink-0 text-[10px] font-bold tracking-wider whitespace-nowrap text-slate-400 uppercase transition-colors hover:text-cyan-400"
+                    className="text-muted-foreground hover:text-primary shrink-0 text-[10px] font-bold tracking-wider whitespace-nowrap uppercase transition-colors"
                   >
                     {item.label}
                   </Link>
                 )
               ) : (
-                <span className="shrink-0 text-[10px] font-black tracking-wider whitespace-nowrap text-cyan-400 uppercase">
+                <span className="text-primary shrink-0 text-[10px] font-black tracking-wider whitespace-nowrap uppercase">
                   {item.label}
                 </span>
               )}
