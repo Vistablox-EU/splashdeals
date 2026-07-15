@@ -14,15 +14,17 @@ import {
 import { toast } from "sonner";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
 import { updatePrice, deletePrice } from "../_lib/ticket-admin-actions";
-import { DAY_LABELS, TIME_LABELS } from "../_lib/constants";
+import { DAY_LABELS, DAY_OPTIONS, TIME_LABELS, TIME_OPTIONS } from "../_lib/constants";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface PriceCardProps {
   price: SerializedCategory["products"][number]["prices"][number];
@@ -35,6 +37,7 @@ interface PriceCardProps {
 export function PriceCard({ price, facilityId, onDeleted, onSaved }: PriceCardProps) {
   const [editing, setEditing] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+  const [saving, setSaving] = React.useState(false);
   const [form, setForm] = React.useState({
     label: price.label ?? "",
     price: price.price.toString(),
@@ -46,8 +49,15 @@ export function PriceCard({ price, facilityId, onDeleted, onSaved }: PriceCardPr
   const handleSave = async () => {
     const parsedPrice = parseFloat(form.price);
     const parsedOriginal = form.originalPrice ? parseFloat(form.originalPrice) : null;
-    if (isNaN(parsedPrice) || parsedPrice < 0) return;
-    if (parsedOriginal !== null && (isNaN(parsedOriginal) || parsedOriginal < 0)) return;
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      toast.error("Unesite ispravnu cenu");
+      return;
+    }
+    if (parsedOriginal !== null && (isNaN(parsedOriginal) || parsedOriginal < 0)) {
+      toast.error("Unesite ispravnu originalnu cenu");
+      return;
+    }
+    setSaving(true);
     try {
       await updatePrice(price.id, facilityId, {
         label: form.label || null,
@@ -68,11 +78,13 @@ export function PriceCard({ price, facilityId, onDeleted, onSaved }: PriceCardPr
       toast.success("Cena sačuvana");
     } catch {
       toast.error("Greška pri čuvanju cene");
+    } finally {
+      setSaving(false);
     }
   };
 
-  const dayLabel = DAY_LABELS[form.dayType] ?? form.dayType;
-  const timeLabel = TIME_LABELS[form.timeSlot] ?? form.timeSlot;
+  const dayLabel = DAY_LABELS[price.dayType ?? form.dayType] ?? form.dayType;
+  const timeLabel = TIME_LABELS[price.timeSlot ?? form.timeSlot] ?? form.timeSlot;
 
   return (
     <div className="border-border bg-muted/5 hover:border-primary/20 rounded-xl border p-4 transition-colors">
@@ -129,15 +141,11 @@ export function PriceCard({ price, facilityId, onDeleted, onSaved }: PriceCardPr
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border-border">
-                  <SelectItem value="ALL" className="text-xs">
-                    Svi dani
-                  </SelectItem>
-                  <SelectItem value="WEEKDAY" className="text-xs">
-                    Radni dan
-                  </SelectItem>
-                  <SelectItem value="WEEKEND" className="text-xs">
-                    Vikend
-                  </SelectItem>
+                  {DAY_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                      {opt.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -153,15 +161,11 @@ export function PriceCard({ price, facilityId, onDeleted, onSaved }: PriceCardPr
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border-border">
-                  <SelectItem value="FULL_DAY" className="text-xs">
-                    Ceo dan
-                  </SelectItem>
-                  <SelectItem value="AFTER_16H" className="text-xs">
-                    Posle 16h
-                  </SelectItem>
-                  <SelectItem value="THREE_HOUR" className="text-xs">
-                    3 sata
-                  </SelectItem>
+                  {TIME_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                      {opt.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -172,11 +176,12 @@ export function PriceCard({ price, facilityId, onDeleted, onSaved }: PriceCardPr
               variant="outline"
               className="h-8 text-[10px]"
               onClick={() => setEditing(false)}
+              disabled={saving}
             >
               Otkaži
             </Button>
-            <Button size="sm" className="h-8 text-[10px]" onClick={handleSave}>
-              Sačuvaj
+            <Button size="sm" className="h-8 text-[10px]" onClick={handleSave} disabled={saving}>
+              {saving ? "..." : "Sačuvaj"}
             </Button>
           </div>
         </div>
@@ -234,37 +239,37 @@ export function PriceCard({ price, facilityId, onDeleted, onSaved }: PriceCardPr
         </>
       )}
 
-      {/* ─── Delete Confirmation Dialog ──────────────────── */}
-      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Obriši cenu</DialogTitle>
-            <DialogDescription>
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Obriši cenu</AlertDialogTitle>
+            <AlertDialogDescription>
               Da li ste sigurni da želite da obrišete ovu cenu od{" "}
               {price.price.toLocaleString("sr-RS")} RSD? Ova radnja je nepovratna.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
-              Otkaži
-            </Button>
-            <Button
-              variant="destructive"
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Otkaži</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={async () => {
-                await deletePrice(price.id, facilityId);
-                setShowDeleteConfirm(false);
-                toast.success("Cena obrisana", {
-                  description: `Cena od ${price.price.toLocaleString("sr-RS")} RSD je uspešno obrisana.`,
-                  duration: 2000,
-                });
-                onDeleted();
+                try {
+                  await deletePrice(price.id, facilityId);
+                  toast.success("Cena obrisana", {
+                    description: `Cena od ${price.price.toLocaleString("sr-RS")} RSD je uspešno obrisana.`,
+                    duration: 2000,
+                  });
+                  onDeleted();
+                } catch {
+                  toast.error("Brisanje cene nije uspelo");
+                }
               }}
             >
               Obriši
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

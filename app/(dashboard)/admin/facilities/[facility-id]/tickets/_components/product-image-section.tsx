@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
 import { toast } from "sonner";
+import {
+  uploadProductImage,
+  deleteProductImage,
+  renameProductImage,
+} from "../_lib/ticket-image-actions";
 
 interface Props {
   productId: string;
@@ -33,13 +38,15 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const { uploadProductImage } = await import("../_lib/ticket-image-actions");
       const result = await uploadProductImage(productId, formData);
       if (result.success && result.url) {
         onImageChange(result.url);
+        toast.success("Slika otpremljena");
       } else {
-        toast.error(result.error || "Upload failed");
+        toast.error(result.error || "Otpremanje nije uspelo");
       }
+    } catch {
+      toast.error("Otpremanje nije uspelo");
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
@@ -48,24 +55,30 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
 
   const handleDelete = async () => {
     if (!imageUrl) return;
-    const { deleteProductImage } = await import("../_lib/ticket-image-actions");
-    const result = await deleteProductImage(productId, imageUrl);
-    if (result.success) onImageChange(null);
-    else toast.error(result.error || "Delete failed");
+    try {
+      const result = await deleteProductImage(productId, imageUrl);
+      if (result.success) {
+        onImageChange(null);
+        toast.success("Slika obrisana");
+      } else toast.error(result.error || "Brisanje slike nije uspelo");
+    } catch {
+      toast.error("Brisanje slike nije uspelo");
+    }
   };
 
   const handleRename = async () => {
     if (!imageUrl || !newName.trim()) return;
     setRenaming(true);
     try {
-      const { renameProductImage } = await import("../_lib/ticket-image-actions");
       const result = await renameProductImage(productId, imageUrl, newName.trim());
       if (result.success && result.url) {
         onImageChange(result.url);
-        setNewName("");
+        toast.success("Slika preimenovana");
       } else {
-        toast.error(result.error || "Rename failed");
+        toast.error(result.error || "Preimenovanje nije uspelo");
       }
+    } catch {
+      toast.error("Preimenovanje nije uspelo");
     } finally {
       setRenaming(false);
     }
@@ -73,12 +86,15 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
 
   return (
     <div className="border-border/50 space-y-2 border-b p-3">
+      {/* Hidden file input is the standard pattern for shadcn upload triggers */}
       <input
         ref={fileRef}
         type="file"
         accept="image/*"
-        className="hidden"
+        className="sr-only"
         onChange={handleUpload}
+        aria-hidden
+        tabIndex={-1}
       />
       <div className="flex items-center justify-between">
         <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
@@ -91,7 +107,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
             className="bg-primary/10 text-primary hover:bg-primary/20 h-7 gap-1 rounded-lg px-3 text-[10px] font-bold transition-colors disabled:opacity-50"
-            aria-label="Add image"
+            aria-label="Dodaj sliku"
           >
             <Icon name="add_photo" className="text-[12px]" />
             {uploading ? "Otpremanje..." : "Dodaj sliku"}
@@ -100,7 +116,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
       </div>
       {imageUrl ? (
         <div>
-          <div className="group border-border/50 relative mb-2 overflow-hidden rounded-lg border">
+          <div className="group border-border/50 relative mb-2 h-32 w-full overflow-hidden rounded-lg border">
             <NextImage
               src={imageUrl}
               alt={productTitle}
@@ -108,14 +124,14 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 200px"
             />
-            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 opacity-0 transition-colors group-hover:bg-black/40 group-hover:opacity-100">
+            <div className="bg-background/0 group-hover:bg-background/60 absolute inset-0 flex items-center justify-center gap-2 opacity-0 transition-colors group-hover:opacity-100">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
                 className="text-foreground bg-background/90 hover:bg-background h-8 w-8 rounded-full transition-colors"
-                aria-label="Replace image"
+                aria-label="Zameni sliku"
               >
                 <Icon name="refresh" className="text-[14px]" />
               </Button>
@@ -124,7 +140,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
                 size="icon"
                 onClick={handleDelete}
                 className="text-destructive bg-background/90 hover:bg-background h-8 w-8 rounded-full transition-colors"
-                aria-label="Delete image"
+                aria-label="Obriši sliku"
               >
                 <Icon name="delete" className="text-[14px]" />
               </Button>
@@ -135,7 +151,8 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Novi naziv fajla..."
-              className="bg-muted/30 border-border text-foreground focus:border-primary/40 h-8 flex-1 rounded-lg border px-2 text-xs outline-none"
+              aria-label="Naziv fajla slike"
+              className="bg-muted/30 border-border text-foreground focus-visible:border-primary/40 focus-visible:ring-primary/30 h-8 flex-1 rounded-lg border px-2 text-xs focus-visible:ring-2"
               onKeyDown={(e) => e.key === "Enter" && handleRename()}
             />
             <Button

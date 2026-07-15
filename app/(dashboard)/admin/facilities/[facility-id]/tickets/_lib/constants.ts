@@ -2,6 +2,7 @@ export const DAY_LABELS: Record<string, string> = {
   ALL: "Svi dani",
   WEEKDAY: "Radni dan",
   WEEKEND: "Vikend",
+  HOLIDAY: "Praznik",
 };
 
 export const TIME_LABELS: Record<string, string> = {
@@ -14,6 +15,7 @@ export const DAY_OPTIONS = [
   { value: "ALL", label: "Svi dani" },
   { value: "WEEKDAY", label: "Radni dan" },
   { value: "WEEKEND", label: "Vikend" },
+  { value: "HOLIDAY", label: "Praznik" },
 ] as const;
 
 export const TIME_OPTIONS = [
@@ -21,3 +23,7 @@ export const TIME_OPTIONS = [
   { value: "AFTER_16H", label: "Posle 16h" },
   { value: "THREE_HOUR", label: "3 sata" },
 ] as const;
+
+export const DAY_TYPE_VALUES = ["ALL", "WEEKDAY", "WEEKEND", "HOLIDAY"] as const;
+export const TIME_SLOT_VALUES = ["FULL_DAY", "AFTER_16H", "THREE_HOUR"] as const;
+export const VALIDITY_TYPE_VALUES = ["FIXED_DATE", "FLEXIBLE_30_DAY", "SUMMER_SEASON"] as const;

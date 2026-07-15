@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { ValidityType, DayType, TimeSlot } from "@prisma/client";
 import { validateFacilityAccess } from "@/app/(server)/lib/auth-guards";
+import { DAY_TYPE_VALUES, TIME_SLOT_VALUES, VALIDITY_TYPE_VALUES } from "./constants";
 
 // ─── Zod Schemas ────────────────────────────────────
 
@@ -24,7 +25,7 @@ const createProductSchema = z.object({
   minPeople: z.number().int().min(1).optional(),
   maxPeople: z.number().int().min(1).nullable().optional(),
   isSeasonPass: z.boolean().optional(),
-  validityType: z.string().optional(),
+  validityType: z.enum(VALIDITY_TYPE_VALUES).optional(),
 });
 
 const updateProductSchema = z.object({
@@ -43,8 +44,8 @@ const createPriceSchema = z.object({
   price: z.number().min(0, "Cena ne može biti negativna"),
   originalPrice: z.number().min(0).nullable().optional(),
   label: z.string().optional(),
-  dayType: z.string().optional(),
-  timeSlot: z.string().optional(),
+  dayType: z.enum(DAY_TYPE_VALUES).optional(),
+  timeSlot: z.enum(TIME_SLOT_VALUES).optional(),
   validFrom: z.date().nullable().optional(),
   validTo: z.date().nullable().optional(),
 });
@@ -53,8 +54,8 @@ const updatePriceSchema = z.object({
   price: z.number().min(0).optional(),
   originalPrice: z.number().min(0).nullable().optional(),
   label: z.string().nullable().optional(),
-  dayType: z.string().nullable().optional(),
-  timeSlot: z.string().nullable().optional(),
+  dayType: z.enum(DAY_TYPE_VALUES).nullable().optional(),
+  timeSlot: z.enum(TIME_SLOT_VALUES).nullable().optional(),
   isActive: z.boolean().optional(),
 });
 
@@ -103,6 +104,8 @@ export interface SerializedPrice {
 // ─── Fetch ──────────────────────────────────────────
 
 export async function getTicketHierarchy(facilityId: string): Promise<SerializedCategory[]> {
+  await validateFacilityAccess(facilityId);
+
   const categories = await prisma.ticketCategory.findMany({
     where: { facilityId },
     orderBy: { displayOrder: "asc" },
@@ -157,6 +160,18 @@ function revalidate(facilityId: string) {
   revalidatePath(`/admin/facilities/${facilityId}/tickets`);
 }
 
+function slugifyTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "dj")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 // ─── CRUD: Category ────────────────────────────
 
 export async function createCategory(facilityId: string, title: string) {
@@ -170,10 +185,7 @@ export async function createCategory(facilityId: string, title: string) {
     data: {
       facilityId,
       title,
-      slug: title
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, ""),
+      slug: slugifyTitle(title) || `kat-${Date.now()}`,
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   });
@@ -215,7 +227,7 @@ export async function createProduct(
   },
 ) {
   await validateFacilityAccess(facilityId);
-  createProductSchema.parse(data);
+  const validated = createProductSchema.parse(data);
   const maxOrder = await prisma.ticketProduct.aggregate({
     where: { categoryId },
     _max: { displayOrder: true },
@@ -223,14 +235,14 @@ export async function createProduct(
   const product = await prisma.ticketProduct.create({
     data: {
       categoryId,
-      title: data.title,
-      label: data.label || null,
-      requiresIdentity: data.requiresIdentity ?? false,
-      requiresPhoto: data.requiresPhoto ?? false,
-      minPeople: data.minPeople ?? 1,
-      maxPeople: data.maxPeople ?? null,
-      isSeasonPass: data.isSeasonPass ?? false,
-      validityType: (data.validityType as ValidityType) ?? "FLEXIBLE_30_DAY",
+      title: validated.title,
+      label: validated.label || null,
+      requiresIdentity: validated.requiresIdentity ?? false,
+      requiresPhoto: validated.requiresPhoto ?? false,
+      minPeople: validated.minPeople ?? 1,
+      maxPeople: validated.maxPeople ?? null,
+      isSeasonPass: validated.isSeasonPass ?? false,
+      validityType: (validated.validityType as ValidityType) ?? "FLEXIBLE_30_DAY",
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   });
@@ -281,21 +293,23 @@ export async function createPrice(
   },
 ) {
   await validateFacilityAccess(facilityId);
-  createPriceSchema.parse(data);
+  const validated = createPriceSchema.parse(data);
   const maxOrder = await prisma.ticketPrice.aggregate({
     where: { ticketTypeId },
     _max: { displayOrder: true },
   });
+  const dayType = (validated.dayType as DayType) ?? "ALL";
+  const timeSlot = (validated.timeSlot as TimeSlot) ?? "FULL_DAY";
   const price = await prisma.ticketPrice.create({
     data: {
       ticketTypeId,
-      price: data.price,
-      originalPrice: data.originalPrice ?? null,
-      label: data.label || null,
-      dayType: (data.dayType as DayType) ?? "ALL",
-      timeSlot: (data.timeSlot as TimeSlot) ?? "FULL_DAY",
-      validFrom: data.validFrom ?? null,
-      validTo: data.validTo ?? null,
+      price: validated.price,
+      originalPrice: validated.originalPrice ?? null,
+      label: validated.label || null,
+      dayType,
+      timeSlot,
+      validFrom: validated.validFrom ?? null,
+      validTo: validated.validTo ?? null,
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   });
@@ -316,16 +330,16 @@ export async function updatePrice(
   },
 ) {
   await validateFacilityAccess(facilityId);
-  updatePriceSchema.parse(data);
+  const validated = updatePriceSchema.parse(data);
   await prisma.ticketPrice.update({
     where: { id },
     data: {
-      ...(data.price !== undefined ? { price: data.price } : {}),
-      ...(data.originalPrice !== undefined ? { originalPrice: data.originalPrice } : {}),
-      ...(data.label !== undefined ? { label: data.label } : {}),
-      ...(data.dayType !== undefined ? { dayType: data.dayType as DayType } : {}),
-      ...(data.timeSlot !== undefined ? { timeSlot: data.timeSlot as TimeSlot } : {}),
-      ...(data.isActive !== undefined ? { isActive: data.isActive } : {}),
+      ...(validated.price !== undefined ? { price: validated.price } : {}),
+      ...(validated.originalPrice !== undefined ? { originalPrice: validated.originalPrice } : {}),
+      ...(validated.label !== undefined ? { label: validated.label } : {}),
+      ...(validated.dayType !== undefined ? { dayType: validated.dayType as DayType } : {}),
+      ...(validated.timeSlot !== undefined ? { timeSlot: validated.timeSlot as TimeSlot } : {}),
+      ...(validated.isActive !== undefined ? { isActive: validated.isActive } : {}),
     },
   });
   revalidate(facilityId);
