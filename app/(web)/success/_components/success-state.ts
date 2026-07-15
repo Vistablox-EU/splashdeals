@@ -1,23 +1,32 @@
-const TERMINAL_STATUS_MESSAGES: Record<string, string> = {
-  FAILED: "Plaćanje nije uspelo. Vaša korpa je sačuvana.",
-  CANCELLED: "Plaćanje je otkazano. Vaša korpa je sačuvana.",
-  EXPIRED: "Vreme za plaćanje je isteklo. Vaša korpa je sačuvana.",
-  PAID_REVIEW:
-    "Plaćanje je primljeno, ali je potrebna dodatna provera. Naš tim će vas kontaktirati.",
-};
+export const CHECKOUT_TERMINAL_STATUSES = [
+  "FAILED",
+  "CANCELLED",
+  "EXPIRED",
+  "PAID_REVIEW",
+] as const;
+
+export type CheckoutTerminalStatus = (typeof CHECKOUT_TERMINAL_STATUSES)[number];
+
+export type CheckoutTerminalMessages = Partial<Record<CheckoutTerminalStatus, string>>;
 
 /** ~2 minutes at 3s interval (plus slower retries on transient errors). */
 export const MAX_CHECKOUT_STATUS_POLLS = 40;
 
-export const CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE =
-  "Još uvek obrađujemo plaćanje. Ako ste naplatili, karte će stići na email. Osvežite stranicu ili kontaktirajte podršku.";
-
-export function isCheckoutTerminalStatus(status: string) {
-  return Object.hasOwn(TERMINAL_STATUS_MESSAGES, status);
+export function isCheckoutTerminalStatus(status: string): status is CheckoutTerminalStatus {
+  return (CHECKOUT_TERMINAL_STATUSES as readonly string[]).includes(status);
 }
 
-export function getCheckoutTerminalMessage(status: string) {
-  return TERMINAL_STATUS_MESSAGES[status] ?? null;
+/**
+ * Resolve a terminal checkout message from the dictionary slice.
+ * Messages live in dictionaries/rs.json → success.terminal — not hard-coded here.
+ */
+export function getCheckoutTerminalMessage(
+  status: string,
+  messages?: CheckoutTerminalMessages | null,
+): string | null {
+  if (!isCheckoutTerminalStatus(status)) return null;
+  const message = messages?.[status];
+  return message && message.trim().length > 0 ? message : null;
 }
 
 export function shouldRetryCheckoutStatus(httpStatus: number) {

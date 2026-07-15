@@ -6,6 +6,7 @@ import { prisma } from "@/app/(server)/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 import { MAX_QUANTITY_PER_ITEM, type CartItem, type CartItemInput } from "@/lib/types/cart";
+import { isCanonicalTicketAvailable } from "@/lib/cart/canonical-ticket";
 import {
   applyGuestCartCookie,
   resolveCartPrincipal,
@@ -195,34 +196,45 @@ async function incrementCartVersion(db: CartDbClient, cart: { id: string; versio
   }
 }
 
+const ticketPriceInclude = {
+  ticketType: {
+    include: {
+      category: { include: { facility: true } },
+    },
+  },
+} as const;
+
 async function getCanonicalTicket(ticketPriceId: string, db: CartDbClient = prisma) {
   const ticketPrice = await db.ticketPrice.findUnique({
     where: { id: ticketPriceId },
-    include: {
-      ticketType: {
-        include: {
-          category: { include: { facility: true } },
-        },
-      },
-    },
+    include: ticketPriceInclude,
   });
 
-  const now = new Date();
-  if (
-    !ticketPrice ||
-    !ticketPrice.isActive ||
-    !ticketPrice.ticketType.isActive ||
-    !ticketPrice.ticketType.category.isActive ||
-    ticketPrice.ticketType.category.facility.status !== "ACTIVE" ||
-    (ticketPrice.validFrom && ticketPrice.validFrom > now) ||
-    (ticketPrice.validTo && ticketPrice.validTo < now) ||
-    (ticketPrice.saleStart && ticketPrice.saleStart > now) ||
-    (ticketPrice.saleEnd && ticketPrice.saleEnd < now)
-  ) {
+  if (!isCanonicalTicketAvailable(ticketPrice)) {
     return null;
   }
 
   return ticketPrice;
+}
+
+/** Batch-load live tickets for reconcile — one query instead of N+1. */
+async function getCanonicalTicketsByIds(ticketPriceIds: string[], db: CartDbClient = prisma) {
+  const uniqueIds = [...new Set(ticketPriceIds.filter(Boolean))];
+  const map = new Map<string, NonNullable<Awaited<ReturnType<typeof getCanonicalTicket>>>>();
+  if (uniqueIds.length === 0) return map;
+
+  const rows = await db.ticketPrice.findMany({
+    where: { id: { in: uniqueIds } },
+    include: ticketPriceInclude,
+  });
+
+  for (const row of rows) {
+    if (isCanonicalTicketAvailable(row)) {
+      map.set(row.id, row);
+    }
+  }
+
+  return map;
 }
 
 /**
@@ -525,12 +537,17 @@ export async function reconcileCartAction(): Promise<
         orderBy: { createdAt: "asc" },
       });
 
+      const liveTickets = await getCanonicalTicketsByIds(
+        storedItems.map((item) => item.ticketPriceId),
+        tx,
+      );
+
       const removedItems: string[] = [];
       const changedItems: string[] = [];
       let mutated = false;
 
       for (const item of storedItems) {
-        const ticketPrice = await getCanonicalTicket(item.ticketPriceId, tx);
+        const ticketPrice = liveTickets.get(item.ticketPriceId);
         if (!ticketPrice) {
           await tx.cartSessionItem.delete({ where: { id: item.id } });
           removedItems.push(item.title);

@@ -40,25 +40,25 @@ export function CartSummary({
   const discountAmount = discount
     ? Math.round(totalBeforeDiscount * (discount.discountPercent / 100))
     : 0;
-  const promoLabel = dict?.cart?.promo_label || "Promo kod";
+  const promoLabel = dict?.cart?.promo_label;
 
   return (
     <div className="space-y-4 sm:space-y-6">
       <Card className="bg-muted/20 border-border p-5 sm:p-8">
         <h2 className="text-foreground mb-4 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-6">
-          {dict?.cart?.summary || "Sažetak"}
+          {dict?.cart?.summary}
         </h2>
 
         <div className="space-y-3">
           <div className="text-foreground flex justify-between text-sm">
-            <span className="text-muted-foreground">{dict?.cart?.subtotal || "Međuzbir"}</span>
+            <span className="text-muted-foreground">{dict?.cart?.subtotal}</span>
             <span className="font-bold tabular-nums">{formatPrice(totalBeforeDiscount)} RSD</span>
           </div>
 
           {discount && (
             <div className="flex justify-between text-sm">
               <span className="text-success">
-                {dict?.cart?.discount || "Popust"} ({discount.discountPercent}%)
+                {dict?.cart?.discount} ({discount.discountPercent}%)
               </span>
               <span className="text-success font-bold tabular-nums">
                 -{formatPrice(discountAmount)} RSD
@@ -68,7 +68,7 @@ export function CartSummary({
 
           <div className="border-border border-t pt-3">
             <div className="flex justify-between text-base">
-              <span className="text-foreground font-bold">{dict?.cart?.total || "Ukupno"}</span>
+              <span className="text-foreground font-bold">{dict?.cart?.total}</span>
               <span className="text-foreground text-xl font-black tracking-tight tabular-nums">
                 {formatPrice(total)} RSD
               </span>
@@ -91,7 +91,7 @@ export function CartSummary({
               onChange={(e) => {
                 onPromoCodeChange(e.target.value);
               }}
-              placeholder={dict?.cart?.promo_placeholder || "Unesite promo kod"}
+              placeholder={dict?.cart?.promo_placeholder}
               autoComplete="off"
               enterKeyHint="done"
               aria-invalid={Boolean(promoError)}
@@ -103,7 +103,7 @@ export function CartSummary({
               onClick={onApplyPromo}
               className="h-11 shrink-0 rounded-xl px-4 text-xs font-bold"
             >
-              {dict?.cart?.apply || "Primeni"}
+              {dict?.cart?.apply}
             </Button>
           </div>
           {promoError && (
@@ -119,7 +119,7 @@ export function CartSummary({
               onClick={onRemovePromo}
               className="text-destructive/70 hover:text-destructive h-11 px-0 text-[10px] font-black tracking-widest uppercase sm:h-8"
             >
-              {dict?.cart?.remove || "Ukloni"} {discount.code}
+              {dict?.cart?.remove} {discount.code}
             </Button>
           )}
         </div>
@@ -130,9 +130,7 @@ export function CartSummary({
           disabled={isCheckingOut}
           className="mt-5 hidden h-14 w-full rounded-2xl text-base font-bold sm:mt-6 lg:inline-flex"
         >
-          {isCheckingOut
-            ? dict?.cart?.processing || "Obrada..."
-            : dict?.cart?.checkout || "Nastavi na Plaćanje"}
+          {isCheckingOut ? dict?.cart?.processing : dict?.cart?.checkout}
         </Button>
       </Card>
 
@@ -155,8 +153,7 @@ export function CartSummary({
       </Card>
 
       <p className="text-muted-foreground px-2 text-center text-[10px] leading-relaxed font-bold sm:px-8">
-        {dict?.cart?.terms_notice ||
-          'Klikom na "Nastavi na Plaćanje", prihvatate naše Uslove Korišćenja i Politiku Privatnosti. Sve prodaje digitalnih karata su konačne.'}
+        {dict?.cart?.terms_notice}
       </p>
     </div>
   );

@@ -14,6 +14,7 @@ interface CartItemListProps {
   onRemove: (itemId: string) => void;
   removedItems?: string[];
   changedItems?: string[];
+  mutatingItemId?: string | null;
 }
 
 export function CartItemList({
@@ -23,17 +24,17 @@ export function CartItemList({
   onRemove,
   removedItems = [],
   changedItems = [],
+  mutatingItemId = null,
 }: CartItemListProps) {
   const formatPrice = (price: number) => new Intl.NumberFormat("sr-RS").format(price);
+  const cartDict = dict?.cart;
 
   return (
     <>
       {/* Error state notices */}
       {removedItems.length > 0 && (
         <div className="bg-destructive/10 border-destructive/20 mb-4 rounded-xl border p-3 text-sm sm:p-4">
-          <p className="text-destructive font-bold">
-            {dict?.cart?.removed_notice || "Neke stavke više nisu dostupne i uklonjene su:"}
-          </p>
+          <p className="text-destructive font-bold">{cartDict?.removed_notice}</p>
           <ul className="text-destructive/80 mt-2 list-inside list-disc space-y-1">
             {removedItems.map((id) => (
               <li key={id}>{id}</li>
@@ -43,9 +44,7 @@ export function CartItemList({
       )}
       {changedItems.length > 0 && (
         <div className="border-warning/20 bg-warning/10 mb-4 rounded-xl border p-3 text-sm sm:p-4">
-          <p className="text-warning font-bold">
-            {dict?.cart?.price_changed_notice || "Cene su ažurirane:"}
-          </p>
+          <p className="text-warning font-bold">{cartDict?.price_changed_notice}</p>
           <ul className="text-warning/80 mt-2 list-inside list-disc space-y-1">
             {changedItems.map((title) => (
               <li key={title}>{title}</li>
@@ -73,7 +72,7 @@ export function CartItemList({
             )}
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-                {item.category || "Akva Park"}
+                {item.category || cartDict?.default_category}
               </p>
               <h3 className="text-foreground mt-1 text-base leading-snug font-black tracking-tight sm:text-lg">
                 {item.title}
@@ -89,8 +88,8 @@ export function CartItemList({
                 variant="ghost"
                 size="icon"
                 onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-                disabled={item.quantity <= (item.minPeople || 1)}
-                aria-label={dict?.cart?.decrease_qty || "Smanji količinu"}
+                disabled={mutatingItemId === item.id || item.quantity <= (item.minPeople || 1)}
+                aria-label={cartDict?.decrease_qty}
                 className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
               >
                 <Icon name="remove" className="text-[14px]" />
@@ -104,10 +103,11 @@ export function CartItemList({
                 size="icon"
                 onClick={() => onQuantityChange(item.id, item.quantity + 1)}
                 disabled={
+                  mutatingItemId === item.id ||
                   item.quantity >=
-                  Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
+                    Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
                 }
-                aria-label={dict?.cart?.increase_qty || "Povećaj količinu"}
+                aria-label={cartDict?.increase_qty}
                 className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
               >
                 <Icon name="add" className="text-[14px]" />
@@ -122,10 +122,11 @@ export function CartItemList({
                 variant="ghost"
                 size="sm"
                 onClick={() => onRemove(item.id)}
-                aria-label={dict?.cart?.remove || "Ukloni"}
+                disabled={mutatingItemId === item.id}
+                aria-label={cartDict?.remove}
                 className="text-muted-foreground/70 hover:text-destructive mt-1 h-11 px-0 text-[10px] font-black tracking-widest uppercase sm:h-8 sm:text-[9px]"
               >
-                {dict?.cart?.remove || "Ukloni"}
+                {cartDict?.remove}
               </Button>
             </div>
           </div>

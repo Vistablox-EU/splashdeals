@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
-import type { CartItem, DiscountInfo, CartDictionary } from "@/lib/types/cart";
+import type { CartItem, DiscountInfo, CartDictionary, IdentityDictionary } from "@/lib/types/cart";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import {
   createCheckoutSessionAction,
@@ -34,9 +34,14 @@ export function CartClient({
   dict,
   checkoutCancelled = false,
 }: {
-  dict: { cart?: CartDictionary } & Record<string, unknown>;
+  dict: {
+    cart?: CartDictionary;
+    identity?: IdentityDictionary;
+  } & Record<string, unknown>;
   checkoutCancelled?: boolean;
 }) {
+  const cartDict = dict.cart;
+  const identityDict = dict.identity;
   const router = useRouter();
   const { data: authSession, isPending: isAuthPending } = authClient.useSession();
   const items = useServerCart((s) => s.items);
@@ -57,6 +62,7 @@ export function CartClient({
   } | null>(null);
   const [resolvingConflict, setResolvingConflict] = React.useState(false);
   const [isBootstrapping, setIsBootstrapping] = React.useState(true);
+  const [mutatingItemId, setMutatingItemId] = React.useState<string | null>(null);
   const claimHandledRef = React.useRef(false);
 
   const totalBeforeDiscount = items.reduce(
@@ -71,8 +77,13 @@ export function CartClient({
   const requiresPhoto = items.some((i) => i.requiresPhoto);
   const cartFacilityId = items[0]?.facilityId;
 
-  // Load cart from server on mount and reconcile stale prices/availability.
-  const loadCart = React.useCallback(async () => {
+  /** Soft refresh after qty/remove — no full reconcile (reconcile is mount/claim only). */
+  const softRefresh = React.useCallback(async () => {
+    await refresh();
+  }, [refresh]);
+
+  /** Full reconcile + refresh (mount / conflict / cancel). */
+  const reconcileAndRefresh = React.useCallback(async () => {
     const reconcile = await reconcileCartAction();
     if (reconcile.success && reconcile.data) {
       setRemovedItems(reconcile.data.removedItems);
@@ -81,7 +92,43 @@ export function CartClient({
     await refresh();
   }, [refresh]);
 
+  /** Revalidate applied promo against the latest store cart (after mutations). */
+  const revalidateAppliedPromo = React.useCallback(
+    async (applied: DiscountInfo | null) => {
+      if (!applied?.code) return;
+
+      const nextItems = useServerCart.getState().items;
+      if (nextItems.length === 0) {
+        setDiscount(null);
+        setPromoError("");
+        return;
+      }
+
+      const facilityId = nextItems[0]?.facilityId;
+      const nextTotal = nextItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const result = await validatePromoCodeAction(applied.code, facilityId, nextTotal);
+
+      if (result.success && result.data?.valid) {
+        setDiscount({
+          campaignId: result.data.campaignId,
+          code: applied.code,
+          discountPercent: result.data.discountPercent,
+        });
+        return;
+      }
+
+      setDiscount(null);
+      const message = cartDict?.promo_cleared || cartDict?.promo_invalid || "";
+      setPromoError(message);
+      if (message) toast.info(message);
+    },
+    [cartDict?.promo_cleared, cartDict?.promo_invalid],
+  );
+
+  // Wait for auth resolution, claim only when authenticated, then reconcile once.
   React.useEffect(() => {
+    if (isAuthPending) return;
+
     let active = true;
     const timer = requestAnimationFrame(async () => {
       setIsMounted(true);
@@ -89,16 +136,18 @@ export function CartClient({
       try {
         if (!claimHandledRef.current) {
           claimHandledRef.current = true;
-          const claim = await claimGuestCartAction();
-          if (!active) return;
-          if (claim.success && claim.data?.action === "conflict") {
-            setConflict({
-              guestFacilityName: claim.data.guestFacilityName,
-              userFacilityName: claim.data.userFacilityName,
-            });
+          if (authSession?.user) {
+            const claim = await claimGuestCartAction();
+            if (!active) return;
+            if (claim.success && claim.data?.action === "conflict") {
+              setConflict({
+                guestFacilityName: claim.data.guestFacilityName,
+                userFacilityName: claim.data.userFacilityName,
+              });
+            }
           }
         }
-        await loadCart();
+        await reconcileAndRefresh();
       } finally {
         if (active) setIsBootstrapping(false);
       }
@@ -107,21 +156,22 @@ export function CartClient({
       active = false;
       cancelAnimationFrame(timer);
     };
-  }, [loadCart]);
+  }, [isAuthPending, authSession?.user, reconcileAndRefresh]);
 
   const handleResolveConflict = async (choice: "guest" | "user") => {
     setResolvingConflict(true);
     try {
       const result = await resolveGuestCartConflictAction({ choice });
       if (!result.success) {
-        toast.error(result.error || "Rešavanje konflikta nije uspelo.");
+        toast.error(result.error || cartDict?.conflict_resolve_error);
         return;
       }
       setConflict(null);
       toast.success(
-        choice === "guest" ? "Zadržana je gostujuća korpa." : "Zadržana je korpa naloga.",
+        choice === "guest" ? cartDict?.conflict_kept_guest : cartDict?.conflict_kept_user,
       );
-      await loadCart();
+      await reconcileAndRefresh();
+      await revalidateAppliedPromo(discount);
     } finally {
       setResolvingConflict(false);
     }
@@ -137,24 +187,23 @@ export function CartClient({
       .then(async (result) => {
         if (!active) return;
         if (result.success) {
-          toast.info("Plaćanje je otkazano. Vaša korpa je sačuvana.");
-          await loadCart();
+          toast.info(cartDict?.checkout_cancelled);
+          await reconcileAndRefresh();
           window.history.replaceState({}, "", "/cart");
         } else {
-          toast.error(result.error || "Otkazivanje plaćanja nije uspelo.");
+          toast.error(result.error || cartDict?.checkout_cancel_error);
         }
       })
       .catch(() => {
-        if (active) toast.error("Otkazivanje plaćanja nije uspelo.");
+        if (active) toast.error(cartDict?.checkout_cancel_error);
       });
 
     return () => {
       active = false;
     };
-  }, [checkoutCancelled, loadCart]);
+  }, [checkoutCancelled, reconcileAndRefresh, cartDict]);
 
-  // Tab sync is handled by shared useServerCart BroadcastChannel subscription
-  if (!isMounted || isBootstrapping) {
+  if (!isMounted || isBootstrapping || isAuthPending) {
     return (
       <div className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-8 pb-28 sm:px-12 sm:pt-12 sm:pb-32">
         <div className="bg-muted/30 mb-6 h-8 w-40 animate-pulse rounded-lg" />
@@ -164,31 +213,43 @@ export function CartClient({
   }
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
-    const result =
-      newQuantity <= 0
-        ? await removeFromCartAction({ itemId })
-        : await updateCartQuantityAction({ itemId, quantity: newQuantity });
+    setMutatingItemId(itemId);
+    try {
+      const result =
+        newQuantity <= 0
+          ? await removeFromCartAction({ itemId })
+          : await updateCartQuantityAction({ itemId, quantity: newQuantity });
 
-    if (!result.success) {
-      toast.error(result.error || "Izmena korpe nije uspela.");
-      await loadCart();
-      return;
+      if (!result.success) {
+        toast.error(result.error || cartDict?.update_error);
+        await softRefresh();
+        return;
+      }
+
+      await softRefresh();
+      notifyUpdated();
+      await revalidateAppliedPromo(discount);
+    } finally {
+      setMutatingItemId(null);
     }
-
-    await loadCart();
-    notifyUpdated();
   };
 
   const handleRemoveItem = async (itemId: string) => {
-    const result = await removeFromCartAction({ itemId });
-    if (!result.success) {
-      toast.error(result.error || "Uklanjanje stavke nije uspelo.");
-      await loadCart();
-      return;
-    }
+    setMutatingItemId(itemId);
+    try {
+      const result = await removeFromCartAction({ itemId });
+      if (!result.success) {
+        toast.error(result.error || cartDict?.remove_error);
+        await softRefresh();
+        return;
+      }
 
-    await loadCart();
-    notifyUpdated();
+      await softRefresh();
+      notifyUpdated();
+      await revalidateAppliedPromo(discount);
+    } finally {
+      setMutatingItemId(null);
+    }
   };
 
   const handleApplyPromo = async () => {
@@ -201,13 +262,12 @@ export function CartClient({
           code: promoCode,
           discountPercent: result.data.discountPercent,
         });
-        toast.success(dict?.cart?.promo_applied || "Popust primenjen!");
+        setPromoError("");
+        toast.success(cartDict?.promo_applied);
       } else {
         const promoData = result.success ? result.data : null;
         setPromoError(
-          promoData && !promoData.valid
-            ? promoData.error
-            : dict?.cart?.promo_invalid || "Nevažeći promo kod",
+          promoData && !promoData.valid ? promoData.error : cartDict?.promo_invalid || "",
         );
       }
     } finally {
@@ -216,7 +276,6 @@ export function CartClient({
   };
 
   const handleStartCheckout = () => {
-    // Guest must sign in before Stripe — preserve cart via guest claim after login.
     if (!isAuthPending && !authSession?.user) {
       router.push(buildPrijavaUrl("/cart"));
       return;
@@ -255,6 +314,9 @@ export function CartClient({
       setIsCheckingOut(true);
       setShowIdentityDialog(false);
 
+      // Final integrity check before Stripe.
+      await reconcileAndRefresh();
+
       const result = await createCheckoutSessionAction({
         holderName,
         holderPhotoUrl,
@@ -262,22 +324,20 @@ export function CartClient({
       });
 
       if (!result.success) {
-        // Fallback: server auth failure still routes to login with return path
         if (result.error?.toLowerCase().includes("prijavljen")) {
           router.push(buildPrijavaUrl("/cart"));
           return;
         }
-        throw new Error(result.error || "Pokretanje plaćanja nije uspelo.");
+        throw new Error(result.error || cartDict?.checkout_start_error);
       }
 
       if (result.data?.url) {
-        // The exact server cart remains locked until Stripe confirms, cancels, or expires.
         window.location.href = result.data.url;
       } else {
-        throw new Error("Nije dobijena adresa za plaćanje.");
+        throw new Error(cartDict?.checkout_url_error);
       }
     } catch {
-      toast.error(dict?.cart?.checkout_error || "Došlo je do greške. Pokušajte ponovo.");
+      toast.error(cartDict?.checkout_error);
     } finally {
       setIsCheckingOut(false);
     }
@@ -292,15 +352,14 @@ export function CartClient({
         resolving={resolvingConflict}
         onChooseGuest={() => handleResolveConflict("guest")}
         onChooseUser={() => handleResolveConflict("user")}
+        dict={cartDict}
       />
       <div className="mb-6 sm:mb-12">
         <p className="text-muted-foreground mb-2 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-3">
-          {dict?.cart?.title || "Vaša Korpa"}
+          {cartDict?.title}
         </p>
         <h1 className="text-foreground text-2xl leading-none font-black tracking-tighter sm:text-5xl">
-          {items.length > 0
-            ? `${items.length} ${dict?.cart?.items || "stavki"}`
-            : dict?.cart?.empty || "Vaša korpa je prazna"}
+          {items.length > 0 ? `${items.length} ${cartDict?.items}` : cartDict?.empty}
         </h1>
       </div>
 
@@ -313,11 +372,11 @@ export function CartClient({
             />
           </div>
           <p className="text-muted-foreground mt-5 max-w-xs text-center text-sm font-medium sm:mt-6">
-            {dict?.cart?.empty_description || "Izgleda da još uvek niste dodali karte."}
+            {cartDict?.empty_description}
           </p>
           <Link href="/akva-parkovi">
             <Button variant="ghost" className="mt-4 min-h-11 px-4">
-              {dict?.cart?.browse || "Pretraži akva parkove"}
+              {cartDict?.browse}
             </Button>
           </Link>
         </div>
@@ -331,6 +390,7 @@ export function CartClient({
               onRemove={handleRemoveItem}
               removedItems={removedItems}
               changedItems={changedItems}
+              mutatingItemId={mutatingItemId}
             />
           </div>
           <CartSummary
@@ -353,13 +413,12 @@ export function CartClient({
         </div>
       )}
 
-      {/* Mobile sticky checkout — above bottom nav, same action as summary CTA */}
       {items.length > 0 && (
         <div className="border-border/50 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-16 z-[999] border-t px-4 py-3 backdrop-blur-[40px] lg:hidden">
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-                {dict?.cart?.total || "Ukupno"}
+                {cartDict?.total}
               </p>
               <p className="text-foreground text-lg leading-none font-black tabular-nums">
                 {new Intl.NumberFormat("sr-RS").format(total)}{" "}
@@ -371,9 +430,7 @@ export function CartClient({
               disabled={isCheckingOut}
               className="h-12 min-w-[9.5rem] shrink-0 rounded-2xl px-5 text-sm font-bold"
             >
-              {isCheckingOut
-                ? dict?.cart?.processing || "Obrada..."
-                : dict?.cart?.checkout || "Nastavi na Plaćanje"}
+              {isCheckingOut ? cartDict?.processing : cartDict?.checkout}
             </Button>
           </div>
         </div>
@@ -385,6 +442,7 @@ export function CartClient({
         requiresIdentity={requiresIdentity}
         requiresPhoto={requiresPhoto}
         onComplete={processCheckout}
+        dict={identityDict}
       />
     </div>
   );

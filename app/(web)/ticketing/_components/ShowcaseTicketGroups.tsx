@@ -103,7 +103,23 @@ interface ShowcaseTicketGroupsProps {
   facilityName: string;
   category: string;
 
-  dict: Record<string, any>;
+  dict: {
+    ticketing?: {
+      no_offers?: string;
+      cart_label?: string;
+      in_cart?: string;
+      ticket_singular?: string;
+      ticket_plural?: string;
+      buy?: string;
+      view_cart?: string;
+      [key: string]: unknown;
+    };
+    cart?: {
+      view_cart?: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
   facility?: {
     id: string;
     name: string;
@@ -158,9 +174,7 @@ export function ShowcaseTicketGroups({
     return (
       <div className="w-full space-y-4 py-24 text-center">
         <Icon name="shopping_bag" className="text-foreground mx-auto text-[48px]" />
-        <p className="text-muted-foreground italic">
-          {dict?.ticketing?.no_offers || "Trenutno nema dostupnih ponuda."}
-        </p>
+        <p className="text-muted-foreground italic">{dict?.ticketing?.no_offers}</p>
       </div>
     );
   }
@@ -216,6 +230,7 @@ export function ShowcaseTicketGroups({
                 quantity={getQuantity(activeGroup.tiers[0].id)}
                 setQuantity={(q: number) => setQuantity(activeGroup.tiers[0].id, q)}
                 onAdd={() => setSelectedTicket(activeGroup.tiers[0])}
+                dict={dict}
               />
             ) : activeGroup.tiers.length >= 5 ? (
               <Card className="border-border overflow-visible p-8">
@@ -274,14 +289,14 @@ export function ShowcaseTicketGroups({
           <div className="mobile-glass flex items-center justify-between gap-4 rounded-3xl p-4 shadow-[0_0_25px_hsl(var(--primary)/0.1)]">
             <div className="space-y-0.5">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-                {dict?.ticketing?.cart_label || "Korpa"}
+                {dict?.ticketing?.cart_label}
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-foreground text-sm font-black">
                   {totalItems}{" "}
                   {totalItems === 1
-                    ? dict?.ticketing?.ticket_singular || "ulaznica"
-                    : dict?.ticketing?.ticket_plural || "ulaznice"}
+                    ? dict?.ticketing?.ticket_singular
+                    : dict?.ticketing?.ticket_plural}
                 </span>
                 <span className="text-primary text-xs font-bold">
                   {totalPrice.toLocaleString("sr-Latn")} RSD
@@ -293,7 +308,7 @@ export function ShowcaseTicketGroups({
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
             >
               <Link href="/cart">
-                <span>{dict?.ticketing?.buy || "Kupi"}</span>
+                <span>{dict?.cart?.view_cart || dict?.ticketing?.view_cart}</span>
                 <Icon name="arrow_forward" className="text-[16px]" />
               </Link>
             </Button>
@@ -307,13 +322,13 @@ export function ShowcaseTicketGroups({
           <div className="bg-background/80 border-border mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-x px-8 py-4 shadow-[0_-4px_30px_hsl(var(--primary)/0.08)] backdrop-blur-xl">
             <div className="flex items-baseline gap-3">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-                {dict?.ticketing?.in_cart || "U korpi"}
+                {dict?.ticketing?.in_cart}
               </span>
               <span className="text-foreground text-sm font-black">
                 {totalItems}{" "}
                 {totalItems === 1
-                  ? dict?.ticketing?.ticket_singular || "ulaznica"
-                  : dict?.ticketing?.ticket_plural || "ulaznice"}
+                  ? dict?.ticketing?.ticket_singular
+                  : dict?.ticketing?.ticket_plural}
               </span>
               <span className="bg-border mx-2 h-4 w-px" />
               <span className="text-primary text-base font-bold">
@@ -325,7 +340,7 @@ export function ShowcaseTicketGroups({
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-8 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
             >
               <Link href="/cart">
-                <span>{dict?.ticketing?.buy || "Kupi"}</span>
+                <span>{dict?.cart?.view_cart || dict?.ticketing?.view_cart}</span>
                 <Icon name="arrow_forward" className="text-[16px]" />
               </Link>
             </Button>
@@ -666,6 +681,7 @@ function SingleTierCard({
   onAdd,
   prefix: _prefix,
   main,
+  dict,
 }: {
   group: TicketGroup;
   tier: TicketTier;
@@ -674,7 +690,9 @@ function SingleTierCard({
   onAdd: () => void;
   prefix: string;
   main: string;
+  dict?: ShowcaseTicketGroupsProps["dict"];
 }) {
+  const t = dict?.ticketing;
   return (
     <Card
       id={`ticket-${tier.id}`}
@@ -686,14 +704,14 @@ function SingleTierCard({
             variant="default"
             className="bg-primary/10 text-primary border-primary/20 text-[10px] font-black tracking-widest uppercase"
           >
-            {tier.isSeasonPass ? "Sezonska karta" : "Ulaznica"}
+            {tier.isSeasonPass ? (t?.season_pass as string) : (t?.ticket as string)}
           </Badge>
           {tier.maxPeople && tier.maxPeople > 1 && (
             <Badge
               variant="default"
               className="border-primary/20 bg-primary/10 text-primary text-[10px] font-black tracking-widest uppercase"
             >
-              Porodični paket
+              {t?.family_package as string}
             </Badge>
           )}
         </div>
@@ -714,7 +732,7 @@ function SingleTierCard({
                 {group.title}
               </h3>
               <p className="text-muted-foreground max-w-md font-medium italic">
-                {group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
+                {group.description || (t?.digital_ticket_desc as string | undefined)}
               </p>
             </div>
           </div>
@@ -725,7 +743,7 @@ function SingleTierCard({
               {group.title}
             </h3>
             <p className="text-muted-foreground max-w-md font-medium italic">
-              {group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
+              {group.description || (t?.digital_ticket_desc as string | undefined)}
             </p>
           </div>
         )}
@@ -738,7 +756,7 @@ function SingleTierCard({
             <div className="flex w-full items-center justify-between gap-2">
               <div className="border-destructive/20 bg-destructive/20 flex min-w-[100px] flex-1 flex-col items-center justify-center rounded-xl border px-3 py-1.5">
                 <span className="text-destructive mb-1 text-[8px] leading-none font-black tracking-widest uppercase">
-                  {main} cene
+                  {((t?.price_offline as string) || "{name}").replace("{name}", main)}
                 </span>
                 <span className="text-muted-foreground relative text-sm leading-none font-bold">
                   {tier.originalPrice} <span className="text-muted-foreground text-[9px]">RSD</span>
@@ -747,7 +765,7 @@ function SingleTierCard({
               </div>
               <div className="bg-primary/10 border-primary/30 flex min-w-[110px] flex-1 flex-col items-center justify-center rounded-xl border px-3 py-1.5 shadow-[0_0_15px_hsl(var(--primary)/0.1)]">
                 <span className="text-primary mb-1 text-[8px] leading-none font-black tracking-widest uppercase">
-                  Kupi online
+                  {t?.buy_online as string | undefined}
                 </span>
                 <span className="text-foreground text-base leading-none font-black">
                   {tier.price} RSD
@@ -757,7 +775,7 @@ function SingleTierCard({
           ) : (
             <div className="space-y-1">
               <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-                Cena
+                {t?.price as string | undefined}
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-foreground text-4xl font-black tracking-tighter">
@@ -775,7 +793,7 @@ function SingleTierCard({
             <div className="flex w-full items-end justify-between">
               <div className="space-y-1.5 pr-2">
                 <span className="text-muted-foreground block text-[9px] font-black tracking-wider uppercase">
-                  {main} cene
+                  {((t?.price_offline as string) || "{name}").replace("{name}", main)}
                 </span>
                 <div className="relative inline-flex items-center">
                   <span className="text-muted-foreground text-3xl font-black tracking-tight italic opacity-70">
@@ -792,7 +810,7 @@ function SingleTierCard({
               </div>
               <div className="space-y-1 text-right">
                 <span className="text-primary block animate-pulse text-[9px] font-black tracking-wider uppercase">
-                  Kupi online & uštedi
+                  {t?.buy_online_save as string | undefined}
                 </span>
                 <div className="flex items-baseline justify-end gap-1.5">
                   <span className="text-foreground from-foreground to-muted-foreground/40 bg-gradient-to-r bg-clip-text text-5xl font-black tracking-tighter text-transparent">
@@ -805,7 +823,7 @@ function SingleTierCard({
           ) : (
             <div className="space-y-1">
               <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-                Cena
+                {t?.price as string | undefined}
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-foreground text-5xl font-black tracking-tighter">

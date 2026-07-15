@@ -14,7 +14,7 @@ import {
   hasExceededCheckoutStatusPolls,
   isCheckoutTerminalStatus,
   shouldRetryCheckoutStatus,
-  CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE,
+  type CheckoutTerminalMessages,
 } from "./success-state";
 
 interface IssuedTicket {
@@ -82,6 +82,8 @@ export interface SuccessDictionary {
   };
   session_expired?: string;
   not_found?: string;
+  terminal?: CheckoutTerminalMessages;
+  still_processing?: string;
 }
 
 export function SuccessClient({
@@ -95,8 +97,11 @@ export function SuccessClient({
 }) {
   const [transaction, setTransaction] = useState<Transaction | null>(initialTransaction);
   const transactionStatus = transaction?.status;
-  const terminalMessage = transactionStatus ? getCheckoutTerminalMessage(transactionStatus) : null;
+  const terminalMessage = transactionStatus
+    ? getCheckoutTerminalMessage(transactionStatus, dict.terminal)
+    : null;
   const isLoading = !transactionStatus || transactionStatus === "PENDING";
+  const stillProcessingMessage = dict.still_processing;
   const [isPending, startTransition] = useTransition();
   const [resendStatus, setResendStatus] = useState<"idle" | "sent" | "error">("idle");
   const [pollingError, setPollingError] = useState<string | null>(null);
@@ -132,7 +137,7 @@ export function SuccessClient({
         if (!isActive) return;
         attempt += 1;
         if (hasExceededCheckoutStatusPolls(attempt)) {
-          setPollingError(CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE);
+          setPollingError(stillProcessingMessage || null);
           return;
         }
         try {
@@ -147,9 +152,8 @@ export function SuccessClient({
             }
             setPollingError(
               res.status === 401 || res.status === 403
-                ? dict.session_expired ||
-                    "Vaša sesija je istekla. Prijavite se ponovo da biste proverili plaćanje."
-                : dict.not_found || "Podaci o ovom plaćanju nisu pronađeni.",
+                ? dict.session_expired || null
+                : dict.not_found || null,
             );
             return;
           }
@@ -161,7 +165,7 @@ export function SuccessClient({
         } catch {
           if (isActive) {
             if (hasExceededCheckoutStatusPolls(attempt)) {
-              setPollingError(CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE);
+              setPollingError(stillProcessingMessage || null);
               return;
             }
             timerId = setTimeout(poll, 5000);
@@ -176,7 +180,7 @@ export function SuccessClient({
       isActive = false;
       if (timerId) clearTimeout(timerId);
     };
-  }, [sessionId, transactionStatus, dict.session_expired, dict.not_found]);
+  }, [sessionId, transactionStatus, dict.session_expired, dict.not_found, stillProcessingMessage]);
 
   if (pollingError) {
     return (
@@ -186,13 +190,13 @@ export function SuccessClient({
         </div>
         <div className="max-w-lg space-y-3 px-2">
           <h1 className="text-foreground text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
-            {dict.polling_unavailable?.title || "Provera plaćanja nije dostupna"}
+            {dict.polling_unavailable?.title}
           </h1>
           <p className="text-muted-foreground text-sm font-medium sm:text-base">{pollingError}</p>
         </div>
         <Link href={buildSuccessPrijavaUrl(sessionId)}>
           <Button size="lg" variant="outline" className="min-h-11">
-            {dict.polling_unavailable?.sign_in || "Prijavite se"}
+            {dict.polling_unavailable?.sign_in}
           </Button>
         </Link>
       </div>
@@ -210,7 +214,7 @@ export function SuccessClient({
         </div>
         <div className="max-w-lg space-y-3 px-2">
           <h1 className="text-foreground text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
-            {dict.status?.title || "Status plaćanja"}
+            {dict.status?.title}
           </h1>
           <p className="text-muted-foreground text-sm font-medium sm:text-base">
             {terminalMessage}

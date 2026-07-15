@@ -6,7 +6,6 @@ import { Drawer } from "vaul";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useServerCart } from "@/hooks/use-server-cart";
 import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
-import { LiquidButton } from "@/components/ui/LiquidButton";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
@@ -55,7 +54,7 @@ export const CartDrawer = () => {
         : await updateCartQuantityAction({ itemId, quantity: newQuantity });
 
     if (!result.success) {
-      toast.error(result.error || "Izmena korpe nije uspela.");
+      toast.error(result.error || dict?.cart?.update_error);
       await refresh();
       return;
     }
@@ -76,7 +75,7 @@ export const CartDrawer = () => {
               </div>
               <div>
                 <h2 className="text-foreground text-xl leading-none font-black tracking-tighter uppercase italic">
-                  {(dict?.cart?.title || "Vaša Korpa")
+                  {(dict?.cart?.title || "")
                     .split(" ")
                     .map((word: string, i: number, arr: string[]) =>
                       i === arr.length - 1 ? (
@@ -89,7 +88,7 @@ export const CartDrawer = () => {
                     )}
                 </h2>
                 <p className="text-muted-foreground mt-1 text-[10px] font-bold tracking-widest uppercase">
-                  {items.length} {dict?.cart?.items || "stavki"}
+                  {items.length} {dict?.cart?.items}
                 </p>
               </div>
             </div>
@@ -98,7 +97,7 @@ export const CartDrawer = () => {
               variant="ghost"
               size="icon"
               onClick={closeCart}
-              aria-label={dict?.cart?.close || "Zatvori korpu"}
+              aria-label={dict?.cart?.close}
               className="bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring h-11 w-11 rounded-2xl focus-visible:ring-2"
             >
               <Icon name="close" className="text-[20px]" />
@@ -109,9 +108,7 @@ export const CartDrawer = () => {
             {items.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center space-y-4 text-center opacity-60">
                 <Icon name="shopping_cart" className="text-[48px]" />
-                <p className="text-sm font-bold tracking-widest uppercase">
-                  {dict?.cart?.empty || "Korpa je prazna"}
-                </p>
+                <p className="text-sm font-bold tracking-widest uppercase">{dict?.cart?.empty}</p>
               </div>
             ) : (
               items.map((item) => (
@@ -136,7 +133,7 @@ export const CartDrawer = () => {
                           size="icon"
                           onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                           disabled={item.quantity <= (item.minPeople || 1)}
-                          aria-label={dict?.cart?.decrease_qty || "Smanji količinu"}
+                          aria-label={dict?.cart?.decrease_qty}
                           className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
                         >
                           <Icon name="remove" className="text-[14px]" />
@@ -153,7 +150,7 @@ export const CartDrawer = () => {
                             item.quantity >=
                             Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
                           }
-                          aria-label={dict?.cart?.increase_qty || "Povećaj količinu"}
+                          aria-label={dict?.cart?.increase_qty}
                           className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
                         >
                           <Icon name="add" className="text-[14px]" />
@@ -173,7 +170,7 @@ export const CartDrawer = () => {
             <div className="border-border bg-muted/20 space-y-6 border-t p-8">
               <div className="flex items-end justify-between">
                 <span className="text-muted-foreground text-[10px] font-black tracking-[0.2em] uppercase">
-                  {dict?.cart?.total || "Ukupno"}
+                  {dict?.cart?.total}
                 </span>
                 <span className="text-foreground text-3xl font-black tracking-tighter italic">
                   {formatPrice(totalPrice)}{" "}
@@ -181,11 +178,11 @@ export const CartDrawer = () => {
                 </span>
               </div>
               {/* Drawer is a preview — full checkout lives on /cart */}
-              <Link href="/cart" onClick={closeCart}>
-                <LiquidButton className="h-16 w-full text-sm font-black tracking-widest uppercase">
-                  {dict?.cart?.view_cart || "Pogledaj korpu"}
-                </LiquidButton>
-              </Link>
+              <Button asChild className="h-16 w-full text-sm font-black tracking-widest uppercase">
+                <Link href="/cart" onClick={closeCart}>
+                  {dict?.cart?.view_cart}
+                </Link>
+              </Button>
             </div>
           )}
         </Drawer.Content>

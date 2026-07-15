@@ -289,7 +289,25 @@
     "decrease_qty": "Smanji količinu",
     "increase_qty": "Povećaj količinu",
     "close": "Zatvori korpu",
-    "view_cart": "Pogledaj korpu"
+    "view_cart": "Pogledaj korpu",
+    "conflict_title": "Izaberite koju korpu želite da zadržite",
+    "conflict_description": "Gostujuća korpa i nalog imaju karte za različite objekte. Možete zadržati samo jednu korpu.",
+    "conflict_guest_label": "Gostujuća korpa",
+    "conflict_user_label": "Korpa naloga",
+    "conflict_facility": "Objekat: {name}",
+    "conflict_keep_guest": "Zadrži gostujuću korpu",
+    "conflict_keep_user": "Zadrži korpu naloga",
+    "conflict_resolve_error": "Rešavanje konflikta nije uspelo.",
+    "conflict_kept_guest": "Zadržana je gostujuća korpa.",
+    "conflict_kept_user": "Zadržana je korpa naloga.",
+    "checkout_cancelled": "Plaćanje je otkazano. Vaša korpa je sačuvana.",
+    "checkout_cancel_error": "Otkazivanje plaćanja nije uspelo.",
+    "update_error": "Izmena korpe nije uspela.",
+    "remove_error": "Uklanjanje stavke nije uspelo.",
+    "checkout_start_error": "Pokretanje plaćanja nije uspelo.",
+    "checkout_url_error": "Nije dobijena adresa za plaćanje.",
+    "promo_cleared": "Promo kod više ne važi za ažuriranu korpu.",
+    "default_category": "Akva Park"
   },
   "checkout": {
     "back_to_cart": "Nazad na korpu",
@@ -342,7 +360,14 @@
       "back_to_cart": "Nazad u korpu"
     },
     "session_expired": "Vaša sesija je istekla. Prijavite se ponovo da biste proverili plaćanje.",
-    "not_found": "Podaci o ovom plaćanju nisu pronađeni."
+    "not_found": "Podaci o ovom plaćanju nisu pronađeni.",
+    "terminal": {
+      "FAILED": "Plaćanje nije uspelo. Vaša korpa je sačuvana.",
+      "CANCELLED": "Plaćanje je otkazano. Vaša korpa je sačuvana.",
+      "EXPIRED": "Vreme za plaćanje je isteklo. Vaša korpa je sačuvana.",
+      "PAID_REVIEW": "Plaćanje je primljeno, ali je potrebna dodatna provera. Naš tim će vas kontaktirati."
+    },
+    "still_processing": "Još uvek obrađujemo plaćanje. Ako ste naplatili, karte će stići na email. Osvežite stranicu ili kontaktirajte podršku."
   },
   "filters": {
     "all_cities": "Svi Gradovi",
@@ -841,7 +866,18 @@
     "cancel": "Otkaži",
     "confirm": "Potvrdi",
     "sending": "Slanje...",
-    "name_preview_label": "Ime:"
+    "name_preview_label": "Ime:",
+    "title": "Podešavanje propusnice",
+    "description": "Sezonske propusnice su personalizovane i neprenosive.",
+    "name_hint": "Ovo ime će biti odštampano na vašoj sezonskoj propusnici.",
+    "photo_hint": "Dostavite jasnu fotografiju lica kako bi obezbeđenje moglo da potvrdi vaš identitet.",
+    "photo_upload_aria": "Kliknite da otvorite kameru ili otpremite sliku",
+    "photo_preview_alt": "Pregled fotografije",
+    "review_ready_title": "Sve je spremno!",
+    "review_ready_subtitle": "Podaci su validirani.",
+    "pass_holder": "Vlasnik propusnice",
+    "confirm_and_pay": "Potvrdi i plati",
+    "review_alt": "Pregled"
   },
   "favorites": {
     "remove_error": "Greška pri uklanjanju",
@@ -1123,7 +1159,8 @@
     "identity_required": "Potrebna lična karta",
     "photo_required": "Potrebna fotografija",
     "buy_on_facility_page": "Kupi na stranici objekta",
-    "select_on_facility_page": "Odaberite varijantu i količinu na stranici objekta"
+    "select_on_facility_page": "Odaberite varijantu i količinu na stranici objekta",
+    "view_cart": "Pogledaj korpu"
   },
   "showcase": {
     "experience_eyebrow": "Iskustvo",

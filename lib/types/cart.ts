@@ -59,6 +59,7 @@ export type CartDictionary = {
   remove?: string;
   promo_invalid?: string;
   promo_applied?: string;
+  promo_cleared?: string;
   checkout_error?: string;
   items?: string;
   empty?: string;
@@ -70,6 +71,52 @@ export type CartDictionary = {
   increase_qty?: string;
   close?: string;
   view_cart?: string;
+  conflict_title?: string;
+  conflict_description?: string;
+  conflict_guest_label?: string;
+  conflict_user_label?: string;
+  conflict_facility?: string;
+  conflict_keep_guest?: string;
+  conflict_keep_user?: string;
+  conflict_resolve_error?: string;
+  conflict_kept_guest?: string;
+  conflict_kept_user?: string;
+  checkout_cancelled?: string;
+  checkout_cancel_error?: string;
+  update_error?: string;
+  remove_error?: string;
+  checkout_start_error?: string;
+  checkout_url_error?: string;
+  default_category?: string;
+};
+
+/** Typed identity dialog dictionary slice (dictionaries/rs.json → identity). */
+export type IdentityDictionary = {
+  title?: string;
+  description?: string;
+  name_label?: string;
+  name_placeholder?: string;
+  name_hint?: string;
+  name_required_error?: string;
+  photo_label?: string;
+  photo_hint?: string;
+  photo_upload_aria?: string;
+  photo_preview_alt?: string;
+  click_to_add_photo?: string;
+  add_photo_error?: string;
+  save_error?: string;
+  next?: string;
+  back?: string;
+  skip?: string;
+  cancel?: string;
+  confirm?: string;
+  confirm_and_pay?: string;
+  sending?: string;
+  review_ready_title?: string;
+  review_ready_subtitle?: string;
+  pass_holder?: string;
+  name_preview_label?: string;
+  review_alt?: string;
 };
 
 export const MAX_QUANTITY_PER_ITEM = 50;
