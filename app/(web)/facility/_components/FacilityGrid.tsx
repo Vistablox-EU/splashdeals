@@ -32,63 +32,69 @@ export async function FacilityGrid({
   sort = "newest",
   noFacilitiesLabel,
 }: FacilityGridProps) {
-  // 1. Build Query
-  const facilities = await prisma.facility.findMany({
-    where: {
-      ...(category ? { category: { equals: category, mode: "insensitive" } } : {}),
-      ...(citySlug
-        ? {
-            marketplaceCities: {
-              some: {
-                city: {
-                  slug: citySlug,
+  // 1. Build Query — soft-fail when Neon control plane is flaky (Vercel build)
+  let facilities: Awaited<ReturnType<typeof prisma.facility.findMany>> = [];
+  try {
+    facilities = await prisma.facility.findMany({
+      where: {
+        ...(category ? { category: { equals: category, mode: "insensitive" } } : {}),
+        ...(citySlug
+          ? {
+              marketplaceCities: {
+                some: {
+                  city: {
+                    slug: citySlug,
+                  },
                 },
               },
-            },
-          }
-        : {}),
-      ...(minPrice || maxPrice
-        ? {
-            ticketCategories: {
-              some: {
-                isActive: true,
-                types: {
-                  some: {
-                    isActive: true,
-                    prices: {
-                      some: {
-                        ...(minPrice ? { price: { gte: parseFloat(minPrice) } } : {}),
-                        ...(maxPrice ? { price: { lte: parseFloat(maxPrice) } } : {}),
+            }
+          : {}),
+        ...(minPrice || maxPrice
+          ? {
+              ticketCategories: {
+                some: {
+                  isActive: true,
+                  types: {
+                    some: {
+                      isActive: true,
+                      prices: {
+                        some: {
+                          ...(minPrice ? { price: { gte: parseFloat(minPrice) } } : {}),
+                          ...(maxPrice ? { price: { lte: parseFloat(maxPrice) } } : {}),
+                        },
                       },
                     },
                   },
                 },
               },
-            },
-          }
-        : {}),
-    },
-    include: {
-      media: {
-        orderBy: { order: "asc" },
+            }
+          : {}),
       },
-      ticketCategories: {
-        where: { isActive: true },
-        include: {
-          types: {
-            where: { isActive: true },
-            include: {
-              prices: {
-                orderBy: { price: "asc" },
-                take: 1,
+      include: {
+        media: {
+          orderBy: { order: "asc" },
+        },
+        ticketCategories: {
+          where: { isActive: true },
+          include: {
+            types: {
+              where: { isActive: true },
+              include: {
+                prices: {
+                  orderBy: { price: "asc" },
+                  take: 1,
+                },
               },
             },
           },
         },
       },
-    },
-    orderBy: sort === "name_asc" ? { name: "asc" } : { createdAt: "desc" },
-  });
+      orderBy: sort === "name_asc" ? { name: "asc" } : { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.warn("[FacilityGrid] DB unavailable:", error instanceof Error ? error.message : error);
+    facilities = [];
+  }
 
   // 2. Client-side Sort Logic (for complex fields like price)
   const processedFacilities = [...facilities];
