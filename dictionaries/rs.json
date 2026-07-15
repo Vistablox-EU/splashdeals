@@ -284,7 +284,12 @@
     "empty_description": "Izgleda da još uvek niste dodali karte.",
     "browse": "Pretraži akva parkove",
     "removed_notice": "Neke stavke više nisu dostupne i uklonjene su:",
-    "price_changed_notice": "Cene su ažurirane:"
+    "price_changed_notice": "Cene su ažurirane:",
+    "promo_label": "Promo kod",
+    "decrease_qty": "Smanji količinu",
+    "increase_qty": "Povećaj količinu",
+    "close": "Zatvori korpu",
+    "view_cart": "Pogledaj korpu"
   },
   "checkout": {
     "back_to_cart": "Nazad na korpu",
@@ -327,7 +332,17 @@
     },
     "resend_sent": "Poslato! ✅",
     "resend_error": "Greška",
-    "resend_button": "Pošalji ponovo na email"
+    "resend_button": "Pošalji ponovo na email",
+    "polling_unavailable": {
+      "title": "Provera plaćanja nije dostupna",
+      "sign_in": "Prijavite se"
+    },
+    "status": {
+      "title": "Status plaćanja",
+      "back_to_cart": "Nazad u korpu"
+    },
+    "session_expired": "Vaša sesija je istekla. Prijavite se ponovo da biste proverili plaćanje.",
+    "not_found": "Podaci o ovom plaćanju nisu pronađeni."
   },
   "filters": {
     "all_cities": "Svi Gradovi",

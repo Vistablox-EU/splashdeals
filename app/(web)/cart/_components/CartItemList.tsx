@@ -4,11 +4,11 @@ import { Icon } from "@/components/ui/Icon";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
-import type { CartItem } from "@/lib/types/cart";
+import type { CartItem, CartDictionary } from "@/lib/types/cart";
 
 interface CartItemListProps {
   items: CartItem[];
-  dict: Record<string, any>;
+  dict: { cart?: CartDictionary } & Record<string, unknown>;
   onQuantityChange: (itemId: string, quantity: number) => void;
   onRemove: (itemId: string) => void;
   removedItems?: string[];
@@ -72,7 +72,7 @@ export function CartItemList({
             )}
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-                {item.category || dict?.categories?.waterpark || "Akva Park"}
+                {item.category || "Akva Park"}
               </p>
               <h3 className="text-foreground mt-1 text-base leading-snug font-black tracking-tight sm:text-lg">
                 {item.title}

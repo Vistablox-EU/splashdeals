@@ -71,6 +71,16 @@ export interface SuccessDictionary {
   resend_sent: string;
   resend_error: string;
   resend_button: string;
+  polling_unavailable?: {
+    title: string;
+    sign_in: string;
+  };
+  status?: {
+    title: string;
+    back_to_cart: string;
+  };
+  session_expired?: string;
+  not_found?: string;
 }
 
 export function SuccessClient({
@@ -133,8 +143,9 @@ export function SuccessClient({
             }
             setPollingError(
               res.status === 401 || res.status === 403
-                ? "Vaša sesija je istekla. Prijavite se ponovo da biste proverili plaćanje."
-                : "Podaci o ovom plaćanju nisu pronađeni.",
+                ? dict.session_expired ||
+                    "Vaša sesija je istekla. Prijavite se ponovo da biste proverili plaćanje."
+                : dict.not_found || "Podaci o ovom plaćanju nisu pronađeni.",
             );
             return;
           }
@@ -162,7 +173,7 @@ export function SuccessClient({
       isActive = false;
       if (timerId) clearTimeout(timerId);
     };
-  }, [sessionId, transactionStatus]);
+  }, [sessionId, transactionStatus, dict.session_expired, dict.not_found]);
 
   if (pollingError) {
     return (
@@ -172,13 +183,13 @@ export function SuccessClient({
         </div>
         <div className="max-w-lg space-y-3 px-2">
           <h1 className="text-foreground text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
-            Provera plaćanja nije dostupna
+            {dict.polling_unavailable?.title || "Provera plaćanja nije dostupna"}
           </h1>
           <p className="text-muted-foreground text-sm font-medium sm:text-base">{pollingError}</p>
         </div>
         <Link href={buildSuccessPrijavaUrl(sessionId)}>
           <Button size="lg" variant="outline" className="min-h-11">
-            Prijavite se
+            {dict.polling_unavailable?.sign_in || "Prijavite se"}
           </Button>
         </Link>
       </div>
@@ -196,7 +207,7 @@ export function SuccessClient({
         </div>
         <div className="max-w-lg space-y-3 px-2">
           <h1 className="text-foreground text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
-            Status plaćanja
+            {dict.status?.title || "Status plaćanja"}
           </h1>
           <p className="text-muted-foreground text-sm font-medium sm:text-base">
             {terminalMessage}
@@ -205,7 +216,7 @@ export function SuccessClient({
         <Link href="/cart">
           <Button size="lg" variant="outline" className="min-h-11">
             <Icon name="shopping_bag" className="mr-2 text-[20px]" />
-            Nazad u korpu
+            {dict.status?.back_to_cart || "Nazad u korpu"}
           </Button>
         </Link>
       </div>

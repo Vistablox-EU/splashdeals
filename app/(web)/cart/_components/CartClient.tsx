@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
-import type { CartItem, DiscountInfo } from "@/lib/types/cart";
+import type { CartItem, DiscountInfo, CartDictionary } from "@/lib/types/cart";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import {
   createCheckoutSessionAction,
@@ -34,7 +34,7 @@ export function CartClient({
   dict,
   checkoutCancelled = false,
 }: {
-  dict: Record<string, any>;
+  dict: { cart?: CartDictionary } & Record<string, unknown>;
   checkoutCancelled?: boolean;
 }) {
   const router = useRouter();
@@ -290,14 +290,14 @@ export function CartClient({
         onChooseUser={() => handleResolveConflict("user")}
       />
       <div className="mb-6 sm:mb-12">
-        <h1 className="mb-2 text-[10px] font-black tracking-[0.2em] uppercase opacity-50 sm:mb-3">
-          {dict?.cart?.title || "Korpa"}
-        </h1>
-        <h2 className="text-foreground text-2xl leading-none font-black tracking-tighter sm:text-5xl">
+        <p className="text-muted-foreground mb-2 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-3">
+          {dict?.cart?.title || "Vaša Korpa"}
+        </p>
+        <h1 className="text-foreground text-2xl leading-none font-black tracking-tighter sm:text-5xl">
           {items.length > 0
             ? `${items.length} ${dict?.cart?.items || "stavki"}`
             : dict?.cart?.empty || "Vaša korpa je prazna"}
-        </h2>
+        </h1>
       </div>
 
       {items.length === 0 ? (

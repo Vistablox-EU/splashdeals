@@ -3,14 +3,15 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import type { DiscountInfo } from "@/lib/types/cart";
+import type { CartDictionary, DiscountInfo } from "@/lib/types/cart";
 
 interface CartSummaryProps {
   totalBeforeDiscount: number;
   total: number;
   discount: DiscountInfo | null;
-  dict: Record<string, any>;
+  dict: { cart?: CartDictionary } & Record<string, unknown>;
   promoCode: string;
   promoError: string;
   promoLoading: boolean;
@@ -39,13 +40,14 @@ export function CartSummary({
   const discountAmount = discount
     ? Math.round(totalBeforeDiscount * (discount.discountPercent / 100))
     : 0;
+  const promoLabel = dict?.cart?.promo_label || "Promo kod";
 
   return (
     <div className="space-y-4 sm:space-y-6">
       <Card className="bg-muted/20 border-border p-5 sm:p-8">
-        <h3 className="text-foreground mb-4 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-6">
+        <h2 className="text-foreground mb-4 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-6">
           {dict?.cart?.summary || "Sažetak"}
-        </h3>
+        </h2>
 
         <div className="space-y-3">
           <div className="text-foreground flex justify-between text-sm">
@@ -76,8 +78,15 @@ export function CartSummary({
 
         {/* Promo Code */}
         <div className="mt-5 space-y-2 sm:mt-6">
+          <Label
+            htmlFor="cart-promo-code"
+            className="text-muted-foreground text-[10px] font-black tracking-widest uppercase"
+          >
+            {promoLabel}
+          </Label>
           <div className="flex gap-2">
             <Input
+              id="cart-promo-code"
               value={promoCode}
               onChange={(e) => {
                 onPromoCodeChange(e.target.value);
@@ -85,6 +94,8 @@ export function CartSummary({
               placeholder={dict?.cart?.promo_placeholder || "Unesite promo kod"}
               autoComplete="off"
               enterKeyHint="done"
+              aria-invalid={Boolean(promoError)}
+              aria-describedby={promoError ? "cart-promo-error" : undefined}
               className="bg-muted/50 border-border h-11 rounded-xl text-base sm:text-xs"
             />
             <Button
@@ -95,7 +106,11 @@ export function CartSummary({
               {dict?.cart?.apply || "Primeni"}
             </Button>
           </div>
-          {promoError && <p className="text-destructive text-xs font-medium">{promoError}</p>}
+          {promoError && (
+            <p id="cart-promo-error" className="text-destructive text-xs font-medium" role="alert">
+              {promoError}
+            </p>
+          )}
           {discount && (
             <button
               type="button"
