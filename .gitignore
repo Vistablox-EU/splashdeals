@@ -195,3 +195,4 @@ docs/
 .codegraph/
 graphify-out/
 .hermes/reviews/
+test-results/
