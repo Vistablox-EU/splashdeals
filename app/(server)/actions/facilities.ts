@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { prisma } from "@/app/(server)/lib/prisma";
 import { revalidateAdminFacilities } from "@/app/(server)/lib/revalidation";
 import { FacilityStatus } from "@prisma/client";
@@ -8,15 +9,25 @@ import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 
 import { handleServerActionError } from "@/app/(server)/lib/server-action-error";
 
+const bulkUpdateFacilityStatusSchema = z.object({
+  ids: z
+    .array(z.string().min(1))
+    .min(1, "Nije izabran nijedan objekat")
+    .max(100, "Maksimalno 100 objekata po akciji"),
+  status: z.enum(["DRAFT", "ACTIVE", "CLOSED", "EMERGENCY_SHUTDOWN"]),
+});
+
 export async function bulkUpdateFacilityStatusAction(ids: string[], status: FacilityStatus) {
   try {
     await requireSuperAdmin();
+    const validated = bulkUpdateFacilityStatusSchema.parse({ ids, status });
+
     await prisma.facility.updateMany({
       where: {
-        id: { in: ids },
+        id: { in: validated.ids },
       },
       data: {
-        status,
+        status: validated.status,
       },
     });
 
@@ -66,7 +77,7 @@ export async function deleteFacilityAction(id: string) {
     if (transactionCount > 0) {
       return {
         success: false,
-        error: `Cannot delete facility because it has ${transactionCount} active or historical transaction records. Please set its status to CLOSED instead.`,
+        error: `Objekat se ne može obrisati jer ima ${transactionCount} transakcija. Postavite status na ZATVOREN umesto brisanja.`,
       };
     }
 

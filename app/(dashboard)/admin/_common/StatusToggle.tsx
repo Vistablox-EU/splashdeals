@@ -2,7 +2,6 @@
 
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
-
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -16,6 +15,13 @@ interface StatusToggleProps {
   compact?: boolean;
 }
 
+const STATUS_LABEL: Record<FacilityStatus, string> = {
+  ACTIVE: "Aktivan",
+  DRAFT: "Nacrt",
+  CLOSED: "Zatvoren",
+  EMERGENCY_SHUTDOWN: "Vanredno",
+};
+
 export function StatusToggle({ facilityId, status, compact }: StatusToggleProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -24,19 +30,19 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
     e.preventDefault();
     e.stopPropagation();
 
-    const nextStatus = status === "ACTIVE" ? "DRAFT" : "ACTIVE";
+    const nextStatus: FacilityStatus = status === "ACTIVE" ? "DRAFT" : "ACTIVE";
 
     startTransition(async () => {
       const result = await updateFacilityStatusAction({
         facilityId,
-        status: nextStatus as "DRAFT" | "ACTIVE" | "CLOSED" | "EMERGENCY_SHUTDOWN",
+        status: nextStatus,
       });
 
       if (result.success) {
-        toast.success(`Facility is now ${nextStatus}`);
+        toast.success(`Objekat je sada: ${STATUS_LABEL[nextStatus]}`);
         router.refresh();
       } else {
-        toast.error(result.error || "Transition failed");
+        toast.error(result.error || "Prebacivanje statusa nije uspelo");
       }
     });
   };
@@ -47,42 +53,48 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
         className={cn(
           "inline-flex items-center rounded-md border px-2.5 py-0.5 text-[9px] font-black tracking-[0.15em] uppercase",
           status === "EMERGENCY_SHUTDOWN"
-            ? "border-rose-500/20 bg-rose-500/10 text-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.1)]"
+            ? "border-destructive/30 bg-destructive/10 text-destructive"
             : "bg-muted/10 text-muted-foreground border-muted/20",
         )}
+        title={STATUS_LABEL[status]}
       >
-        {status}
+        {STATUS_LABEL[status]}
       </div>
     );
   }
 
+  const label = STATUS_LABEL[status];
+  const nextHint = status === "ACTIVE" ? "Postavi na nacrt" : "Objavi (aktivno)";
+
   if (compact) {
     return (
-      <button
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
         disabled={isPending}
         onClick={toggleStatus}
+        title={nextHint}
+        aria-label={`${label}. ${nextHint}`}
         className={cn(
-          "group relative inline-flex items-center rounded-md border px-2.5 py-0.5 text-[9px] font-black tracking-[0.15em] uppercase transition-all duration-300",
+          "group relative h-auto rounded-md border px-2.5 py-0.5 text-[9px] font-black tracking-[0.15em] uppercase transition-colors",
           status === "ACTIVE"
-            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 shadow-[0_0_12px_rgba(6,182,212,0.1)]"
-            : "border-amber-500/20 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20",
+            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+            : "border-warning/30 bg-warning/10 text-warning hover:bg-warning/20",
         )}
       >
         <span className="flex items-center gap-1.5">
           {isPending ? (
             <Icon name="progress_activity" className="animate-spin text-[12px]" />
-          ) : status === "ACTIVE" ? (
-            <Icon name="bolt" className="text-primary text-[12px]" />
           ) : (
-            <Icon name="bolt" className="text-[12px] text-amber-500" />
+            <Icon
+              name="bolt"
+              className={cn("text-[12px]", status === "ACTIVE" ? "text-primary" : "text-warning")}
+            />
           )}
-          {status}
+          {label}
         </span>
-
-        <div className="bg-muted border-border text-foreground pointer-events-none absolute -top-8 left-1/2 z-50 -translate-x-1/2 rounded border px-2 py-1 text-[8px] font-bold whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
-          Click to {status === "ACTIVE" ? "Set Draft" : "Go Live"}
-        </div>
-      </button>
+      </Button>
     );
   }
 
@@ -92,16 +104,17 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
       size="sm"
       disabled={isPending}
       onClick={toggleStatus}
-      className="border-border/50 bg-muted/10 hover:bg-muted/30 h-8 gap-2 text-[10px] font-black tracking-widest uppercase transition-all"
+      aria-label={nextHint}
+      className="border-border/50 bg-muted/10 hover:bg-muted/30 h-8 gap-2 text-[10px] font-black tracking-widest uppercase transition-colors"
     >
       {isPending ? (
         <Icon name="progress_activity" className="animate-spin text-[12px]" />
       ) : status === "ACTIVE" ? (
-        <Icon name="bolt" className="text-[12px] text-amber-500" />
+        <Icon name="bolt" className="text-warning text-[12px]" />
       ) : (
-        <Icon name="bolt" className="text-[12px] text-emerald-500" />
+        <Icon name="bolt" className="text-primary text-[12px]" />
       )}
-      {status === "ACTIVE" ? "Set to Draft" : "Go Live"}
+      {status === "ACTIVE" ? "Postavi na nacrt" : "Objavi"}
     </Button>
   );
 }

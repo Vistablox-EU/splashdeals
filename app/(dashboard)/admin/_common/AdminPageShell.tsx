@@ -9,6 +9,7 @@ export interface StatItem {
   value: number;
   color: string;
   glow: string;
+  href?: string;
 }
 
 interface AdminPageShellProps {
@@ -51,7 +52,7 @@ export function AdminPageShell({
           <Button
             asChild
             size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 h-11 shrink-0 rounded-xl px-6 text-[11px] font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.25)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.4)]"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/25 hover:shadow-primary/40 h-11 shrink-0 rounded-xl px-6 text-[11px] font-black tracking-widest uppercase shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             <Link href={cta.href}>
               <Icon name={cta.icon} className="mr-2 text-[16px]" />
@@ -69,6 +70,7 @@ export function AdminPageShell({
             value={stat.value}
             color={stat.color}
             glow={stat.glow}
+            href={stat.href}
           />
         ))}
       </div>

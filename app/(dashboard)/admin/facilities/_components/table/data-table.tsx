@@ -4,11 +4,9 @@ import { Icon } from "@/components/ui/Icon";
 import * as React from "react";
 import {
   ColumnDef,
-  SortingState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   useReactTable,
   Row,
 } from "@tanstack/react-table";
@@ -28,8 +26,11 @@ import { toast } from "sonner";
 import { FacilitiesTableToolbar } from "./facilities-table-toolbar";
 import { FacilitiesBulkBar } from "./facilities-bulk-bar";
 import { FacilitiesTablePagination } from "./facilities-table-pagination";
+import { createFacilityColumns } from "../columns";
+import type { FacilityListSortKey } from "@/lib/admin/facilities-list-params";
+import type { Facility } from "@prisma/client";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   totalCount: number;
@@ -37,6 +38,8 @@ interface DataTableProps<TData, TValue> {
   pageSize: number;
   initialQ?: string;
   initialStatus?: string;
+  initialSort?: FacilityListSortKey;
+  initialOrder?: "asc" | "desc";
 }
 
 function readDensity(): "comfortable" | "compact" {
@@ -45,18 +48,26 @@ function readDensity(): "comfortable" | "compact" {
   return saved === "comfortable" || saved === "compact" ? saved : "compact";
 }
 
-export function DataTable<TData, TValue>({
-  columns,
+export function DataTable<TData extends { id: string }, TValue>({
+  columns: _columnsIgnored,
   data,
   totalCount,
   currentPage,
   pageSize,
   initialQ,
   initialStatus = "all",
+  initialSort = "createdAt",
+  initialOrder = "desc",
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  // Server sort drives headers; ignore static client-sort columns prop.
+  const columns = React.useMemo(
+    () => createFacilityColumns(initialSort, initialOrder) as ColumnDef<TData, TValue>[],
+    [initialSort, initialOrder],
+  );
+
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [focusRowIndex, setFocusRowIndex] = React.useState(0);
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
   const initialSearch = initialQ ?? "";
@@ -76,6 +87,12 @@ export function DataTable<TData, TValue>({
     setStatusFilter(initialStatus || "all");
     previousStatusRef.current = initialStatus || "all";
   }, [initialStatus]);
+
+  // Clear selection when page / filter / dataset identity changes (H3)
+  React.useEffect(() => {
+    setRowSelection({});
+    setFocusRowIndex(0);
+  }, [currentPage, pageSize, initialSearch, initialStatus, initialSort, initialOrder, data]);
 
   // Debounced search → URL
   React.useEffect(() => {
@@ -102,6 +119,14 @@ export function DataTable<TData, TValue>({
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
+  const handleResetFilters = () => {
+    setGlobalFilter("");
+    setStatusFilter("all");
+    previousSearchRef.current = "";
+    previousStatusRef.current = "all";
+    router.push("?", { scroll: false });
+  };
+
   const toggleDensity = () => {
     const next = density === "comfortable" ? "compact" : "comfortable";
     setDensity(next);
@@ -112,18 +137,22 @@ export function DataTable<TData, TValue>({
   const table = useReactTable<TData>({
     data,
     columns,
-    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    getRowId: (row) => row.id,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: { sorting, columnVisibility, rowSelection },
+    enableRowSelection: true,
+    state: { columnVisibility, rowSelection },
   });
 
   const selectedRows = table.getFilteredSelectedRowModel().rows;
-  const selectedIds = selectedRows.map((row: Row<TData>) => (row.original as { id: string }).id);
+  const selectedIds = selectedRows.map((row: Row<TData>) => row.original.id);
 
   const handleBulkStatusUpdate = (status: FacilityStatus) => {
+    if (!selectedIds.length) {
+      toast.error("Nije izabran nijedan objekat");
+      return;
+    }
     startTransition(async () => {
       const result = await bulkUpdateFacilityStatusAction(selectedIds, status);
       if (result.success) {
@@ -137,11 +166,10 @@ export function DataTable<TData, TValue>({
   };
 
   const handleRowClick = (row: Row<TData>) => {
-    const id = (row.original as { id: string }).id;
-    router.push(`/admin/facilities/${id}`, { scroll: false });
+    router.push(`/admin/facilities/${row.original.id}`, { scroll: false });
   };
 
-  const totalPages = Math.ceil(totalCount / pageSize);
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize) || 1);
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(window.location.search);
@@ -156,7 +184,6 @@ export function DataTable<TData, TValue>({
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
-  const [focusRowIndex, setFocusRowIndex] = React.useState(0);
   const rows = table.getRowModel().rows;
 
   const handleTableKeyDown = (e: React.KeyboardEvent) => {
@@ -171,8 +198,14 @@ export function DataTable<TData, TValue>({
       e.preventDefault();
       const row = rows[focusRowIndex];
       if (row) handleRowClick(row);
+    } else if (e.key === " ") {
+      e.preventDefault();
+      const row = rows[focusRowIndex];
+      if (row) row.toggleSelected(!row.getIsSelected());
     }
   };
+
+  const hasActiveFilters = Boolean(globalFilter) || Boolean(statusFilter && statusFilter !== "all");
 
   return (
     <div className="space-y-4">
@@ -187,6 +220,8 @@ export function DataTable<TData, TValue>({
         pageSize={pageSize}
         onPageSizeChange={handlePageSizeChange}
         table={table}
+        hasActiveFilters={hasActiveFilters}
+        onResetFilters={handleResetFilters}
       />
 
       <FacilitiesBulkBar
@@ -201,15 +236,17 @@ export function DataTable<TData, TValue>({
         tabIndex={0}
         role="grid"
         aria-label="Registar objekata"
+        aria-rowcount={rows.length}
         onKeyDown={handleTableKeyDown}
       >
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} role="row">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
+                    role="columnheader"
                     className={cn(
                       "px-3",
                       density === "compact" ? "h-8 py-1 text-[10px]" : "h-10 py-2 text-[11px]",
@@ -228,9 +265,13 @@ export function DataTable<TData, TValue>({
               rows.map((row, idx) => (
                 <TableRow
                   key={row.id}
+                  role="row"
+                  aria-rowindex={idx + 1}
+                  aria-selected={row.getIsSelected() || idx === focusRowIndex}
+                  tabIndex={idx === focusRowIndex ? 0 : -1}
                   data-state={row.getIsSelected() && "selected"}
                   className={cn(
-                    "hover:bg-muted/40 cursor-pointer",
+                    "hover:bg-muted/40 focus-visible:ring-primary/40 cursor-pointer focus-visible:ring-1 focus-visible:outline-none",
                     idx === focusRowIndex && "bg-primary/5 ring-primary/30 ring-1",
                   )}
                   onClick={(e) => {
@@ -243,6 +284,7 @@ export function DataTable<TData, TValue>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
+                      role="gridcell"
                       className={cn(
                         "px-3",
                         density === "compact" ? "py-1.5 text-xs" : "py-3 text-sm",
@@ -262,6 +304,15 @@ export function DataTable<TData, TValue>({
                       Nema pronađenih objekata
                     </p>
                     <p className="text-[10px]">Podesite pretragu ili filter statusa.</p>
+                    {hasActiveFilters && (
+                      <button
+                        type="button"
+                        onClick={handleResetFilters}
+                        className="text-primary mt-1 text-[10px] font-bold tracking-wide uppercase underline-offset-2 hover:underline"
+                      >
+                        Resetuj filtere
+                      </button>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>
@@ -279,3 +330,6 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
+
+// Keep Facility type referenced for consumers
+export type FacilitiesDataTableRow = Facility;

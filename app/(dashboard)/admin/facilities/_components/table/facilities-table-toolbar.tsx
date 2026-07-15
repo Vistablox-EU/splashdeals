@@ -33,6 +33,8 @@ interface FacilitiesTableToolbarProps<TData> {
   pageSize: number;
   onPageSizeChange: (size: number) => void;
   table: Table<TData>;
+  hasActiveFilters?: boolean;
+  onResetFilters?: () => void;
 }
 
 const COLUMN_LABELS: Record<string, string> = {
@@ -54,6 +56,8 @@ export function FacilitiesTableToolbar<TData>({
   pageSize,
   onPageSizeChange,
   table,
+  hasActiveFilters,
+  onResetFilters,
 }: FacilitiesTableToolbarProps<TData>) {
   return (
     <div className="bg-background/40 border-border/50 flex flex-col items-stretch justify-between gap-3 rounded-xl border p-2 backdrop-blur-md lg:flex-row lg:items-center">
@@ -74,8 +78,11 @@ export function FacilitiesTableToolbar<TData>({
 
         <div className="flex flex-wrap items-center gap-2">
           <Select value={status || "all"} onValueChange={onStatusChange}>
-            <SelectTrigger className="bg-background/40 border-border/50 hover:bg-background/60 relative h-9 flex-1 text-[10px] font-black tracking-wider uppercase transition-colors sm:w-[160px]">
-              <SelectValue placeholder="Status" />
+            <SelectTrigger
+              className="bg-background/40 border-border/50 hover:bg-background/60 relative h-9 flex-1 text-[10px] font-black tracking-wider uppercase transition-colors sm:w-[160px]"
+              aria-label="Filter statusa"
+            >
+              <SelectValue placeholder="Status objekta" />
               <Badge
                 variant="outline"
                 className="bg-primary/10 border-primary/20 text-primary pointer-events-none ml-2 h-5 px-1.5 text-[9px] font-black"
@@ -93,7 +100,10 @@ export function FacilitiesTableToolbar<TData>({
           </Select>
 
           <Select value={String(pageSize)} onValueChange={(v) => onPageSizeChange(Number(v))}>
-            <SelectTrigger className="bg-background/40 border-border/50 h-9 w-[100px] text-[10px] font-black tracking-wider uppercase">
+            <SelectTrigger
+              className="bg-background/40 border-border/50 h-9 w-[100px] text-[10px] font-black tracking-wider uppercase"
+              aria-label="Broj po stranici"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-muted border-border">
@@ -127,6 +137,18 @@ export function FacilitiesTableToolbar<TData>({
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {hasActiveFilters && onResetFilters && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-9 text-[10px] font-bold uppercase"
+              onClick={onResetFilters}
+            >
+              Resetuj
+            </Button>
+          )}
 
           <Button
             variant="ghost"

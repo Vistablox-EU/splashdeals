@@ -2,22 +2,33 @@ import { prisma } from "@/app/(server)/lib/prisma";
 import { DataTable } from "./table/data-table";
 import { columns } from "./columns";
 import { FacilityStatus, Prisma } from "@prisma/client";
+import {
+  facilityListOrderBy,
+  parseFacilityListLimit,
+  parseFacilityListOrder,
+  parseFacilityListPage,
+  parseFacilityListSort,
+} from "@/lib/admin/facilities-list-params";
 
 interface FacilitiesListProps {
   q?: string;
   page?: string;
   limit?: string;
   status?: string;
+  sort?: string;
+  order?: string;
 }
 
 const STATUS_VALUES = new Set<string>(Object.values(FacilityStatus));
 
 /**
- * Server-side pagination + search + status filter for the facilities registry.
+ * Server-side pagination + search + status filter + sort for the facilities registry.
  */
-export async function FacilitiesList({ q, page, limit, status }: FacilitiesListProps) {
-  const currentPage = Number(page) || 1;
-  const pageSize = Number(limit) || 15;
+export async function FacilitiesList({ q, page, limit, status, sort, order }: FacilitiesListProps) {
+  const currentPage = parseFacilityListPage(page);
+  const pageSize = parseFacilityListLimit(limit);
+  const sortKey = parseFacilityListSort(sort);
+  const sortOrder = parseFacilityListOrder(order);
   const skip = (currentPage - 1) * pageSize;
 
   const and: Prisma.FacilityWhereInput[] = [];
@@ -41,7 +52,7 @@ export async function FacilitiesList({ q, page, limit, status }: FacilitiesListP
   const [facilities, totalCount] = await Promise.all([
     prisma.facility.findMany({
       where: filter,
-      orderBy: { createdAt: "desc" },
+      orderBy: facilityListOrderBy(sortKey, sortOrder),
       take: pageSize,
       skip,
     }),
@@ -57,6 +68,8 @@ export async function FacilitiesList({ q, page, limit, status }: FacilitiesListP
       pageSize={pageSize}
       initialQ={q}
       initialStatus={status && STATUS_VALUES.has(status) ? status : "all"}
+      initialSort={sortKey}
+      initialOrder={sortOrder}
     />
   );
 }
