@@ -153,18 +153,18 @@ export function SuccessClient({
 
   if (pollingError) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-6 pt-20 text-center">
-        <div className="border-destructive/20 bg-destructive/10 text-destructive flex h-20 w-20 items-center justify-center rounded-full border">
-          <Icon name="error" className="text-[40px]" />
+      <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-6 pt-8 text-center sm:min-h-[60vh] sm:pt-20">
+        <div className="border-destructive/20 bg-destructive/10 text-destructive flex h-16 w-16 items-center justify-center rounded-full border sm:h-20 sm:w-20">
+          <Icon name="error" className="text-[36px] sm:text-[40px]" />
         </div>
-        <div className="max-w-lg space-y-3">
-          <h1 className="text-foreground text-3xl font-black tracking-tighter uppercase italic">
+        <div className="max-w-lg space-y-3 px-2">
+          <h1 className="text-foreground text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
             Provera plaćanja nije dostupna
           </h1>
-          <p className="text-muted-foreground font-medium">{pollingError}</p>
+          <p className="text-muted-foreground text-sm font-medium sm:text-base">{pollingError}</p>
         </div>
         <Link href="/prijava">
-          <Button size="lg" variant="outline">
+          <Button size="lg" variant="outline" className="min-h-11">
             Prijavite se
           </Button>
         </Link>
@@ -174,21 +174,23 @@ export function SuccessClient({
 
   if (terminalMessage) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-6 pt-20 text-center">
-        <div className="border-primary/20 bg-primary/10 text-primary flex h-20 w-20 items-center justify-center rounded-full border">
+      <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-6 pt-8 text-center sm:min-h-[60vh] sm:pt-20">
+        <div className="border-primary/20 bg-primary/10 text-primary flex h-16 w-16 items-center justify-center rounded-full border sm:h-20 sm:w-20">
           <Icon
             name={transaction?.status === "PAID_REVIEW" ? "support_agent" : "info"}
-            className="text-[40px]"
+            className="text-[36px] sm:text-[40px]"
           />
         </div>
-        <div className="max-w-lg space-y-3">
-          <h1 className="text-foreground text-3xl font-black tracking-tighter uppercase italic">
+        <div className="max-w-lg space-y-3 px-2">
+          <h1 className="text-foreground text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
             Status plaćanja
           </h1>
-          <p className="text-muted-foreground font-medium">{terminalMessage}</p>
+          <p className="text-muted-foreground text-sm font-medium sm:text-base">
+            {terminalMessage}
+          </p>
         </div>
         <Link href="/cart">
-          <Button size="lg" variant="outline">
+          <Button size="lg" variant="outline" className="min-h-11">
             <Icon name="shopping_bag" className="mr-2 text-[20px]" />
             Nazad u korpu
           </Button>
@@ -199,20 +201,25 @@ export function SuccessClient({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-8 pt-20 text-center">
+      <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-6 pt-8 text-center sm:min-h-[60vh] sm:space-y-8 sm:pt-20">
         <div className="relative">
           <div className="text-primary animate-spin">
-            <Icon name="progress_activity" className="text-[80px]" />
+            <Icon name="progress_activity" className="text-[64px] sm:text-[80px]" />
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <Icon name="confirmation_number" className="text-primary/50 text-[24px]" />
+            <Icon
+              name="confirmation_number"
+              className="text-primary/50 text-[20px] sm:text-[24px]"
+            />
           </div>
         </div>
-        <div className="space-y-3">
-          <h2 className="text-foreground text-3xl leading-none font-black tracking-tighter uppercase italic">
+        <div className="space-y-3 px-2">
+          <h2 className="text-foreground text-2xl leading-none font-black tracking-tighter uppercase italic sm:text-3xl">
             {dict.processing.title}
           </h2>
-          <p className="text-muted-foreground font-medium">{dict.processing.description}</p>
+          <p className="text-muted-foreground text-sm font-medium sm:text-base">
+            {dict.processing.description}
+          </p>
           <div className="flex justify-center gap-1">
             {[0, 1, 2].map((i) => (
               <div
@@ -228,33 +235,33 @@ export function SuccessClient({
   }
 
   return (
-    <div className="space-y-16 pb-20">
+    <div className="space-y-10 pb-24 sm:space-y-16 sm:pb-20">
       {/* 🌟 Header Section */}
-      <div className="animate-fade-in-up space-y-6 text-center">
+      <div className="animate-fade-in-up space-y-4 text-center sm:space-y-6">
         <div className="relative inline-block">
-          <div className="animate-scale-in border-primary/20 bg-primary/10 text-primary relative z-10 inline-flex h-24 w-24 items-center justify-center rounded-full border">
-            <Icon name="check_circle" className="text-[56px]" />
+          <div className="animate-scale-in border-primary/20 bg-primary/10 text-primary relative z-10 inline-flex h-20 w-20 items-center justify-center rounded-full border sm:h-24 sm:w-24">
+            <Icon name="check_circle" className="text-[48px] sm:text-[56px]" />
           </div>
           <div className="bg-primary/20 absolute -top-4 -right-4 h-12 w-12 animate-pulse rounded-full blur-2xl" />
           <div className="bg-primary/20 absolute -bottom-4 -left-4 h-12 w-12 animate-pulse rounded-full blur-2xl delay-700" />
         </div>
 
-        <div className="space-y-3">
-          <h1 className="text-foreground text-4xl leading-tight font-black tracking-tighter uppercase italic md:text-6xl">
+        <div className="space-y-3 px-1">
+          <h1 className="text-foreground text-3xl leading-tight font-black tracking-tighter uppercase italic md:text-6xl">
             {dict.header.title}{" "}
             <span className="from-primary to-primary-dark bg-gradient-to-r bg-clip-text text-transparent">
               {dict.header.status}
             </span>
           </h1>
-          <p className="text-muted-foreground mx-auto max-w-xl text-lg">
+          <p className="text-muted-foreground mx-auto max-w-xl text-base sm:text-lg">
             {dict.header.description}
           </p>
         </div>
       </div>
 
       {/* 🎟️ Ticket Container */}
-      <div className="mx-auto max-w-5xl space-y-10">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+      <div className="mx-auto max-w-5xl space-y-6 sm:space-y-10">
+        <div className="grid grid-cols-1 gap-4 sm:gap-8 md:grid-cols-2">
           {transaction.issuedTickets.map((issuedTicket, index) => (
             <div
               key={issuedTicket.id}
@@ -263,7 +270,7 @@ export function SuccessClient({
             >
               <Card className="group border-border/5 bg-card/40 hover:border-primary/30 flex flex-col overflow-hidden p-0 transition-colors duration-500 md:flex-row">
                 {/* QR Code Wing */}
-                <div className="bg-background relative flex min-w-[240px] items-center justify-center p-10">
+                <div className="bg-background relative flex min-w-0 items-center justify-center p-6 sm:min-w-[240px] sm:p-10">
                   <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
                   <div className="relative">
                     <QRCodeSVG
@@ -280,7 +287,7 @@ export function SuccessClient({
                 </div>
 
                 {/* Data Wing */}
-                <div className="relative flex-1 space-y-6 p-8">
+                <div className="relative flex-1 space-y-5 p-5 sm:space-y-6 sm:p-8">
                   {/* Decorative background text */}
                   <div className="text-foreground/[0.02] pointer-events-none absolute top-4 right-4 text-6xl font-black tracking-tighter select-none">
                     SPLASH
@@ -293,7 +300,7 @@ export function SuccessClient({
                         {dict.ticket.valid}
                       </span>
                     </div>
-                    <h3 className="text-foreground text-2xl leading-none font-black tracking-tighter uppercase italic">
+                    <h3 className="text-foreground text-xl leading-none font-black tracking-tighter uppercase italic sm:text-2xl">
                       {issuedTicket.ticket.title}
                     </h3>
                   </div>
@@ -348,14 +355,14 @@ export function SuccessClient({
 
         {/* 🛠️ Footer Actions */}
         <div
-          className="animate-fade-in flex flex-col items-center justify-center gap-6 pt-10 sm:flex-row"
+          className="animate-fade-in flex flex-col items-center justify-center gap-3 pt-6 sm:flex-row sm:gap-6 sm:pt-10"
           style={{ animationDelay: "0.8s", animationFillMode: "both" }}
         >
           <Link href="/" className="w-full sm:w-auto">
             <Button
               variant="outline"
               size="lg"
-              className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-16 w-full rounded-full border px-10 sm:w-auto"
+              className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-14 w-full rounded-full border px-8 sm:h-16 sm:w-auto sm:px-10"
             >
               <Icon name="arrow_back" className="mr-3 text-[20px]" />
               {dict.actions.continue}
@@ -365,7 +372,7 @@ export function SuccessClient({
           <Button
             onClick={() => window.print()}
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground h-16 w-full rounded-full px-10 shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:w-auto"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground h-14 w-full rounded-full px-8 shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:h-16 sm:w-auto sm:px-10"
           >
             <Icon name="download" className="text-primary-foreground mr-3 text-[20px]" />
             {dict.actions.download}
@@ -376,7 +383,7 @@ export function SuccessClient({
             disabled={isPending}
             size="lg"
             variant="outline"
-            className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-16 w-full rounded-full border px-10 sm:w-auto"
+            className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-14 w-full rounded-full border px-8 sm:h-16 sm:w-auto sm:px-10"
           >
             <Icon
               name={

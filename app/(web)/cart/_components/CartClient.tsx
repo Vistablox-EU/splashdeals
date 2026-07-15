@@ -133,7 +133,14 @@ export function CartClient({
     notifyUpdated();
   }, [notifyUpdated]);
 
-  if (!isMounted) return null;
+  if (!isMounted) {
+    return (
+      <div className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-8 pb-28 sm:px-12 sm:pt-12 sm:pb-32">
+        <div className="bg-muted/30 mb-6 h-8 w-40 animate-pulse rounded-lg" />
+        <div className="bg-muted/20 h-28 animate-pulse rounded-2xl" />
+      </div>
+    );
+  }
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
     const result =
@@ -240,7 +247,7 @@ export function CartClient({
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-7xl px-6 pt-24 pb-32 sm:px-12">
+    <div className="mx-auto min-h-screen max-w-7xl px-4 pt-8 pb-36 sm:px-12 sm:pt-12 sm:pb-32">
       <GuestCartConflictModal
         open={Boolean(conflict)}
         guestFacilityId={conflict?.guestFacilityId || ""}
@@ -249,11 +256,11 @@ export function CartClient({
         onChooseGuest={() => handleResolveConflict("guest")}
         onChooseUser={() => handleResolveConflict("user")}
       />
-      <div className="mb-12">
-        <h1 className="mb-3 text-[10px] font-black tracking-[0.2em] uppercase opacity-50">
+      <div className="mb-6 sm:mb-12">
+        <h1 className="mb-2 text-[10px] font-black tracking-[0.2em] uppercase opacity-50 sm:mb-3">
           {dict?.cart?.title || "Korpa"}
         </h1>
-        <h2 className="text-foreground text-3xl leading-none font-black tracking-tighter sm:text-5xl">
+        <h2 className="text-foreground text-2xl leading-none font-black tracking-tighter sm:text-5xl">
           {items.length > 0
             ? `${items.length} ${dict?.cart?.items || "stavki"}`
             : dict?.cart?.empty || "Vaša korpa je prazna"}
@@ -261,22 +268,25 @@ export function CartClient({
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center pt-20">
-          <div className="bg-muted/20 flex h-24 w-24 items-center justify-center rounded-full">
-            <Icon name="shopping_bag" className="text-muted-foreground/30 text-[40px]" />
+        <div className="flex flex-col items-center justify-center pt-10 sm:pt-20">
+          <div className="bg-muted/20 flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24">
+            <Icon
+              name="shopping_bag"
+              className="text-muted-foreground/30 text-[36px] sm:text-[40px]"
+            />
           </div>
-          <p className="text-muted-foreground mt-6 text-sm font-medium">
+          <p className="text-muted-foreground mt-5 max-w-xs text-center text-sm font-medium sm:mt-6">
             {dict?.cart?.empty_description || "Izgleda da još uvek niste dodali karte."}
           </p>
-          <Link href="/search">
-            <Button variant="ghost" className="mt-4">
+          <Link href="/akva-parkovi">
+            <Button variant="ghost" className="mt-4 min-h-11 px-4">
               {dict?.cart?.browse || "Pretraži akva parkove"}
             </Button>
           </Link>
         </div>
       ) : (
-        <div className="grid gap-8 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
+        <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+          <div className="space-y-4 sm:space-y-6 lg:col-span-2">
             <CartItemList
               items={items}
               dict={dict}
@@ -303,6 +313,32 @@ export function CartClient({
             onRemovePromo={() => setDiscount(null)}
             onCheckout={handleStartCheckout}
           />
+        </div>
+      )}
+
+      {/* Mobile sticky checkout — above bottom nav, same action as summary CTA */}
+      {items.length > 0 && (
+        <div className="border-border/50 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-16 z-[999] border-t px-4 py-3 backdrop-blur-[40px] lg:hidden">
+          <div className="mx-auto flex max-w-lg items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                {dict?.cart?.total || "Ukupno"}
+              </p>
+              <p className="text-foreground text-lg leading-none font-black tabular-nums">
+                {new Intl.NumberFormat("sr-RS").format(total)}{" "}
+                <span className="text-primary text-xs">RSD</span>
+              </p>
+            </div>
+            <Button
+              onClick={handleStartCheckout}
+              disabled={isCheckingOut}
+              className="h-12 min-w-[9.5rem] shrink-0 rounded-2xl px-5 text-sm font-bold"
+            >
+              {isCheckingOut
+                ? dict?.cart?.processing || "Obrada..."
+                : dict?.cart?.checkout || "Nastavi na Plaćanje"}
+            </Button>
+          </div>
         </div>
       )}
 
