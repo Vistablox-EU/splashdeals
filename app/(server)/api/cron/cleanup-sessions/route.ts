@@ -1,15 +1,24 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/app/(server)/lib/prisma";
 import Stripe from "stripe";
+import {
+  fulfillPaidCheckout,
+  releaseCheckoutSession,
+  releaseCheckoutTransaction,
+} from "@/app/(server)/lib/checkout-fulfillment";
+import { prisma } from "@/app/(server)/lib/prisma";
 
 /**
- * 🌊 Cron Job: Abandoned Session Cleanup
- * Deletes PENDING transactions older than 24h and expires Stripe sessions.
+ * Expires abandoned PENDING checkout attempts without deleting their audit trail.
+ * The exact bound cart is unlocked after Stripe can no longer accept payment.
  */
 export async function GET(request: Request) {
-  // Simple auth check for Cron jobs (CRON_SECRET)
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    return NextResponse.json({ error: "Configuration Error" }, { status: 500 });
+  }
+
   const authHeader = request.headers.get("authorization");
-  if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -18,46 +27,58 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Configuration Error" }, { status: 500 });
   }
 
-  const stripe = new Stripe(stripeSecret, {
-    apiVersion: "2026-05-27.dahlia",
-  });
-
-  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const stripe = new Stripe(stripeSecret, { apiVersion: "2026-05-27.dahlia" });
+  const now = new Date();
+  const preStripeCutoff = new Date(now.getTime() - 15 * 60 * 1000);
 
   try {
-    // 1. Find PENDING transactions older than 24h
     const abandonedTransactions = await prisma.transaction.findMany({
       where: {
         status: "PENDING",
-        createdAt: { lt: twentyFourHoursAgo },
+        OR: [
+          { checkoutExpiresAt: { lte: now } },
+          {
+            checkoutExpiresAt: null,
+            createdAt: { lt: preStripeCutoff },
+          },
+        ],
       },
-      select: { id: true, stripeSession: true },
-      take: 100, // Process in batches
+      select: {
+        id: true,
+        stripeSession: true,
+        cartId: true,
+        userId: true,
+      },
+      take: 100,
     });
 
-    console.info(`[CRON] Found ${abandonedTransactions.length} abandoned sessions.`);
-
-    let successCount = 0;
-    for (const tx of abandonedTransactions) {
+    let expired = 0;
+    for (const transaction of abandonedTransactions) {
       try {
-        // Optional: Expire the session in Stripe to prevent late payments
-        // We catch errors here because the session might already be expired or completed.
-        await stripe.checkout.sessions.expire(tx.stripeSession).catch(() => {});
+        if (transaction.stripeSession) {
+          const stripeSession = await stripe.checkout.sessions.retrieve(transaction.stripeSession);
+          if (stripeSession.payment_status === "paid") {
+            await fulfillPaidCheckout(stripeSession);
+            continue;
+          }
+          if (stripeSession.status === "open") {
+            await stripe.checkout.sessions.expire(transaction.stripeSession);
+          }
+          const result = await releaseCheckoutSession(transaction.stripeSession, "EXPIRED");
+          if (result.released) expired += 1;
+          continue;
+        }
 
-        // Delete the transaction record
-        await prisma.transaction.delete({
-          where: { id: tx.id },
-        });
-
-        successCount++;
-      } catch (e) {
-        console.warn(`[CRON] Failed to cleanup session ${tx.stripeSession}:`, e);
+        const result = await releaseCheckoutTransaction(transaction.id, "EXPIRED");
+        if (result.released) expired += 1;
+      } catch (error) {
+        console.warn(`[CRON] Failed to expire transaction ${transaction.id}:`, error);
       }
     }
 
     return NextResponse.json({
       processed: abandonedTransactions.length,
-      deleted: successCount,
+      expired,
     });
   } catch (error) {
     console.error("[CRON ERROR] Cleanup failed:", error);

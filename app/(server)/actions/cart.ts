@@ -14,6 +14,7 @@ import { MAX_QUANTITY_PER_ITEM, type CartItem, type CartItemInput } from "@/lib/
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
 const RATE_LIMIT_MAX_CALLS = 30; // max 30 mutations per minute
 const TRANSACTION_MAX_ATTEMPTS = 3;
+const CART_LOCKED_ERROR = "Plaćanje je u toku. Otkažite ga pre izmene korpe.";
 
 type CartDbClient = Pick<
   Prisma.TransactionClient,
@@ -130,8 +131,18 @@ async function getOrCreateCartSession(userId: string, db: CartDbClient = prisma)
   });
 }
 
-async function getCartSession(userId: string) {
-  return prisma.cartSession.findUnique({ where: { userId } });
+async function getCartSession(userId: string, db: CartDbClient = prisma) {
+  return db.cartSession.findUnique({ where: { userId } });
+}
+
+async function incrementCartVersion(db: CartDbClient, cart: { id: string; version: number }) {
+  const updated = await db.cartSession.updateMany({
+    where: { id: cart.id, version: cart.version, locked: false },
+    data: { version: { increment: 1 } },
+  });
+  if (updated.count !== 1) {
+    throw new Error("Korpa je izmenjena. Pokušajte ponovo.");
+  }
 }
 
 async function getCanonicalTicket(ticketPriceId: string, db: CartDbClient = prisma) {
@@ -215,17 +226,7 @@ export async function addToCartAction(
 
       const cartSession = await getOrCreateCartSession(session.user.id, tx);
       if (cartSession.locked) {
-        const lockedAt = cartSession.lockedAt;
-        if (lockedAt && Date.now() - lockedAt.getTime() < 300_000) {
-          return {
-            success: false,
-            error: "Checkout je u toku. Sačekajte da se završi.",
-          } as const;
-        }
-        await tx.cartSession.update({
-          where: { id: cartSession.id },
-          data: { locked: false, lockedAt: null },
-        });
+        return { success: false, error: CART_LOCKED_ERROR } as const;
       }
 
       const differentFacilityItem = await tx.cartSessionItem.findFirst({
@@ -277,6 +278,7 @@ export async function addToCartAction(
           where: { id: existing.id },
           data: { ...canonicalData, quantity: newQty },
         });
+        await incrementCartVersion(tx, cartSession);
         return { success: true, data: { item: toCartItem(updated) } } as const;
       }
 
@@ -288,6 +290,7 @@ export async function addToCartAction(
           ...canonicalData,
         },
       });
+      await incrementCartVersion(tx, cartSession);
 
       return { success: true, data: { item: toCartItem(created) } } as const;
     });
@@ -330,20 +333,35 @@ export async function removeFromCartAction(
       return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };
     }
 
-    const cartSession = await getCartSession(session.user.id);
-    if (!cartSession) {
-      return { success: false, error: "Stavka nije pronađena u vašoj korpi." };
-    }
+    const result = await withSerializableRetry(async (tx) => {
+      const cartSession = await getCartSession(session.user.id, tx);
+      if (!cartSession) {
+        return { success: false, error: "Stavka nije pronađena u vašoj korpi." } as const;
+      }
+      if (cartSession.locked) {
+        return { success: false, error: CART_LOCKED_ERROR } as const;
+      }
 
-    const deleted = await prisma.cartSessionItem.deleteMany({
-      where: { id: itemId, cartId: cartSession.id },
+      const deleted = await tx.cartSessionItem.deleteMany({
+        where: { id: itemId, cartId: cartSession.id },
+      });
+      if (deleted.count === 0) {
+        return { success: false, error: "Stavka nije pronađena u vašoj korpi." } as const;
+      }
+
+      const versionUpdated = await tx.cartSession.updateMany({
+        where: { id: cartSession.id, version: cartSession.version, locked: false },
+        data: { version: { increment: 1 } },
+      });
+      if (versionUpdated.count !== 1) {
+        throw new Error("Korpa je izmenjena. Pokušajte ponovo.");
+      }
+
+      return { success: true, data: { removed: true } } as const;
     });
-    if (deleted.count === 0) {
-      return { success: false, error: "Stavka nije pronađena u vašoj korpi." };
-    }
 
-    revalidatePath("/cart");
-    return { success: true, data: { removed: true } };
+    if (result.success) revalidatePath("/cart");
+    return result;
   } catch (error) {
     return handleServerActionError(error, "removeFromCart");
   }
@@ -364,45 +382,52 @@ export async function updateCartQuantityAction(
       return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };
     }
 
-    const cartSession = await getCartSession(session.user.id);
-    if (!cartSession) {
-      return { success: false, error: "Stavka nije pronađena u vašoj korpi." };
-    }
+    const result = await withSerializableRetry(async (tx) => {
+      const cartSession = await getCartSession(session.user.id, tx);
+      if (!cartSession) {
+        return { success: false, error: "Stavka nije pronađena u vašoj korpi." } as const;
+      }
+      if (cartSession.locked) {
+        return { success: false, error: CART_LOCKED_ERROR } as const;
+      }
 
-    const ownedItem = await prisma.cartSessionItem.findFirst({
-      where: { id: itemId, cartId: cartSession.id },
-    });
-    if (!ownedItem) {
-      return { success: false, error: "Stavka nije pronađena u vašoj korpi." };
-    }
-
-    if (quantity <= 0) {
-      await prisma.cartSessionItem.deleteMany({
+      const ownedItem = await tx.cartSessionItem.findFirst({
         where: { id: itemId, cartId: cartSession.id },
       });
-      revalidatePath("/cart");
-      return { success: true, data: { cleared: true } };
-    }
+      if (!ownedItem) {
+        return { success: false, error: "Stavka nije pronađena u vašoj korpi." } as const;
+      }
 
-    const minimumQuantity = Math.max(1, ownedItem.minPeople ?? 1);
-    const maximumQuantity = Math.min(
-      ownedItem.maxPeople ?? MAX_QUANTITY_PER_ITEM,
-      MAX_QUANTITY_PER_ITEM,
-    );
-    if (quantity < minimumQuantity || quantity > maximumQuantity) {
-      return {
-        success: false,
-        error: `Dozvoljena količina za ovu kartu je od ${minimumQuantity} do ${maximumQuantity}.`,
-      };
-    }
+      if (quantity <= 0) {
+        await tx.cartSessionItem.deleteMany({
+          where: { id: itemId, cartId: cartSession.id },
+        });
+        await incrementCartVersion(tx, cartSession);
+        return { success: true, data: { cleared: true } } as const;
+      }
 
-    const updated = await prisma.cartSessionItem.update({
-      where: { id: itemId, cartId: cartSession.id },
-      data: { quantity },
+      const minimumQuantity = Math.max(1, ownedItem.minPeople ?? 1);
+      const maximumQuantity = Math.min(
+        ownedItem.maxPeople ?? MAX_QUANTITY_PER_ITEM,
+        MAX_QUANTITY_PER_ITEM,
+      );
+      if (quantity < minimumQuantity || quantity > maximumQuantity) {
+        return {
+          success: false,
+          error: `Dozvoljena količina za ovu kartu je od ${minimumQuantity} do ${maximumQuantity}.`,
+        } as const;
+      }
+
+      const updated = await tx.cartSessionItem.update({
+        where: { id: itemId, cartId: cartSession.id },
+        data: { quantity },
+      });
+      await incrementCartVersion(tx, cartSession);
+      return { success: true, data: { item: toCartItem(updated) } } as const;
     });
 
-    revalidatePath("/cart");
-    return { success: true, data: { item: toCartItem(updated) } };
+    if (result.success) revalidatePath("/cart");
+    return result;
   } catch (error) {
     return handleServerActionError(error, "updateCartQuantity");
   }
@@ -415,52 +440,29 @@ export async function clearCartAction(): Promise<ActionResult<{ cleared: boolean
       return { success: false, error: "Morate biti prijavljeni." };
     }
 
-    const cartSession = await getCartSession(session.user.id);
+    if (!(await checkRateLimit(session.user.id))) {
+      return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };
+    }
 
-    if (cartSession) {
-      // Delete all items for this cart session
-      await prisma.cartSessionItem.deleteMany({
+    const result = await withSerializableRetry(async (tx) => {
+      const cartSession = await getCartSession(session.user.id, tx);
+      if (!cartSession) {
+        return { success: true, data: { cleared: true } } as const;
+      }
+      if (cartSession.locked) {
+        return { success: false, error: CART_LOCKED_ERROR } as const;
+      }
+
+      await tx.cartSessionItem.deleteMany({
         where: { cartId: cartSession.id },
       });
-      // Reset cart session state
-      await prisma.cartSession.update({
-        where: { id: cartSession.id },
-        data: { locked: false, lockedAt: null },
-      });
-    }
+      await incrementCartVersion(tx, cartSession);
+      return { success: true, data: { cleared: true } } as const;
+    });
 
-    revalidatePath("/cart");
-    return { success: true, data: { cleared: true } };
+    if (result.success) revalidatePath("/cart");
+    return result;
   } catch (error) {
     return handleServerActionError(error, "clearCart");
-  }
-}
-
-/**
- * 🔒 Lock or unlock a user's cart session.
- * Called by checkout.ts to prevent concurrent mutations during checkout.
- * Lock auto-expires after 5 minutes (TTL checked in addToCartAction).
- */
-export async function setCartLockAction(
-  locked: boolean,
-): Promise<ActionResult<{ locked: boolean }>> {
-  try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
-      return { success: false, error: "You must be logged in." };
-    }
-
-    const cartSession = await getCartSession(session.user.id);
-
-    if (cartSession) {
-      await prisma.cartSession.update({
-        where: { id: cartSession.id },
-        data: { locked, lockedAt: locked ? new Date() : null },
-      });
-    }
-
-    return { success: true, data: { locked } };
-  } catch (error) {
-    return handleServerActionError(error, "setCartLock");
   }
 }

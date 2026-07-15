@@ -23,10 +23,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function CartPage() {
+export default async function CartPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ checkout?: string }>;
+}) {
   await connection();
 
-  const dict = await getDictionary();
+  const [dict, params] = await Promise.all([getDictionary(), searchParams]);
+  const checkoutCancelled = params.checkout === "cancelled";
 
   return (
     <>
@@ -39,7 +44,7 @@ export default async function CartPage() {
           description: "Pregledajte karte za akva parkove pre plaćanja.",
         }}
       />
-      <CartClient dict={dict} />
+      <CartClient dict={dict} checkoutCancelled={checkoutCancelled} />
     </>
   );
 }

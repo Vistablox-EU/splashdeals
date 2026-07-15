@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
     create: vi.fn(),
     upsert: vi.fn(),
     update: vi.fn(),
+    updateMany: vi.fn(),
   },
   cartSessionItem: {
     findFirst: vi.fn(),
@@ -53,7 +54,12 @@ vi.mock("next/cache", () => ({
   revalidatePath: mocks.revalidatePath,
 }));
 
-import { addToCartAction, updateCartQuantityAction } from "@/app/(server)/actions/cart";
+import {
+  addToCartAction,
+  clearCartAction,
+  removeFromCartAction,
+  updateCartQuantityAction,
+} from "@/app/(server)/actions/cart";
 
 const USER_ID = "user-1";
 const CART_ID = "77777777-7777-4777-8777-777777777777";
@@ -70,6 +76,9 @@ const cartSession = {
   items: null,
   locked: false,
   lockedAt: null,
+  lockExpiresAt: null,
+  activeCheckoutTransactionId: null,
+  version: 3,
   notified: false,
   appliedPromo: null,
   expiresAt: null,
@@ -151,6 +160,8 @@ describe("cart integrity actions", () => {
     mocks.cartSessionItem.create.mockResolvedValue(canonicalStoredItem);
     mocks.cartSessionItem.update.mockResolvedValue(canonicalStoredItem);
     mocks.cartSessionItem.updateMany.mockResolvedValue({ count: 1 });
+    mocks.cartSessionItem.deleteMany.mockResolvedValue({ count: 1 });
+    mocks.cartSession.updateMany.mockResolvedValue({ count: 1 });
     mocks.ticketPrice.findUnique.mockResolvedValue(canonicalTicketPrice);
   });
 
@@ -214,6 +225,19 @@ describe("cart integrity actions", () => {
     expect(mocks.transaction.mock.calls[1]?.[1]).toEqual({ isolationLevel: "Serializable" });
   });
 
+  it("increments the cart version in the same transaction after adding an item", async () => {
+    const result = await addToCartAction({
+      ticketPriceId: TICKET_PRICE_ID,
+      quantity: 1,
+    });
+
+    expect(result.success).toBe(true);
+    expect(mocks.cartSession.updateMany).toHaveBeenCalledWith({
+      where: { id: CART_ID, version: 3, locked: false },
+      data: { version: { increment: 1 } },
+    });
+  });
+
   it("hydrates canonical cart metadata from the database", async () => {
     const result = await addToCartAction({
       ticketPriceId: TICKET_PRICE_ID,
@@ -268,6 +292,115 @@ describe("cart integrity actions", () => {
       error: "U jednoj korpi možete imati karte samo za jedan objekat.",
     });
     expect(mocks.cartSessionItem.create).not.toHaveBeenCalled();
+  });
+
+  it("keeps additions blocked until checkout cancellation or expiry releases the lock", async () => {
+    mocks.cartSession.upsert.mockResolvedValue({
+      ...cartSession,
+      locked: true,
+      lockedAt: new Date(Date.now() - 10 * 60_000),
+    });
+
+    const result = await addToCartAction({
+      ticketPriceId: TICKET_PRICE_ID,
+      quantity: 1,
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Plaćanje je u toku. Otkažite ga pre izmene korpe.",
+    });
+    expect(mocks.cartSession.update).not.toHaveBeenCalled();
+    expect(mocks.cartSessionItem.create).not.toHaveBeenCalled();
+  });
+
+  it("increments the cart version atomically when clearing it", async () => {
+    const result = await clearCartAction();
+
+    expect(result).toEqual({ success: true, data: { cleared: true } });
+    expect(mocks.transaction).toHaveBeenCalledTimes(2);
+    expect(mocks.transaction.mock.calls[1]?.[1]).toEqual({ isolationLevel: "Serializable" });
+    expect(mocks.cartSession.updateMany).toHaveBeenCalledWith({
+      where: { id: CART_ID, version: 3, locked: false },
+      data: { version: { increment: 1 } },
+    });
+  });
+
+  it("blocks clearing the cart while payment is pending", async () => {
+    mocks.cartSession.findUnique.mockResolvedValue({
+      ...cartSession,
+      locked: true,
+      lockedAt: now,
+    });
+
+    const result = await clearCartAction();
+
+    expect(result).toEqual({
+      success: false,
+      error: "Plaćanje je u toku. Otkažite ga pre izmene korpe.",
+    });
+    expect(mocks.cartSessionItem.deleteMany).not.toHaveBeenCalled();
+  });
+
+  it("increments the cart version atomically when removing an item", async () => {
+    const result = await removeFromCartAction({ itemId: ITEM_ID });
+
+    expect(result).toEqual({ success: true, data: { removed: true } });
+    expect(mocks.transaction).toHaveBeenCalledTimes(2);
+    expect(mocks.transaction.mock.calls[1]?.[1]).toEqual({ isolationLevel: "Serializable" });
+    expect(mocks.cartSession.updateMany).toHaveBeenCalledWith({
+      where: { id: CART_ID, version: 3, locked: false },
+      data: { version: { increment: 1 } },
+    });
+  });
+
+  it("blocks item removal while payment is pending", async () => {
+    mocks.cartSession.findUnique.mockResolvedValue({
+      ...cartSession,
+      locked: true,
+      lockedAt: now,
+    });
+
+    const result = await removeFromCartAction({ itemId: ITEM_ID });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Plaćanje je u toku. Otkažite ga pre izmene korpe.",
+    });
+    expect(mocks.cartSessionItem.deleteMany).not.toHaveBeenCalled();
+  });
+
+  it("increments the cart version atomically when changing quantity", async () => {
+    mocks.cartSessionItem.findFirst.mockResolvedValue(canonicalStoredItem);
+
+    const result = await updateCartQuantityAction({ itemId: ITEM_ID, quantity: 3 });
+
+    expect(result.success).toBe(true);
+    expect(mocks.transaction).toHaveBeenCalledTimes(2);
+    expect(mocks.cartSession.updateMany).toHaveBeenCalledWith({
+      where: { id: CART_ID, version: 3, locked: false },
+      data: { version: { increment: 1 } },
+    });
+  });
+
+  it("blocks quantity changes while payment is pending", async () => {
+    mocks.cartSession.findUnique.mockResolvedValue({
+      ...cartSession,
+      locked: true,
+      lockedAt: now,
+    });
+
+    const result = await updateCartQuantityAction({
+      itemId: ITEM_ID,
+      quantity: 3,
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Plaćanje je u toku. Otkažite ga pre izmene korpe.",
+    });
+    expect(mocks.cartSessionItem.findFirst).not.toHaveBeenCalled();
+    expect(mocks.cartSessionItem.update).not.toHaveBeenCalled();
   });
 
   it("does not update an item outside the authenticated user's cart", async () => {

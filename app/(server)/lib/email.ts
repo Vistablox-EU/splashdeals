@@ -42,7 +42,7 @@ export async function sendOrderConfirmation(transactionId: string): Promise<void
       issuedTickets: true,
     },
   });
-  if (!transaction || !transaction.user.email) return;
+  if (!transaction || !transaction.user.email || !transaction.stripeSession) return;
 
   const ticketRows = (transaction.ticketDetails as any[]) || [];
   const qrImages = transaction.issuedTickets
@@ -90,11 +90,11 @@ function buildTicketEmailHtml(
     <p style="color:#666">${e.order_confirmation_tickets_ready}</p>
     <table style="width:100%;border-collapse:collapse;margin:16px 0">
       <tr><td style="padding:8px 0;color:#666">${e.order_confirmation_facility}</td><td style="text-align:right;font-weight:bold">${facilityName}</td></tr>
-      ${ticketRows.map((t: any) => `<tr><td style="padding:8px 0;color:#666">${t.type || e.order_confirmation_ticket_default}</td><td style="text-align:right;font-weight:bold">${t.quantity}x ${Number(t.price).toLocaleString("sr-RS")} RSD</td></tr>`).join("")}
+      ${ticketRows.map((t: any) => `<tr><td style="padding:8px 0;color:#666">${t.ticketTypeTitle || t.type || e.order_confirmation_ticket_default}</td><td style="text-align:right;font-weight:bold">${t.quantity}x ${Number(t.unitPrice ?? t.price).toLocaleString("sr-RS")} RSD</td></tr>`).join("")}
       <tr><td style="border-top:1px solid #ddd;padding:8px 0;color:#666">${e.order_confirmation_total}</td><td style="border-top:1px solid #ddd;text-align:right;font-weight:bold">${total.toLocaleString("sr-RS")} RSD</td></tr>
     </table>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:24px 0">${qrImages}</div>
-    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/success?session=${sessionId}" style="display:block;background:#1a1a1a;color:white;text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:bold">${e.order_confirmation_download}</a>
+    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id=${sessionId}" style="display:block;background:#1a1a1a;color:white;text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:bold">${e.order_confirmation_download}</a>
   </div>
 </body></html>`;
 }

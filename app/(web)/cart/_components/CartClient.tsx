@@ -7,7 +7,10 @@ import Link from "next/link";
 import { toast } from "sonner";
 import type { CartItem, DiscountInfo } from "@/lib/types/cart";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
-import { createCheckoutSessionAction } from "@/app/(server)/actions/checkout";
+import {
+  createCheckoutSessionAction,
+  cancelCheckoutSessionAction,
+} from "@/app/(server)/actions/checkout";
 import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
 import {
   getCartAction,
@@ -18,7 +21,13 @@ import { trackBeginCheckout } from "@/lib/analytics/events";
 import { CartItemList } from "./CartItemList";
 import { CartSummary } from "./CartSummary";
 
-export function CartClient({ dict }: { dict: Record<string, any> }) {
+export function CartClient({
+  dict,
+  checkoutCancelled = false,
+}: {
+  dict: Record<string, any>;
+  checkoutCancelled?: boolean;
+}) {
   const [items, setItems] = React.useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
@@ -57,6 +66,32 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
     return () => cancelAnimationFrame(timer);
   }, [loadCart]);
 
+  const cancellationHandledRef = React.useRef(false);
+  React.useEffect(() => {
+    if (!checkoutCancelled || cancellationHandledRef.current) return;
+    cancellationHandledRef.current = true;
+
+    let active = true;
+    cancelCheckoutSessionAction()
+      .then(async (result) => {
+        if (!active) return;
+        if (result.success) {
+          toast.info("Plaćanje je otkazano. Vaša korpa je sačuvana.");
+          await loadCart();
+          window.history.replaceState({}, "", "/cart");
+        } else {
+          toast.error(result.error || "Otkazivanje plaćanja nije uspelo.");
+        }
+      })
+      .catch(() => {
+        if (active) toast.error("Otkazivanje plaćanja nije uspelo.");
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [checkoutCancelled, loadCart]);
+
   // 🔄 Tab sync — re-fetch cart when another tab updates it
   React.useEffect(() => {
     const channel = new BroadcastChannel("splash-cart-sync");
@@ -82,23 +117,36 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
   if (!isMounted) return null;
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      setItems((prev) => prev.filter((i) => i.id !== itemId));
-      await removeFromCartAction({ itemId }).catch(console.error);
-    } else {
-      setItems((prev) =>
-        prev.map((i) =>
-          i.id === itemId ? { ...i, quantity: newQuantity, updatedAt: Date.now() } : i,
-        ),
-      );
-      await updateCartQuantityAction({ itemId, quantity: newQuantity }).catch(console.error);
+    const result =
+      newQuantity <= 0
+        ? await removeFromCartAction({ itemId })
+        : await updateCartQuantityAction({ itemId, quantity: newQuantity });
+
+    if (!result.success) {
+      toast.error(result.error || "Izmena korpe nije uspela.");
+      await loadCart();
+      return;
     }
+
+    setItems((prev) =>
+      newQuantity <= 0
+        ? prev.filter((item) => item.id !== itemId)
+        : prev.map((item) =>
+            item.id === itemId ? { ...item, quantity: newQuantity, updatedAt: Date.now() } : item,
+          ),
+    );
     broadcastCartUpdate();
   };
 
   const handleRemoveItem = async (itemId: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== itemId));
-    await removeFromCartAction({ itemId }).catch(console.error);
+    const result = await removeFromCartAction({ itemId });
+    if (!result.success) {
+      toast.error(result.error || "Uklanjanje stavke nije uspelo.");
+      await loadCart();
+      return;
+    }
+
+    setItems((prev) => prev.filter((item) => item.id !== itemId));
     broadcastCartUpdate();
   };
 
@@ -156,23 +204,21 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
       setShowIdentityDialog(false);
 
       const result = await createCheckoutSessionAction({
-        items: items.map((i) => ({ ticketPriceId: i.ticketId, quantity: i.quantity })),
         holderName,
         holderPhotoUrl,
+        promoCode: discount?.code ?? null,
       });
 
-      if (!result.success) throw new Error(result.error || "Failed to initialize checkout");
+      if (!result.success) throw new Error(result.error || "Pokretanje plaćanja nije uspelo.");
 
       if (result.data?.url) {
-        // Cart is cleared server-side in fulfillOrder (webhook) after payment is confirmed.
-        // This preserves cart items if the user cancels Stripe checkout.
-        setItems([]);
+        // The exact server cart remains locked until Stripe confirms, cancels, or expires.
         window.location.href = result.data.url;
       } else {
-        throw new Error("No checkout URL returned");
+        throw new Error("Nije dobijena adresa za plaćanje.");
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
+      const message = error instanceof Error ? error.message : "Nepoznata greška";
       toast.error(dict?.cart?.checkout_error || "Došlo je do greške. Pokušajte ponovo.");
       console.error("Checkout error:", message);
     } finally {

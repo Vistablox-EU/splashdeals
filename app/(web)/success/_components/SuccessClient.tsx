@@ -7,6 +7,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { resendConfirmationAction } from "@/app/(server)/actions/checkout";
+import {
+  getCheckoutTerminalMessage,
+  isCheckoutTerminalStatus,
+  shouldRetryCheckoutStatus,
+} from "./success-state";
 
 interface IssuedTicket {
   id: string;
@@ -75,9 +80,12 @@ export function SuccessClient({
   dict: SuccessDictionary;
 }) {
   const [transaction, setTransaction] = useState<Transaction | null>(initialTransaction);
-  const isLoading = !transaction || transaction.status !== "SUCCESS";
+  const transactionStatus = transaction?.status;
+  const terminalMessage = transactionStatus ? getCheckoutTerminalMessage(transactionStatus) : null;
+  const isLoading = !transactionStatus || transactionStatus === "PENDING";
   const [isPending, startTransition] = useTransition();
   const [resendStatus, setResendStatus] = useState<"idle" | "sent" | "error">("idle");
+  const [pollingError, setPollingError] = useState<string | null>(null);
 
   const handleResend = () => {
     startTransition(async () => {
@@ -101,7 +109,7 @@ export function SuccessClient({
     let timerId: NodeJS.Timeout | null = null;
     let isActive = true;
 
-    if (transaction?.status !== "SUCCESS") {
+    if (!transactionStatus || transactionStatus === "PENDING") {
       const poll = async () => {
         if (!isActive) return;
         try {
@@ -110,7 +118,18 @@ export function SuccessClient({
 
           if (!isActive) return;
 
-          if (data.status === "SUCCESS") {
+          if (!res.ok) {
+            if (shouldRetryCheckoutStatus(res.status)) {
+              throw new Error(`Status zahteva nije dostupan (${res.status}).`);
+            }
+            setPollingError(
+              res.status === 401 || res.status === 403
+                ? "Vaša sesija je istekla. Prijavite se ponovo da biste proverili plaćanje."
+                : "Podaci o ovom plaćanju nisu pronađeni.",
+            );
+            return;
+          }
+          if (data.status === "SUCCESS" || isCheckoutTerminalStatus(data.status)) {
             setTransaction(data);
           } else {
             timerId = setTimeout(poll, 3000);
@@ -130,7 +149,53 @@ export function SuccessClient({
       isActive = false;
       if (timerId) clearTimeout(timerId);
     };
-  }, [sessionId, transaction?.status]);
+  }, [sessionId, transactionStatus]);
+
+  if (pollingError) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-6 pt-20 text-center">
+        <div className="border-destructive/20 bg-destructive/10 text-destructive flex h-20 w-20 items-center justify-center rounded-full border">
+          <Icon name="error" className="text-[40px]" />
+        </div>
+        <div className="max-w-lg space-y-3">
+          <h1 className="text-foreground text-3xl font-black tracking-tighter uppercase italic">
+            Provera plaćanja nije dostupna
+          </h1>
+          <p className="text-muted-foreground font-medium">{pollingError}</p>
+        </div>
+        <Link href="/prijava">
+          <Button size="lg" variant="outline">
+            Prijavite se
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  if (terminalMessage) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-6 pt-20 text-center">
+        <div className="border-primary/20 bg-primary/10 text-primary flex h-20 w-20 items-center justify-center rounded-full border">
+          <Icon
+            name={transaction?.status === "PAID_REVIEW" ? "support_agent" : "info"}
+            className="text-[40px]"
+          />
+        </div>
+        <div className="max-w-lg space-y-3">
+          <h1 className="text-foreground text-3xl font-black tracking-tighter uppercase italic">
+            Status plaćanja
+          </h1>
+          <p className="text-muted-foreground font-medium">{terminalMessage}</p>
+        </div>
+        <Link href="/cart">
+          <Button size="lg" variant="outline">
+            <Icon name="shopping_bag" className="mr-2 text-[20px]" />
+            Nazad u korpu
+          </Button>
+        </Link>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

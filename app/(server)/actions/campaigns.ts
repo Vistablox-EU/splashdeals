@@ -300,18 +300,3 @@ export async function validatePromoCodeAction(
     return handleServerActionError(error, "campaigns/validatePromoCode");
   }
 }
-
-// ─── Increment campaign usage ──────────────────────────
-
-export async function incrementCampaignUsageAction(campaignId: string): Promise<ActionResult> {
-  try {
-    await prisma.campaign.update({
-      where: { id: campaignId },
-      data: { usedCount: { increment: 1 } },
-    });
-
-    return { success: true };
-  } catch (error) {
-    return handleServerActionError(error, "campaigns/incrementCampaignUsage");
-  }
-}

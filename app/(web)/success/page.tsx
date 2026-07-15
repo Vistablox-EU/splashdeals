@@ -6,6 +6,10 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import dynamic from "next/dynamic";
+import { auth } from "@/app/(server)/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { toCheckoutStatusDto } from "@/app/(server)/lib/checkout-status-dto";
 
 const SuccessClient = dynamic(
   () => import("./_components/SuccessClient").then((mod) => mod.SuccessClient),
@@ -54,6 +58,10 @@ export default async function SuccessPage(props: {
 }) {
   const searchParams = await props.searchParams;
   const session_id = searchParams.session_id as string | undefined;
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) {
+    redirect("/prijava");
+  }
   const dict = await getDictionary();
   const successDict = dict.success as SuccessDictionary;
 
@@ -87,7 +95,7 @@ export default async function SuccessPage(props: {
         </div>
       ) : (
         <Suspense fallback={<SuccessSkeleton />}>
-          <SuccessContent session_id={session_id} dict={successDict} />
+          <SuccessContent session_id={session_id} userId={session.user.id} dict={successDict} />
         </Suspense>
       )}
     </div>
@@ -96,16 +104,18 @@ export default async function SuccessPage(props: {
 
 async function SuccessContent({
   session_id,
+  userId,
   dict,
 }: {
   session_id: string;
+  userId: string;
   dict: SuccessDictionary;
 }) {
   // Enforce Next.js 16 Dynamic Connection
   await connection();
 
   const transaction = await prisma.transaction.findFirst({
-    where: { stripeSession: session_id },
+    where: { stripeSession: session_id, userId },
     include: {
       issuedTickets: {
         include: {
@@ -129,7 +139,9 @@ async function SuccessContent({
 
   // 🧪 Optimization: Pre-serialize Decimal or Date types if Prisma uses them
   // (Standard practice for Client Components in Splashdeals)
-  const serialized = transaction ? JSON.parse(JSON.stringify(transaction)) : null;
+  const serialized = transaction
+    ? JSON.parse(JSON.stringify(toCheckoutStatusDto(transaction)))
+    : null;
 
   return <SuccessClient sessionId={session_id} initialTransaction={serialized} dict={dict} />;
 }

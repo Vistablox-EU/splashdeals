@@ -1,23 +1,45 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { prisma } from "@/app/(server)/lib/prisma";
 import Stripe from "stripe";
-import { fulfillOrder } from "../../webhooks/stripe/route";
+import { auth } from "@/app/(server)/lib/auth";
+import {
+  fulfillPaidCheckout,
+  releaseCheckoutSession,
+} from "@/app/(server)/lib/checkout-fulfillment";
+import { prisma } from "@/app/(server)/lib/prisma";
+import { toCheckoutStatusDto } from "@/app/(server)/lib/checkout-status-dto";
+
+const noStoreHeaders = { "Cache-Control": "no-store, must-revalidate" };
+const transactionInclude = {
+  issuedTickets: {
+    include: {
+      ticketPrice: {
+        include: {
+          ticketType: {
+            include: {
+              category: { include: { facility: true } },
+            },
+          },
+        },
+      },
+    },
+  },
+} as const;
 
 /**
- * 📡 Polling Endpoint for Transaction Status
- * Allows the success page to detect when the Stripe Webhook has finished fulfillment.
+ * Authenticated polling endpoint for the current user's Stripe transaction.
  */
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const sessionId = searchParams.get("session_id");
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: noStoreHeaders });
+  }
 
+  const sessionId = new URL(req.url).searchParams.get("session_id");
   if (!sessionId) {
     return NextResponse.json(
       { error: "Missing session_id" },
-      {
-        status: 400,
-        headers: { "Cache-Control": "no-store, must-revalidate" },
-      },
+      { status: 400, headers: noStoreHeaders },
     );
   }
 
@@ -25,91 +47,50 @@ export async function GET(req: Request) {
     let transaction = await prisma.transaction.findFirst({
       where: {
         stripeSession: sessionId,
+        userId: session.user.id,
       },
-      include: {
-        issuedTickets: {
-          include: {
-            ticketPrice: {
-              include: {
-                ticketType: {
-                  include: {
-                    category: {
-                      include: {
-                        facility: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      include: transactionInclude,
     });
-
     if (!transaction) {
       return NextResponse.json(
-        { status: "PENDING" },
-        { headers: { "Cache-Control": "no-store, must-revalidate" } },
+        { error: "Transaction not found" },
+        { status: 404, headers: noStoreHeaders },
       );
     }
 
-    // 🌊 Hybrid Polling Fallback: If status is PENDING, check Stripe directly to avoid webhook delay/failure bails
     if (transaction.status === "PENDING") {
       const stripeSecret = process.env.STRIPE_SECRET_KEY;
       if (stripeSecret) {
-        const stripe = new Stripe(stripeSecret, {
-          apiVersion: "2026-05-27.dahlia",
-        });
-        const session = await stripe.checkout.sessions.retrieve(sessionId);
-        if (session.payment_status === "paid") {
-          // Fulfill order immediately on the spot!
-          await fulfillOrder(session);
+        const stripe = new Stripe(stripeSecret, { apiVersion: "2026-05-27.dahlia" });
+        const stripeSession = await stripe.checkout.sessions.retrieve(sessionId);
+        if (stripeSession.payment_status === "paid") {
+          await fulfillPaidCheckout(stripeSession);
+        } else if (stripeSession.status === "expired") {
+          await releaseCheckoutSession(sessionId, "EXPIRED");
+        }
 
-          // Re-fetch transaction from DB to get the new successful state + issued tickets
-          const updatedTransaction = await prisma.transaction.findFirst({
-            where: {
-              stripeSession: sessionId,
-            },
-            include: {
-              issuedTickets: {
-                include: {
-                  ticketPrice: {
-                    include: {
-                      ticketType: {
-                        include: {
-                          category: {
-                            include: {
-                              facility: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          });
-          if (updatedTransaction) {
-            transaction = updatedTransaction;
-          }
+        transaction = await prisma.transaction.findFirst({
+          where: {
+            stripeSession: sessionId,
+            userId: session.user.id,
+          },
+          include: transactionInclude,
+        });
+        if (!transaction) {
+          return NextResponse.json(
+            { error: "Transaction not found" },
+            { status: 404, headers: noStoreHeaders },
+          );
         }
       }
     }
 
-    // Success response should include basic transaction data for the UI
-    return NextResponse.json(transaction, {
-      headers: { "Cache-Control": "no-store, must-revalidate" },
-    });
+    return NextResponse.json(toCheckoutStatusDto(transaction), { headers: noStoreHeaders });
   } catch (error) {
     console.error("[TRANSACTION_STATUS_ERROR]", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      {
-        status: 500,
-        headers: { "Cache-Control": "no-store, must-revalidate" },
-      },
+      { status: 500, headers: noStoreHeaders },
     );
   }
 }
