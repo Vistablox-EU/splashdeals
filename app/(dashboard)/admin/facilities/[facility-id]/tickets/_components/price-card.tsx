@@ -64,7 +64,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
   const timeLabel = TIME_LABELS[form.timeSlot] ?? form.timeSlot;
 
   return (
-    <div className="border-border bg-muted/5 hover:border-primary/20 rounded-xl border p-4 transition-all">
+    <div className="border-border bg-muted/5 hover:border-primary/20 rounded-xl border p-4 transition-colors">
       {editing ? (
         <div className="space-y-2">
           <div className="grid grid-cols-2 gap-2">
@@ -193,7 +193,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
                 variant="ghost"
                 size="icon"
                 onClick={() => setEditing(true)}
-                className="text-muted-foreground hover:text-foreground hover:bg-muted/20 h-7 w-7 rounded-lg transition-all"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted/20 h-7 w-7 rounded-lg transition-colors"
                 aria-label="Edit price"
               >
                 <Icon name="edit" className="text-[12px]" />
@@ -202,7 +202,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
-                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 rounded-lg transition-all"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 rounded-lg transition-colors"
                 aria-label="Delete price"
               >
                 <Icon name="delete" className="text-[12px]" />

@@ -5,6 +5,8 @@ import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { buildPublicFacilityPath } from "@/lib/routing/public-facility-path";
+import { getFacilityAdminShell } from "./_lib/get-facility-admin";
 
 interface OverviewPageProps {
   params: Promise<{
@@ -14,10 +16,7 @@ interface OverviewPageProps {
 
 export async function generateMetadata({ params }: OverviewPageProps): Promise<Metadata> {
   const { "facility-id": facilityId } = await params;
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: { name: true },
-  });
+  const facility = await getFacilityAdminShell(facilityId);
 
   return {
     title: `${facility?.name || "Objekat"} Pregled | Splashdeals Admin`,
@@ -28,18 +27,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
   await connection();
   const { "facility-id": facilityId } = await params;
 
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    include: {
-      _count: {
-        select: {
-          amenities: true,
-          media: true,
-        },
-      },
-    },
-  });
-
+  const facility = await getFacilityAdminShell(facilityId);
   if (!facility) notFound();
 
   const ticketCount = await prisma.ticketPrice.count({
@@ -55,7 +43,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
 
   const stats = [
     {
-      label: "Total Tickets",
+      label: "Ulaznice",
       value: ticketCount,
       icon: "confirmation_number",
       color: "text-primary",
@@ -78,7 +66,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
   ];
 
   return (
-    <div className="bg-background flex min-h-screen w-full flex-col gap-8">
+    <div className="bg-background flex w-full flex-col gap-8">
       {/* Header */}
       <div className="border-border/50 flex flex-col justify-between gap-4 border-b pb-8 md:flex-row md:items-center">
         <div className="flex flex-col gap-2">
@@ -100,7 +88,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
           <Button
             asChild
             variant="outline"
-            className="bg-muted/30 border-border text-foreground/80 hover:bg-muted/50 hover:text-foreground flex items-center gap-2 rounded-lg border px-4 py-2 text-xs font-bold transition-all"
+            className="bg-muted/30 border-border text-foreground/80 hover:bg-muted/50 hover:text-foreground flex items-center gap-2 rounded-lg border px-4 py-2 text-xs font-bold transition-colors"
           >
             <Link href={`/admin/facilities/${facilityId}/profile`}>
               <Icon name="settings" className="text-[14px]" />
@@ -109,12 +97,9 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
           </Button>
           <Button
             asChild
-            className="bg-primary text-primary-foreground flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-black transition-all hover:opacity-90"
+            className="bg-primary text-primary-foreground flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-black transition-opacity hover:opacity-90"
           >
-            <Link
-              href={`/facilities/${facility.category.toLowerCase()}/${facility.slug}`}
-              target="_blank"
-            >
+            <Link href={buildPublicFacilityPath(facility.slug)} target="_blank">
               Prikaz na sajtu
             </Link>
           </Button>
@@ -127,7 +112,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
           <Link
             key={stat.label}
             href={stat.href}
-            className="group border-border/50 bg-muted/40 hover:border-border hover:bg-muted/60 flex flex-col gap-4 rounded-2xl border p-6 backdrop-blur-xl transition-all"
+            className="group border-border/50 bg-muted/40 hover:border-border hover:bg-muted/60 flex flex-col gap-4 rounded-2xl border p-6 backdrop-blur-xl transition-colors"
           >
             <div className="flex items-center justify-between">
               <Icon name={stat.icon} className={`text-[20px] ${stat.color}`} />
@@ -151,7 +136,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
         <div className="flex flex-col gap-4 lg:col-span-2">
           <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase">
             <Icon name="monitor_heart" className="text-primary text-[14px]" />
-            Poslednje izmene
+            Poslednje izmene cena
           </div>
           <div className="border-border/50 bg-muted/20 overflow-hidden rounded-2xl border">
             {recentTickets.length > 0 ? (
@@ -212,7 +197,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
                 Datum registracije
               </span>
               <p className="text-foreground/90 text-sm font-bold">
-                {new Date(facility.createdAt).toLocaleDateString("en-US", {
+                {new Date(facility.createdAt).toLocaleDateString("sr-Latn", {
                   month: "long",
                   day: "numeric",
                   year: "numeric",
@@ -221,7 +206,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
             </div>
             <div className="space-y-1.5">
               <span className="text-muted-foreground text-[9px] font-bold tracking-widest uppercase">
-                Location Hash
+                Koordinate
               </span>
               <p className="text-muted-foreground font-mono text-xs break-all">
                 {facility.lat?.toFixed(4)}, {facility.lng?.toFixed(4)}

@@ -89,7 +89,7 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
         <Button
           variant="outline"
           size="sm"
-          className="border-border hover:bg-muted/30 gap-2 text-[10px] font-black tracking-widest uppercase transition-all"
+          className="border-border hover:bg-muted/30 gap-2 text-[10px] font-black tracking-widest uppercase transition-colors"
         >
           <Icon name="settings" className="text-[16px]" />
           Napredno upravljanje

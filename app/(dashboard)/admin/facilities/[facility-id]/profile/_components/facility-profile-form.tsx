@@ -23,6 +23,7 @@ import { ProfileAndSEO } from "./profile-and-seo";
 import { BrandingLogoCard } from "./branding-logo-card";
 import { LocationSection } from "./location-section";
 import { DangerZone } from "./danger-zone";
+import { buildPublicFacilityPath } from "@/lib/routing/public-facility-path";
 
 interface FacilityProfileFormProps {
   facility: {
@@ -201,7 +202,7 @@ export function FacilityProfileForm({
     });
   }
 
-  const publicPreviewUrl = `/facilities/${facility.category}/${facility.slug}`;
+  const publicPreviewUrl = buildPublicFacilityPath(facility.slug);
 
   return (
     <Form {...form}>
@@ -286,7 +287,7 @@ export function FacilityProfileForm({
             <div className="relative">
               <div
                 className={cn(
-                  "size-3 rounded-full transition-all duration-500",
+                  "size-3 rounded-full transition-colors duration-500",
                   form.formState.isDirty
                     ? "bg-warning shadow-warning/30 animate-pulse"
                     : "bg-primary shadow-primary/30",
@@ -314,7 +315,7 @@ export function FacilityProfileForm({
               type="submit"
               disabled={isPending || !form.formState.isDirty}
               className={cn(
-                "relative h-10 overflow-hidden rounded-xl px-8 text-[9px] font-black tracking-[0.2em] uppercase transition-all",
+                "relative h-10 overflow-hidden rounded-xl px-8 text-[9px] font-black tracking-[0.2em] uppercase transition-colors",
                 form.formState.isDirty
                   ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/20 shadow-lg"
                   : "bg-muted/30 text-muted-foreground border-border/50 border",

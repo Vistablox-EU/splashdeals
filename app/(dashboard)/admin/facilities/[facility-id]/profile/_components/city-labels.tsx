@@ -126,7 +126,7 @@ export function CityLabels({ facilityId }: Props) {
           <div
             key={label.id}
             className={cn(
-              "group flex cursor-default items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all",
+              "group flex cursor-default items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
               label.isPrimary
                 ? "border-primary/40 bg-primary/10 text-primary"
                 : "border-border bg-muted/30 text-muted-foreground hover:border-muted-foreground/30",
@@ -179,7 +179,7 @@ export function CityLabels({ facilityId }: Props) {
               variant="ghost"
               size="icon"
               onClick={() => handleRemove(label.id)}
-              className="text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 size-5 rounded-full transition-all"
+              className="text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 size-5 rounded-full transition-colors"
               aria-label={`Ukloni ${label.label || label.place.name}`}
             >
               <Icon name="close" className="size-3" />

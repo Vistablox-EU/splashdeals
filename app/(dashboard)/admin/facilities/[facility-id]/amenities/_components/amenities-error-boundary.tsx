@@ -37,7 +37,7 @@ export function AmenitiesError({ error, resetErrorBoundary }: AmenitiesErrorProp
       <Button
         type="button"
         onClick={resetErrorBoundary}
-        className="bg-muted border-border text-foreground/80 hover:text-foreground hover:bg-muted flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border px-4 text-[10px] font-black tracking-widest uppercase transition-all"
+        className="bg-muted border-border text-foreground/80 hover:text-foreground hover:bg-muted flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border px-4 text-[10px] font-black tracking-widest uppercase transition-colors"
       >
         <Icon name="undo" className="size-3" />
         <span>Reset & Retry</span>

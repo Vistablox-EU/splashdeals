@@ -1,5 +1,4 @@
 import { Icon } from "@/components/ui/Icon";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { OnboardFacilityForm } from "./_components/onboard-facility-form";
@@ -8,8 +7,8 @@ import { connection } from "next/server";
 import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 
 export const metadata: Metadata = {
-  title: "Onboard Facility | Splashdeals Admin",
-  description: "Register a new waterpark or facility to the Splashdeals marketplace.",
+  title: "Novi objekat | Splashdeals Admin",
+  description: "Registrujte novi akva park ili objekat na Splashdeals marketplace.",
 };
 
 export default async function NewFacilityPage() {
@@ -25,14 +24,14 @@ export default async function NewFacilityPage() {
           asChild
           className="border-border bg-muted/50 rounded-xl backdrop-blur-sm"
         >
-          <Link href="/admin/facilities">
+          <Link href="/admin/facilities" aria-label="Nazad na objekte">
             <Icon name="keyboard_arrow_left" className="text-[16px]" />
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Onboard New Facility</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Novi objekat</h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            Register a new waterpark, pool, or thermal bath into the global network.
+            Registrujte novi akva park, bazen ili termalno kupalište u mrežu.
           </p>
         </div>
       </div>

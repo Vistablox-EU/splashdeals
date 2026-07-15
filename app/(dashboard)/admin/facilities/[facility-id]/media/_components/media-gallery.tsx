@@ -74,104 +74,13 @@ const dropAnimation: DropAnimation = {
  * before upload, preventing Vercel's strict 4.5MB serverless payload limit from blocking the request.
  */
 import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer";
-import { filenameFromBlobUrl } from "./_lib/media-utils";
+import { filenameFromBlobUrl, captureVideoFrame } from "./_lib/media-utils";
 import { MediaItemCard } from "./media-item-card";
 import { SortableMediaItem } from "./sortable-media-item";
 import { CropModal } from "./crop-modal";
+import { MediaUploadDropzone } from "./media-upload-dropzone";
+import { MediaFilterBar, type MediaFilterId } from "./media-filter-bar";
 import { MAX_FILE_SIZE } from "@/lib/constants";
-
-/**
- * Captures the first frame of a video file as a WebP blob.
- * Uses HTMLVideoElement + canvas, zero external dependencies.
- */
-async function captureVideoFrame(file: File, signal?: AbortSignal): Promise<Blob | null> {
-  const url = URL.createObjectURL(file);
-  const video = document.createElement("video");
-  video.muted = true;
-  video.playsInline = true;
-  video.crossOrigin = "anonymous";
-  video.src = url;
-
-  try {
-    if (signal?.aborted) return null;
-
-    // Wait for metadata, seek to 0.5s
-    await new Promise<void>((resolve, reject) => {
-      const onAbort = () => {
-        cleanup();
-        reject(new DOMException("Aborted", "AbortError"));
-      };
-      signal?.addEventListener("abort", onAbort, { once: true });
-
-      const metadataTimeout = setTimeout(() => {
-        cleanup();
-        reject(new Error("Video metadata load timeout"));
-      }, 10000);
-
-      const cleanup = () => {
-        clearTimeout(metadataTimeout);
-        signal?.removeEventListener("abort", onAbort);
-        video.onloadedmetadata = null;
-        video.onerror = null;
-      };
-
-      video.onloadedmetadata = () => {
-        video.currentTime = Math.min(0.5, video.duration || 0.5);
-        cleanup();
-        resolve();
-      };
-      video.onerror = () => {
-        cleanup();
-        reject(new Error("Video load failed"));
-      };
-    });
-
-    if (signal?.aborted) return null;
-
-    // Wait for seek to complete
-    await new Promise<void>((resolve, reject) => {
-      const seekTimeout = setTimeout(() => {
-        signal?.removeEventListener("abort", onAbort);
-        video.onseeked = null;
-        reject(new Error("Video seek timeout"));
-      }, 10000);
-
-      const onAbort = () => {
-        clearTimeout(seekTimeout);
-        video.onseeked = null;
-        reject(new DOMException("Aborted", "AbortError"));
-      };
-      signal?.addEventListener("abort", onAbort, { once: true });
-
-      video.onseeked = () => {
-        clearTimeout(seekTimeout);
-        video.onseeked = null;
-        resolve();
-      };
-      // If already seeked (0s video), resolve immediately
-      if (video.readyState >= 2) {
-        clearTimeout(seekTimeout);
-        video.onseeked = null;
-        resolve();
-      }
-    });
-
-    const canvas = document.createElement("canvas");
-    canvas.width = 400;
-    canvas.height = 225; // 16:9
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return null;
-
-    ctx.drawImage(video, 0, 0, 400, 225);
-    return new Promise<Blob | null>((resolve) => {
-      canvas.toBlob((b) => resolve(b), "image/webp", 0.7);
-    });
-  } finally {
-    video.src = "";
-    video.load();
-    URL.revokeObjectURL(url);
-  }
-}
 
 export function MediaGallery({
   facilityId,
@@ -769,7 +678,7 @@ export function MediaGallery({
               setSelectedIds(new Set());
             }}
             className={cn(
-              "h-9 gap-2 px-4 text-[10px] font-black tracking-widest uppercase transition-all",
+              "h-9 gap-2 px-4 text-[10px] font-black tracking-widest uppercase transition-colors",
               isSelectionMode
                 ? "bg-primary/20 border-primary text-primary"
                 : "bg-muted/30 border-border/50",
@@ -831,7 +740,7 @@ export function MediaGallery({
                       onClick={async () => {
                         const val = bulkCaptionText.trim();
                         if (!val) {
-                          toast.error("Typing a bulk Alt tag is required");
+                          toast.error("Bulk ALT tag je obavezan");
                           return;
                         }
                         startUpload(async () => {
@@ -845,13 +754,13 @@ export function MediaGallery({
                               setSelectedIds(new Set());
                               setIsSelectionMode(false);
                               setBulkCaptionText("");
-                              toast.success(`Bulk ALT tag updated for ${ids.length} images`);
+                              toast.success(`Bulk ALT ažuriran za ${ids.length} slika`);
                             } else {
-                              toast.error("Failed to apply bulk Alt tag");
+                              toast.error("Bulk ALT nije sačuvan");
                             }
                           } catch (err) {
                             console.error(err);
-                            toast.error("Bulk save error");
+                            toast.error("Greška pri bulk čuvanju");
                           }
                         });
                       }}
@@ -870,144 +779,27 @@ export function MediaGallery({
 
         <div className="flex items-center gap-2">
           <span className="text-muted-foreground mr-2 text-[10px] font-black tracking-widest uppercase">
-            {media.length} Registry Objects
+            {media.length} medija
           </span>
         </div>
       </div>
 
-      {/* 🔍 Curation Search & Filter Panel */}
-      <div className="bg-muted/30 border-border/50 animate-in fade-in flex flex-col justify-between gap-4 rounded-2xl border p-4 duration-300 lg:flex-row lg:items-center">
-        {/* Search Input */}
-        <div className="relative max-w-md flex-1">
-          <Icon
-            name="search"
-            className="text-muted-foreground absolute top-1/2 left-3.5 size-4 -translate-y-1/2"
-          />
-          <Input
-            type="text"
-            placeholder="Pretraži medije po ALT oznaci ili nazivu..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="border-border/50 text-foreground/90 placeholder:text-muted-foreground/80 focus:border-ring w-full rounded-xl border bg-black/40 py-2 pr-4 pl-10 text-xs font-medium transition-colors focus:outline-none"
-          />
-          {searchQuery && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSearchQuery("")}
-              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3.5 size-7 -translate-y-1/2 rounded-full transition-colors"
-              aria-label="Clear search"
-            >
-              <Icon name="close" className="size-3.5" />
-            </Button>
-          )}
-        </div>
+      {/* Filter */}
+      <MediaFilterBar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        activeFilter={activeFilter as MediaFilterId}
+        onFilterChange={(v) => setActiveFilter(v)}
+      />
 
-        {/* Filter Badges Row */}
-        <div className="flex flex-wrap items-center gap-2">
-          {[
-            { id: "ALL", label: "Svi" },
-            { id: "PHOTOS", label: "Slike" },
-            { id: "VIDEOS", label: "Video" },
-            { id: "HERO", label: "Hero" },
-            { id: "CARDBG", label: "Kartica BG" },
-            { id: "PUBLIC", label: "Javno" },
-            { id: "HIDDEN", label: "Skriveno" },
-            { id: "MISSING_ALT", label: "⚠️ Bez ALT taga" },
-          ].map((filt) => (
-            <Button
-              key={filt.id}
-              variant={activeFilter === filt.id ? "default" : "outline"}
-              size="sm"
-              type="button"
-              onClick={() => setActiveFilter(filt.id as typeof activeFilter)}
-              className={cn(
-                "h-7 rounded-lg px-3 text-[9px] font-black tracking-widest uppercase transition-all",
-                activeFilter === filt.id
-                  ? "border-primary bg-primary/20 text-primary border shadow-[0_0_15px_hsl(var(--primary)/0.15)]"
-                  : "bg-muted/10 border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/30 border",
-              )}
-            >
-              {filt.label}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Upload Zone (Integrated Empty State) */}
+      {/* Upload Zone */}
       {!isSelectionMode && (
-        <div
-          className={cn(
-            "group border-border/50 bg-muted/40 hover:bg-muted/60 hover:border-primary/50 relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed text-center backdrop-blur-md transition-all",
-            media.length === 0 && !isUploading ? "py-32" : "py-12",
-          )}
-        >
-          {media.length === 0 && !isUploading ? (
-            <div className="animate-in zoom-in-95 flex max-w-sm flex-col items-center duration-500">
-              <div className="bg-muted/10 border-border/50 group-hover:bg-primary/5 mb-8 rounded-3xl border p-6 transition-all duration-500 group-hover:scale-110">
-                <Icon
-                  name="image"
-                  className="text-muted-foreground/80 group-hover:text-primary text-[48px] transition-colors"
-                />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-foreground text-xl font-black tracking-tighter uppercase">
-                  Media Node Empty
-                </h3>
-                <p className="text-muted-foreground text-xs leading-relaxed font-medium tracking-widest uppercase">
-                  The facility gallery is currently void of visual intelligence. Drop assets here to
-                  initiate curation.
-                </p>
-                <p className="text-muted-foreground/60 mt-2 text-[10px]">
-                  Click or drag to upload files
-                </p>
-              </div>
-            </div>
-          ) : (
-            <>
-              <Icon
-                name="upload"
-                className="text-muted-foreground group-hover:text-primary mb-4 text-[48px] transition-colors"
-              />
-              <div className="space-y-1">
-                <p className="text-base font-semibold">Drop your files here, or browse local</p>
-                <p className="text-muted-foreground text-sm">
-                  Photos and Videos supported. WebP processing active.
-                </p>
-              </div>
-            </>
-          )}
-
-          <label htmlFor="media-upload" className="sr-only">
-            Select photos or videos to upload
-          </label>
-          <input
-            id="media-upload"
-            type="file"
-            multiple
-            accept="image/*,video/*"
-            className="absolute inset-0 cursor-pointer opacity-0"
-            onChange={handleUpload}
-            disabled={isUploading}
-          />
-
-          {isUploading && (
-            <div className="bg-background/90 animate-in fade-in absolute inset-0 z-10 flex flex-col items-center justify-center duration-300">
-              <Icon
-                name="progress_activity"
-                className="text-primary mb-2 animate-spin text-[40px]"
-              />
-              <p className="animate-pulse text-lg font-bold">
-                {Object.keys(uploadProgress).length > 0
-                  ? `Streaming ${Object.values(uploadProgress)[0].toFixed(0)}%`
-                  : "Optimizing Hub..."}
-              </p>
-              <p className="text-primary/60 mt-1 text-[10px] font-black tracking-[0.2em] uppercase">
-                Splash Engine: High-Bandwidth Protocol
-              </p>
-            </div>
-          )}
-        </div>
+        <MediaUploadDropzone
+          isEmpty={media.length === 0}
+          isUploading={isUploading}
+          uploadProgress={uploadProgress}
+          onUpload={handleUpload}
+        />
       )}
 
       {/* Media Grid */}
@@ -1022,7 +814,7 @@ export function MediaGallery({
           <div
             className="animate-in fade-in grid grid-cols-1 gap-6 duration-500 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
             role="listbox"
-            aria-label="Media gallery items"
+            aria-label="Stavke medija"
           >
             {filteredMedia.map((item) => (
               <SortableMediaItem
