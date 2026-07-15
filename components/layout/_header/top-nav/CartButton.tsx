@@ -19,8 +19,7 @@ export function CartButton({ isOnline, mounted, totalItems, openCart, dict }: Ca
   // Mobile uses BottomNav → /cart as the only cart entry. Desktop keeps the drawer trigger.
   // Empty cart still shows the control so desktop users can open the empty drawer.
   const label = dict?.nav?.checkout ?? "Korpa";
-  const aria =
-    mounted && totalItems > 0 ? `${label} - ${totalItems}` : label;
+  const aria = mounted && totalItems > 0 ? `${label} - ${totalItems}` : label;
 
   return (
     <div className="relative hidden items-center gap-2 md:flex">

@@ -136,7 +136,7 @@ export function NavItemLink({
         <Link
           href={href}
           className={cn(
-            "flex rounded-sm focus-visible:ring-ring/50 focus-visible:ring-3 focus-visible:outline-none",
+            "focus-visible:ring-ring/50 flex rounded-sm focus-visible:ring-3 focus-visible:outline-none",
             isFeatured && "bg-accent/30",
             isCta && "text-primary font-medium",
           )}

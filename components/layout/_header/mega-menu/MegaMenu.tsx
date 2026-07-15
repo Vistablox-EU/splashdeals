@@ -63,9 +63,7 @@ async function loadNavigationData(dict: Dict | null): Promise<{
         ? (discoveryResult.data as DiscoveryMenuData)
         : { cities: [], featured: null };
     const error =
-      !menuResult.success || !discoveryResult.success
-        ? megaMenuLoadFailedMessage(dict)
-        : null;
+      !menuResult.success || !discoveryResult.success ? megaMenuLoadFailedMessage(dict) : null;
     return { menus, discovery, error };
   } catch (err) {
     console.error("Menu fetch failed:", err);

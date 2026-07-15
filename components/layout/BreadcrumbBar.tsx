@@ -118,13 +118,13 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
   const isLastItem = (idx: number) => idx === items.length - 1;
 
   return (
-    <div className="bg-background/98 sticky top-16 z-[100] w-full border-b border-border/40 backdrop-blur-[40px]">
+    <div className="bg-background/98 border-border/40 sticky top-16 z-[100] w-full border-b backdrop-blur-[40px]">
       <div className="mx-auto flex h-10 w-full max-w-7xl items-center gap-0 px-4 md:px-12">
         {/* Back button */}
         {backHref && (
           <Link
             href={backHref}
-            className="text-muted-foreground hover:text-foreground mr-3 flex h-11 min-w-11 shrink-0 items-center justify-center border-r border-border/40 pr-3 transition-colors"
+            className="text-muted-foreground hover:text-foreground border-border/40 mr-3 flex h-11 min-w-11 shrink-0 items-center justify-center border-r pr-3 transition-colors"
             aria-label={dict?.breadcrumb?.back_aria || "Nazad"}
           >
             <Icon name="arrow_back" className="text-[16px]" />
