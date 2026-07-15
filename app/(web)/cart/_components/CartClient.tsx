@@ -64,7 +64,6 @@ export function CartClient({
   const [isBootstrapping, setIsBootstrapping] = React.useState(true);
   const [mutatingItemId, setMutatingItemId] = React.useState<string | null>(null);
   const claimHandledRef = React.useRef(false);
-  const promoRevalidateSkipRef = React.useRef(false);
 
   const totalBeforeDiscount = items.reduce(
     (sum: number, i: CartItem) => sum + i.price * i.quantity,
@@ -77,7 +76,6 @@ export function CartClient({
   const requiresIdentity = items.some((i) => i.requiresIdentity);
   const requiresPhoto = items.some((i) => i.requiresPhoto);
   const cartFacilityId = items[0]?.facilityId;
-  const itemsSignature = items.map((i) => `${i.id}:${i.quantity}:${i.price}`).join("|");
 
   /** Soft refresh after qty/remove — no full reconcile (reconcile is mount/claim only). */
   const softRefresh = React.useCallback(async () => {
@@ -93,6 +91,39 @@ export function CartClient({
     }
     await refresh();
   }, [refresh]);
+
+  /** Revalidate applied promo against the latest store cart (after mutations). */
+  const revalidateAppliedPromo = React.useCallback(
+    async (applied: DiscountInfo | null) => {
+      if (!applied?.code) return;
+
+      const nextItems = useServerCart.getState().items;
+      if (nextItems.length === 0) {
+        setDiscount(null);
+        setPromoError("");
+        return;
+      }
+
+      const facilityId = nextItems[0]?.facilityId;
+      const nextTotal = nextItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const result = await validatePromoCodeAction(applied.code, facilityId, nextTotal);
+
+      if (result.success && result.data?.valid) {
+        setDiscount({
+          campaignId: result.data.campaignId,
+          code: applied.code,
+          discountPercent: result.data.discountPercent,
+        });
+        return;
+      }
+
+      setDiscount(null);
+      const message = cartDict?.promo_cleared || cartDict?.promo_invalid || "";
+      setPromoError(message);
+      if (message) toast.info(message);
+    },
+    [cartDict?.promo_cleared, cartDict?.promo_invalid],
+  );
 
   // Wait for auth resolution, claim only when authenticated, then reconcile once.
   React.useEffect(() => {
@@ -127,46 +158,6 @@ export function CartClient({
     };
   }, [isAuthPending, authSession?.user, reconcileAndRefresh]);
 
-  // Revalidate or clear applied promo when cart contents/total change.
-  React.useEffect(() => {
-    if (!discount?.code) return;
-    if (promoRevalidateSkipRef.current) {
-      promoRevalidateSkipRef.current = false;
-      return;
-    }
-    if (!cartFacilityId || items.length === 0) {
-      setDiscount(null);
-      setPromoError("");
-      return;
-    }
-
-    let active = true;
-    (async () => {
-      const result = await validatePromoCodeAction(
-        discount.code,
-        cartFacilityId,
-        totalBeforeDiscount,
-      );
-      if (!active) return;
-      if (result.success && result.data?.valid) {
-        setDiscount({
-          campaignId: result.data.campaignId,
-          code: discount.code,
-          discountPercent: result.data.discountPercent,
-        });
-      } else {
-        setDiscount(null);
-        setPromoError(cartDict?.promo_cleared || cartDict?.promo_invalid || "");
-        toast.info(cartDict?.promo_cleared || cartDict?.promo_invalid);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- revalidate only on cart content/total changes
-  }, [itemsSignature, totalBeforeDiscount, cartFacilityId]);
-
   const handleResolveConflict = async (choice: "guest" | "user") => {
     setResolvingConflict(true);
     try {
@@ -180,6 +171,7 @@ export function CartClient({
         choice === "guest" ? cartDict?.conflict_kept_guest : cartDict?.conflict_kept_user,
       );
       await reconcileAndRefresh();
+      await revalidateAppliedPromo(discount);
     } finally {
       setResolvingConflict(false);
     }
@@ -236,6 +228,7 @@ export function CartClient({
 
       await softRefresh();
       notifyUpdated();
+      await revalidateAppliedPromo(discount);
     } finally {
       setMutatingItemId(null);
     }
@@ -253,6 +246,7 @@ export function CartClient({
 
       await softRefresh();
       notifyUpdated();
+      await revalidateAppliedPromo(discount);
     } finally {
       setMutatingItemId(null);
     }
@@ -263,7 +257,6 @@ export function CartClient({
     try {
       const result = await validatePromoCodeAction(promoCode, cartFacilityId, totalBeforeDiscount);
       if (result.success && result.data?.valid) {
-        promoRevalidateSkipRef.current = true;
         setDiscount({
           campaignId: result.data.campaignId,
           code: promoCode,
