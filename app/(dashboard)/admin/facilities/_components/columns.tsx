@@ -1,13 +1,10 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { Facility } from "@prisma/client";
 import { Checkbox } from "@/components/ui/checkbox";
-
 import { Button } from "@/components/ui/button";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,10 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle";
-
-function ClientCell({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
-}
+import { buildPublicFacilityPath } from "@/lib/routing/public-facility-path";
 
 export const columns: ColumnDef<Facility>[] = [
   {
@@ -32,14 +26,14 @@ export const columns: ColumnDef<Facility>[] = [
           table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Izaberi sve"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Izaberi red"
       />
     ),
     enableSorting: false,
@@ -47,61 +41,53 @@ export const columns: ColumnDef<Facility>[] = [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="data-[state=open]:bg-accent -ml-4 h-8"
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="data-[state=open]:bg-accent -ml-4 h-8"
+      >
+        Naziv objekta
+        <Icon name="swap_vert" className="ml-2 text-[16px]" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <Icon name="business" className="text-muted-foreground text-[16px]" />
+        <Link
+          href={`/admin/facilities/${row.original.id}`}
+          className="decoration-primary font-semibold decoration-2 underline-offset-4 after:absolute after:inset-0 after:rounded-md hover:underline"
         >
-          Facility Name
-          <Icon name="swap_vert" className="ml-2 text-[16px]" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <Icon name="business" className="text-muted-foreground text-[16px]" />
-          <Link
-            href={`/admin/facilities/${row.original.id}`}
-            className="decoration-primary font-semibold decoration-2 underline-offset-4 after:absolute after:inset-0 after:rounded-md hover:underline"
-          >
-            {row.getValue("name")}
-          </Link>
-        </div>
-      );
-    },
+          {row.getValue("name")}
+        </Link>
+      </div>
+    ),
   },
   {
     accessorKey: "category",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="data-[state=open]:bg-accent -ml-4 h-8"
-        >
-          Category
-          <Icon name="swap_vert" className="ml-2 text-[16px]" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="data-[state=open]:bg-accent -ml-4 h-8"
+      >
+        Kategorija
+        <Icon name="swap_vert" className="ml-2 text-[16px]" />
+      </Button>
+    ),
   },
   {
     accessorKey: "city",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="data-[state=open]:bg-accent -ml-4 h-8"
-        >
-          Location
-          <Icon name="swap_vert" className="ml-2 text-[16px]" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="data-[state=open]:bg-accent -ml-4 h-8"
+      >
+        Lokacija
+        <Icon name="swap_vert" className="ml-2 text-[16px]" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const city = row.original.city;
       const street = row.original.streetName;
@@ -112,71 +98,62 @@ export const columns: ColumnDef<Facility>[] = [
             <span className="text-xs">{city}</span>
           </div>
           <span className="text-muted-foreground pl-5 font-mono text-[10px]">
-            {street || "No street data"}
+            {street || "Nema adrese"}
           </span>
         </div>
       );
     },
   },
-
   {
     accessorKey: "status",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="data-[state=open]:bg-accent -ml-4 h-8"
-        >
-          Status
-          <Icon name="swap_vert" className="ml-2 text-[16px]" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return <StatusToggle facilityId={row.original.id} status={row.original.status} compact />;
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="data-[state=open]:bg-accent -ml-4 h-8"
+      >
+        Status
+        <Icon name="swap_vert" className="ml-2 text-[16px]" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <StatusToggle facilityId={row.original.id} status={row.original.status} compact />
+    ),
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="data-[state=open]:bg-accent -ml-4 h-8"
-        >
-          Onboarded
-          <Icon name="swap_vert" className="ml-2 text-[16px]" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return (
-        <ClientCell>
-          <span className="font-mono text-[10px]">
-            {new Date(row.getValue("createdAt")).toISOString().split("T")[0]}
-          </span>
-        </ClientCell>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="data-[state=open]:bg-accent -ml-4 h-8"
+      >
+        Kreirano
+        <Icon name="swap_vert" className="ml-2 text-[16px]" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <span className="font-mono text-[10px]">
+        {new Date(row.getValue("createdAt")).toLocaleDateString("sr-Latn")}
+      </span>
+    ),
   },
   {
     id: "actions",
+    enableHiding: false,
     cell: ({ row }) => {
       const facility = row.original;
-
       return (
         <div className="relative z-30">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0" aria-label="Open menu">
-                <span className="sr-only">Open menu</span>
+              <Button variant="ghost" className="h-8 w-8 p-0" aria-label="Otvori meni">
+                <span className="sr-only">Otvori meni</span>
                 <Icon name="more_horiz" className="text-[16px]" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>Akcije</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
                   if (typeof navigator !== "undefined") {
@@ -184,17 +161,21 @@ export const columns: ColumnDef<Facility>[] = [
                   }
                 }}
               >
-                Copy Facility ID
+                Kopiraj ID objekta
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href={`/admin/facilities/${facility.id}`}>
                   <Icon name="arrow_forward" className="mr-2 text-[16px]" />
-                  Governance Portal
+                  Otvori upravljanje
                 </Link>
               </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href={buildPublicFacilityPath(facility.slug)} target="_blank">
+                  <Icon name="open_in_new" className="mr-2 text-[16px]" />
+                  Prikaz na sajtu
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

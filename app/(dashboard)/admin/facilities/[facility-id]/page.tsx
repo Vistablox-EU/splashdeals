@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { buildPublicFacilityPath } from "@/lib/routing/public-facility-path";
 import { getFacilityAdminShell } from "./_lib/get-facility-admin";
+import { PublishReadinessCard } from "./_components/publish-readiness-card";
 
 interface OverviewPageProps {
   params: Promise<{
@@ -34,12 +35,49 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
     where: { ticketType: { category: { facilityId } } },
   });
 
-  const recentTickets = await prisma.ticketPrice.findMany({
-    where: { isActive: true, ticketType: { category: { facilityId } } },
-    take: 5,
-    orderBy: { updatedAt: "desc" },
-    include: { ticketType: true },
-  });
+  const [recentTickets, salesAgg, completedOrders] = await Promise.all([
+    prisma.ticketPrice.findMany({
+      where: { isActive: true, ticketType: { category: { facilityId } } },
+      take: 5,
+      orderBy: { updatedAt: "desc" },
+      include: { ticketType: true },
+    }),
+    prisma.transaction.aggregate({
+      where: { facilityId, status: "COMPLETED" },
+      _sum: { totalAmount: true },
+      _count: true,
+    }),
+    prisma.transaction.count({
+      where: { facilityId, status: "COMPLETED" },
+    }),
+  ]);
+
+  const readinessItems = [
+    {
+      id: "tickets",
+      label: "Bar jedna aktivna cena",
+      ok: ticketCount > 0,
+      href: `/admin/facilities/${facilityId}/tickets`,
+    },
+    {
+      id: "media",
+      label: "Bar jedan medij",
+      ok: facility._count.media > 0,
+      href: `/admin/facilities/${facilityId}/media`,
+    },
+    {
+      id: "hours",
+      label: "Radno vreme definisano",
+      ok: (facility.hours?.length ?? 0) > 0,
+      href: `/admin/facilities/${facilityId}/operations`,
+    },
+    {
+      id: "seo",
+      label: "Meta naslov / opis",
+      ok: !!(facility.metaTitle && facility.metaDescription),
+      href: `/admin/facilities/${facilityId}/profile`,
+    },
+  ];
 
   const stats = [
     {
@@ -62,6 +100,13 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
       icon: "photo_library",
       color: "text-warning",
       href: `/admin/facilities/${facilityId}/media`,
+    },
+    {
+      label: "Porudžbine",
+      value: completedOrders,
+      icon: "receipt_long",
+      color: "text-primary",
+      href: `/admin/facilities/${facilityId}`,
     },
   ];
 
@@ -107,7 +152,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
           <Link
             key={stat.label}
@@ -129,6 +174,27 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
             </div>
           </Link>
         ))}
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <PublishReadinessCard
+            facilityId={facilityId}
+            status={facility.status}
+            items={readinessItems}
+          />
+        </div>
+        <div className="border-border/50 bg-muted/30 rounded-2xl border p-5">
+          <div className="text-muted-foreground mb-2 text-[10px] font-bold tracking-[0.2em] uppercase">
+            Prihod (COMPLETED)
+          </div>
+          <p className="text-foreground text-2xl font-black">
+            {Number(salesAgg._sum.totalAmount ?? 0).toLocaleString("sr-RS")} RSD
+          </p>
+          <p className="text-muted-foreground mt-1 text-xs">
+            {completedOrders} uspešnih porudžbina
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">

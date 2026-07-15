@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { FacilityProfileForm } from "./_components/facility-profile-form";
 import { CityLabels } from "./_components/city-labels";
+import { FacilityOwnersWidget } from "./_components/facility-owners-widget";
 import { prisma } from "@/app/(server)/lib/prisma";
+import { getFacilityAdminShell } from "../_lib/get-facility-admin";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { auth } from "@/app/(server)/lib/auth";
@@ -16,13 +18,10 @@ export async function generateMetadata({
   params: Promise<{ "facility-id": string }>;
 }): Promise<Metadata> {
   const { "facility-id": facilityId } = await params;
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: { name: true },
-  });
+  const facility = await getFacilityAdminShell(facilityId);
   return {
-    title: `${facility?.name || "Facility"} — Profile | Splashdeals Admin`,
-    description: `Edit profile, governance, and SEO settings for ${facility?.name || "this facility"}.`,
+    title: `${facility?.name || "Objekat"} — Profil | Splashdeals Admin`,
+    description: `Profil, upravljanje i SEO za ${facility?.name || "ovaj objekat"}.`,
   };
 }
 
@@ -74,6 +73,7 @@ export default async function ProfilePage({
       <div className="border-border bg-card rounded-xl border p-6">
         <CityLabels facilityId={facilityId} />
       </div>
+      <FacilityOwnersWidget facilityId={facilityId} />
     </div>
   );
 }

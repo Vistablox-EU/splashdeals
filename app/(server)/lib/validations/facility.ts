@@ -1,14 +1,22 @@
 import { z } from "zod";
+import { getAllDbCategoryValues } from "@/lib/routing/categories";
+
+const FACILITY_CATEGORY_VALUES = getAllDbCategoryValues() as [string, ...string[]];
 
 export const facilitySchema = z.object({
-  name: z.string().trim().min(2, "Name is too short"),
-  slug: z.string().trim().min(2, "Slug is too short"),
-  category: z.string().trim().min(1, "Pick a category"),
-  city: z.string().trim().min(2, "City is required"),
+  name: z.string().trim().min(2, "Naziv je prekratak"),
+  slug: z.string().trim().min(2, "Slug je prekratak"),
+  category: z
+    .string()
+    .trim()
+    .refine((v) => FACILITY_CATEGORY_VALUES.includes(v), {
+      message: "Izaberite validnu kategoriju",
+    }),
+  city: z.string().trim().min(2, "Grad je obavezan"),
   cityId: z.string().trim().optional(),
-  streetName: z.string().trim().min(2, "Street name is required"),
-  streetNumber: z.string().trim().min(1, "Number is required"),
-  postalCode: z.string().trim().min(4, "Postal code is required"),
+  streetName: z.string().trim().min(2, "Ulica je obavezna"),
+  streetNumber: z.string().trim().min(1, "Broj je obavezan"),
+  postalCode: z.string().trim().min(4, "Poštanski broj je obavezan"),
   status: z.enum(["DRAFT", "ACTIVE"]),
 });
 

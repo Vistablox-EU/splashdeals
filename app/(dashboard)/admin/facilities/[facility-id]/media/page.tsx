@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MediaGallery } from "./_components/media-gallery";
 import { prisma } from "@/app/(server)/lib/prisma";
+import { getFacilityAdminShell } from "../_lib/get-facility-admin";
 import { connection } from "next/server";
 import { MediaPurpose } from "@prisma/client";
 
@@ -13,13 +14,10 @@ export async function generateMetadata({
   params: Promise<{ "facility-id": string }>;
 }): Promise<Metadata> {
   const { "facility-id": facilityId } = await params;
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: { name: true },
-  });
+  const facility = await getFacilityAdminShell(facilityId);
   return {
-    title: `${facility?.name || "Facility"} — Media | Splashdeals Admin`,
-    description: `Manage gallery, photos, and branding for ${facility?.name || "this facility"}.`,
+    title: `${facility?.name || "Objekat"} — Mediji | Splashdeals Admin`,
+    description: `Galerija i brending za ${facility?.name || "ovaj objekat"}.`,
   };
 }
 
@@ -36,10 +34,7 @@ export default async function MediaPage({
   const skip = (page - 1) * PAGE_SIZE;
   await connection();
 
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: { id: true },
-  });
+  const facility = await getFacilityAdminShell(facilityId);
   if (!facility) return notFound();
 
   const [mediaItems, totalCount] = await Promise.all([

@@ -40,7 +40,8 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
       href: `${b}/tickets`,
       active: isActive(`${b}/tickets`),
       icon: "confirmation_number",
-      count: counts?.ticketCategories ?? 0, // number of ticket categories (not SKU prices)
+      count: counts?.ticketCategories ?? 0,
+      countLabel: "kategorije",
     },
     {
       title: "Profil",

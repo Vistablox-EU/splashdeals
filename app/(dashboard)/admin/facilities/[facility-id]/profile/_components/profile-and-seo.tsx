@@ -14,18 +14,20 @@ import type { UpdateFacilityGovernanceValues } from "@/app/(server)/lib/validati
 
 interface ProfileAndSEOProps {
   facilityId: string;
+  originalSlug: string;
 }
 
 /**
  * 👤 ProfileAndSEO
  * Consolidates slug, marketing narrative, and search engine optimization.
  */
-export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
+export function ProfileAndSEO({ facilityId, originalSlug }: ProfileAndSEOProps) {
   const { control, watch } = useFormContext<UpdateFacilityGovernanceValues>();
   const facilitySlug = watch("slug");
   const metaTitle = watch("metaTitle") || "";
   const metaDescription = watch("metaDescription") || "";
   const seoArticle = watch("seoArticle") || "";
+  const slugChanged = !!facilitySlug && facilitySlug !== originalSlug;
 
   const [slugAvailability, setSlugAvailability] = React.useState<
     "idle" | "loading" | "available" | "collision"
@@ -46,7 +48,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
           "Failed to check slug availability:",
           error instanceof Error ? error.message : error,
         );
-        toast.error("Something went wrong. Please try again.");
+        toast.error("Greška pri proveri slug-a. Pokušajte ponovo.");
         setSlugAvailability("idle");
       }
     },
@@ -68,7 +70,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-[10px] font-black tracking-widest uppercase opacity-70">
-                  Facility Legal Name
+                  Naziv objekta
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -89,7 +91,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
               <FormItem>
                 <div className="mb-1 flex items-center justify-between">
                   <FormLabel className="text-[10px] font-black tracking-widest uppercase opacity-70">
-                    URL Registry Slug
+                    URL slug
                   </FormLabel>
                   <div
                     className={cn(
@@ -103,9 +105,9 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                       slugAvailability === "idle" && "opacity-0",
                     )}
                   >
-                    {slugAvailability === "loading" && "Analyzing..."}
-                    {slugAvailability === "available" && "Available"}
-                    {slugAvailability === "collision" && "Conflict"}
+                    {slugAvailability === "loading" && "Provera..."}
+                    {slugAvailability === "available" && "Dostupno"}
+                    {slugAvailability === "collision" && "Zauzeto"}
                   </div>
                 </div>
                 <FormControl>
@@ -119,6 +121,12 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                     }}
                   />
                 </FormControl>
+                {slugChanged && (
+                  <p className="text-warning text-[10px] font-medium">
+                    Promena slug-a menja javnu putanju. Stari URL može prestati da radi. Nova
+                    putanja: /{facilitySlug}
+                  </p>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -131,11 +139,11 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-[10px] font-black tracking-widest uppercase opacity-70">
-                Public Profile Narrative
+                Javni opis
               </FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Tell your story..."
+                  placeholder="Opisite objekat..."
                   className="bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-primary/50 min-h-[80px] text-sm leading-relaxed font-medium"
                   {...field}
                   value={field.value || ""}
@@ -151,10 +159,22 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
       <Card className="border-border/50 bg-background/40 space-y-4 p-4">
         <header className="flex items-center justify-between">
           <h3 className="text-primary text-[10px] font-black tracking-widest uppercase">
-            Search Engine Discovery (GEO)
+            SEO pregled
           </h3>
           <Icon name="bar_chart" className="text-primary size-3.5 opacity-50" />
         </header>
+
+        <div className="bg-muted/30 rounded-xl border p-4">
+          <p className="text-primary text-sm font-medium">
+            {(metaTitle || "Naslov stranice").slice(0, 60)}
+          </p>
+          <p className="text-muted-foreground mt-1 text-[11px]">
+            splashdeals.rs/{facilitySlug || originalSlug}
+          </p>
+          <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+            {(metaDescription || "Meta opis će se prikazati ovde.").slice(0, 160)}
+          </p>
+        </div>
 
         <div className="bg-background/80 border-border/50 group/serp hover:border-primary/20 relative overflow-hidden rounded-xl border p-4 transition-colors">
           <div className="mb-1.5 flex items-center gap-2 opacity-60">

@@ -1,7 +1,6 @@
 import { ReactNode, Suspense } from "react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import Link from "next/link";
 import type { Metadata } from "next";
 
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
@@ -11,6 +10,7 @@ import { SlotError } from "./_components/slot-error";
 import { FacilityLayoutContextHandler } from "./_components/facility-layout-context-handler";
 import { FacilityProvider } from "./_components/facility-context";
 import { getFacilityAdminShell } from "./_lib/get-facility-admin";
+import { FacilityBreadcrumb } from "./_components/facility-breadcrumb";
 
 interface FacilityLayoutData {
   id: string;
@@ -73,16 +73,7 @@ export default async function FacilityManagementLayout({
         <div className="bg-primary/5 pointer-events-none absolute top-0 right-0 -mt-64 -mr-64 h-[500px] w-[500px] rounded-full blur-[120px]" />
         <div className="bg-accent/5 pointer-events-none absolute bottom-0 left-0 -mb-48 -ml-48 h-[400px] w-[400px] rounded-full blur-[100px]" />
 
-        <nav
-          aria-label="Putanja"
-          className="text-muted-foreground border-border/40 relative z-20 border-b px-4 py-2 text-xs"
-        >
-          <Link href="/admin/facilities" className="hover:text-foreground transition-colors">
-            Objekti
-          </Link>
-          <span className="mx-1.5">/</span>
-          <span className="text-foreground font-medium">{facility.name}</span>
-        </nav>
+        <FacilityBreadcrumb facilityName={facility.name} facilityId={facilityId} />
 
         <ErrorBoundary fallback={<SlotError reset={() => {}} title="Navigacija nije učitana" />}>
           <Suspense fallback={<FacilityNavSkeleton />}>

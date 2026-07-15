@@ -618,7 +618,7 @@ export function MediaGallery({
           nextItems.map((i) => i.id),
         );
         if (!res.success) {
-          toast.error("Failed to save reorder");
+          toast.error("Greška pri čuvanju redosleda");
         }
       });
 
@@ -725,7 +725,7 @@ export function MediaGallery({
 
                   <div className="bg-muted/50 mx-2 h-4 w-[1px]" />
 
-                  <div className="border-border/50 animate-in fade-in flex items-center gap-1.5 rounded-lg border bg-black/40 px-2 py-0.5 duration-300">
+                  <div className="border-border/50 animate-in fade-in bg-background/60 flex items-center gap-1.5 rounded-lg border px-2 py-0.5 duration-300">
                     <Input
                       type="text"
                       placeholder="Bulk Alt tag..."
@@ -894,7 +894,7 @@ export function MediaGallery({
                       e.stopPropagation();
                       cancelUpload(file.name);
                     }}
-                    className="hover:bg-destructive/80 absolute top-2 right-2 z-40 size-6 rounded-md bg-black/60 text-white/70 transition-colors hover:text-white"
+                    className="hover:bg-destructive/80 bg-background/80 absolute top-2 right-2 z-40 size-6 rounded-md text-white/70 transition-colors hover:text-white"
                     aria-label={`Cancel upload: ${file.name}`}
                   >
                     <Icon name="close" className="size-3.5" />
@@ -908,7 +908,7 @@ export function MediaGallery({
                       e.stopPropagation();
                       retryUpload(file.name);
                     }}
-                    className="hover:bg-primary/80 absolute top-2 right-2 z-40 size-6 rounded-md bg-black/60 text-white/70 transition-colors hover:text-white"
+                    className="hover:bg-primary/80 bg-background/80 absolute top-2 right-2 z-40 size-6 rounded-md text-white/70 transition-colors hover:text-white"
                     aria-label={`Retry upload: ${file.name}`}
                   >
                     <Icon name="refresh" className="size-3.5" />

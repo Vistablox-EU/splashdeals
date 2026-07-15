@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
-
 import { useFormContext } from "react-hook-form";
 import {
   FormControl,
@@ -20,6 +19,9 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { FacilityFormValues } from "@/app/(server)/lib/validations/facility";
+import { getAdminCategoryOptions } from "@/lib/routing/categories";
+
+const CATEGORY_OPTIONS = getAdminCategoryOptions();
 
 export function ConfigurationSection() {
   const { control } = useFormContext<FacilityFormValues>();
@@ -29,7 +31,7 @@ export function ConfigurationSection() {
       <CardHeader className="border-border/50 bg-muted/30 border-b">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Icon name="security" className="text-primary text-[20px]" />
-          Configuration
+          Konfiguracija
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 p-6">
@@ -38,18 +40,20 @@ export function ConfigurationSection() {
           name="category"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormLabel>Kategorija</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="bg-muted/30 border-border h-11">
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder="Izaberite kategoriju" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-muted border-border">
-                  <SelectItem value="Waterpark">Waterpark</SelectItem>
-                  <SelectItem value="Thermal Bath">Thermal Bath</SelectItem>
-                  <SelectItem value="Public Pool">Public Pool</SelectItem>
-                  <SelectItem value="Resort">Resort</SelectItem>
+                <SelectContent className="bg-muted border-border max-h-72">
+                  {CATEGORY_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                      <span className="text-muted-foreground ml-2 text-[10px]">({opt.group})</span>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -62,20 +66,20 @@ export function ConfigurationSection() {
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Initial Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormLabel>Početni status</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="bg-muted/30 border-border h-11">
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="Izaberite status" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-muted border-border">
-                  <SelectItem value="DRAFT">Draft (Hidden)</SelectItem>
-                  <SelectItem value="ACTIVE">Active (Live)</SelectItem>
+                  <SelectItem value="DRAFT">Nacrt (skriven)</SelectItem>
+                  <SelectItem value="ACTIVE">Aktivan (javno)</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription className="text-[10px] italic">
-                Recommended: Draft until tickets & media are complete.
+                Preporuka: ostavite kao nacrt dok nisu spremne ulaznice i mediji.
               </FormDescription>
               <FormMessage />
             </FormItem>

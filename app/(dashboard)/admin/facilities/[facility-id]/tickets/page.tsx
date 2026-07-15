@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
-import { prisma } from "@/app/(server)/lib/prisma";
+import { getFacilityAdminShell } from "../_lib/get-facility-admin";
 import { getTicketHierarchy } from "./_lib/ticket-admin-actions";
 import { TicketManagementV2 } from "./_components/ticket-management-v2";
 
@@ -11,13 +11,10 @@ export async function generateMetadata({
   params: Promise<{ "facility-id": string }>;
 }): Promise<Metadata> {
   const { "facility-id": facilityId } = await params;
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: { name: true },
-  });
+  const facility = await getFacilityAdminShell(facilityId);
   return {
-    title: `${facility?.name || "Facility"} — Tickets | Splashdeals Admin`,
-    description: `Manage ticket categories, products, and pricing for ${facility?.name || "this facility"}.`,
+    title: `${facility?.name || "Objekat"} — Ulaznice | Splashdeals Admin`,
+    description: `Kategorije, tipovi i cene za ${facility?.name || "ovaj objekat"}.`,
   };
 }
 
@@ -29,10 +26,7 @@ export default async function TicketsPageV2({
   const { "facility-id": facilityId } = await params;
   await connection();
 
-  const facility = await prisma.facility.findUnique({
-    where: { id: facilityId },
-    select: { id: true, name: true, slug: true },
-  });
+  const facility = await getFacilityAdminShell(facilityId);
   if (!facility) return notFound();
 
   const hierarchy = await getTicketHierarchy(facilityId).catch((e) => {

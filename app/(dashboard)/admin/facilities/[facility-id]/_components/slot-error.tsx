@@ -26,7 +26,10 @@ export function SlotError({ reset, title = "Segment nije učitan" }: SlotErrorPr
         <Button
           variant="outline"
           size="sm"
-          onClick={() => reset()}
+          onClick={() => {
+            if (typeof window !== "undefined") window.location.reload();
+            reset();
+          }}
           className="border-destructive/20 hover:bg-destructive/10 h-8 text-[10px] font-black tracking-widest uppercase"
         >
           <Icon name="undo" className="mr-2 text-[12px]" />

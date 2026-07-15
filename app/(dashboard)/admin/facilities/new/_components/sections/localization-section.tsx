@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
-
 import { useFormContext } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -16,11 +15,9 @@ export function LocalizationSection() {
       <CardHeader className="border-border/50 bg-muted/30 border-b">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Icon name="location_on" className="text-primary text-[20px]" />
-          Localization
+          Lokacija
         </CardTitle>
-        <CardDescription>
-          The structured physical address for Google Maps ingestion.
-        </CardDescription>
+        <CardDescription>Struktuirana adresa za mape i pretragu.</CardDescription>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6 p-6">
         <FormField
@@ -28,7 +25,7 @@ export function LocalizationSection() {
           name="city"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel>City</FormLabel>
+              <FormLabel>Grad</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Bački Petrovac"
@@ -45,7 +42,7 @@ export function LocalizationSection() {
           name="postalCode"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel>Postal Code</FormLabel>
+              <FormLabel>Poštanski broj</FormLabel>
               <FormControl>
                 <Input placeholder="21470" className="bg-muted/30 border-border h-11" {...field} />
               </FormControl>
@@ -58,7 +55,7 @@ export function LocalizationSection() {
           name="streetName"
           render={({ field }) => (
             <FormItem className="col-span-2">
-              <FormLabel>Street Name</FormLabel>
+              <FormLabel>Ulica</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Novosadski put"
@@ -75,7 +72,7 @@ export function LocalizationSection() {
           name="streetNumber"
           render={({ field }) => (
             <FormItem className="col-span-2">
-              <FormLabel>Number / Entrance</FormLabel>
+              <FormLabel>Broj / ulaz</FormLabel>
               <FormControl>
                 <Input placeholder="bb" className="bg-muted/30 border-border h-11" {...field} />
               </FormControl>

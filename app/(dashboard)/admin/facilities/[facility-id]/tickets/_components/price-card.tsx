@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
-import { updatePrice, getTicketHierarchy, deletePrice } from "../_lib/ticket-admin-actions";
+import { updatePrice, deletePrice } from "../_lib/ticket-admin-actions";
 import { DAY_LABELS, TIME_LABELS } from "../_lib/constants";
 import {
   Dialog,
@@ -29,9 +29,10 @@ interface PriceCardProps {
   product: SerializedCategory["products"][number];
   facilityId: string;
   onDeleted: () => void;
+  onSaved: (next: SerializedCategory["products"][number]["prices"][number]) => void;
 }
 
-export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
+export function PriceCard({ price, facilityId, onDeleted, onSaved }: PriceCardProps) {
   const [editing, setEditing] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
   const [form, setForm] = React.useState({
@@ -47,17 +48,27 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
     const parsedOriginal = form.originalPrice ? parseFloat(form.originalPrice) : null;
     if (isNaN(parsedPrice) || parsedPrice < 0) return;
     if (parsedOriginal !== null && (isNaN(parsedOriginal) || parsedOriginal < 0)) return;
-    await updatePrice(price.id, facilityId, {
-      label: form.label || null,
-      price: parsedPrice,
-      originalPrice: parsedOriginal,
-      dayType: form.dayType,
-      timeSlot: form.timeSlot,
-    });
-    // Reload
-    await getTicketHierarchy(facilityId);
-    // Find and update
-    setEditing(false);
+    try {
+      await updatePrice(price.id, facilityId, {
+        label: form.label || null,
+        price: parsedPrice,
+        originalPrice: parsedOriginal,
+        dayType: form.dayType,
+        timeSlot: form.timeSlot,
+      });
+      onSaved({
+        ...price,
+        label: form.label || null,
+        price: parsedPrice,
+        originalPrice: parsedOriginal,
+        dayType: form.dayType,
+        timeSlot: form.timeSlot,
+      });
+      setEditing(false);
+      toast.success("Cena sačuvana");
+    } catch {
+      toast.error("Greška pri čuvanju cene");
+    }
   };
 
   const dayLabel = DAY_LABELS[form.dayType] ?? form.dayType;
@@ -75,7 +86,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
               <Input
                 value={form.label}
                 onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
-                className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
+                className="bg-muted/20 border-border focus-visible:border-primary/40 focus-visible:ring-primary/30 h-8 w-full rounded-lg border px-2 text-xs focus-visible:ring-2"
               />
             </div>
           </div>
@@ -87,7 +98,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
               <Input
                 value={form.price}
                 onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
-                className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
+                className="bg-muted/20 border-border focus-visible:border-primary/40 focus-visible:ring-primary/30 h-8 w-full rounded-lg border px-2 text-xs focus-visible:ring-2"
                 type="number"
                 min="0"
               />
@@ -99,7 +110,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
               <Input
                 value={form.originalPrice}
                 onChange={(e) => setForm((f) => ({ ...f, originalPrice: e.target.value }))}
-                className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
+                className="bg-muted/20 border-border focus-visible:border-primary/40 focus-visible:ring-primary/30 h-8 w-full rounded-lg border px-2 text-xs focus-visible:ring-2"
                 type="number"
                 min="0"
               />
@@ -114,7 +125,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
                 value={form.dayType}
                 onValueChange={(val) => setForm((f) => ({ ...f, dayType: val }))}
               >
-                <SelectTrigger className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none">
+                <SelectTrigger className="bg-muted/20 border-border focus-visible:border-primary/40 focus-visible:ring-primary/30 h-8 w-full rounded-lg border px-2 text-xs focus-visible:ring-2">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border-border">
@@ -138,7 +149,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
                 value={form.timeSlot}
                 onValueChange={(val) => setForm((f) => ({ ...f, timeSlot: val }))}
               >
-                <SelectTrigger className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none">
+                <SelectTrigger className="bg-muted/20 border-border focus-visible:border-primary/40 focus-visible:ring-primary/30 h-8 w-full rounded-lg border px-2 text-xs focus-visible:ring-2">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border-border">
@@ -194,7 +205,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
                 size="icon"
                 onClick={() => setEditing(true)}
                 className="text-muted-foreground hover:text-foreground hover:bg-muted/20 h-7 w-7 rounded-lg transition-colors"
-                aria-label="Edit price"
+                aria-label="Izmeni cenu"
               >
                 <Icon name="edit" className="text-[12px]" />
               </Button>
@@ -203,7 +214,7 @@ export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
                 size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
                 className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 rounded-lg transition-colors"
-                aria-label="Delete price"
+                aria-label="Obriši cenu"
               >
                 <Icon name="delete" className="text-[12px]" />
               </Button>

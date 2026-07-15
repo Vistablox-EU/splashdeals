@@ -609,6 +609,23 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                       })),
                     );
                   }}
+                  onSaved={(next) => {
+                    setCategories((prev) =>
+                      prev.map((c) => ({
+                        ...c,
+                        products: c.products.map((p) =>
+                          p.id === selectedProduct.id
+                            ? {
+                                ...p,
+                                prices: p.prices.map((pr) =>
+                                  pr.id === next.id ? { ...pr, ...next } : pr,
+                                ),
+                              }
+                            : p,
+                        ),
+                      })),
+                    );
+                  }}
                 />
               ))}
             </div>

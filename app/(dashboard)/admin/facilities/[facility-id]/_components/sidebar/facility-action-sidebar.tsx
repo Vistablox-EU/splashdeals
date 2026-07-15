@@ -28,7 +28,7 @@ export function FacilityActionSidebar({ facility }: FacilityActionSidebarProps) 
       <div className="space-y-4">
         <div className="px-1">
           <span className="text-muted-foreground/60 text-[10px] font-black tracking-[0.2em] uppercase">
-            External Connectivity
+            Javni kontakti
           </span>
         </div>
 

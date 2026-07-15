@@ -149,6 +149,31 @@ export function DataTable<TData, TValue>({
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
+  const handlePageSizeChange = (size: number) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("limit", String(size));
+    params.set("page", "1");
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const [focusRowIndex, setFocusRowIndex] = React.useState(0);
+  const rows = table.getRowModel().rows;
+
+  const handleTableKeyDown = (e: React.KeyboardEvent) => {
+    if (!rows.length) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setFocusRowIndex((i) => Math.min(i + 1, rows.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setFocusRowIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const row = rows[focusRowIndex];
+      if (row) handleRowClick(row);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <FacilitiesTableToolbar
@@ -159,6 +184,9 @@ export function DataTable<TData, TValue>({
         totalCount={totalCount}
         density={density}
         onToggleDensity={toggleDensity}
+        pageSize={pageSize}
+        onPageSizeChange={handlePageSizeChange}
+        table={table}
       />
 
       <FacilitiesBulkBar
@@ -168,7 +196,13 @@ export function DataTable<TData, TValue>({
         onClear={() => setRowSelection({})}
       />
 
-      <div className="border-border/50 bg-muted/40 overflow-hidden overflow-x-auto rounded-2xl border shadow-2xl backdrop-blur-md">
+      <div
+        className="border-border/50 bg-muted/40 overflow-hidden overflow-x-auto rounded-2xl border shadow-2xl backdrop-blur-md"
+        tabIndex={0}
+        role="grid"
+        aria-label="Registar objekata"
+        onKeyDown={handleTableKeyDown}
+      >
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -190,15 +224,19 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+            {rows.length ? (
+              rows.map((row, idx) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-muted/40 cursor-pointer"
+                  className={cn(
+                    "hover:bg-muted/40 cursor-pointer",
+                    idx === focusRowIndex && "bg-primary/5 ring-primary/30 ring-1",
+                  )}
                   onClick={(e) => {
                     const target = e.target as HTMLElement;
                     if (target.closest("button, a, input, [role='checkbox']")) return;
+                    setFocusRowIndex(idx);
                     handleRowClick(row);
                   }}
                 >

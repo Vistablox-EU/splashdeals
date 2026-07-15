@@ -181,14 +181,14 @@ function MediaItemCard({
                 e.currentTarget.currentTime = 0.1;
               }}
             />
-            <div className="border-border absolute top-3 left-3 z-30 rounded-lg border bg-black/60 p-1.5">
+            <div className="border-border bg-background/80 absolute top-3 left-3 z-30 rounded-lg border p-1.5">
               <Icon name="movie" className="text-primary size-3.5 animate-pulse" />
             </div>
           </div>
         )}
 
         {/* Dynamic extension badge on hover */}
-        <div className="border-border text-foreground/80 absolute bottom-3 left-3 z-30 rounded-md border bg-black/60 px-2 py-0.5 text-[8px] font-black uppercase opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="border-border text-foreground/80 bg-background/80 absolute bottom-3 left-3 z-30 rounded-md border px-2 py-0.5 text-[8px] font-black uppercase opacity-0 transition-opacity group-hover:opacity-100">
           {extension}
         </div>
 
@@ -197,7 +197,7 @@ function MediaItemCard({
           <div
             {...listeners}
             {...attributes}
-            className="focus-visible:ring-primary absolute inset-0 z-20 flex cursor-grab items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 active:cursor-grabbing"
+            className="focus-visible:ring-primary bg-background/60 absolute inset-0 z-20 flex cursor-grab items-center justify-center opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 active:cursor-grabbing"
           >
             <Icon name="drag_indicator" className="text-foreground/50 size-8" />
           </div>
@@ -209,7 +209,7 @@ function MediaItemCard({
             <div
               className={cn(
                 "flex size-6 items-center justify-center rounded-full border-2 transition-colors",
-                isSelected ? "bg-primary border-primary" : "border-border bg-black/40",
+                isSelected ? "bg-primary border-primary" : "border-border bg-background/60",
               )}
             >
               {isSelected && (
@@ -331,7 +331,7 @@ function MediaItemCard({
         <div className="flex items-center gap-2 bg-white/[0.01] px-3 pt-1 pb-3">
           <Input
             type="text"
-            placeholder="Add descriptive SEO ALT tag..."
+            placeholder="Dodajte SEO ALT tag..."
             aria-label="Image caption"
             key={item.caption || ""}
             defaultValue={item.caption || ""}

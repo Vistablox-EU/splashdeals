@@ -56,7 +56,7 @@ export function OnboardFacilityForm() {
     defaultValues: {
       name: "",
       slug: "",
-      category: "",
+      category: "Akva Park",
       city: "",
       streetName: "",
       streetNumber: "",

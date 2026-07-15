@@ -11,9 +11,18 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import type { Table } from "@tanstack/react-table";
 
-interface FacilitiesTableToolbarProps {
+interface FacilitiesTableToolbarProps<TData> {
   search: string;
   onSearchChange: (value: string) => void;
   status: string;
@@ -21,9 +30,20 @@ interface FacilitiesTableToolbarProps {
   totalCount: number;
   density: "comfortable" | "compact";
   onToggleDensity: () => void;
+  pageSize: number;
+  onPageSizeChange: (size: number) => void;
+  table: Table<TData>;
 }
 
-export function FacilitiesTableToolbar({
+const COLUMN_LABELS: Record<string, string> = {
+  name: "Naziv",
+  category: "Kategorija",
+  city: "Lokacija",
+  status: "Status",
+  createdAt: "Kreirano",
+};
+
+export function FacilitiesTableToolbar<TData>({
   search,
   onSearchChange,
   status,
@@ -31,7 +51,10 @@ export function FacilitiesTableToolbar({
   totalCount,
   density,
   onToggleDensity,
-}: FacilitiesTableToolbarProps) {
+  pageSize,
+  onPageSizeChange,
+  table,
+}: FacilitiesTableToolbarProps<TData>) {
   return (
     <div className="bg-background/40 border-border/50 flex flex-col items-stretch justify-between gap-3 rounded-xl border p-2 backdrop-blur-md lg:flex-row lg:items-center">
       <div className="flex flex-1 flex-col items-stretch gap-3 sm:flex-row sm:items-center">
@@ -49,7 +72,7 @@ export function FacilitiesTableToolbar({
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Select value={status || "all"} onValueChange={onStatusChange}>
             <SelectTrigger className="bg-background/40 border-border/50 hover:bg-background/60 relative h-9 flex-1 text-[10px] font-black tracking-wider uppercase transition-colors sm:w-[160px]">
               <SelectValue placeholder="Status" />
@@ -68,6 +91,42 @@ export function FacilitiesTableToolbar({
               <SelectItem value="EMERGENCY_SHUTDOWN">Vanredno</SelectItem>
             </SelectContent>
           </Select>
+
+          <Select value={String(pageSize)} onValueChange={(v) => onPageSizeChange(Number(v))}>
+            <SelectTrigger className="bg-background/40 border-border/50 h-9 w-[100px] text-[10px] font-black tracking-wider uppercase">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-muted border-border">
+              <SelectItem value="15">15 / str</SelectItem>
+              <SelectItem value="25">25 / str</SelectItem>
+              <SelectItem value="50">50 / str</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-9 text-[10px] font-bold uppercase">
+                Kolone
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuLabel>Prikaz kolona</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {COLUMN_LABELS[column.id] || column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Button
             variant="ghost"

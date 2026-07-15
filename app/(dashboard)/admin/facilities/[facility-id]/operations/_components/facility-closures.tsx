@@ -163,7 +163,7 @@ export function FacilityClosuresSection({
               id="closure-reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="Scheduled maintenance, seasonal closure, etc."
+              placeholder="Planirano održavanje, sezonsko zatvaranje..."
               className="h-16 resize-none text-xs"
               maxLength={200}
             />

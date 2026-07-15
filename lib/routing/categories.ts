@@ -151,3 +151,30 @@ export function getAllEnglishSlugs(): string[] {
     .map((c) => c.enSlug)
     .filter(Boolean) as string[];
 }
+
+/**
+ * Flat list of all canonical DB category values used in Facility.category.
+ * Prefer these for admin onboard Select + Zod enum.
+ */
+export function getAllDbCategoryValues(): string[] {
+  const values = new Set<string>();
+  for (const cfg of Object.values(CATEGORIES)) {
+    for (const v of cfg.dbValues) values.add(v);
+  }
+  return Array.from(values);
+}
+
+/** Admin select options: DB value + Serbian display name (group label). */
+export function getAdminCategoryOptions(): Array<{ value: string; label: string; group: string }> {
+  const options: Array<{ value: string; label: string; group: string }> = [];
+  for (const cfg of Object.values(CATEGORIES)) {
+    for (const value of cfg.dbValues) {
+      options.push({
+        value,
+        label: value,
+        group: cfg.name,
+      });
+    }
+  }
+  return options;
+}

@@ -266,7 +266,7 @@ export function FacilityProfileForm({
                   Identity & Global Discovery
                 </h2>
               </div>
-              <ProfileAndSEO facilityId={facility.id} />
+              <ProfileAndSEO facilityId={facility.id} originalSlug={facility.slug} />
             </section>
 
             {/* Danger Zone Purge Node */}

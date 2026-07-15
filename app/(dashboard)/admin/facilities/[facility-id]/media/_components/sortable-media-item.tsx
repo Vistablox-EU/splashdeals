@@ -40,7 +40,7 @@ export function SortableMediaItem(props: SortableMediaItemProps) {
       style={style}
       role="listitem"
       aria-roledescription="sortable"
-      aria-label={`Media item ${props.item.order + 1}. Press space to pick up, use arrow keys to reorder.`}
+      aria-label={`Media item ${props.item.order + 1}. Pritisnite razmak za premestanje, strelice za redosled.`}
     >
       <MediaItemCard
         item={props.item}
