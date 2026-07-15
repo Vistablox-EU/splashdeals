@@ -45,6 +45,11 @@ export function CartItemList({
           <p className="text-warning font-bold">
             {dict?.cart?.price_changed_notice || "Cene su ažurirane:"}
           </p>
+          <ul className="text-warning/80 mt-2 list-inside list-disc space-y-1">
+            {changedItems.map((title) => (
+              <li key={title}>{title}</li>
+            ))}
+          </ul>
         </div>
       )}
 

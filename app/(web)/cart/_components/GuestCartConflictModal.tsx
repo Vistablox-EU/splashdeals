@@ -13,15 +13,15 @@ import {
 
 export function GuestCartConflictModal({
   open,
-  guestFacilityId,
-  userFacilityId,
+  guestFacilityName,
+  userFacilityName,
   resolving,
   onChooseGuest,
   onChooseUser,
 }: {
   open: boolean;
-  guestFacilityId: string;
-  userFacilityId: string;
+  guestFacilityName: string;
+  userFacilityName: string;
   resolving: boolean;
   onChooseGuest: () => void;
   onChooseUser: () => void;
@@ -39,11 +39,11 @@ export function GuestCartConflictModal({
         <div className="space-y-3 text-sm">
           <div className="rounded-lg border p-3">
             <p className="font-semibold">Gostujuća korpa</p>
-            <p className="text-muted-foreground">Objekat: {guestFacilityId}</p>
+            <p className="text-muted-foreground">Objekat: {guestFacilityName}</p>
           </div>
           <div className="rounded-lg border p-3">
             <p className="font-semibold">Korpa naloga</p>
-            <p className="text-muted-foreground">Objekat: {userFacilityId}</p>
+            <p className="text-muted-foreground">Objekat: {userFacilityName}</p>
           </div>
         </div>
         <DialogFooter className="flex-col gap-2 sm:flex-col">

@@ -128,7 +128,7 @@ describe("claimGuestCartAction", () => {
             userId: null,
             locked: false,
             version: 1,
-            cartItems: [{ facilityId: "facility-a", quantity: 2 }],
+            cartItems: [{ facilityId: "facility-a", facilityName: "Aqua Park A", quantity: 2 }],
           };
         }
         if (where.userId === USER_ID) {
@@ -138,7 +138,7 @@ describe("claimGuestCartAction", () => {
             guestTokenHash: null,
             locked: false,
             version: 2,
-            cartItems: [{ facilityId: "facility-b", quantity: 1 }],
+            cartItems: [{ facilityId: "facility-b", facilityName: "Aqua Park B", quantity: 1 }],
           };
         }
         return null;
@@ -155,6 +155,8 @@ describe("claimGuestCartAction", () => {
         userCartId: USER_CART_ID,
         guestFacilityId: "facility-a",
         userFacilityId: "facility-b",
+        guestFacilityName: "Aqua Park A",
+        userFacilityName: "Aqua Park B",
       },
     });
     expect(mocks.cookiesDelete).not.toHaveBeenCalled();

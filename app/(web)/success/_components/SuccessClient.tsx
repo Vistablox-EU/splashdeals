@@ -9,8 +9,10 @@ import { Card } from "@/components/ui/card";
 import { resendConfirmationAction } from "@/app/(server)/actions/checkout";
 import {
   getCheckoutTerminalMessage,
+  hasExceededCheckoutStatusPolls,
   isCheckoutTerminalStatus,
   shouldRetryCheckoutStatus,
+  CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE,
 } from "./success-state";
 
 interface IssuedTicket {
@@ -108,10 +110,16 @@ export function SuccessClient({
   useEffect(() => {
     let timerId: NodeJS.Timeout | null = null;
     let isActive = true;
+    let attempt = 0;
 
     if (!transactionStatus || transactionStatus === "PENDING") {
       const poll = async () => {
         if (!isActive) return;
+        attempt += 1;
+        if (hasExceededCheckoutStatusPolls(attempt)) {
+          setPollingError(CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE);
+          return;
+        }
         try {
           const res = await fetch(`/api/checkout/status?session_id=${sessionId}`);
           const data = await res.json();
@@ -137,6 +145,10 @@ export function SuccessClient({
         } catch (error) {
           console.error("Polling error:", error);
           if (isActive) {
+            if (hasExceededCheckoutStatusPolls(attempt)) {
+              setPollingError(CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE);
+              return;
+            }
             timerId = setTimeout(poll, 5000);
           }
         }

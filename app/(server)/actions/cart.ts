@@ -484,6 +484,97 @@ export async function updateCartQuantityAction(
   }
 }
 
+/**
+ * Reconciles cart line items against live ticket prices/availability.
+ * Removes unavailable tickets and updates changed prices so /cart notices can fire.
+ */
+export async function reconcileCartAction(): Promise<
+  ActionResult<{ items: CartItem[]; removedItems: string[]; changedItems: string[] }>
+> {
+  try {
+    const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+    if (principal.type === "anonymous") {
+      return { success: true, data: { items: [], removedItems: [], changedItems: [] } };
+    }
+
+    const result = await withSerializableRetry(async (tx) => {
+      const cartSession = await getCartSession(principal, tx);
+      if (!cartSession) {
+        return {
+          items: [] as CartItem[],
+          removedItems: [] as string[],
+          changedItems: [] as string[],
+        };
+      }
+
+      // Do not mutate a locked cart mid-checkout; just return current snapshot.
+      if (cartSession.locked) {
+        const lockedItems = await tx.cartSessionItem.findMany({
+          where: { cartId: cartSession.id },
+          orderBy: { createdAt: "asc" },
+        });
+        return {
+          items: lockedItems.map(toCartItem),
+          removedItems: [] as string[],
+          changedItems: [] as string[],
+        };
+      }
+
+      const storedItems = await tx.cartSessionItem.findMany({
+        where: { cartId: cartSession.id },
+        orderBy: { createdAt: "asc" },
+      });
+
+      const removedItems: string[] = [];
+      const changedItems: string[] = [];
+      let mutated = false;
+
+      for (const item of storedItems) {
+        const ticketPrice = await getCanonicalTicket(item.ticketPriceId, tx);
+        if (!ticketPrice) {
+          await tx.cartSessionItem.delete({ where: { id: item.id } });
+          removedItems.push(item.title);
+          mutated = true;
+          continue;
+        }
+
+        const livePrice = Number(ticketPrice.price);
+        if (livePrice !== item.price) {
+          await tx.cartSessionItem.update({
+            where: { id: item.id },
+            data: { price: livePrice },
+          });
+          changedItems.push(item.title);
+          mutated = true;
+        }
+      }
+
+      if (mutated) {
+        await incrementCartVersion(tx, cartSession);
+      }
+
+      const nextItems = await tx.cartSessionItem.findMany({
+        where: { cartId: cartSession.id },
+        orderBy: { createdAt: "asc" },
+      });
+
+      return {
+        items: nextItems.map(toCartItem),
+        removedItems,
+        changedItems,
+      };
+    });
+
+    if (result.removedItems.length > 0 || result.changedItems.length > 0) {
+      revalidatePath("/cart");
+    }
+
+    return { success: true, data: result };
+  } catch (error) {
+    return handleServerActionError(error, "reconcileCart");
+  }
+}
+
 export async function clearCartAction(): Promise<ActionResult<{ cleared: boolean }>> {
   try {
     const principal = await resolveCartPrincipal({ createGuestIfMissing: false });

@@ -40,7 +40,7 @@ function summarizeCart(cart: {
   return {
     id: cart.id,
     facilityId: first?.facilityId ?? null,
-    facilityName: first?.facilityName ?? first?.facilityId ?? null,
+    facilityName: first?.facilityName?.trim() || null,
     itemCount,
   };
 }
@@ -55,6 +55,8 @@ export type ClaimGuestCartResult =
       userCartId: string;
       guestFacilityId: string;
       userFacilityId: string;
+      guestFacilityName: string;
+      userFacilityName: string;
     }
   | { action: "noop" };
 
@@ -174,8 +176,10 @@ export async function claimGuestCartAction(): Promise<ActionResult<ClaimGuestCar
           action: "conflict" as const,
           guestCartId: decision.guestCartId,
           userCartId: decision.userCartId,
-          guestFacilityId: guestSummary?.facilityName || decision.guestFacilityId,
-          userFacilityId: userSummary?.facilityName || decision.userFacilityId,
+          guestFacilityId: decision.guestFacilityId,
+          userFacilityId: decision.userFacilityId,
+          guestFacilityName: guestSummary?.facilityName || "Nepoznat objekat",
+          userFacilityName: userSummary?.facilityName || "Nepoznat objekat",
         };
       }
 

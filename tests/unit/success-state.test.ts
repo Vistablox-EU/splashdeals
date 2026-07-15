@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE,
   getCheckoutTerminalMessage,
+  hasExceededCheckoutStatusPolls,
   isCheckoutTerminalStatus,
+  MAX_CHECKOUT_STATUS_POLLS,
   shouldRetryCheckoutStatus,
 } from "@/app/(web)/success/_components/success-state";
 
@@ -25,5 +28,11 @@ describe("success page checkout states", () => {
 
   it.each([429, 500, 502, 503])("retries transient HTTP status %s", (status) => {
     expect(shouldRetryCheckoutStatus(status)).toBe(true);
+  });
+
+  it("bounds PENDING polling attempts", () => {
+    expect(hasExceededCheckoutStatusPolls(MAX_CHECKOUT_STATUS_POLLS - 1)).toBe(false);
+    expect(hasExceededCheckoutStatusPolls(MAX_CHECKOUT_STATUS_POLLS)).toBe(true);
+    expect(CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE.length).toBeGreaterThan(20);
   });
 });

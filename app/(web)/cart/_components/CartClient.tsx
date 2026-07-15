@@ -12,7 +12,11 @@ import {
   cancelCheckoutSessionAction,
 } from "@/app/(server)/actions/checkout";
 import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
-import { removeFromCartAction, updateCartQuantityAction } from "@/app/(server)/actions/cart";
+import {
+  removeFromCartAction,
+  updateCartQuantityAction,
+  reconcileCartAction,
+} from "@/app/(server)/actions/cart";
 import {
   claimGuestCartAction,
   resolveGuestCartConflictAction,
@@ -40,11 +44,11 @@ export function CartClient({
   const [promoError, setPromoError] = React.useState("");
   const [promoLoading, setPromoLoading] = React.useState(false);
   const [discount, setDiscount] = React.useState<DiscountInfo | null>(null);
-  const [removedItems, _setRemovedItems] = React.useState<string[]>([]);
-  const [changedItems, _setChangedItems] = React.useState<string[]>([]);
+  const [removedItems, setRemovedItems] = React.useState<string[]>([]);
+  const [changedItems, setChangedItems] = React.useState<string[]>([]);
   const [conflict, setConflict] = React.useState<{
-    guestFacilityId: string;
-    userFacilityId: string;
+    guestFacilityName: string;
+    userFacilityName: string;
   } | null>(null);
   const [resolvingConflict, setResolvingConflict] = React.useState(false);
   const claimHandledRef = React.useRef(false);
@@ -59,9 +63,15 @@ export function CartClient({
   const total = totalBeforeDiscount - discountAmount;
   const requiresIdentity = items.some((i) => i.requiresIdentity);
   const requiresPhoto = items.some((i) => i.requiresPhoto);
+  const cartFacilityId = items[0]?.facilityId;
 
-  // Load cart from server on mount
+  // Load cart from server on mount and reconcile stale prices/availability.
   const loadCart = React.useCallback(async () => {
+    const reconcile = await reconcileCartAction();
+    if (reconcile.success && reconcile.data) {
+      setRemovedItems(reconcile.data.removedItems);
+      setChangedItems(reconcile.data.changedItems);
+    }
     await refresh();
   }, [refresh]);
 
@@ -73,8 +83,8 @@ export function CartClient({
         const claim = await claimGuestCartAction();
         if (claim.success && claim.data?.action === "conflict") {
           setConflict({
-            guestFacilityId: claim.data.guestFacilityId,
-            userFacilityId: claim.data.userFacilityId,
+            guestFacilityName: claim.data.guestFacilityName,
+            userFacilityName: claim.data.userFacilityName,
           });
         }
       }
@@ -173,7 +183,7 @@ export function CartClient({
   const handleApplyPromo = async () => {
     setPromoLoading(true);
     try {
-      const result = await validatePromoCodeAction(promoCode);
+      const result = await validatePromoCodeAction(promoCode, cartFacilityId, totalBeforeDiscount);
       if (result.success && result.data?.valid) {
         setDiscount({
           campaignId: result.data.campaignId,
@@ -250,8 +260,8 @@ export function CartClient({
     <div className="mx-auto min-h-screen max-w-7xl px-4 pt-8 pb-36 sm:px-12 sm:pt-12 sm:pb-32">
       <GuestCartConflictModal
         open={Boolean(conflict)}
-        guestFacilityId={conflict?.guestFacilityId || ""}
-        userFacilityId={conflict?.userFacilityId || ""}
+        guestFacilityName={conflict?.guestFacilityName || ""}
+        userFacilityName={conflict?.userFacilityName || ""}
         resolving={resolvingConflict}
         onChooseGuest={() => handleResolveConflict("guest")}
         onChooseUser={() => handleResolveConflict("user")}
