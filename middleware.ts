@@ -1,31 +1,41 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-export const config = {
-  matcher: ["/(account)/:path*"],
-};
+import { isAccountProtectedPath } from "@/lib/auth/account-paths";
 
 /**
- * 🌊 Auth Middleware — Protects customer account pages
- * Lightweight edge check: verifies session cookie presence.
- * Full session validation happens in the page component.
+ * Buyer account auth middleware.
+ *
+ * IMPORTANT: Next.js route groups like `(account)` are NOT part of the URL.
+ * Matcher must use real paths: /moje-karte, /omiljeni, …
  */
+export const config = {
+  matcher: [
+    "/moje-karte",
+    "/moje-karte/:path*",
+    "/omiljeni",
+    "/omiljeni/:path*",
+    "/moje-recenzije",
+    "/moje-recenzije/:path*",
+    "/orders",
+    "/orders/:path*",
+  ],
+};
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow the login page itself — prevents redirect loops
-  if (pathname === "/prijava") {
+  // Defense: only enforce on known protected account paths
+  if (!isAccountProtectedPath(pathname)) {
     return NextResponse.next();
   }
 
-  // Lightweight check: look for the Better Auth session cookie
   const sessionCookie =
     request.cookies.get("better-auth.session_token")?.value ??
     request.cookies.get("__Secure-better-auth.session_token")?.value;
 
   if (!sessionCookie) {
     const signInUrl = new URL("/prijava", request.url);
-    signInUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
+    signInUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(signInUrl);
   }
 

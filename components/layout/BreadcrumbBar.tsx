@@ -47,6 +47,11 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
       search: bc.search || "Pretraga",
       success: bc.success || "Uspešna Porudžbina",
       blog: bc.blog || "Blog",
+      prijava: bc.prijava || "Prijava",
+      "moje-karte": bc.moje_karte || "Moje karte",
+      omiljeni: bc.omiljeni || "Omiljeni",
+      "moje-recenzije": bc.moje_recenzije || "Moje recenzije",
+      orders: bc.orders || "Porudžbina",
     } as Record<string, string>;
   }, [dict]);
 
@@ -75,7 +80,21 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
       const slug = segments[0].toLowerCase();
 
       if (STATIC_LABELS?.[slug]) {
-        items.push({ label: STATIC_LABELS[slug] });
+        // Account / static multi-segment trails (e.g. /moje-karte/istorija)
+        if (slug === "moje-karte" && segments[1]?.toLowerCase() === "istorija") {
+          items.push({
+            label: STATIC_LABELS["moje-karte"],
+            href: "/moje-karte",
+          });
+          items.push({ label: dict?.breadcrumb?.istorija || "Istorija kupovina" });
+          backHref = "/moje-karte";
+        } else if (slug === "orders" && segments[1]) {
+          items.push({ label: STATIC_LABELS.orders });
+          backHref = "/moje-karte/istorija";
+        } else {
+          items.push({ label: STATIC_LABELS[slug] });
+          if (slug === "prijava") backHref = "/";
+        }
       } else if (CATEGORY_NAMES?.[slug]) {
         items.push({ label: CATEGORY_NAMES[slug] });
       } else if (facilityMap[slug]) {

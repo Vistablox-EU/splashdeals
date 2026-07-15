@@ -2,9 +2,12 @@
 
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
+import { isSafeCallbackPath } from "@/lib/auth/callback-url";
 
 interface SignInButtonsProps {
   dict: Record<string, any>;
+  /** Server-resolved safe relative path for post-login return. */
+  callbackUrl?: string;
 }
 
 const providers = [
@@ -15,20 +18,18 @@ const providers = [
 ] as const;
 
 /**
- * 🌊 Social sign-in buttons for the custom prijava page.
+ * Social sign-in buttons for the custom prijava page.
+ * callbackUrl must come from the server (searchParams) — never only window.
  */
-export function SignInButtons({ dict }: SignInButtonsProps) {
-  const callbackUrl =
-    typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search).get("callbackUrl") || "/moje-karte"
-      : "/moje-karte";
+export function SignInButtons({ dict, callbackUrl }: SignInButtonsProps) {
+  const safeCallback = isSafeCallbackPath(callbackUrl) ? callbackUrl : "/moje-karte";
 
   return (
     <div className="space-y-3">
       {providers.map((provider) => (
         <a
           key={provider.id}
-          href={`/api/auth/oauth2/authorize?provider=${provider.id}&callbackURL=${encodeURIComponent(callbackUrl)}`}
+          href={`/api/auth/oauth2/authorize?provider=${provider.id}&callbackURL=${encodeURIComponent(safeCallback)}`}
           className="block"
         >
           <Button

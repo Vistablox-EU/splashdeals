@@ -4,7 +4,6 @@ import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { LiquidButton } from "@/components/ui/LiquidButton";
 import { toast } from "sonner";
 import { resendConfirmationAction } from "@/app/(server)/actions/checkout";
 
@@ -57,9 +56,9 @@ export function OrderDetail({
   const t = (dict?.order_detail as Record<string, any>) || {};
   const statusColor =
     transaction.status === "COMPLETED"
-      ? "text-emerald-500"
+      ? "text-primary"
       : transaction.status === "PENDING"
-        ? "text-amber-500"
+        ? "text-muted-foreground"
         : "text-destructive";
 
   const formatPrice = (price: number) => new Intl.NumberFormat("sr-RS").format(price);
@@ -148,7 +147,7 @@ export function OrderDetail({
                   <span
                     className={`inline-block rounded-full px-3 py-1 text-[10px] font-black uppercase ${
                       ticket.status === "ACTIVE"
-                        ? "bg-emerald-500/10 text-emerald-500"
+                        ? "bg-primary/10 text-primary"
                         : ticket.status === "USED"
                           ? "bg-muted/50 text-muted-foreground"
                           : "bg-destructive/10 text-destructive"
@@ -183,24 +182,22 @@ export function OrderDetail({
       </div>
 
       {/* Actions */}
-      <div className="flex flex-wrap gap-4">
-        <LiquidButton variant="secondary" size="sm" onClick={handleResend}>
+      <div className="flex flex-wrap gap-3">
+        <Button variant="secondary" size="sm" className="h-11 gap-2" onClick={handleResend}>
           <Icon name="mail" className="text-[16px]" />
           {t.resend_email || "Pošalji ponovo email"}
-        </LiquidButton>
-        <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-2">
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => window.print()} className="h-11 gap-2">
           <Icon name="print" className="text-[16px]" />
           {t.print || "Štampaj"}
         </Button>
-        {transaction.issuedTickets.map((t) => (
-          <Link
-            key={t.id}
-            href={`/api/wallet/apple?qrHash=${t.qrHash}`}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 px-6 py-3 text-sm font-bold text-white/80 transition-colors hover:bg-white/5 hover:text-white"
-          >
-            <Icon name="download" className="text-[16px]" />
-            Dodaj u Wallet
-          </Link>
+        {transaction.issuedTickets.map((ticket) => (
+          <Button key={ticket.id} asChild variant="outline" size="sm" className="h-11">
+            <Link href={`/api/wallet/apple?qrHash=${ticket.qrHash}`} className="gap-2">
+              <Icon name="download" className="text-[16px]" />
+              {t.add_to_wallet || "Dodaj u Wallet"}
+            </Link>
+          </Button>
         ))}
       </div>
     </div>

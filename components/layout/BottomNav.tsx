@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { useServerCart } from "@/hooks/use-server-cart";
 import { getClientDictionary } from "@/lib/client-dictionaries";
+import { isAccountBottomNavActive } from "@/lib/auth/account-paths";
 import { isBottomNavActive } from "@/lib/layout/bottom-nav-active";
 import type { Dict } from "@/lib/types";
 
@@ -13,6 +14,7 @@ const SCROLL_THRESHOLD = 10;
 
 /**
  * 📱 BottomNav — Mobile-only bottom navigation bar with scroll-hide.
+ * Account entry wired to /moje-karte (protected → middleware → /prijava).
  */
 export function BottomNav() {
   const pathname = usePathname();
@@ -25,12 +27,33 @@ export function BottomNav() {
     getClientDictionary().then(setDict);
   }, []);
 
+  // Ponude (/#deals) replaced by Nalog for account surface entry (audit #606)
   const NAV_ITEMS = [
-    { label: dict?.nav?.home || "Početna", href: "/", icon: "home" },
-    { label: dict?.nav?.explore || "Istraži", href: "/akva-parkovi", icon: "explore" },
-    { label: dict?.nav?.offers || "Ponude", href: "/#deals", icon: "local_fire_department" },
-    { label: dict?.nav?.cart_mobile || "Korpa", href: "/cart", icon: "shopping_bag" },
-    { label: dict?.nav?.support_mobile || "Podrška", href: "/support", icon: "support_agent" },
+    { label: dict?.nav?.home || "Početna", href: "/", icon: "home", kind: "path" as const },
+    {
+      label: dict?.nav?.explore || "Istraži",
+      href: "/akva-parkovi",
+      icon: "explore",
+      kind: "path" as const,
+    },
+    {
+      label: dict?.nav?.cart_mobile || "Korpa",
+      href: "/cart",
+      icon: "shopping_bag",
+      kind: "path" as const,
+    },
+    {
+      label: dict?.nav?.account_mobile || dict?.nav?.account || "Nalog",
+      href: "/moje-karte",
+      icon: "person",
+      kind: "account" as const,
+    },
+    {
+      label: dict?.nav?.support_mobile || "Podrška",
+      href: "/support",
+      icon: "support_agent",
+      kind: "path" as const,
+    },
   ];
 
   useEffect(() => {
@@ -61,7 +84,10 @@ export function BottomNav() {
     >
       <div className="mx-auto flex h-16 max-w-lg items-center justify-around px-2">
         {NAV_ITEMS.map((item) => {
-          const active = isBottomNavActive(pathname, item.href);
+          const active =
+            item.kind === "account"
+              ? isAccountBottomNavActive(pathname)
+              : isBottomNavActive(pathname, item.href);
 
           return (
             <Link

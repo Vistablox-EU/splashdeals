@@ -1,12 +1,17 @@
 import { prisma } from "@/app/(server)/lib/prisma";
-import { auth } from "@/app/(server)/lib/auth";
-import { headers } from "next/headers";
 import { getDictionary } from "@/lib/dictionaries";
+import { requireAccountSession } from "@/lib/auth/require-account-session";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/Icon";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Moje karte",
+  robots: { index: false, follow: false },
+};
 
 async function getUserTickets(userId: string) {
   return prisma.issuedTicket.findMany({
@@ -30,14 +35,14 @@ async function getUserTickets(userId: string) {
 }
 
 export default async function MojeKartePage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await requireAccountSession("/moje-karte");
   const dict = await getDictionary();
   const t = dict.account;
 
-  if (!session) return null; // middleware.ts handles redirect
-
   const tickets = await getUserTickets(session.user.id);
-  const activeTickets = tickets.filter((t) => t.status === "ACTIVE" && t.usageCount < t.usageLimit);
+  const activeTickets = tickets.filter(
+    (ticket) => ticket.status === "ACTIVE" && ticket.usageCount < ticket.usageLimit,
+  );
   const sevenDaysFromNow = new Date();
   sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
@@ -56,8 +61,8 @@ export default async function MojeKartePage() {
             <p className="text-muted-foreground text-sm">{t.no_tickets_desc}</p>
           </div>
           <Link
-            href="/"
-            className="bg-primary text-primary-foreground rounded-full px-6 py-2 text-sm font-bold"
+            href="/akva-parkovi"
+            className="bg-primary text-primary-foreground inline-flex h-11 min-h-11 items-center rounded-full px-6 text-sm font-bold"
           >
             {t.browse_facilities}
           </Link>
