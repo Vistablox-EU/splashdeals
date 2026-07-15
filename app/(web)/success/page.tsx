@@ -10,6 +10,7 @@ import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { toCheckoutStatusDto } from "@/app/(server)/lib/checkout-status-dto";
+import { buildSuccessPrijavaUrl } from "@/lib/auth/callback-url";
 
 const SuccessClient = dynamic(
   () => import("./_components/SuccessClient").then((mod) => mod.SuccessClient),
@@ -60,7 +61,7 @@ export default async function SuccessPage(props: {
   const session_id = searchParams.session_id as string | undefined;
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) {
-    redirect("/prijava");
+    redirect(buildSuccessPrijavaUrl(session_id));
   }
   const dict = await getDictionary();
   const successDict = dict.success as SuccessDictionary;

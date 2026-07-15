@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { resendConfirmationAction } from "@/app/(server)/actions/checkout";
+import { buildSuccessPrijavaUrl } from "@/lib/auth/callback-url";
 import {
   getCheckoutTerminalMessage,
   hasExceededCheckoutStatusPolls,
@@ -175,7 +176,7 @@ export function SuccessClient({
           </h1>
           <p className="text-muted-foreground text-sm font-medium sm:text-base">{pollingError}</p>
         </div>
-        <Link href="/prijava">
+        <Link href={buildSuccessPrijavaUrl(sessionId)}>
           <Button size="lg" variant="outline" className="min-h-11">
             Prijavite se
           </Button>
