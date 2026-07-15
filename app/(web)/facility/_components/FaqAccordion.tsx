@@ -114,7 +114,8 @@ export function FaqAccordion({ faqs }: Props) {
           placeholder="Pretraži pitanja..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border-border/60 bg-card/80 pl-10"
+          aria-label="Pretraži pitanja"
+          className="border-border/60 bg-card/80 h-11 pl-10 text-base md:text-sm"
         />
       </div>
 
@@ -174,9 +175,9 @@ export function FaqAccordion({ faqs }: Props) {
       {!hasActiveSearch && !showAllMobile && remaining > 0 && (
         <div className="pt-2 text-center md:hidden">
           <Button
-            variant="link"
+            variant="outline"
             onClick={() => setShowAllMobile(true)}
-            className="text-primary text-sm font-bold"
+            className="text-primary border-primary/20 h-11 min-h-11 px-4 text-sm font-bold"
           >
             Prikaži još {remaining} pitanja
           </Button>
@@ -187,7 +188,7 @@ export function FaqAccordion({ faqs }: Props) {
         Niste pronašli odgovor?{" "}
         <Link
           href="/podrska"
-          className="text-primary hover:text-primary/80 font-bold underline underline-offset-2 transition-colors"
+          className="text-primary hover:text-primary/80 inline-flex min-h-11 items-center font-bold underline underline-offset-2 transition-colors"
         >
           Kontaktirajte nas
         </Link>

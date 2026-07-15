@@ -142,15 +142,21 @@ export function MobileUnifiedControlPill({
           <div className="flex flex-col items-start -space-y-0.5 leading-tight">
             {todayHours ? (
               todayHours.isClosed ? (
-                <span className="text-destructive text-sm font-black tracking-tight">
+                <span className="text-muted-foreground text-xs font-bold tracking-tight">
                   Zatvoreno
                 </span>
               ) : (
                 <>
-                  <span className="text-foreground text-sm font-black tracking-tight">
+                  <span
+                    className={
+                      isOpen
+                        ? "text-primary text-sm font-black tracking-tight"
+                        : "text-muted-foreground text-xs font-bold tracking-tight"
+                    }
+                  >
                     {isOpen ? "Otvoreno" : "Zatvoreno"}
                   </span>
-                  <span className="text-muted-foreground text-[8px] leading-none font-bold tracking-tight">
+                  <span className="text-muted-foreground text-[10px] leading-none font-bold tracking-tight">
                     {formatTime24h(todayHours.openTime)}–{formatTime24h(todayHours.closeTime)}
                   </span>
                 </>

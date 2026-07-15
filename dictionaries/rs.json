@@ -198,7 +198,16 @@
     "free_wifi": "Besplatan WiFi",
     "parking": "Parking",
     "general_features": "Opšte Karakteristike",
-    "available": "Dostupno"
+    "available": "Dostupno",
+    "lazy_river": "Lenja reka",
+    "thermal_water": "Termalna voda",
+    "deep_water": "Duboka voda",
+    "cafe_bar": "Cafe bar",
+    "wellness_&_spa": "Wellness i spa",
+    "wellness_i_spa": "Wellness i spa",
+    "wave_pools": "Bazen sa talasima",
+    "children_s_pool": "Dečiji bazen",
+    "water_slide": "Vodeni tobogan"
   },
   "categories": {
     "attractions": "Atrakcije",

@@ -15,6 +15,8 @@ export const viewport: Viewport = {
   themeColor: "#06b6d4",
   width: "device-width",
   initialScale: 1,
+  // Safe-area for notched phones (BottomNav / fixed chrome)
+  viewportFit: "cover",
   // WCAG 1.4.4 — allow pinch-zoom; never lock maximumScale / userScalable
 };
 

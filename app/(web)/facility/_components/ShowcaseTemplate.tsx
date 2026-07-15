@@ -292,17 +292,33 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 </p>
 
                 {facility.amenities && facility.amenities.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-3 pt-2">
-                    <span className="text-foreground text-xs font-black tracking-widest uppercase">
-                      {facility.amenities.length} sadržaja
-                    </span>
-                    <a
-                      href="#amenities"
-                      className="text-primary hover:text-primary/80 text-[10px] font-black tracking-wider uppercase underline underline-offset-4 transition-colors"
-                    >
-                      {dict.facilities?.browse_all}
-                    </a>
-                  </div>
+                  <>
+                    {/* Option F: amenity names as prose on mobile (audit M6) */}
+                    <p className="text-muted-foreground/80 border-border/30 mt-4 border-t pt-4 text-sm font-medium not-italic md:hidden">
+                      <span className="text-foreground font-bold">Sadržaji: </span>
+                      {facility.amenities
+                        .map((fa) => {
+                          const raw = fa.amenity?.name || "";
+                          const key = raw.toLowerCase().replace(/['\s]+/g, "_");
+                          const translated =
+                            (dict?.amenities as Record<string, string> | undefined)?.[key] || raw;
+                          return translated;
+                        })
+                        .filter(Boolean)
+                        .join(", ")}
+                    </p>
+                    <div className="hidden flex-wrap items-center gap-3 pt-2 md:flex">
+                      <span className="text-foreground text-xs font-black tracking-widest uppercase">
+                        {facility.amenities.length} sadržaja
+                      </span>
+                      <a
+                        href="#amenities"
+                        className="text-primary hover:text-primary/80 inline-flex min-h-11 items-center text-xs font-black tracking-wider uppercase underline underline-offset-4 transition-colors"
+                      >
+                        {dict.facilities?.browse_all}
+                      </a>
+                    </div>
+                  </>
                 )}
 
                 <div className="flex flex-wrap gap-3 pt-2">

@@ -92,24 +92,28 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 className="h-full w-full object-cover transition-[transform] duration-1000 group-hover:scale-110 group-hover:rotate-1"
-                alt={m.caption || "Facility media"}
+                alt={
+                  m.caption?.trim() ||
+                  dict?.media_gallery?.fallback_caption ||
+                  "Fotografija objekta"
+                }
                 loading={i < 2 ? "eager" : "lazy"}
                 priority={i < 2}
               />
             )}
-            <div className="from-background/90 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-8 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-              <div className="translate-y-4 space-y-2 transition-transform duration-500 group-hover:translate-y-0">
-                <p className="text-primary-foreground text-lg font-bold">
+            <div className="from-background/90 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-3 opacity-100 transition-opacity duration-500 sm:p-8 sm:opacity-0 sm:group-hover:opacity-100">
+              <div className="space-y-1 transition-transform duration-500 sm:translate-y-4 sm:space-y-2 sm:group-hover:translate-y-0">
+                <p className="text-primary-foreground line-clamp-2 text-xs font-bold sm:text-lg">
                   {m.caption || dict?.media_gallery?.fallback_caption || "Letnji Užitak"}
                 </p>
-                <div className="text-primary flex items-center gap-2 text-xs font-black tracking-widest uppercase">
+                <div className="text-primary hidden items-center gap-2 text-xs font-black tracking-widest uppercase sm:flex">
                   <Icon name="open_in_full" className="text-[16px]" />
                   {m.type === "VIDEO"
                     ? dict?.media_gallery?.play_video || "Pusti Video"
                     : dict?.media_gallery?.expand_view || "Prikaži Veće"}
                 </div>
               </div>
-              <div className="bg-muted/20 absolute top-6 right-6 scale-75 rounded-full p-3 opacity-0 backdrop-blur-md transition-[transform,opacity] group-hover:scale-100 group-hover:opacity-100">
+              <div className="bg-muted/20 absolute top-6 right-6 hidden scale-75 rounded-full p-3 opacity-0 backdrop-blur-md transition-[transform,opacity] group-hover:scale-100 group-hover:opacity-100 sm:block">
                 <Icon
                   name="favorite"
                   className="text-primary-foreground hover:text-destructive cursor-pointer text-[20px] transition-colors"

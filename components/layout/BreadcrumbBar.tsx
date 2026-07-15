@@ -6,6 +6,7 @@ import { useMemo, useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface BreadcrumbItem {
   label: string;
@@ -22,7 +23,7 @@ interface FacilityMap {
 /**
  * 🧭 BreadcrumbBar
  * Derives breadcrumb trail from the current URL pathname.
- * Uses an embedded facility map (pre-fetched by the server) for facility lookups.
+ * Mobile: simplified trail (home + current) with ≥44px touch targets (facility audit #658).
  */
 export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap }) {
   const pathname = usePathname();
@@ -32,7 +33,6 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
     getClientDictionary().then(setDict);
   }, []);
 
-  // Static page labels derived from dict
   const STATIC_LABELS = useMemo(() => {
     const bc = dict?.breadcrumb;
     if (!bc) return null;
@@ -55,7 +55,6 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
     } as Record<string, string>;
   }, [dict]);
 
-  // Category names derived from dict
   const CATEGORY_NAMES = useMemo(() => {
     const cats = dict?.breadcrumb?.categories;
     if (!cats) return null;
@@ -80,7 +79,6 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
       const slug = segments[0].toLowerCase();
 
       if (STATIC_LABELS?.[slug]) {
-        // Account / static multi-segment trails (e.g. /moje-karte/istorija)
         if (slug === "moje-karte" && segments[1]?.toLowerCase() === "istorija") {
           items.push({
             label: STATIC_LABELS["moje-karte"],
@@ -99,7 +97,6 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
         items.push({ label: CATEGORY_NAMES[slug] });
       } else if (facilityMap[slug]) {
         const fac = facilityMap[slug];
-        // Map DB category value → slug → display name
         const dbLower = fac.category.toLowerCase();
         const DB_TO_SLUG: Record<string, string> = {
           "akva park": "akva-parkovi",
@@ -134,59 +131,83 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
   }, [pathname, facilityMap, dict, STATIC_LABELS, CATEGORY_NAMES]);
 
   const { items, backHref } = trail;
-  const isLastItem = (idx: number) => idx === items.length - 1;
+
+  // Mobile: Početna › current only (hide middle category crumb) — H1/M1
+  const mobileItems = useMemo(() => {
+    if (items.length <= 2) return items;
+    return [items[0], items[items.length - 1]];
+  }, [items]);
+
+  const linkClass =
+    "text-muted-foreground hover:text-primary inline-flex min-h-11 shrink-0 items-center gap-1 rounded-md px-1.5 text-xs font-bold tracking-wider uppercase transition-colors";
+  const currentClass =
+    "text-primary inline-flex min-h-11 shrink-0 items-center text-xs font-black tracking-wider uppercase";
+
+  const renderTrail = (trailItems: BreadcrumbItem[]) =>
+    trailItems.map((item, idx) => {
+      const last = idx === trailItems.length - 1;
+      return (
+        <div key={`${item.label}-${idx}`} className="flex items-center">
+          {idx > 0 && (
+            <Icon
+              name="keyboard_arrow_right"
+              className="text-muted-foreground mx-0.5 shrink-0 text-[14px]"
+              aria-hidden
+            />
+          )}
+          {item.href && !last ? (
+            item.href === "/" ? (
+              <Link href={item.href} className={linkClass} aria-label={item.label}>
+                <Icon name="home" className="text-[14px]" aria-hidden />
+                <span className="max-w-[6rem] truncate md:max-w-none">{item.label}</span>
+              </Link>
+            ) : (
+              <Link
+                href={item.href}
+                className={cn(linkClass, "max-w-[8rem] truncate md:max-w-none")}
+              >
+                {item.label}
+              </Link>
+            )
+          ) : (
+            <span
+              className={cn(currentClass, "max-w-[11rem] truncate md:max-w-none")}
+              aria-current="page"
+            >
+              {item.label}
+            </span>
+          )}
+        </div>
+      );
+    });
 
   return (
     <div className="bg-background/98 border-border/40 sticky top-16 z-[100] w-full border-b backdrop-blur-[40px]">
-      <div className="mx-auto flex h-10 w-full max-w-7xl items-center gap-0 px-4 md:px-12">
-        {/* Back button */}
+      <div className="mx-auto flex min-h-11 w-full max-w-7xl items-center gap-0 px-4 md:h-10 md:min-h-10 md:px-12">
         {backHref && (
           <Link
             href={backHref}
-            className="text-muted-foreground hover:text-foreground border-border/40 mr-3 flex h-11 min-w-11 shrink-0 items-center justify-center border-r pr-3 transition-colors"
+            className="text-muted-foreground hover:text-foreground border-border/40 mr-2 flex size-11 shrink-0 items-center justify-center border-r pr-2 transition-colors md:mr-3 md:pr-3"
             aria-label={dict?.breadcrumb?.back_aria || "Nazad"}
           >
-            <Icon name="arrow_back" className="text-[16px]" />
+            <Icon name="arrow_back" className="text-[18px]" />
             <span className="sr-only">{dict?.breadcrumb?.back_aria || "Nazad"}</span>
           </Link>
         )}
 
-        {/* Breadcrumb trail */}
-        <div className="no-scrollbar flex w-full items-center gap-0 overflow-x-auto">
-          {items.map((item, idx) => (
-            <div key={idx} className="flex items-center">
-              {idx > 0 && (
-                <Icon
-                  name="keyboard_arrow_right"
-                  className="text-muted-foreground mx-1.5 shrink-0 text-[12px]"
-                />
-              )}
-              {item.href && !isLastItem(idx) ? (
-                item.href === "/" ? (
-                  <Link
-                    href={item.href}
-                    className="text-muted-foreground hover:text-primary flex shrink-0 items-center gap-1 text-[10px] font-bold tracking-wider uppercase transition-colors"
-                    aria-label={item.label}
-                  >
-                    <Icon name="home" className="text-[12px]" />
-                    <span>{item.label}</span>
-                  </Link>
-                ) : (
-                  <Link
-                    href={item.href}
-                    className="text-muted-foreground hover:text-primary shrink-0 text-[10px] font-bold tracking-wider whitespace-nowrap uppercase transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                )
-              ) : (
-                <span className="text-primary shrink-0 text-[10px] font-black tracking-wider whitespace-nowrap uppercase">
-                  {item.label}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
+        <nav
+          aria-label="Putanja"
+          className="no-scrollbar flex w-full items-center gap-0 overflow-x-auto md:hidden"
+        >
+          {renderTrail(mobileItems)}
+        </nav>
+
+        <nav
+          aria-label="Putanja"
+          className="no-scrollbar hidden w-full items-center gap-0 overflow-x-auto md:flex"
+        >
+          {renderTrail(items)}
+        </nav>
       </div>
     </div>
   );

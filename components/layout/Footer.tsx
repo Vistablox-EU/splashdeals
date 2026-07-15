@@ -364,7 +364,7 @@ function NewsletterForm({ dict }: { dict: Dict | null }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={dict?.footer?.email_placeholder || "Vaša E-mail adresa"}
-            className="bg-muted border-border focus-visible:ring-primary/50 h-10 text-xs"
+            className="bg-muted border-border focus-visible:ring-primary/50 h-11 text-base md:text-xs"
           />
           {/* Hidden field for source tracking */}
           <input type="hidden" name="source" value="footer" />

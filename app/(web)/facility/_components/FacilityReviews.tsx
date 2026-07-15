@@ -210,7 +210,12 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
       ) : (
         <Card className="border-border/50 bg-muted/20 p-4 text-center">
           <p className="text-muted-foreground text-xs font-medium">{t.login_prompt}</p>
-          <Button asChild variant="link" size="sm" className="mt-1 h-auto text-xs font-bold">
+          <Button
+            asChild
+            variant="default"
+            size="sm"
+            className="mt-3 h-11 min-h-11 px-6 text-xs font-bold"
+          >
             <Link href={buildPrijavaUrl(pathname || "/")}>{t.login_link}</Link>
           </Button>
         </Card>

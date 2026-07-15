@@ -71,6 +71,7 @@ const DAY_LABELS: Record<string, string> = {
   ALL: "Svi dani",
   WEEKDAY: "Radni dan",
   WEEKEND: "Vikend",
+  HOLIDAY: "Praznik",
 };
 
 const TIME_LABELS: Record<string, string> = {
@@ -497,10 +498,12 @@ function MobileTicketAccordion({
 
   return (
     <div className="border-border/40 overflow-hidden border-b transition-[max-height,opacity] duration-300">
-      {/* Collapsed row */}
+      {/* Collapsed row — gate price + % always visible (audit H3 / C1) */}
       <button
+        type="button"
         onClick={onToggle}
-        className="hover:bg-muted/10 active:bg-muted/20 flex w-full items-center justify-between px-3 py-3 transition-colors"
+        aria-expanded={isExpanded}
+        className="hover:bg-muted/10 active:bg-muted/20 flex min-h-14 w-full items-center justify-between gap-2 px-3 py-3 transition-colors"
       >
         <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
           {tier.imageUrl && (
@@ -515,30 +518,41 @@ function MobileTicketAccordion({
               <div className="from-background/80 via-background/20 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
             </div>
           )}
-          <span className="text-foreground truncate text-sm font-bold tracking-tight">
-            {tier.label}
-          </span>
-          {hasDiscount && (
-            <span className="bg-secondary text-secondary-foreground inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[9px] leading-none font-black shadow-sm">
-              {discountPercent}
+          <div className="min-w-0 flex-1">
+            <span className="text-foreground block truncate text-sm font-bold tracking-tight">
+              {tier.label || tier.title}
             </span>
-          )}
-          {isHighlighted && <Badge variant="secondary">{"Najpopularnije"}</Badge>}
-          {cartCount > 0 && (
-            <span className="bg-primary text-primary-foreground inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-black">
-              {cartCount}
-            </span>
-          )}
+            <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+              {hasDiscount && (
+                <span className="bg-secondary text-secondary-foreground inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1 text-[9px] leading-none font-black shadow-sm">
+                  −{discountPercent}%
+                </span>
+              )}
+              {isHighlighted && (
+                <Badge variant="secondary" className="h-5 px-1.5 text-[9px]">
+                  Najpopularnije
+                </Badge>
+              )}
+              {cartCount > 0 && (
+                <span className="bg-primary text-primary-foreground inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1 text-[9px] font-black">
+                  {cartCount}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          {tier.originalPrice && Number(tier.originalPrice) > 0 && (
-            <div className="flex items-baseline gap-1">
-              <span className="text-muted-foreground text-[10px] leading-none font-bold tabular-nums line-through">
-                {Number(tier.originalPrice).toLocaleString("sr-RS")}
+          <div className="flex flex-col items-end leading-none">
+            {hasDiscount && tier.originalPrice && (
+              <span className="text-muted-foreground text-[10px] font-bold tabular-nums line-through">
+                {Number(tier.originalPrice).toLocaleString("sr-Latn")} RSD
               </span>
-              <span className="text-muted-foreground text-[7px] font-bold">RSD</span>
-            </div>
-          )}
+            )}
+            <span className="text-foreground text-sm font-black tabular-nums">
+              {Number(tier.price).toLocaleString("sr-Latn")}{" "}
+              <span className="text-primary text-[9px] font-bold">RSD</span>
+            </span>
+          </div>
           <Icon
             name={isExpanded ? "expand_less" : "expand_more"}
             className="text-muted-foreground text-[18px]"
@@ -561,8 +575,8 @@ function MobileTicketAccordion({
             <div className="space-y-3">
               {/* Variation options */}
               <div className="divide-border/40 divide-y">
-                <span className="text-muted-foreground block pb-1.5 text-[8px] font-black tracking-widest uppercase">
-                  {"Izaberite varijantu"}
+                <span className="text-muted-foreground block pb-1.5 text-[9px] font-black tracking-widest uppercase">
+                  Izaberite varijantu
                 </span>
                 {activeProduct.prices.map((p) => {
                   const isSel = selectedPrice === p.id;
@@ -573,25 +587,27 @@ function MobileTicketAccordion({
                           100,
                       )
                     : 0;
-                  const dayLabel = DAY_LABELS[p.dayType ?? "ALL"];
-                  const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"];
+                  const dayLabel = DAY_LABELS[p.dayType ?? "ALL"] ?? "Svi dani";
+                  const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"] ?? "Ceo dan";
                   const displayLabel = p.label || `${dayLabel} — ${timeLabel}`;
 
                   return (
                     <button
                       key={p.id}
+                      type="button"
                       onClick={() => setSelectedPrice(p.id)}
-                      className={`flex w-full items-center justify-between py-2.5 text-left transition-colors ${
+                      className={`flex min-h-11 w-full items-center justify-between py-2.5 text-left transition-colors ${
                         isSel ? "bg-primary/[0.02]" : "hover:bg-muted/10 active:bg-muted/20"
                       }`}
                     >
                       <div className="flex min-w-0 flex-1 items-center gap-2">
                         <div
-                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
                             isSel ? "border-primary" : "border-muted-foreground/30"
                           }`}
+                          aria-hidden
                         >
-                          {isSel && <div className="bg-primary h-2 w-2 rounded-full" />}
+                          {isSel && <div className="bg-primary h-2.5 w-2.5 rounded-full" />}
                         </div>
                         <div className="min-w-0">
                           <span className="text-foreground block truncate text-sm font-bold">
@@ -608,13 +624,13 @@ function MobileTicketAccordion({
                         </div>
                       </div>
                       <div className="flex shrink-0 items-baseline gap-1.5">
-                        <span className="text-foreground text-sm font-black">
-                          {p.price.toLocaleString("sr-RS")}
+                        <span className="text-foreground text-sm font-black tabular-nums">
+                          {p.price.toLocaleString("sr-Latn")}
                         </span>
                         <span className="text-primary text-[9px] font-bold">RSD</span>
                         {hasDisc && (
-                          <span className="text-muted-foreground ml-0.5 text-[8px] line-through">
-                            {p.originalPrice?.toLocaleString("sr-RS")}
+                          <span className="text-muted-foreground ml-0.5 text-[10px] tabular-nums line-through">
+                            {p.originalPrice?.toLocaleString("sr-Latn")}
                           </span>
                         )}
                       </div>
@@ -945,9 +961,9 @@ function TierList({
             )}
             <div className="w-full flex-1 space-y-1 text-center md:text-left">
               <div className="flex flex-wrap items-center justify-center gap-1.5 md:justify-start">
-                <h4 className="text-foreground text-sm font-black tracking-tight uppercase italic md:text-base">
+                <h3 className="text-foreground text-sm font-black tracking-tight uppercase italic md:text-base">
                   {tier.label}
-                </h4>
+                </h3>
                 {tier.dayType && tier.dayType !== "ALL" && (
                   <Badge
                     variant="outline"
@@ -1076,9 +1092,9 @@ function TierGrid({
             </div>
           )}
           <div className="space-y-1">
-            <h4 className="text-foreground text-base font-black tracking-tight uppercase italic">
+            <h3 className="text-foreground text-base font-black tracking-tight uppercase italic">
               {tier.label}
-            </h4>
+            </h3>
             <p className="text-muted-foreground text-xs">{tier.description || ""}</p>
           </div>
           <div className="mt-auto space-y-4">
