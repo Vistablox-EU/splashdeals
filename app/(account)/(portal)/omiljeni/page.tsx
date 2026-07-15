@@ -1,11 +1,16 @@
 import { prisma } from "@/app/(server)/lib/prisma";
-import { auth } from "@/app/(server)/lib/auth";
-import { headers } from "next/headers";
 import { getDictionary } from "@/lib/dictionaries";
+import { requireAccountSession } from "@/lib/auth/require-account-session";
 import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/Icon";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Omiljeni objekti",
+  robots: { index: false, follow: false },
+};
 
 async function getUserFavorites(userId: string) {
   return prisma.userFavorite.findMany({
@@ -30,11 +35,9 @@ async function getUserFavorites(userId: string) {
 }
 
 export default async function OmiljeniPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await requireAccountSession("/omiljeni");
   const dict = await getDictionary();
   const t = dict.account;
-
-  if (!session) return null;
 
   const favorites = await getUserFavorites(session.user.id);
 
@@ -47,8 +50,8 @@ export default async function OmiljeniPage() {
           <Icon name="favorite" className="text-muted-foreground size-12" />
           <p className="text-muted-foreground text-sm font-medium">{t.no_favorites}</p>
           <Link
-            href="/"
-            className="bg-primary text-primary-foreground rounded-full px-6 py-2 text-sm font-bold"
+            href="/akva-parkovi"
+            className="bg-primary text-primary-foreground inline-flex h-11 min-h-11 items-center rounded-full px-6 text-sm font-bold"
           >
             {t.browse_facilities}
           </Link>

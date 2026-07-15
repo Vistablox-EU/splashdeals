@@ -1,11 +1,10 @@
 import { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { prisma } from "@/app/(server)/lib/prisma";
-import { auth } from "@/app/(server)/lib/auth";
-import { headers } from "next/headers";
 import { OrderDetail } from "./_components/OrderDetail";
 import { getDictionary } from "@/lib/dictionaries";
+import { requireAccountSession } from "@/lib/auth/require-account-session";
 
 export const metadata: Metadata = {
   title: "Porudžbina | Splashdeals",
@@ -16,10 +15,7 @@ export default async function OrderPage(props: { params: Promise<{ id: string }>
   await connection();
   const { id } = await props.params;
 
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session?.user) {
-    redirect("/prijava");
-  }
+  const session = await requireAccountSession(`/orders/${id}`);
 
   const transaction = await prisma.transaction.findFirst({
     where: { id, userId: session.user.id },
@@ -51,7 +47,7 @@ export default async function OrderPage(props: { params: Promise<{ id: string }>
   const dict = await getDictionary();
 
   return (
-    <div className="container mx-auto min-h-screen max-w-4xl px-4 py-12">
+    <div className="w-full max-w-4xl">
       <OrderDetail transaction={serialized} dict={dict} />
     </div>
   );

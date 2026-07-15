@@ -1,9 +1,15 @@
 import { prisma } from "@/app/(server)/lib/prisma";
-import { auth } from "@/app/(server)/lib/auth";
-import { headers } from "next/headers";
 import { getDictionary } from "@/lib/dictionaries";
+import { requireAccountSession } from "@/lib/auth/require-account-session";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/Icon";
+import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Istorija kupovina",
+  robots: { index: false, follow: false },
+};
 
 async function getUserHistory(userId: string) {
   return prisma.transaction.findMany({
@@ -28,11 +34,9 @@ async function getUserHistory(userId: string) {
 }
 
 export default async function IstorijaPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await requireAccountSession("/moje-karte/istorija");
   const dict = await getDictionary();
   const t = dict.account;
-
-  if (!session) return null;
 
   const transactions = await getUserHistory(session.user.id);
 
@@ -52,25 +56,27 @@ export default async function IstorijaPage() {
             const facilityName =
               firstTicket?.ticketPrice?.ticketType?.category?.facility?.name || "Objekat";
             return (
-              <Card key={tx.id} className="border-border flex items-center justify-between p-4">
-                <div className="min-w-0 space-y-0.5">
-                  <p className="text-sm font-bold">{facilityName}</p>
-                  <p className="text-muted-foreground text-[11px] font-medium">
-                    {t.order_ref}: {tx.orderRef}
-                  </p>
-                  <p className="text-muted-foreground text-[10px]">
-                    {tx.createdAt.toLocaleDateString("sr-Latn")}
-                  </p>
-                </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-primary text-sm font-black">
-                    {Number(tx.totalAmount).toLocaleString("sr-RS")} RSD
-                  </p>
-                  <p className="text-muted-foreground text-[10px] font-medium">
-                    {tx.issuedTickets.length} karata
-                  </p>
-                </div>
-              </Card>
+              <Link key={tx.id} href={`/orders/${tx.id}`} className="block">
+                <Card className="border-border hover:border-primary/30 flex min-h-11 items-center justify-between p-4 transition-colors">
+                  <div className="min-w-0 space-y-0.5">
+                    <p className="text-sm font-bold">{facilityName}</p>
+                    <p className="text-muted-foreground text-[11px] font-medium">
+                      {t.order_ref}: {tx.orderRef}
+                    </p>
+                    <p className="text-muted-foreground text-[10px]">
+                      {tx.createdAt.toLocaleDateString("sr-Latn")}
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-primary text-sm font-black">
+                      {Number(tx.totalAmount).toLocaleString("sr-RS")} RSD
+                    </p>
+                    <p className="text-muted-foreground text-[10px] font-medium">
+                      {tx.issuedTickets.length} karata
+                    </p>
+                  </div>
+                </Card>
+              </Link>
             );
           })}
         </div>

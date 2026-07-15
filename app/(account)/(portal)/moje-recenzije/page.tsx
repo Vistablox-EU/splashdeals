@@ -1,10 +1,15 @@
 import { prisma } from "@/app/(server)/lib/prisma";
-import { auth } from "@/app/(server)/lib/auth";
-import { headers } from "next/headers";
 import { getDictionary } from "@/lib/dictionaries";
+import { requireAccountSession } from "@/lib/auth/require-account-session";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Moje recenzije",
+  robots: { index: false, follow: false },
+};
 
 async function getUserReviews(userId: string) {
   return prisma.review.findMany({
@@ -17,11 +22,9 @@ async function getUserReviews(userId: string) {
 }
 
 export default async function MojeRecenzijePage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await requireAccountSession("/moje-recenzije");
   const dict = await getDictionary();
   const t = dict.account;
-
-  if (!session) return null;
 
   const reviews = await getUserReviews(session.user.id);
 
@@ -45,14 +48,17 @@ export default async function MojeRecenzijePage() {
                 >
                   {review.facility.name}
                 </Link>
-                <div className="flex shrink-0 gap-0.5">
+                <div
+                  className="flex shrink-0 gap-0.5"
+                  aria-label={`${t.rating || "Ocena"} ${review.rating}`}
+                >
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Icon
                       key={star}
                       name={star <= review.rating ? "star" : "star_border"}
                       className={
                         star <= review.rating
-                          ? "size-4 text-amber-500"
+                          ? "text-primary size-4"
                           : "text-muted-foreground/30 size-4"
                       }
                     />
