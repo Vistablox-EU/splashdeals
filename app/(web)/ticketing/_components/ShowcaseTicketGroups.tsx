@@ -12,6 +12,7 @@ import { persistCartItem } from "@/lib/cart/persist-cart-item";
 import { useServerCart } from "@/hooks/use-server-cart";
 import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface TicketTier {
   id: string;
@@ -141,6 +142,10 @@ export function ShowcaseTicketGroups({
   const [selectedTicket, setSelectedTicket] = useState<TicketTier | null>(null);
   const [expandedTier, setExpandedTier] = useState<string | null>(null);
 
+  // Shared server cart totals (badge + sticky mini-cart) — hooks before any return
+  const totalItems = useServerCart((s) => s.totalItems);
+  const totalPrice = useServerCart((s) => s.totalPrice);
+
   const getQuantity = (id: string) => quantities[id] || 0;
   const setQuantity = (id: string, q: number) => {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -161,10 +166,6 @@ export function ShowcaseTicketGroups({
   }
 
   const activeGroup = groups.find((g) => g.id === activeGroupId) || groups[0];
-
-  // Cart totals — fetched server-side via cart drawer
-  const totalItems: number = 0;
-  const totalPrice: number = 0;
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8 pb-24 md:pb-0">
@@ -288,11 +289,13 @@ export function ShowcaseTicketGroups({
               </div>
             </div>
             <Button
-              onClick={() => (window.location.href = "/cart")}
+              asChild
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
             >
-              <span>{dict?.ticketing?.buy || "Kupi"}</span>
-              <Icon name="arrow_forward" className="text-[16px]" />
+              <Link href="/cart">
+                <span>{dict?.ticketing?.buy || "Kupi"}</span>
+                <Icon name="arrow_forward" className="text-[16px]" />
+              </Link>
             </Button>
           </div>
         </div>
@@ -318,11 +321,13 @@ export function ShowcaseTicketGroups({
               </span>
             </div>
             <Button
-              onClick={() => (window.location.href = "/cart")}
+              asChild
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-8 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
             >
-              <span>{dict?.ticketing?.buy || "Kupi"}</span>
-              <Icon name="arrow_forward" className="text-[16px]" />
+              <Link href="/cart">
+                <span>{dict?.ticketing?.buy || "Kupi"}</span>
+                <Icon name="arrow_forward" className="text-[16px]" />
+              </Link>
             </Button>
           </div>
         </div>
