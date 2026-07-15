@@ -9,18 +9,26 @@ interface ShareButtonProps {
   title: string;
   url: string;
   className?: string;
+  shareLabel?: string;
+  copiedLabel?: string;
+  shareText?: string;
 }
 
 /**
  * 🔗 ShareButton Island (Client)
- * Integrates Web Share & Clipboard APIs with rich physical vibration callbacks
- * and real-time visual state mutations for absolute user confidence.
+ * Mobile: 44×44 touch target (WCAG 2.5.8) + explicit aria-label.
  */
-export function ShareButton({ title, url, className }: ShareButtonProps) {
+export function ShareButton({
+  title,
+  url,
+  className,
+  shareLabel = "Podeli",
+  copiedLabel = "Kopirano!",
+  shareText,
+}: ShareButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
-    // 📳 Haptic Vibration API: Feedback confirmation
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(15);
     }
@@ -29,7 +37,7 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
       try {
         await navigator.share({
           title,
-          text: `Pogledajte ${title} na Splashdeals!`,
+          text: shareText || `Pogledajte ${title} na Splashdeals!`,
           url,
         });
       } catch (err) {
@@ -38,13 +46,12 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
         }
       }
     } else {
-      // 📋 Clipboard API Fallback: Smooth state transition
       try {
         await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
         if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-          navigator.vibrate([15, 40, 15]); // Double-tap confirmation
+          navigator.vibrate([15, 40, 15]);
         }
       } catch (err) {
         console.error("Error copying to clipboard:", err);
@@ -52,29 +59,31 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
     }
   };
 
+  const label = copied ? copiedLabel : shareLabel;
+
   return (
     <Button
       onClick={handleShare}
       variant="outline"
       size="icon"
       className={cn(
-        "bg-muted/50 border-border hover:bg-muted group relative overflow-hidden rounded-full p-2.5 backdrop-blur-xl transition-all hover:scale-105 active:scale-95",
+        "bg-muted/50 border-border hover:bg-muted group relative size-11 overflow-hidden rounded-full backdrop-blur-xl transition-colors hover:scale-105 active:scale-95",
         copied ? "border-primary/30 bg-primary/10 text-primary" : "",
         className,
       )}
-      title={copied ? "Kopirano!" : "Podeli"}
-      aria-label={copied ? "Kopirano!" : "Podeli"}
+      title={label}
+      aria-label={label}
       aria-live="polite"
     >
       {copied ? (
         <div key="check" className="animate-scale-in">
-          <Icon name="check" className="text-primary h-[14px] w-[14px]" />
+          <Icon name="check" className="text-primary size-5" />
         </div>
       ) : (
         <div key="share" className="animate-scale-in">
           <Icon
             name="share"
-            className="text-muted-foreground group-hover:text-primary h-[14px] w-[14px] transition-colors"
+            className="text-muted-foreground group-hover:text-primary size-5 transition-colors"
           />
         </div>
       )}

@@ -128,7 +128,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                   <Icon name="star" className="text-warning size-2.5" />
                   <div className="bg-muted-foreground/10 h-1.5 flex-1 overflow-hidden rounded-full">
                     <div
-                      className="bg-warning h-full rounded-full transition-all"
+                      className="bg-warning h-full rounded-full transition-[width]"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -157,15 +157,15 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
                   onClick={() => setRating(star)}
-                  className="transition-transform hover:scale-110"
+                  className="flex size-11 items-center justify-center transition-transform hover:scale-110"
                   aria-label={(t.rating_aria || "Ocena {n} od 5").replace("{n}", String(star))}
                 >
                   <Icon
                     name="star"
                     className={
                       star <= (hoverRating || rating)
-                        ? "text-warning size-9 md:size-6"
-                        : "text-muted-foreground/20 size-9 md:size-6"
+                        ? "text-warning size-7 md:size-6"
+                        : "text-muted-foreground/20 size-7 md:size-6"
                     }
                   />
                 </button>

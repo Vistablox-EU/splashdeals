@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import { useUIState } from "@/hooks/use-ui-state";
@@ -100,7 +101,7 @@ export function TicketPurchaseModal({
   const [closing, setClosing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [addedLabel, setAddedLabel] = useState<string | undefined>(undefined);
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -123,6 +124,15 @@ export function TicketPurchaseModal({
       setAddedLabel(d?.ticketing?.added_to_cart as string | undefined);
     });
   }, []);
+
+  // Client-only date default — avoid SSR/client timezone mismatch
+  useEffect(() => {
+    if (selectedDate) return;
+    const timer = window.setTimeout(() => {
+      setSelectedDate(new Date().toISOString().split("T")[0]);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [selectedDate]);
 
   // Fetch hierarchy on open
   useEffect(() => {
@@ -410,7 +420,7 @@ export function TicketPurchaseModal({
             size="icon"
             onClick={() => setQuantity(Math.max(activeProduct!.minPeople, quantity - 1))}
             disabled={isAdding || isAdded || quantity <= activeProduct!.minPeople}
-            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-9 w-9 rounded-xl active:scale-90"
+            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-11 w-11 rounded-xl active:scale-90"
             aria-label="Smanji količinu"
           >
             <Icon name="remove" className="text-[14px]" />
@@ -427,7 +437,7 @@ export function TicketPurchaseModal({
             disabled={
               isAdding || isAdded || quantity >= (activeProduct!.maxPeople ?? MAX_QUANTITY_PER_ITEM)
             }
-            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-9 w-9 rounded-xl active:scale-90"
+            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-11 w-11 rounded-xl active:scale-90"
             aria-label="Povećaj količinu"
           >
             <Icon name="add" className="text-[14px]" />
@@ -483,14 +493,18 @@ export function TicketPurchaseModal({
 
   const renderDatePicker = () => (
     <div>
-      <label className="text-muted-foreground block pb-1 text-[9px] font-black tracking-widest uppercase">
+      <label
+        htmlFor="ticket-visit-date"
+        className="text-muted-foreground block pb-1 text-[9px] font-black tracking-widest uppercase"
+      >
         Izaberite datum
       </label>
-      <input
+      <Input
+        id="ticket-visit-date"
         type="date"
         value={selectedDate}
         onChange={(e) => setSelectedDate(e.target.value)}
-        className="bg-muted/40 border-border text-foreground focus:ring-primary/30 w-full rounded-xl border px-3 py-2 text-sm font-bold focus:ring-2 focus:outline-none"
+        className="bg-muted/40 border-border h-11 rounded-xl text-sm font-bold"
       />
     </div>
   );

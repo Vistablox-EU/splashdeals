@@ -124,10 +124,10 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
         {backHref && (
           <Link
             href={backHref}
-            className="mr-3 flex h-full shrink-0 items-center justify-center border-r border-white/5 pr-3 text-slate-400 transition-colors hover:text-white"
+            className="text-muted-foreground hover:text-foreground mr-3 flex h-11 min-w-11 shrink-0 items-center justify-center border-r border-white/5 pr-3 transition-colors"
             aria-label={dict?.breadcrumb?.back_aria || "Nazad"}
           >
-            <Icon name="arrow_back" className="text-[14px]" />
+            <Icon name="arrow_back" className="text-[16px]" />
             <span className="sr-only">{dict?.breadcrumb?.back_aria || "Nazad"}</span>
           </Link>
         )}

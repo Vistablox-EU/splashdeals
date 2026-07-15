@@ -125,7 +125,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
           fill
           priority
           sizes="100vw"
-          className="object-cover brightness-75 transition-all duration-700"
+          className="object-cover brightness-75 transition-[filter] duration-700"
         />
       </div>
     );

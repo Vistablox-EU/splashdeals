@@ -308,7 +308,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 <div className="flex flex-wrap gap-3 pt-2">
                   <a
                     href="#deals"
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-[44px] items-center gap-2 rounded-full px-6 py-3 text-xs font-black tracking-wider uppercase shadow-lg transition-all"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-[44px] items-center gap-2 rounded-full px-6 py-3 text-xs font-black tracking-wider uppercase shadow-lg transition-colors"
                   >
                     <Icon name="confirmation_number" className="text-[14px]" />
                     {dict.facilities?.view_prices}

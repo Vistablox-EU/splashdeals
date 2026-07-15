@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatTime24h } from "@/lib/utils/date-time";
 
 interface HoursSubset {
@@ -18,6 +18,27 @@ interface MobileUnifiedControlPillProps {
   destLng: number;
 }
 
+function deriveTodayInfo(hours: HoursSubset[]) {
+  const todayId = new Date().getDay();
+  const today = hours?.find?.((h) => h.dayOfWeek === todayId);
+  if (!today) return { todayHours: null as HoursSubset | null, isOpen: null as boolean | null };
+
+  let openNow: boolean | null = null;
+  if (!today.isClosed && today.openTime && today.closeTime) {
+    const now = new Date();
+    const [openH, openM] = today.openTime.split(":").map(Number);
+    const [closeH, closeM] = today.closeTime.split(":").map(Number);
+    const openMinutes = openH * 60 + openM;
+    const closeMinutes = closeH * 60 + closeM;
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    openNow = nowMinutes >= openMinutes && nowMinutes <= closeMinutes;
+  } else {
+    openNow = false;
+  }
+
+  return { todayHours: today, isOpen: openNow };
+}
+
 export function MobileUnifiedControlPill({
   hours = [],
   destLat,
@@ -29,27 +50,19 @@ export function MobileUnifiedControlPill({
   });
   const geoTimeoutRef = useRef<number | null>(null);
 
-  // ⏰ Derived hours + open/closed status
-  const todayInfo = useMemo(() => {
-    const todayId = new Date().getDay();
-    const today = hours?.find?.((h) => h.dayOfWeek === todayId);
-    if (!today) return { todayHours: null, isOpen: null };
+  // Client-only time calc — avoids SSR/client timezone hydration mismatch (#418)
+  const [todayInfo, setTodayInfo] = useState<{
+    todayHours: HoursSubset | null;
+    isOpen: boolean | null;
+  }>({ todayHours: null, isOpen: null });
 
-    let openNow: boolean | null = null;
-    if (!today.isClosed && today.openTime && today.closeTime) {
-      const now = new Date();
-      const [openH, openM] = today.openTime.split(":").map(Number);
-      const [closeH, closeM] = today.closeTime.split(":").map(Number);
-      const openMinutes = openH * 60 + openM;
-      const closeMinutes = closeH * 60 + closeM;
-      const nowMinutes = now.getHours() * 60 + now.getMinutes();
-      openNow = nowMinutes >= openMinutes && nowMinutes <= closeMinutes;
-    } else {
-      openNow = false;
-    }
-
-    return { todayHours: today, isOpen: openNow };
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setTodayInfo(deriveTodayInfo(hours));
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [hours]);
+
   const { todayHours, isOpen } = todayInfo;
   const { distance, failed: geoError } = geoState;
 

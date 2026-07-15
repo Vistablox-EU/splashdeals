@@ -36,7 +36,7 @@ export async function CategoryGrid({ facilitiesLabel }: CategoryGridProps) {
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
       {categories.map((cat) => (
-        <div key={cat.category} className="transition-all duration-300">
+        <div key={cat.category} className="transition-opacity duration-300">
           <Link
             href={`/facilities/${cat.category.toLowerCase()}`}
             aria-label={`${getCategoryLabel(cat.category)} - ${cat._count.id} ${facilitiesLabel}`}

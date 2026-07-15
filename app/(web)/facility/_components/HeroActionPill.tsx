@@ -57,7 +57,7 @@ export function HeroActionPill({
       <div className="hidden flex-wrap items-center gap-2 md:flex">
         <Link
           href={`/${categorySlug}`}
-          className="border-border text-muted-foreground bg-muted/20 hover:bg-muted/30 flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black tracking-widest uppercase backdrop-blur-xl transition-all"
+          className="border-border text-muted-foreground bg-muted/20 hover:bg-muted/30 flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black tracking-widest uppercase backdrop-blur-xl transition-colors"
         >
           <Icon name="arrow_back" className="text-[12px]" /> Nazad
         </Link>

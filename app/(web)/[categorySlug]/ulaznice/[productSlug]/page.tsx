@@ -105,7 +105,7 @@ export default async function TicketProductDetailPage({ params }: PageProps) {
   const buyHref = `/${facility.slug}?product=${encodeURIComponent(product.id)}#deals`;
 
   return (
-    <div className="text-foreground mx-auto min-h-screen max-w-5xl px-6 pt-24 pb-32 sm:px-12">
+    <div className="text-foreground mx-auto min-h-screen max-w-5xl px-6 pt-24 pb-36 sm:px-12 sm:pb-32">
       <div className="mb-8 flex items-center gap-2 text-sm">
         <Link
           href={`/${facility.slug}`}
@@ -273,6 +273,19 @@ export default async function TicketProductDetailPage({ params }: PageProps) {
             </p>
           </Card>
         </div>
+      </div>
+
+      {/* Mobile sticky buy CTA above BottomNav */}
+      <div className="border-border/50 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-16 z-[999] border-t px-4 py-3 backdrop-blur-[40px] md:hidden">
+        <Button
+          asChild
+          className="h-12 w-full rounded-2xl text-sm font-bold tracking-wide uppercase"
+        >
+          <Link href={buyHref}>
+            <Icon name="shopping_bag" className="mr-2 text-[18px]" />
+            {t.buy_on_facility || "Kupi sada"}
+          </Link>
+        </Button>
       </div>
     </div>
   );

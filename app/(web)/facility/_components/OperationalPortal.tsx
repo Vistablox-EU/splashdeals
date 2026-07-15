@@ -38,7 +38,7 @@ export function OperationalPortal({ hours = [] }: OperationalPortalProps) {
             <div
               key={h.id}
               className={cn(
-                "flex items-center justify-between rounded-2xl p-2.5 transition-all",
+                "flex items-center justify-between rounded-2xl p-2.5 transition-colors",
                 h.dayOfWeek === todayIdx
                   ? "bg-primary/10 border-primary/20 text-foreground border font-black"
                   : "text-muted-foreground font-bold opacity-60",
@@ -99,7 +99,7 @@ export function CurrentOperationalStatus({ hours = [] }: CurrentOperationalStatu
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded-2xl border px-5 py-2.5 backdrop-blur-md transition-all",
+        "flex items-center gap-2 rounded-2xl border px-5 py-2.5 backdrop-blur-md transition-colors",
         status.isClosed
           ? "border-destructive/20 bg-destructive/10 text-destructive"
           : "border-primary/20 bg-primary/10 text-primary",

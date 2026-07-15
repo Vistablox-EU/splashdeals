@@ -13,6 +13,7 @@ import { useServerCart } from "@/hooks/use-server-cart";
 import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
 import { toast } from "sonner";
 import Link from "next/link";
+import { getCartCountForTier } from "@/lib/cart/cart-count-for-tier";
 
 interface TicketTier {
   id: string;
@@ -186,6 +187,7 @@ export function ShowcaseTicketGroups({
   // Shared server cart totals (badge + sticky mini-cart) — hooks before any return
   const totalItems = useServerCart((s) => s.totalItems);
   const totalPrice = useServerCart((s) => s.totalPrice);
+  const cartItems = useServerCart((s) => s.items);
 
   const getQuantity = (id: string) => quantities[id] || 0;
   const setQuantity = (id: string, q: number) => {
@@ -205,9 +207,11 @@ export function ShowcaseTicketGroups({
   }
 
   const activeGroup = groups.find((g) => g.id === activeGroupId) || groups[0];
+  // Extra bottom padding when sticky mini-cart is visible above BottomNav
+  const shellPad = totalItems > 0 ? "pb-44 md:pb-0" : "pb-24 md:pb-0";
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-8 pb-24 md:pb-0">
+    <div className={cn("mx-auto w-full max-w-6xl space-y-8", shellPad)}>
       {/* Scrollable glass pill tabs container */}
       <div className="relative mb-8 w-full">
         <div className="from-background via-background/60 pointer-events-none absolute top-0 right-[-24px] bottom-0 z-10 w-16 bg-gradient-to-l to-transparent lg:hidden" />
@@ -220,7 +224,7 @@ export function ShowcaseTicketGroups({
                 variant="ghost"
                 onClick={() => setActiveGroupId(group.id)}
                 className={cn(
-                  "relative shrink-0 rounded-full px-6 py-3 text-xs font-black tracking-widest uppercase transition-colors duration-300 select-none",
+                  "relative h-11 min-h-11 shrink-0 rounded-full px-6 text-xs font-black tracking-widest uppercase transition-colors duration-300 select-none",
                   isActive
                     ? "text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground bg-muted/50 border-border border md:border-none md:bg-transparent",
@@ -299,7 +303,13 @@ export function ShowcaseTicketGroups({
                   isHighlighted={isFeatured}
                   isExpanded={expandedTier === tier.id}
                   onToggle={() => setExpandedTier(expandedTier === tier.id ? null : tier.id)}
-                  cartCount={0}
+                  cartCount={getCartCountForTier(
+                    cartItems,
+                    tier.id,
+                    ticketProductMap,
+                    tier.title,
+                    tier.label,
+                  )}
                   ticketProductMap={ticketProductMap}
                   addedToCartLabel={dict?.ticketing?.added_to_cart as string | undefined}
                 />
