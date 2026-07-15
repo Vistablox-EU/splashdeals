@@ -17,9 +17,14 @@ import {
   removeFromCartAction,
   updateCartQuantityAction,
 } from "@/app/(server)/actions/cart";
+import {
+  claimGuestCartAction,
+  resolveGuestCartConflictAction,
+} from "@/app/(server)/actions/guest-cart-claim";
 import { trackBeginCheckout } from "@/lib/analytics/events";
 import { CartItemList } from "./CartItemList";
 import { CartSummary } from "./CartSummary";
+import { GuestCartConflictModal } from "./GuestCartConflictModal";
 
 export function CartClient({
   dict,
@@ -38,6 +43,12 @@ export function CartClient({
   const [discount, setDiscount] = React.useState<DiscountInfo | null>(null);
   const [removedItems, _setRemovedItems] = React.useState<string[]>([]);
   const [changedItems, _setChangedItems] = React.useState<string[]>([]);
+  const [conflict, setConflict] = React.useState<{
+    guestFacilityId: string;
+    userFacilityId: string;
+  } | null>(null);
+  const [resolvingConflict, setResolvingConflict] = React.useState(false);
+  const claimHandledRef = React.useRef(false);
 
   const totalBeforeDiscount = items.reduce(
     (sum: number, i: CartItem) => sum + i.price * i.quantity,
@@ -61,10 +72,38 @@ export function CartClient({
   React.useEffect(() => {
     const timer = requestAnimationFrame(async () => {
       setIsMounted(true);
+      if (!claimHandledRef.current) {
+        claimHandledRef.current = true;
+        const claim = await claimGuestCartAction();
+        if (claim.success && claim.data?.action === "conflict") {
+          setConflict({
+            guestFacilityId: claim.data.guestFacilityId,
+            userFacilityId: claim.data.userFacilityId,
+          });
+        }
+      }
       await loadCart();
     });
     return () => cancelAnimationFrame(timer);
   }, [loadCart]);
+
+  const handleResolveConflict = async (choice: "guest" | "user") => {
+    setResolvingConflict(true);
+    try {
+      const result = await resolveGuestCartConflictAction({ choice });
+      if (!result.success) {
+        toast.error(result.error || "Rešavanje konflikta nije uspelo.");
+        return;
+      }
+      setConflict(null);
+      toast.success(
+        choice === "guest" ? "Zadržana je gostujuća korpa." : "Zadržana je korpa naloga.",
+      );
+      await loadCart();
+    } finally {
+      setResolvingConflict(false);
+    }
+  };
 
   const cancellationHandledRef = React.useRef(false);
   React.useEffect(() => {
@@ -228,6 +267,14 @@ export function CartClient({
 
   return (
     <div className="mx-auto min-h-screen max-w-7xl px-6 pt-24 pb-32 sm:px-12">
+      <GuestCartConflictModal
+        open={Boolean(conflict)}
+        guestFacilityId={conflict?.guestFacilityId || ""}
+        userFacilityId={conflict?.userFacilityId || ""}
+        resolving={resolvingConflict}
+        onChooseGuest={() => handleResolveConflict("guest")}
+        onChooseUser={() => handleResolveConflict("user")}
+      />
       <div className="mb-12">
         <h1 className="mb-3 text-[10px] font-black tracking-[0.2em] uppercase opacity-50">
           {dict?.cart?.title || "Korpa"}

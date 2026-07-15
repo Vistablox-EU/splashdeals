@@ -469,7 +469,8 @@ model IssuedTicket {
 
 model CartSession {
   id                          String           @id @default(uuid())
-  userId                      String           @unique
+  userId                      String?          @unique
+  guestTokenHash              String?          @unique
   items                       Json?            /// DEPRECATED — kept for backward compat during migration. Use cartItems relation instead.
   locked                      Boolean          @default(false)
   lockedAt                    DateTime?
@@ -482,10 +483,11 @@ model CartSession {
   createdAt                   DateTime         @default(now())
   updatedAt                   DateTime         @updatedAt
 
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   cartItems    CartSessionItem[]
   transactions Transaction[]
 
+  @@index([expiresAt])
   @@schema("sales")
 }
 
@@ -518,12 +520,12 @@ model CartSessionItem {
 
 /// ⏱️ DB-backed rate limiter for cart mutations
 model CartRateLimit {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  callCount Int      @default(1)
-  resetAt   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  principalKey String   @unique
+  callCount    Int      @default(1)
+  resetAt      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@schema("sales")
 }

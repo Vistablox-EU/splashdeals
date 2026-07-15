@@ -11,7 +11,12 @@ export async function GET() {
   try {
     const oneHourAgo = new Date(Date.now() - 3600000);
     const cartSessions = await prisma.cartSession.findMany({
-      where: { updatedAt: { lte: oneHourAgo }, notified: false },
+      where: {
+        updatedAt: { lte: oneHourAgo },
+        notified: false,
+        userId: { not: null },
+        guestTokenHash: null,
+      },
       include: {
         user: { select: { email: true } },
         cartItems: true,
@@ -20,7 +25,7 @@ export async function GET() {
 
     let sentCount = 0;
     for (const session of cartSessions) {
-      if (!session.user.email) continue;
+      if (!session.user?.email) continue;
       try {
         await sendRecoveryEmail(session.user.email, session.cartItems as any[]);
         await prisma.cartSession.update({

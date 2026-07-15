@@ -32,6 +32,7 @@ const mocks = vi.hoisted(() => ({
   },
 }));
 
+vi.mock("server-only", () => ({}));
 vi.mock("@/app/(server)/lib/auth", () => ({
   auth: { api: { getSession: mocks.getSession } },
 }));
@@ -48,6 +49,11 @@ vi.mock("@/app/(server)/lib/prisma", () => ({
 
 vi.mock("next/headers", () => ({
   headers: vi.fn(async () => new Headers()),
+  cookies: vi.fn(async () => ({
+    get: vi.fn(),
+    set: vi.fn(),
+    delete: vi.fn(),
+  })),
 }));
 
 vi.mock("next/cache", () => ({
@@ -73,6 +79,7 @@ const now = new Date("2026-07-15T12:00:00.000Z");
 const cartSession = {
   id: CART_ID,
   userId: USER_ID,
+  guestTokenHash: null,
   items: null,
   locked: false,
   lockedAt: null,
@@ -167,7 +174,7 @@ describe("cart integrity actions", () => {
 
   it("awaits the database rate limiter before mutating the cart", async () => {
     mocks.cartRateLimit.findUnique.mockResolvedValue({
-      userId: USER_ID,
+      principalKey: `user:${USER_ID}`,
       callCount: 30,
       resetAt: new Date(Date.now() + 60_000),
     });

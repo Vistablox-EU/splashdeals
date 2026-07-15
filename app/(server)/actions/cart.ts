@@ -3,11 +3,15 @@
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/app/(server)/lib/prisma";
-import { auth } from "@/app/(server)/lib/auth";
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 import { MAX_QUANTITY_PER_ITEM, type CartItem, type CartItemInput } from "@/lib/types/cart";
+import {
+  applyGuestCartCookie,
+  resolveCartPrincipal,
+  type CartPrincipal,
+} from "@/app/(server)/lib/cart-principal";
+import { GUEST_CART_TTL_MS } from "@/app/(server)/lib/guest-cart-token";
 
 // ─── DB-backed Rate Limiting ─────────────────────────────────────────────────
 
@@ -40,21 +44,25 @@ async function withSerializableRetry<T>(
   throw new Error("Transakcija korpe nije uspela.");
 }
 
-async function checkRateLimit(userId: string): Promise<boolean> {
+async function checkRateLimit(principalKey: string): Promise<boolean> {
   return withSerializableRetry(async (tx) => {
     const now = new Date();
-    const entry = await tx.cartRateLimit.findUnique({ where: { userId } });
+    const entry = await tx.cartRateLimit.findUnique({ where: { principalKey } });
     if (!entry || now > entry.resetAt) {
       await tx.cartRateLimit.upsert({
-        where: { userId },
-        create: { userId, callCount: 1, resetAt: new Date(now.getTime() + RATE_LIMIT_WINDOW_MS) },
+        where: { principalKey },
+        create: {
+          principalKey,
+          callCount: 1,
+          resetAt: new Date(now.getTime() + RATE_LIMIT_WINDOW_MS),
+        },
         update: { callCount: 1, resetAt: new Date(now.getTime() + RATE_LIMIT_WINDOW_MS) },
       });
       return true;
     }
     if (entry.callCount >= RATE_LIMIT_MAX_CALLS) return false;
     await tx.cartRateLimit.update({
-      where: { userId },
+      where: { principalKey },
       data: { callCount: { increment: 1 } },
     });
     return true;
@@ -123,16 +131,58 @@ function toCartItem(item: {
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-async function getOrCreateCartSession(userId: string, db: CartDbClient = prisma) {
-  return db.cartSession.upsert({
-    where: { userId },
-    create: { userId },
-    update: {},
-  });
+async function getOrCreateCartSession(principal: CartPrincipal, db: CartDbClient = prisma) {
+  if (principal.type === "user") {
+    return db.cartSession.upsert({
+      where: { userId: principal.userId },
+      create: { userId: principal.userId },
+      update: {},
+    });
+  }
+
+  if (principal.type === "guest") {
+    if (principal.cartId) {
+      const existing = await db.cartSession.findUnique({ where: { id: principal.cartId } });
+      if (existing) {
+        return db.cartSession.update({
+          where: { id: existing.id },
+          data: { expiresAt: new Date(Date.now() + GUEST_CART_TTL_MS) },
+        });
+      }
+    }
+
+    const existingByHash = await db.cartSession.findUnique({
+      where: { guestTokenHash: principal.guestTokenHash },
+    });
+    if (existingByHash) {
+      return db.cartSession.update({
+        where: { id: existingByHash.id },
+        data: { expiresAt: new Date(Date.now() + GUEST_CART_TTL_MS) },
+      });
+    }
+
+    return db.cartSession.create({
+      data: {
+        guestTokenHash: principal.guestTokenHash,
+        expiresAt: new Date(Date.now() + GUEST_CART_TTL_MS),
+      },
+    });
+  }
+
+  throw new Error("Korpa nije dostupna.");
 }
 
-async function getCartSession(userId: string, db: CartDbClient = prisma) {
-  return db.cartSession.findUnique({ where: { userId } });
+async function getCartSession(principal: CartPrincipal, db: CartDbClient = prisma) {
+  if (principal.type === "user") {
+    return db.cartSession.findUnique({ where: { userId: principal.userId } });
+  }
+  if (principal.type === "guest") {
+    if (principal.cartId) {
+      return db.cartSession.findUnique({ where: { id: principal.cartId } });
+    }
+    return db.cartSession.findUnique({ where: { guestTokenHash: principal.guestTokenHash } });
+  }
+  return null;
 }
 
 async function incrementCartVersion(db: CartDbClient, cart: { id: string; version: number }) {
@@ -194,12 +244,13 @@ export async function addToCartAction(
   try {
     const data = addToCartSchema.parse(input);
 
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
-      return { success: false, error: "Morate biti prijavljeni da biste dodali u korpu." };
+    const principal = await resolveCartPrincipal({ createGuestIfMissing: true });
+    if (principal.type === "anonymous" || !principal.rateLimitKey) {
+      return { success: false, error: "Korpa trenutno nije dostupna." };
     }
+    await applyGuestCartCookie(principal);
 
-    if (!(await checkRateLimit(session.user.id))) {
+    if (!(await checkRateLimit(principal.rateLimitKey))) {
       return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };
     }
 
@@ -224,7 +275,7 @@ export async function addToCartAction(
         } as const;
       }
 
-      const cartSession = await getOrCreateCartSession(session.user.id, tx);
+      const cartSession = await getOrCreateCartSession(principal, tx);
       if (cartSession.locked) {
         return { success: false, error: CART_LOCKED_ERROR } as const;
       }
@@ -304,12 +355,12 @@ export async function addToCartAction(
 
 export async function getCartAction(): Promise<ActionResult<{ items: CartItem[] }>> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
+    const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+    if (principal.type === "anonymous") {
       return { success: true, data: { items: [] } };
     }
 
-    const cartSession = await getCartSession(session.user.id);
+    const cartSession = await getCartSession(principal);
     const items = cartSession ? await readCartItems(cartSession.id) : [];
 
     return { success: true, data: { items } };
@@ -324,17 +375,17 @@ export async function removeFromCartAction(
   try {
     const { itemId } = removeFromCartSchema.parse(input);
 
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
-      return { success: false, error: "Morate biti prijavljeni." };
+    const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+    if (principal.type === "anonymous" || !principal.rateLimitKey) {
+      return { success: false, error: "Korpa nije pronađena." };
     }
 
-    if (!(await checkRateLimit(session.user.id))) {
+    if (!(await checkRateLimit(principal.rateLimitKey))) {
       return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };
     }
 
     const result = await withSerializableRetry(async (tx) => {
-      const cartSession = await getCartSession(session.user.id, tx);
+      const cartSession = await getCartSession(principal, tx);
       if (!cartSession) {
         return { success: false, error: "Stavka nije pronađena u vašoj korpi." } as const;
       }
@@ -373,17 +424,17 @@ export async function updateCartQuantityAction(
   try {
     const { itemId, quantity } = updateCartQuantitySchema.parse(input);
 
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
-      return { success: false, error: "Morate biti prijavljeni." };
+    const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+    if (principal.type === "anonymous" || !principal.rateLimitKey) {
+      return { success: false, error: "Korpa nije pronađena." };
     }
 
-    if (!(await checkRateLimit(session.user.id))) {
+    if (!(await checkRateLimit(principal.rateLimitKey))) {
       return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };
     }
 
     const result = await withSerializableRetry(async (tx) => {
-      const cartSession = await getCartSession(session.user.id, tx);
+      const cartSession = await getCartSession(principal, tx);
       if (!cartSession) {
         return { success: false, error: "Stavka nije pronađena u vašoj korpi." } as const;
       }
@@ -435,17 +486,17 @@ export async function updateCartQuantityAction(
 
 export async function clearCartAction(): Promise<ActionResult<{ cleared: boolean }>> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
-      return { success: false, error: "Morate biti prijavljeni." };
+    const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+    if (principal.type === "anonymous" || !principal.rateLimitKey) {
+      return { success: true, data: { cleared: true } };
     }
 
-    if (!(await checkRateLimit(session.user.id))) {
+    if (!(await checkRateLimit(principal.rateLimitKey))) {
       return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };
     }
 
     const result = await withSerializableRetry(async (tx) => {
-      const cartSession = await getCartSession(session.user.id, tx);
+      const cartSession = await getCartSession(principal, tx);
       if (!cartSession) {
         return { success: true, data: { cleared: true } } as const;
       }
