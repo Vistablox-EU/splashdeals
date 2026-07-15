@@ -8,6 +8,7 @@ import { getActiveCities } from "@/app/(server)/lib/data/discovery";
 import { prisma } from "@/app/(server)/lib/prisma";
 import dynamic from "next/dynamic";
 import { CartLoader } from "@/components/cart/CartLoader";
+import { CartStateBootstrap } from "@/components/cart/CartStateBootstrap";
 import { GAScript } from "@/components/analytics/GoogleAnalytics";
 
 const Footer = dynamic(() => import("@/components/layout/Footer").then((mod) => mod.Footer), {
@@ -84,6 +85,7 @@ async function WebLayoutContent({
       <React.Suspense fallback={null}>{modal}</React.Suspense>
 
       <Footer />
+      <CartStateBootstrap />
       <CartLoader />
       <BottomNav />
     </div>

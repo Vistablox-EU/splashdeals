@@ -8,6 +8,8 @@ import { trackAddToCart } from "@/lib/analytics/events";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
 import { persistCartItem } from "@/lib/cart/persist-cart-item";
+import { useServerCart } from "@/hooks/use-server-cart";
+import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
 
 interface AddToCartButtonProps {
   ticket: {
@@ -32,6 +34,7 @@ interface AddToCartButtonProps {
 
 export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
   const openCart = useUIState((state) => state.openCart);
+  const refresh = useServerCart((state) => state.refresh);
   const [added, setAdded] = useState(false);
   const [dict, setDict] = useState<Dict | null>(null);
 
@@ -58,14 +61,8 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
       quantity: quantityToAdd,
     });
 
-    // 🔄 Broadcast cart update to other tabs
-    try {
-      const bc = new BroadcastChannel("splash-cart-sync");
-      bc.postMessage({ type: "CART_UPDATED" });
-      bc.close();
-    } catch {
-      /* ignore */
-    }
+    await refresh();
+    broadcastCartUpdated();
 
     setAdded(true);
     openCart();

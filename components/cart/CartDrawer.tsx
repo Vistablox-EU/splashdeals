@@ -4,23 +4,22 @@ import { Icon } from "@/components/ui/Icon";
 import * as React from "react";
 import { Drawer } from "vaul";
 import { useUIState } from "@/hooks/use-ui-state";
+import { useServerCart } from "@/hooks/use-server-cart";
 import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
-import type { CartItem } from "@/lib/types/cart";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
-import {
-  getCartAction,
-  removeFromCartAction,
-  updateCartQuantityAction,
-} from "@/app/(server)/actions/cart";
+import { removeFromCartAction, updateCartQuantityAction } from "@/app/(server)/actions/cart";
+import { toast } from "sonner";
 
 export const CartDrawer = () => {
   const isCartOpen = useUIState((s) => s.isCartOpen);
   const closeCart = useUIState((s) => s.closeCart);
-  const [items, setItems] = React.useState<CartItem[]>([]);
-  const [totalPrice, setTotalPrice] = React.useState(0);
+  const items = useServerCart((s) => s.items);
+  const totalPrice = useServerCart((s) => s.totalPrice);
+  const refresh = useServerCart((s) => s.refresh);
+  const notifyUpdated = useServerCart((s) => s.notifyUpdated);
   const [isMounted, setIsMounted] = React.useState(false);
   const [dict, setDict] = React.useState<Dict | null>(null);
 
@@ -36,60 +35,27 @@ export const CartDrawer = () => {
     return () => cancelAnimationFrame(timer);
   }, []);
 
-  // Load cart data on mount
-  React.useEffect(() => {
-    let cancelled = false;
-    getCartAction().then((r) => {
-      if (cancelled || !r.success) return;
-      const serverItems = (r.data?.items || []) as CartItem[];
-      setItems(serverItems);
-      setTotalPrice(serverItems.reduce((s, i) => s + i.price * i.quantity, 0));
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   React.useEffect(() => {
     if (!isCartOpen) return;
-    let cancelled = false;
-    getCartAction().then((r) => {
-      if (cancelled || !r.success) return;
-      const serverItems = (r.data?.items || []) as CartItem[];
-      setItems(serverItems);
-      setTotalPrice(serverItems.reduce((s, i) => s + i.price * i.quantity, 0));
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [isCartOpen]);
+    void refresh();
+  }, [isCartOpen, refresh]);
 
   if (!isMounted) return null;
 
   const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      setItems((prev) => prev.filter((i) => i.id !== itemId));
-      await removeFromCartAction({ itemId }).catch(console.error);
-    } else {
-      setItems((prev) => prev.map((i) => (i.id === itemId ? { ...i, quantity: newQuantity } : i)));
-      await updateCartQuantityAction({ itemId, quantity: newQuantity }).catch(console.error);
+    const result =
+      newQuantity <= 0
+        ? await removeFromCartAction({ itemId })
+        : await updateCartQuantityAction({ itemId, quantity: newQuantity });
+
+    if (!result.success) {
+      toast.error(result.error || "Izmena korpe nije uspela.");
+      await refresh();
+      return;
     }
-    // Broadcast cart change to other tabs
-    try {
-      const channel = new BroadcastChannel("splash-cart-sync");
-      channel.postMessage({ type: "CART_UPDATED" });
-      channel.close();
-    } catch {
-      /* ignore */
-    }
-    // Recalculate total
-    const result = await getCartAction();
-    if (result.success && result.data) {
-      const serverItems = (result.data.items || []) as CartItem[];
-      setTotalPrice(
-        serverItems.reduce((sum: number, i: CartItem) => sum + i.price * i.quantity, 0),
-      );
-    }
+
+    await refresh();
+    notifyUpdated();
   };
 
   return (
@@ -97,7 +63,6 @@ export const CartDrawer = () => {
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm" />
         <Drawer.Content className="bg-navy-deep fixed right-0 bottom-0 z-[2001] flex h-full w-full max-w-md flex-col rounded-l-[3rem] border-l border-white/5 shadow-2xl outline-none">
-          {/* Header */}
           <div className="flex items-center justify-between border-b border-white/5 p-8">
             <div className="flex items-center gap-4">
               <div className="rounded-2xl bg-cyan-400/10 p-3">
@@ -118,114 +83,68 @@ export const CartDrawer = () => {
                     )}
                 </h2>
                 <p className="mt-1 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
-                  {(dict?.cart?.items_count || "{count} stavki izabrano").replace(
-                    "{count}",
-                    String(items.length),
-                  )}
+                  {items.length} {dict?.cart?.items || "stavki"}
                 </p>
               </div>
             </div>
             <button
               onClick={closeCart}
-              className="rounded-full bg-white/5 p-3 transition-colors hover:bg-white/10"
+              className="rounded-2xl bg-white/5 p-3 text-slate-400 transition-all hover:bg-white/10 hover:text-white"
             >
-              <Icon name="close" className="text-[20px] text-white/50" />
+              <Icon name="close" className="text-[20px]" />
             </button>
           </div>
 
-          {/* Items List */}
-          <div className="scrollbar-hide flex-1 space-y-6 overflow-y-auto p-8">
+          <div className="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-8">
             {items.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/5">
-                  <Icon name="shopping_bag" className="text-[32px] text-white/20" />
-                </div>
-                <div className="space-y-1">
-                  <p className="font-black text-white uppercase italic">
-                    {dict?.cart?.empty_title || "Korpa je prazna"}
-                  </p>
-                  <p className="text-xs font-bold tracking-widest text-slate-500 uppercase">
-                    {dict?.cart?.empty_subtitle || "Započnite putovanje"}
-                  </p>
-                </div>
+              <div className="flex h-full flex-col items-center justify-center space-y-4 text-center opacity-40">
+                <Icon name="shopping_cart" className="text-[48px]" />
+                <p className="text-sm font-bold tracking-widest uppercase">
+                  {dict?.cart?.empty || "Korpa je prazna"}
+                </p>
               </div>
             ) : (
               items.map((item) => (
                 <div
                   key={item.id}
-                  className="group glass-frost relative rounded-[2rem] border border-white/5 p-5 transition-all hover:border-white/10"
+                  className="group relative flex gap-4 rounded-[2rem] border border-white/5 bg-white/5 p-4 transition-all hover:bg-white/[0.07]"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="min-w-0 flex-1">
-                      <p className="mb-1 text-[10px] font-black tracking-widest text-cyan-500/80 uppercase">
-                        {item.category === "Waterpark"
-                          ? dict?.categories?.waterpark_label || "Akva Park"
-                          : item.category === "Pool"
-                            ? dict?.categories?.pool || "Bazen"
-                            : item.category === "Spa"
-                              ? dict?.categories?.spa || "Spa Centar"
-                              : item.category || dict?.categories?.waterpark_label || "Akva Park"}
-                      </p>
-                      <h3 className="mb-1 truncate text-sm leading-none font-black text-white uppercase italic">
+                  <div className="flex flex-1 flex-col justify-between py-1">
+                    <div>
+                      <h4 className="line-clamp-2 text-sm leading-tight font-black tracking-tight text-white uppercase italic">
                         {item.title}
-                      </h3>
-                      <p className="truncate text-[10px] font-bold tracking-tighter text-slate-500 uppercase opacity-60">
+                      </h4>
+                      <p className="mt-1 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
                         {item.facilityName}
                       </p>
-
-                      <div className="mt-4 flex items-center gap-4">
-                        <div className="bg-navy-deep/50 flex items-center rounded-full border border-white/5 p-1">
-                          <button
-                            disabled={item.quantity <= (item.minPeople || 1)}
-                            onClick={() => {
-                              if (typeof navigator !== "undefined" && "vibrate" in navigator)
-                                navigator.vibrate(10);
-                              handleUpdateQuantity(item.id, item.quantity - 1);
-                            }}
-                            className="p-1.5 text-white/40 transition-colors hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-30"
-                          >
-                            <Icon name="remove" className="text-[12px]" />
-                          </button>
-                          <span className="w-8 text-center text-xs font-black text-white">
-                            {item.quantity}
-                          </span>
-                          <button
-                            disabled={
-                              item.quantity >=
-                              Math.min(
-                                item.maxPeople ?? MAX_QUANTITY_PER_ITEM,
-                                MAX_QUANTITY_PER_ITEM,
-                              )
-                            }
-                            onClick={() => {
-                              if (typeof navigator !== "undefined" && "vibrate" in navigator)
-                                navigator.vibrate(10);
-                              handleUpdateQuantity(item.id, item.quantity + 1);
-                            }}
-                            className="p-1.5 text-white/40 transition-colors hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-30"
-                          >
-                            <Icon name="add" className="text-[12px]" />
-                          </button>
-                        </div>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3 rounded-xl bg-black/40 p-1">
                         <button
-                          onClick={() => {
-                            if (typeof navigator !== "undefined" && "vibrate" in navigator)
-                              navigator.vibrate([20, 50, 20]);
-                            handleUpdateQuantity(item.id, 0);
-                          }}
-                          className="text-[10px] font-black tracking-widest text-red-400/50 uppercase transition-colors hover:text-red-400"
+                          disabled={item.quantity <= (item.minPeople || 1)}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                          className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-white transition-all hover:bg-white/10 disabled:opacity-30"
                         >
-                          {dict?.cart?.remove ?? "Ukloni"}
+                          <Icon name="remove" className="text-[16px]" />
+                        </button>
+                        <span className="w-4 text-center text-xs font-black text-white">
+                          {item.quantity}
+                        </span>
+                        <button
+                          disabled={
+                            item.quantity >=
+                            Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
+                          }
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                          className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-white transition-all hover:bg-white/10 disabled:opacity-30"
+                        >
+                          <Icon name="add" className="text-[16px]" />
                         </button>
                       </div>
-                    </div>
-
-                    <div className="text-right">
-                      <div className="text-lg font-black tracking-tighter text-white italic">
-                        {formatPrice(item.price * item.quantity)}
-                        <span className="ml-1 text-[10px] uppercase not-italic opacity-50">
-                          RSD
-                        </span>
+                      <div className="text-right">
+                        <p className="text-sm font-black text-cyan-400">
+                          {formatPrice(item.price * item.quantity)} RSD
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -234,35 +153,22 @@ export const CartDrawer = () => {
             )}
           </div>
 
-          {/* Footer Checkout */}
           {items.length > 0 && (
-            <div className="bg-navy-deep/80 space-y-6 border-t border-white/5 p-8 backdrop-blur-xl">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black tracking-[0.2em] text-slate-500 uppercase">
-                  {dict?.cart?.total_label || "Ukupno za uplatu"}
+            <div className="space-y-6 border-t border-white/5 bg-black/20 p-8">
+              <div className="flex items-end justify-between">
+                <span className="text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase">
+                  {dict?.cart?.total || "Ukupno"}
                 </span>
-                <div className="text-3xl font-black tracking-tighter text-white italic">
-                  {formatPrice(totalPrice)}
-                  <span className="ml-1 text-xs uppercase not-italic opacity-50">RSD</span>
-                </div>
+                <span className="text-3xl font-black tracking-tighter text-white italic">
+                  {formatPrice(totalPrice)}{" "}
+                  <span className="text-splash text-sm not-italic">RSD</span>
+                </span>
               </div>
-
               <Link href="/cart" onClick={closeCart}>
-                <LiquidButton className="group h-16 w-full text-lg">
-                  {dict?.cart?.checkout_button || "Nastavi na Plaćanje"}
-                  <Icon
-                    name="arrow_forward"
-                    className="ml-2 text-[20px] transition-transform group-hover:translate-x-1"
-                  />
+                <LiquidButton className="h-16 w-full text-sm font-black tracking-widest uppercase">
+                  {dict?.cart?.checkout || "Nastavi na plaćanje"}
                 </LiquidButton>
               </Link>
-
-              <div className="text-center">
-                <p className="text-[8px] font-black tracking-[0.3em] text-slate-600 uppercase">
-                  {dict?.cart?.security_notice ||
-                    "Bezbedna transakcija šifrovana sa 256-bitnom enkripcijom"}
-                </p>
-              </div>
             </div>
           )}
         </Drawer.Content>

@@ -12,16 +12,13 @@ import {
   cancelCheckoutSessionAction,
 } from "@/app/(server)/actions/checkout";
 import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
-import {
-  getCartAction,
-  removeFromCartAction,
-  updateCartQuantityAction,
-} from "@/app/(server)/actions/cart";
+import { removeFromCartAction, updateCartQuantityAction } from "@/app/(server)/actions/cart";
 import {
   claimGuestCartAction,
   resolveGuestCartConflictAction,
 } from "@/app/(server)/actions/guest-cart-claim";
 import { trackBeginCheckout } from "@/lib/analytics/events";
+import { useServerCart } from "@/hooks/use-server-cart";
 import { CartItemList } from "./CartItemList";
 import { CartSummary } from "./CartSummary";
 import { GuestCartConflictModal } from "./GuestCartConflictModal";
@@ -33,7 +30,9 @@ export function CartClient({
   dict: Record<string, any>;
   checkoutCancelled?: boolean;
 }) {
-  const [items, setItems] = React.useState<CartItem[]>([]);
+  const items = useServerCart((s) => s.items);
+  const refresh = useServerCart((s) => s.refresh);
+  const notifyUpdated = useServerCart((s) => s.notifyUpdated);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const [showIdentityDialog, setShowIdentityDialog] = React.useState(false);
@@ -63,11 +62,8 @@ export function CartClient({
 
   // Load cart from server on mount
   const loadCart = React.useCallback(async () => {
-    const result = await getCartAction();
-    if (result.success && result.data) {
-      setItems((result.data.items || []) as CartItem[]);
-    }
-  }, []);
+    await refresh();
+  }, [refresh]);
 
   React.useEffect(() => {
     const timer = requestAnimationFrame(async () => {
@@ -131,27 +127,11 @@ export function CartClient({
     };
   }, [checkoutCancelled, loadCart]);
 
-  // 🔄 Tab sync — re-fetch cart when another tab updates it
-  React.useEffect(() => {
-    const channel = new BroadcastChannel("splash-cart-sync");
-    channel.onmessage = (event) => {
-      if (event.data?.type === "CART_UPDATED") {
-        loadCart().catch(console.error);
-      }
-    };
-    return () => channel.close();
-  }, [loadCart]);
-
+  // 🔄 Tab sync is handled by shared useServerCart BroadcastChannel subscription
   // Broadcast cart changes to other tabs
   const broadcastCartUpdate = React.useCallback(() => {
-    try {
-      const channel = new BroadcastChannel("splash-cart-sync");
-      channel.postMessage({ type: "CART_UPDATED" });
-      channel.close();
-    } catch {
-      // BroadcastChannel may not be available
-    }
-  }, []);
+    notifyUpdated();
+  }, [notifyUpdated]);
 
   if (!isMounted) return null;
 
@@ -167,13 +147,7 @@ export function CartClient({
       return;
     }
 
-    setItems((prev) =>
-      newQuantity <= 0
-        ? prev.filter((item) => item.id !== itemId)
-        : prev.map((item) =>
-            item.id === itemId ? { ...item, quantity: newQuantity, updatedAt: Date.now() } : item,
-          ),
-    );
+    await loadCart();
     broadcastCartUpdate();
   };
 
@@ -185,7 +159,7 @@ export function CartClient({
       return;
     }
 
-    setItems((prev) => prev.filter((item) => item.id !== itemId));
+    await loadCart();
     broadcastCartUpdate();
   };
 

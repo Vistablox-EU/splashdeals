@@ -27,6 +27,10 @@
     {
       "path": "/api/cron/cart-recovery",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/prune-guest-carts",
+      "schedule": "0 4 * * *"
     }
   ],
   "regions": ["arn1"]

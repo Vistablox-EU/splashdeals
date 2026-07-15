@@ -3,9 +3,8 @@
 import React from "react";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useHeaderScroll, DesktopTopNav } from "./_header";
-import { getCartAction } from "@/app/(server)/actions/cart";
+import { useServerCart } from "@/hooks/use-server-cart";
 import type { Dict } from "@/lib/types";
-import type { CartItem } from "@/lib/types/cart";
 
 interface HeaderProps {
   dict: Dict;
@@ -14,22 +13,10 @@ interface HeaderProps {
 
 export const Header = ({ dict: _dict, cities }: HeaderProps) => {
   const [isHovered, setIsHovered] = React.useState(false);
-  const [totalItems, setTotalItems] = React.useState(0);
+  const totalItems = useServerCart((state) => state.totalItems);
   const openCart = useUIState((state) => state.openCart);
 
   const { scrolled, isOnline, isTabActive, isReducedMotion, mounted } = useHeaderScroll();
-
-  // 🛒 Fetch cart item count from server on mount
-  React.useEffect(() => {
-    getCartAction()
-      .then((result) => {
-        if (result.success && result.data) {
-          const items = (result.data.items || []) as CartItem[];
-          setTotalItems(items.reduce((sum: number, i: CartItem) => sum + (i.quantity || 0), 0));
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   return (
     <>
@@ -53,7 +40,6 @@ export const Header = ({ dict: _dict, cities }: HeaderProps) => {
           dict={_dict}
         />
 
-        {/* ⚡ Online status dot for tab bar */}
         {isOnline === false && <div className="hidden" role="status" aria-label="offline" />}
       </header>
     </>

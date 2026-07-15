@@ -4,8 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
-import { getCartAction } from "@/app/(server)/actions/cart";
-import type { CartItem } from "@/lib/types/cart";
+import { useServerCart } from "@/hooks/use-server-cart";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
 
@@ -16,7 +15,7 @@ const SCROLL_THRESHOLD = 10;
  */
 export function BottomNav() {
   const pathname = usePathname();
-  const [totalItems, setTotalItems] = useState(0);
+  const totalItems = useServerCart((state) => state.totalItems);
   const [isVisible, setIsVisible] = useState(true);
   const [dict, setDict] = useState<Dict | null>(null);
   const lastScrollY = useRef(0);
@@ -50,17 +49,6 @@ export function BottomNav() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-
-    // 🛒 Fetch cart badge count from server
-    getCartAction()
-      .then((result) => {
-        if (result.success && result.data) {
-          const items = (result.data.items || []) as CartItem[];
-          setTotalItems(items.reduce((sum: number, i: CartItem) => sum + (i.quantity || 0), 0));
-        }
-      })
-      .catch(() => {});
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
