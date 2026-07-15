@@ -1,7 +1,7 @@
 "use client";
 // react-hook-form + zod v4 resolver type chain mismatch — runtime is correct
 
-import { useCallback, useTransition, useState, useEffect } from "react";
+import { useCallback, useTransition, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,21 +40,11 @@ import {
 } from "@/app/(server)/actions/cms/content";
 import { generateContentAction } from "@/app/(server)/actions/ai-content";
 import { useCmsAutosave, AutosaveData } from "@/hooks/use-cms-autosave";
-
-function countImagesWithoutAlt(html: string): number {
-  if (!html) return 0;
-  const regex = /<img\s[^>]*>/gi;
-  let match: RegExpExecArray | null;
-  let count = 0;
-  while ((match = regex.exec(html)) !== null) {
-    const tag = match[0];
-    // Check for an alt attribute (handle both "alt=" and "alt =")
-    if (!/alt\s*=\s*["']/i.test(tag)) {
-      count++;
-    }
-  }
-  return count;
-}
+import {
+  countImagesWithoutAlt,
+  toDatetimeLocal,
+  formatScheduledDate,
+} from "../../../_lib/cms-editor-utils";
 
 const postFormSchema = z.object({
   title: z.string().min(1, "Naslov je obavezan"),
@@ -92,34 +82,11 @@ interface PostEditorProps {
   dict?: Record<string, unknown>;
 }
 
-function toDatetimeLocal(iso: Date | string): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function formatScheduledDate(dt: string): string {
-  try {
-    const d = new Date(dt);
-    if (isNaN(d.getTime())) return dt;
-    const pad = (n: number) => n.toString().padStart(2, "0");
-    const day = pad(d.getDate());
-    const month = pad(d.getMonth() + 1);
-    const year = d.getFullYear();
-    const hours = pad(d.getHours());
-    const minutes = pad(d.getMinutes());
-    return `${day}.${month}.${year}. u ${hours}:${minutes}`;
-  } catch {
-    return dt;
-  }
-}
-
 export function PostEditor({ post, initialTagIds, categories, tags, dict }: PostEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!post;
+  const clearDraftRef = useRef<() => void>(() => {});
 
   const form = useForm({
     resolver: zodResolver(postFormSchema),
@@ -223,7 +190,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
           : await createBlogPostAction(data as never, cleansedTags);
 
         if (result.success) {
-          clearDraft();
+          clearDraftRef.current();
           toast.success(isEditing ? "Objava ažurirana" : "Objava kreirana");
           router.push("/admin/cms/posts");
           router.refresh();
@@ -266,6 +233,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     },
     isDirty,
   );
+  clearDraftRef.current = clearDraft;
 
   const [showRestoreBanner, setShowRestoreBanner] = useState(false);
   const [pendingAutosave, setPendingAutosave] = useState<AutosaveData | null>(null);

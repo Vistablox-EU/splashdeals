@@ -178,7 +178,7 @@ export function CampaignsListClient({
                       </code>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-bold text-green-600">
+                      <span className="text-primary text-sm font-bold">
                         -{campaign.discountPercent}%
                       </span>
                     </TableCell>
@@ -197,7 +197,7 @@ export function CampaignsListClient({
                       {campaign.isActive ? (
                         <Badge
                           variant="outline"
-                          className="border-green-300 bg-green-50 text-green-700 dark:border-green-700 dark:bg-green-950 dark:text-green-400"
+                          className="border-primary/30 bg-primary/5 text-primary dark:border-primary/40 dark:bg-primary/10 dark:text-primary"
                         >
                           Aktivna
                         </Badge>

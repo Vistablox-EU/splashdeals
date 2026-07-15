@@ -132,7 +132,7 @@ export function NotFoundLogsClient({ logs }: { logs: NotFoundLog[] }) {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-        <Icon name="check_circle" className="size-12 text-green-500" />
+        <Icon name="check_circle" className="text-primary size-12" />
         <p className="text-muted-foreground text-sm">Nema evidentiranih 404 grešaka.</p>
       </div>
     );

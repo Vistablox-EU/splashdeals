@@ -59,14 +59,14 @@ function getReadabilityLabel(avgSentenceLen: number): {
   if (avgSentenceLen < 10)
     return {
       label: "Vrlo lako za čitanje",
-      color: "text-green-600",
-      bg: "bg-green-50 border-green-200",
+      color: "text-primary",
+      bg: "bg-primary/5 border-green-200",
     };
   if (avgSentenceLen < 15)
     return {
       label: "Lako za čitanje",
-      color: "text-green-600",
-      bg: "bg-green-50 border-green-200",
+      color: "text-primary",
+      bg: "bg-primary/5 border-green-200",
     };
   if (avgSentenceLen < 20)
     return {

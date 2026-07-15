@@ -65,7 +65,7 @@ function PreviewMenuItem({
     <a
       href={item.href || "#"}
       className={cn(
-        "hover:bg-accent hover:text-accent-foreground group flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-all outline-none",
+        "hover:bg-accent hover:text-accent-foreground group focus-visible:ring-ring/50 flex flex-row items-start gap-2 rounded-sm p-2 text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none",
         isFeatured && "bg-accent/30",
         isCta && "text-primary font-medium",
       )}
@@ -114,7 +114,7 @@ function PreviewDotLink({
   return (
     <a
       href={item.href || "#"}
-      className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-all outline-none"
+      className="hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring/50 flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none"
     >
       <span className="bg-muted-foreground/40 size-1.5 shrink-0 rounded-full" />
       <span className="truncate">{item.label}</span>

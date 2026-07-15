@@ -6,6 +6,17 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { approveReviewAction, deleteReviewAction } from "@/app/(server)/actions/reviews";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Review {
   id: string;
@@ -65,9 +76,28 @@ export function ReviewsListClient({ reviews }: { reviews: Review[] }) {
                 Odobri
               </Button>
             )}
-            <Button size="sm" variant="destructive" onClick={() => handleDelete(r.id)}>
-              Obriši
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button size="sm" variant="destructive">
+                  Obriši
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Obriši recenziju?</AlertDialogTitle>
+                  <AlertDialogDescription>Ova radnja je nepovratna.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Odustani</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={() => handleDelete(r.id)}
+                  >
+                    Obriši
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       ))}

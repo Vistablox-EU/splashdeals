@@ -29,6 +29,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   deletePageAction,
   markAsReviewedAction,
   approvePostAction,
@@ -86,7 +97,6 @@ export function PagesListClient({
 
   const handleDelete = useCallback(
     async (id: string) => {
-      if (!confirm("Da li ste sigurni da želite da obrišete ovu stranu?")) return;
       const result = await deletePageAction(id);
       if (result.success) {
         toast.success("Strana obrisana");
@@ -200,7 +210,7 @@ export function PagesListClient({
             </Badge>
           )}
           {row.original.status === "REVIEW" && (
-            <Badge variant="secondary" className="bg-amber-500/10 text-xs text-amber-600">
+            <Badge variant="secondary" className="bg-warning/10 text-warning text-xs">
               Čeka pregled
             </Badge>
           )}
@@ -284,15 +294,35 @@ export function PagesListClient({
               >
                 <Icon name="edit" className="size-4" />
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-destructive hover:text-destructive h-8 w-8 p-0"
-                aria-label={`Obriši stranu ${row.original.title}`}
-                onClick={() => handleDelete(row.original.id)}
-              >
-                <Icon name="delete" className="size-4" />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                    aria-label={`Obriši stranu ${row.original.title}`}
+                  >
+                    <Icon name="delete" className="size-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Obriši stranu?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Ova radnja je nepovratna. Strana će biti trajno obrisana.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Odustani</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      onClick={() => handleDelete(row.original.id)}
+                    >
+                      Obriši
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </>
           )}
         </div>

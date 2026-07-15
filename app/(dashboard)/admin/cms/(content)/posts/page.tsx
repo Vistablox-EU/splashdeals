@@ -1,6 +1,6 @@
 import { requireAdmin } from "@/app/(server)/lib/auth-guards";
 import { prisma } from "@/app/(server)/lib/prisma";
-import { PostsListClient } from "./_components/posts-list-client";
+import { PostsListClient, type PostRow } from "./_components/posts-list-client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
@@ -94,7 +94,7 @@ export default async function PostsPage({
       </div>
 
       <PostsListClient
-        posts={serialized as unknown as Array<Record<string, unknown>>}
+        posts={serialized as PostRow[]}
         isStaleFilter={isStaleFilter}
         isReviewFilter={isReviewFilter}
       />

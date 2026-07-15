@@ -53,7 +53,7 @@ function SortableMenuTab({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all select-none",
+        "group flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold tracking-wider uppercase transition-colors select-none",
         isSelected && "bg-accent text-accent-foreground shadow-sm",
         !isSelected && "text-muted-foreground hover:text-foreground hover:bg-accent/50",
         isDragging && "opacity-50 shadow-lg",

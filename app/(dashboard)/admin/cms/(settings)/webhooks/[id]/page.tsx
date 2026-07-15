@@ -187,7 +187,7 @@ export default function EditWebhookPage() {
             {webhook.isActive ? (
               <Badge
                 variant="outline"
-                className="border-green-300 bg-green-50 text-green-700 dark:border-green-700 dark:bg-green-950 dark:text-green-400"
+                className="border-primary/30 bg-primary/5 text-primary dark:border-primary/40 dark:bg-primary/10 dark:text-primary"
               >
                 Aktivan
               </Badge>
@@ -272,7 +272,7 @@ export default function EditWebhookPage() {
                       variant="outline"
                       className={
                         log.status === "success"
-                          ? "border-green-300 bg-green-50 text-green-700 dark:border-green-700 dark:bg-green-950 dark:text-green-400"
+                          ? "border-primary/30 bg-primary/5 text-primary dark:border-primary/40 dark:bg-primary/10 dark:text-primary"
                           : "border-red-300 bg-red-50 text-red-700 dark:border-red-700 dark:bg-red-950 dark:text-red-400"
                       }
                     >

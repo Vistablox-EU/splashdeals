@@ -1,7 +1,7 @@
 "use client";
 // @ts-nocheck - react-hook-form + zod v4 resolver type chain mismatch, runtime is correct
 
-import { useCallback, useTransition, useState, useEffect } from "react";
+import { useCallback, useTransition, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,20 +34,7 @@ import {
   rejectPostAction,
 } from "@/app/(server)/actions/cms/content";
 import { useCmsAutosave, AutosaveData } from "@/hooks/use-cms-autosave";
-
-function countImagesWithoutAlt(html: string): number {
-  if (!html) return 0;
-  const regex = /<img\s[^>]*>/gi;
-  let match: RegExpExecArray | null;
-  let count = 0;
-  while ((match = regex.exec(html)) !== null) {
-    const tag = match[0];
-    if (!/alt\s*=\s*["']/i.test(tag)) {
-      count++;
-    }
-  }
-  return count;
-}
+import { countImagesWithoutAlt } from "../../../_lib/cms-editor-utils";
 
 const pageFormSchema = z.object({
   title: z.string().min(1, "Naslov je obavezan"),
@@ -81,6 +68,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!page;
+  const clearDraftRef = useRef<() => void>(() => {});
 
   const form = useForm({
     resolver: zodResolver(pageFormSchema),
@@ -150,7 +138,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
           : await createPageAction(data as never);
 
         if (result.success) {
-          clearDraft();
+          clearDraftRef.current();
           toast.success(isEditing ? "Strana ažurirana" : "Strana kreirana");
           router.push("/admin/cms/pages");
           router.refresh();
@@ -187,6 +175,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
     },
     isDirty,
   );
+  clearDraftRef.current = clearDraft;
 
   const [showRestoreBanner, setShowRestoreBanner] = useState(false);
   const [pendingAutosave, setPendingAutosave] = useState<AutosaveData | null>(null);

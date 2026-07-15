@@ -36,18 +36,23 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   deleteBlogPostAction,
   markAsReviewedAction,
   approvePostAction,
   rejectPostAction,
 } from "@/app/(server)/actions/cms/content";
-
-const statusLabels: Record<string, string> = {
-  DRAFT: "Nacrt",
-  PUBLISHED: "Objavljeno",
-  ARCHIVED: "Arhivirano",
-  REVIEW: "Na pregledu",
-};
+import { CMS_STATUS_LABELS } from "../../../_lib/cms-editor-utils";
 
 const statusBadgeVariant = (status: string): "default" | "secondary" | "outline" => {
   switch (status) {
@@ -78,12 +83,14 @@ interface PostRow {
   _count?: { tags: number };
 }
 
+export type { PostRow };
+
 export function PostsListClient({
   posts,
   isStaleFilter,
   isReviewFilter = false,
 }: {
-  posts: Array<Record<string, unknown>>;
+  posts: PostRow[];
   isStaleFilter: boolean;
   isReviewFilter: boolean;
 }) {
@@ -94,7 +101,6 @@ export function PostsListClient({
 
   const handleDelete = useCallback(
     async (id: string) => {
-      if (!confirm("Da li ste sigurni da želite da obrišete ovu objavu?")) return;
       const result = await deleteBlogPostAction(id);
       if (result.success) {
         toast.success("Objava obrisana");
@@ -151,7 +157,7 @@ export function PostsListClient({
   );
 
   const toggleSelectAll = useCallback(() => {
-    const allIds = (posts as Array<Record<string, unknown>>).map((p) => p.id as string);
+    const allIds = posts.map((p) => p.id);
     if (selectedIds.size === allIds.length && allIds.length > 0) {
       setSelectedIds(new Set());
     } else {
@@ -207,7 +213,7 @@ export function PostsListClient({
             </Badge>
           )}
           {row.original.status === "REVIEW" && (
-            <Badge variant="secondary" className="bg-amber-500/10 text-xs text-amber-600">
+            <Badge variant="secondary" className="bg-warning/10 text-warning text-xs">
               Čeka pregled
             </Badge>
           )}
@@ -237,7 +243,7 @@ export function PostsListClient({
       header: "Status",
       cell: ({ row }) => (
         <Badge variant={statusBadgeVariant(row.original.status)}>
-          {statusLabels[row.original.status] || row.original.status}
+          {CMS_STATUS_LABELS[row.original.status] || row.original.status}
         </Badge>
       ),
     },
@@ -303,15 +309,35 @@ export function PostsListClient({
               >
                 <Icon name="edit" className="size-4" />
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-destructive hover:text-destructive h-8 w-8 p-0"
-                onClick={() => handleDelete(row.original.id)}
-                aria-label="Obriši objavu"
-              >
-                <Icon name="delete" className="size-4" />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                    aria-label="Obriši objavu"
+                  >
+                    <Icon name="delete" className="size-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Obriši objavu?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Ova radnja je nepovratna. Objava će biti trajno obrisana.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Odustani</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      onClick={() => handleDelete(row.original.id)}
+                    >
+                      Obriši
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </>
           )}
         </div>
@@ -320,7 +346,7 @@ export function PostsListClient({
   ];
 
   const table = useReactTable({
-    data: posts as unknown as PostRow[],
+    data: posts,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -357,7 +383,7 @@ export function PostsListClient({
             }
           }}
         >
-          <SelectTrigger aria-label="Filter by status" className="w-[160px]">
+          <SelectTrigger aria-label="Filtriraj po statusu" className="w-[160px]">
             <SelectValue placeholder="Svi statusi" />
           </SelectTrigger>
           <SelectContent>

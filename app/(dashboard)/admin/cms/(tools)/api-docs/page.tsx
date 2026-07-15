@@ -40,7 +40,7 @@ export default function CmsApiDocsPage() {
         <h2 className="mb-3 text-lg font-semibold">Lista blog objava</h2>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+            <span className="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs font-semibold">
               GET
             </span>
             <code className="text-sm">/api/cms/posts</code>
@@ -111,7 +111,7 @@ export default function CmsApiDocsPage() {
         <h2 className="mb-3 text-lg font-semibold">Pojedinačna blog objava</h2>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+            <span className="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs font-semibold">
               GET
             </span>
             <code className="text-sm">/api/cms/posts/{"{slug}"}</code>
@@ -159,7 +159,7 @@ export default function CmsApiDocsPage() {
         <h2 className="mb-3 text-lg font-semibold">Lista strana</h2>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+            <span className="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs font-semibold">
               GET
             </span>
             <code className="text-sm">/api/cms/pages</code>
@@ -180,7 +180,7 @@ export default function CmsApiDocsPage() {
         <h2 className="mb-3 text-lg font-semibold">Pojedinačna strana</h2>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+            <span className="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs font-semibold">
               GET
             </span>
             <code className="text-sm">/api/cms/pages/{"{slug}"}</code>
@@ -201,7 +201,7 @@ export default function CmsApiDocsPage() {
         <h2 className="mb-3 text-lg font-semibold">Lista kategorija</h2>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+            <span className="bg-primary/10 text-primary rounded px-2 py-0.5 text-xs font-semibold">
               GET
             </span>
             <code className="text-sm">/api/cms/categories</code>
