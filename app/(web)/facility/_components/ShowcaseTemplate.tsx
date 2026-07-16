@@ -63,6 +63,7 @@ import {
 } from "../_data";
 import { getWeather } from "@/app/(server)/lib/weather";
 import { dbValueToSlug } from "@/lib/routing/categories";
+import { getFavoritedFacilityIds } from "@/app/(server)/actions/favorites";
 
 /**
  * Infer the FAQ category from question text when the data source doesn't
@@ -244,6 +245,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     facility.lat && facility.lng
       ? await getWeather(Number(facility.lat), Number(facility.lng))
       : null;
+  const favoritedIds = await getFavoritedFacilityIds([facility.id]);
+  const isFavorited = favoritedIds.has(facility.id);
   return (
     <div className="text-foreground selection:bg-primary/30 relative min-h-screen font-sans">
       {/* ✅ Structured Data */}
@@ -255,6 +258,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
           <div className="space-y-6 md:col-span-8">
             <HeroActionPill
               facility={{
+                id: facility.id,
                 name: facility.name,
                 slug: facility.slug,
                 lat: facility.lat,
@@ -268,6 +272,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               facilitySlug={facilitySlug}
               categorySlug={categorySlug}
               weather={weather}
+              isFavorited={isFavorited}
             />
 
             <h1 className="text-primary-foreground py-2 text-4xl leading-tight font-black tracking-tighter italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-7xl md:leading-[0.9]">

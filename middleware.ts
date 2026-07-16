@@ -6,7 +6,7 @@ import { isAccountProtectedPath } from "@/lib/auth/account-paths";
  * Buyer account auth middleware.
  *
  * IMPORTANT: Next.js route groups like `(account)` are NOT part of the URL.
- * Matcher must use real paths: /moje-karte, /omiljeni, …
+ * Matcher must use real paths: /moje-karte, /omiljeni, /nalog, …
  */
 export const config = {
   matcher: [
@@ -18,6 +18,8 @@ export const config = {
     "/moje-recenzije/:path*",
     "/orders",
     "/orders/:path*",
+    "/nalog",
+    "/nalog/:path*",
   ],
 };
 
@@ -35,7 +37,7 @@ export async function middleware(request: NextRequest) {
 
   if (!sessionCookie) {
     const signInUrl = new URL("/prijava", request.url);
-    signInUrl.searchParams.set("callbackUrl", pathname);
+    signInUrl.searchParams.set("callbackUrl", pathname + request.nextUrl.search);
     return NextResponse.redirect(signInUrl);
   }
 

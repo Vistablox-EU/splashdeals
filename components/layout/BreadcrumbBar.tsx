@@ -50,6 +50,7 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
       prijava: bc.prijava || "Prijava",
       "moje-karte": bc.moje_karte || "Moje karte",
       omiljeni: bc.omiljeni || "Omiljeni",
+      nalog: bc.nalog || "Nalog",
       "moje-recenzije": bc.moje_recenzije || "Moje recenzije",
       orders: bc.orders || "Porudžbina",
     } as Record<string, string>;

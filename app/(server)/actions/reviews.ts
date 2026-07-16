@@ -2,7 +2,7 @@
 
 import { prisma } from "@/app/(server)/lib/prisma";
 import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
-import { requireSuperAdmin, requireAdmin } from "@/app/(server)/lib/auth-guards";
+import { requireSuperAdmin, requireAuth } from "@/app/(server)/lib/auth-guards";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -14,7 +14,7 @@ const submitReviewSchema = z.object({
 });
 
 /**
- * ⭐ Submit a review for a facility (authenticated user)
+ * ⭐ Submit a review for a facility (any authenticated buyer)
  * One review per user per facility (enforced by unique constraint)
  */
 export async function submitReviewAction(
@@ -24,7 +24,7 @@ export async function submitReviewAction(
   content?: string,
 ): Promise<ActionResult<{ id: string }>> {
   try {
-    const user = await requireAdmin();
+    const user = await requireAuth();
 
     const validated = submitReviewSchema.parse({ facilityId, rating, title, content });
 
@@ -35,7 +35,7 @@ export async function submitReviewAction(
     });
 
     if (!facility) {
-      return { success: false, error: "Facility not found." };
+      return { success: false, error: "Objekat nije pronađen." };
     }
 
     const review = await prisma.review.create({
@@ -50,6 +50,7 @@ export async function submitReviewAction(
     });
 
     revalidatePath(`/${facility.slug}`, "layout");
+    revalidatePath("/moje-recenzije");
     return { success: true, data: { id: review.id } };
   } catch (error) {
     return handleServerActionError(error, "submitReview");
@@ -153,7 +154,7 @@ export async function getFacilityReviewsAction(facilityId: string) {
  */
 export async function getMyReviewsAction() {
   try {
-    const user = await requireAdmin();
+    const user = await requireAuth();
 
     const reviews = await prisma.review.findMany({
       where: { userId: user.id },
@@ -173,6 +174,77 @@ export async function getMyReviewsAction() {
     };
   } catch (error) {
     return handleServerActionError(error, "getMyReviews");
+  }
+}
+
+const updateOwnReviewSchema = z.object({
+  id: z.string().uuid(),
+  rating: z.number().int().min(1).max(5),
+  title: z.string().max(200).optional(),
+  content: z.string().max(2000).optional(),
+});
+
+/**
+ * Buyer: update own review (re-enters moderation)
+ */
+export async function updateOwnReviewAction(
+  id: string,
+  rating: number,
+  title?: string,
+  content?: string,
+): Promise<ActionResult> {
+  try {
+    const user = await requireAuth();
+    const validated = updateOwnReviewSchema.parse({ id, rating, title, content });
+
+    const existing = await prisma.review.findUnique({
+      where: { id: validated.id },
+      include: { facility: { select: { slug: true } } },
+    });
+
+    if (!existing || existing.userId !== user.id) {
+      return { success: false, error: "Recenzija nije pronađena." };
+    }
+
+    await prisma.review.update({
+      where: { id: validated.id },
+      data: {
+        rating: validated.rating,
+        title: validated.title || null,
+        content: validated.content || null,
+        isApproved: false,
+      },
+    });
+
+    revalidatePath("/moje-recenzije");
+    revalidatePath(`/${existing.facility.slug}`, "layout");
+    return { success: true };
+  } catch (error) {
+    return handleServerActionError(error, "updateOwnReview");
+  }
+}
+
+/**
+ * Buyer: delete own review
+ */
+export async function deleteOwnReviewAction(id: string): Promise<ActionResult> {
+  try {
+    const user = await requireAuth();
+    const existing = await prisma.review.findUnique({
+      where: { id },
+      include: { facility: { select: { slug: true } } },
+    });
+
+    if (!existing || existing.userId !== user.id) {
+      return { success: false, error: "Recenzija nije pronađena." };
+    }
+
+    await prisma.review.delete({ where: { id } });
+    revalidatePath("/moje-recenzije");
+    revalidatePath(`/${existing.facility.slug}`, "layout");
+    return { success: true };
+  } catch (error) {
+    return handleServerActionError(error, "deleteOwnReview");
   }
 }
 

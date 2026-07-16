@@ -442,6 +442,7 @@ export function CartClient({
         requiresIdentity={requiresIdentity}
         requiresPhoto={requiresPhoto}
         onComplete={processCheckout}
+        initialHolderName={authSession?.user?.name}
         dict={identityDict}
       />
     </div>

@@ -6,6 +6,7 @@ import { BreadcrumbBar } from "@/components/layout/BreadcrumbBar";
 import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
 import { CartLoader } from "@/components/cart/CartLoader";
 import { CartStateBootstrap } from "@/components/cart/CartStateBootstrap";
+import { FavoriteIntentBootstrap } from "@/components/account/FavoriteIntentBootstrap";
 import { BottomNav } from "@/components/layout/BottomNav";
 import type { Dict } from "@/lib/types";
 
@@ -61,6 +62,7 @@ export function PlatformShell({
 
       <Footer />
       <CartStateBootstrap />
+      <FavoriteIntentBootstrap />
       <CartLoader />
       <BottomNav />
     </div>

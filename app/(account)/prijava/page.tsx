@@ -2,6 +2,10 @@ import { getDictionary } from "@/lib/dictionaries";
 import { isSafeCallbackPath } from "@/lib/auth/callback-url";
 import { SignInButtons } from "./_components/SignInButtons";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/app/(server)/lib/auth";
+import { getEnabledBuyerSocialProviders } from "@/lib/auth/social-providers";
 
 export const metadata: Metadata = {
   title: "Prijava",
@@ -11,6 +15,7 @@ export const metadata: Metadata = {
 /**
  * Buyer sign-in — uses platform shell from parent account layout,
  * without portal subnav (prijava is outside `(portal)`).
+ * Logged-in users are redirected to callback or /moje-karte (D1).
  */
 export default async function PrijavaPage({
   searchParams,
@@ -21,7 +26,14 @@ export default async function PrijavaPage({
   const t = dict.account;
   const sp = await searchParams;
   const callbackUrl = isSafeCallbackPath(sp.callbackUrl) ? sp.callbackUrl : "/moje-karte";
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session?.user) {
+    redirect(callbackUrl);
+  }
+
   const oauthError = sp.error ? t.sign_in_error || "Prijava nije uspela. Pokušajte ponovo." : null;
+  const providers = getEnabledBuyerSocialProviders();
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
@@ -42,7 +54,7 @@ export default async function PrijavaPage({
           </p>
         ) : null}
 
-        <SignInButtons dict={t} callbackUrl={callbackUrl} />
+        <SignInButtons dict={t} callbackUrl={callbackUrl} providers={providers} />
       </div>
     </div>
   );

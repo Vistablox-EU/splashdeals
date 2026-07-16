@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { FavoriteButton } from "@/components/shared/FavoriteButton";
+
 interface Facility {
   id: string;
   name: string;
@@ -17,20 +18,25 @@ interface Facility {
   media?: { url: string; type?: string; purpose?: string; isCardBackground?: boolean }[];
   minPrice: number | null;
 }
+
 interface FacilityCardProps {
   facility: Facility;
-
   dict: Record<string, any>;
   fromLabel: string;
   isPriority?: boolean;
+  isFavorited?: boolean;
 }
 
 /**
- * 🌊 FacilityCard (Edition)
- * High-performance card featuring optimized Next.js Image delivery,
- * Aquastream design tokens, and smooth hover interactions.
+ * 🌊 FacilityCard — listing card with canonical /{slug} link and session-aware favorite.
  */
-export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: FacilityCardProps) {
+export function FacilityCard({
+  facility,
+  dict,
+  fromLabel,
+  isPriority = false,
+  isFavorited = false,
+}: FacilityCardProps) {
   const explicitBG = facility.media?.find((m) => m.isCardBackground);
   const aerialPhoto = facility.media?.find((m) => m.purpose === "AERIAL");
   const backgroundPhoto =
@@ -40,10 +46,7 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
     facility.media?.[0];
 
   return (
-    <Link
-      href={`/facilities/${facility.category.toLowerCase().replace(/_/g, "-")}/${facility.slug}`}
-      className="block"
-    >
+    <Link href={`/${facility.slug}`} className="block">
       <Card className="group border-border hover:border-primary/30 relative flex h-[300px] flex-col justify-end overflow-hidden transition-[border-color] duration-500 sm:h-[400px]">
         {facility.logoUrl && (
           <div className="border-border bg-background/60 absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border p-2 shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-105 sm:top-6 sm:right-6 sm:h-14 sm:w-14">
@@ -59,7 +62,11 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
           </div>
         )}
 
-        <FavoriteButton facilityId={facility.id} isFavorited={false} />
+        <FavoriteButton
+          facilityId={facility.id}
+          facilitySlug={facility.slug}
+          isFavorited={isFavorited}
+        />
 
         <div className="absolute inset-0 z-0">
           {backgroundPhoto?.url ? (

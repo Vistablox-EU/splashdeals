@@ -12,6 +12,27 @@ export type AuthedUser = {
 };
 
 /**
+ * 👤 Any authenticated user (buyer or staff).
+ * Use for buyer-facing actions: favorites, reviews, profile update.
+ */
+export async function requireAuth(): Promise<AuthedUser> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    throw new Error(AUTH_ERROR.REQUIRED);
+  }
+
+  return {
+    id: session.user.id,
+    name: session.user.name ?? null,
+    email: session.user.email,
+    role: session.user.role,
+  };
+}
+
+/**
  * 🛡️ Server Action Guard: Requires any Admin role (SUPER_ADMIN or FACILITY_STAFF)
  * Returns the user if authorized, otherwise throws an error or returns a failure object.
  */

@@ -8,6 +8,7 @@ export const ACCOUNT_PROTECTED_PATH_PREFIXES = [
   "/omiljeni",
   "/moje-recenzije",
   "/orders",
+  "/nalog",
 ] as const;
 
 export const ACCOUNT_PUBLIC_PATHS = ["/prijava"] as const;
@@ -30,4 +31,10 @@ export function isAccountProtectedPath(pathname: string): boolean {
 /** BottomNav "Nalog" active on any account surface path. */
 export function isAccountBottomNavActive(pathname: string): boolean {
   return isAccountSurfacePath(pathname);
+}
+
+/** Roles that should see a soft CTA to the admin surface. */
+export function isStaffOrOwnerRole(role: string | null | undefined): boolean {
+  const r = (role || "").toUpperCase();
+  return r === "SUPER_ADMIN" || r === "FACILITY_STAFF" || r === "FACILITY_OWNER" || r === "ADMIN";
 }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/Icon";
+import { FavoriteButton } from "@/components/shared/FavoriteButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -61,8 +62,20 @@ export default async function OmiljeniPage() {
           {favorites.map((fav) => {
             const image = fav.facility.media[0];
             return (
-              <Link key={fav.facility.id} href={`/${fav.facility.slug}`}>
-                <Card className="border-border group hover:border-primary/30 flex flex-col overflow-hidden transition-colors">
+              <Card
+                key={fav.facility.id}
+                className="border-border group relative flex flex-col overflow-hidden transition-colors"
+              >
+                <div className="absolute top-2 right-2 z-20">
+                  <FavoriteButton
+                    facilityId={fav.facility.id}
+                    facilitySlug={fav.facility.slug}
+                    isFavorited
+                    variant="default"
+                    className="bg-background/90 relative top-0 left-0"
+                  />
+                </div>
+                <Link href={`/${fav.facility.slug}`}>
                   <div className="relative h-32 w-full overflow-hidden">
                     {image ? (
                       <Image
@@ -89,8 +102,8 @@ export default async function OmiljeniPage() {
                       </span>
                     )}
                   </div>
-                </Card>
-              </Link>
+                </Link>
+              </Card>
             );
           })}
         </div>

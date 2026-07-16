@@ -64,6 +64,8 @@ export interface SuccessDictionary {
   actions: {
     continue: string;
     download: string;
+    view_tickets?: string;
+    view_order?: string;
   };
   footer: {
     email_notice: string;
@@ -389,6 +391,29 @@ export function SuccessClient({
           className="animate-fade-in flex flex-col items-center justify-center gap-3 pt-6 sm:flex-row sm:gap-6 sm:pt-10"
           style={{ animationDelay: "0.8s", animationFillMode: "both" }}
         >
+          <Link href="/moje-karte" className="w-full sm:w-auto">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground h-14 w-full rounded-full px-8 shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:h-16 sm:w-auto sm:px-10"
+            >
+              <Icon name="confirmation_number" className="mr-3 text-[20px]" />
+              {dict.actions.view_tickets || "Pogledaj karte"}
+            </Button>
+          </Link>
+
+          {transaction?.id ? (
+            <Link href={`/orders/${transaction.id}`} className="w-full sm:w-auto">
+              <Button
+                variant="outline"
+                size="lg"
+                className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-14 w-full rounded-full border px-8 sm:h-16 sm:w-auto sm:px-10"
+              >
+                <Icon name="receipt" className="mr-3 text-[20px]" />
+                {dict.actions.view_order || "Detalji porudžbine"}
+              </Button>
+            </Link>
+          ) : null}
+
           <Link href="/" className="w-full sm:w-auto">
             <Button
               variant="outline"
@@ -403,9 +428,10 @@ export function SuccessClient({
           <Button
             onClick={() => window.print()}
             size="lg"
-            className="no-print bg-primary hover:bg-primary/90 text-primary-foreground h-14 w-full rounded-full px-8 shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:h-16 sm:w-auto sm:px-10"
+            variant="outline"
+            className="no-print bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-14 w-full rounded-full border px-8 sm:h-16 sm:w-auto sm:px-10"
           >
-            <Icon name="download" className="text-primary-foreground mr-3 text-[20px]" />
+            <Icon name="download" className="mr-3 text-[20px]" />
             {dict.actions.download}
           </Button>
 

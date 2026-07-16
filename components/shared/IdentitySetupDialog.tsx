@@ -21,6 +21,8 @@ interface IdentitySetupDialogProps {
   requiresIdentity: boolean;
   requiresPhoto: boolean;
   onComplete: (data: { holderName?: string; holderPhotoUrl?: string }) => void;
+  /** Prefill holder name from session profile (D2) */
+  initialHolderName?: string | null;
   /** Serbian Latin copy from dictionaries/rs.json → identity */
   dict?: IdentityDictionary | null;
 }
@@ -31,27 +33,38 @@ export function IdentitySetupDialog({
   requiresIdentity,
   requiresPhoto,
   onComplete,
+  initialHolderName,
   dict,
 }: IdentitySetupDialogProps) {
   const [step, setStep] = React.useState<"name" | "photo" | "review">(
     requiresIdentity ? "name" : "photo",
   );
-  const [name, setName] = React.useState("");
+  const [name, setName] = React.useState(initialHolderName?.trim() || "");
+  const [prevInitial, setPrevInitial] = React.useState(initialHolderName?.trim() || "");
   const [file, setFile] = React.useState<File | null>(null);
   const [preview, setPreview] = React.useState<string | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
+  const [wasOpen, setWasOpen] = React.useState(open);
 
-  // Reset state when closing
-  React.useEffect(() => {
-    if (!open) {
-      setTimeout(() => {
-        setStep(requiresIdentity ? "name" : "photo");
-        setName("");
-        setFile(null);
-        setPreview(null);
-      }, 300);
+  // Prefill from profile when prop arrives (render-time sync)
+  const initialTrim = initialHolderName?.trim() || "";
+  if (initialTrim !== prevInitial) {
+    setPrevInitial(initialTrim);
+    if (initialTrim && !name) {
+      setName(initialTrim);
     }
-  }, [open, requiresIdentity]);
+  }
+
+  // Reset when dialog closes → opens cycle (render-time on open edge)
+  if (wasOpen !== open) {
+    setWasOpen(open);
+    if (!open) {
+      setStep(requiresIdentity ? "name" : "photo");
+      setName(initialTrim);
+      setFile(null);
+      setPreview(null);
+    }
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];

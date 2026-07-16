@@ -1,5 +1,6 @@
 import { prisma } from "@/app/(server)/lib/prisma";
 import { FacilityCard } from "./FacilityCard";
+import { getFavoritedFacilityIds } from "@/app/(server)/actions/favorites";
 
 interface FacilityGridProps {
   dict: Record<string, any>;
@@ -148,6 +149,8 @@ export async function FacilityGrid({
     };
   });
 
+  const favoritedIds = await getFavoritedFacilityIds(serializedFacilities.map((f) => f.id));
+
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       {serializedFacilities.map((facility, idx) => (
@@ -157,6 +160,7 @@ export async function FacilityGrid({
             dict={dict}
             fromLabel={fromLabel}
             isPriority={idx < 10}
+            isFavorited={favoritedIds.has(facility.id)}
           />
         </div>
       ))}

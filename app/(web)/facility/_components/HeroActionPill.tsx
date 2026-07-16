@@ -7,6 +7,7 @@ import { WeatherBadge } from "./ShowcaseHero";
 import { CurrentOperationalStatus } from "./OperationalPortal";
 import { DistanceCalculator } from "./DistanceCalculator";
 import { MobileUnifiedControlPill } from "./MobileUnifiedControlPill";
+import { FavoriteButton } from "@/components/shared/FavoriteButton";
 
 interface CurrentWeather {
   temperature: number;
@@ -15,6 +16,7 @@ interface CurrentWeather {
 
 interface HeroActionPillProps {
   facility: {
+    id: string;
     name: string;
     slug: string;
     lat?: number | string | null;
@@ -28,25 +30,30 @@ interface HeroActionPillProps {
   facilitySlug: string;
   categorySlug: string;
   weather: CurrentWeather | null;
+  isFavorited?: boolean;
 }
 
 /**
  * 🧭 HeroActionPill — Unified action bar for the facility hero section.
- *
- * Consolidates navigation, sharing, weather, operational status, distance,
- * and the mobile unified pill into a single client component.
- * Weather data is fetched server-side and passed as a prop.
  */
 export function HeroActionPill({
   facility,
   facilitySlug,
   categorySlug,
   weather,
+  isFavorited = false,
 }: HeroActionPillProps) {
   return (
     <>
-      {/* 📱 MOBILE SHARE ROW */}
-      <div className="flex items-center justify-end md:hidden">
+      {/* 📱 MOBILE SHARE + FAVORITE ROW */}
+      <div className="flex items-center justify-end gap-2 md:hidden">
+        <FavoriteButton
+          facilityId={facility.id}
+          facilitySlug={facilitySlug}
+          isFavorited={isFavorited}
+          variant="default"
+          className="relative top-0 left-0"
+        />
         <ShareButton
           title={facility.name}
           url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
@@ -61,6 +68,13 @@ export function HeroActionPill({
         >
           <Icon name="arrow_back" className="text-[12px]" /> Nazad
         </Link>
+        <FavoriteButton
+          facilityId={facility.id}
+          facilitySlug={facilitySlug}
+          isFavorited={isFavorited}
+          variant="default"
+          className="relative top-0 left-0"
+        />
         <ShareButton
           title={facility.name}
           url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}

@@ -5,28 +5,23 @@ import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 import { isSafeCallbackPath } from "@/lib/auth/callback-url";
 import { authClient } from "@/lib/auth-client";
+import type { BuyerSocialProvider } from "@/lib/auth/social-providers";
 
 interface SignInButtonsProps {
   dict: Record<string, any>;
   /** Server-resolved safe relative path for post-login return. */
   callbackUrl?: string;
+  /** Only providers with credentials configured (server-resolved). */
+  providers: BuyerSocialProvider[];
 }
 
-const providers = [
-  { id: "google", labelKey: "sign_in_google", icon: "login" },
-  { id: "facebook", labelKey: "sign_in_facebook", icon: "public" },
-  { id: "apple", labelKey: "sign_in_apple", icon: "phone_iphone" },
-  { id: "twitter", labelKey: "sign_in_twitter", icon: "alternate_email" },
-] as const;
-
-type ProviderId = (typeof providers)[number]["id"];
+type ProviderId = BuyerSocialProvider["id"];
 
 /**
  * Social sign-in for /prijava.
  * Better Auth social login is POST /api/auth/sign-in/social (not /oauth2/authorize).
- * /oauth2/authorize is the OIDC *provider* plugin endpoint and returns 404 here.
  */
-export function SignInButtons({ dict, callbackUrl }: SignInButtonsProps) {
+export function SignInButtons({ dict, callbackUrl, providers }: SignInButtonsProps) {
   const safeCallback = isSafeCallbackPath(callbackUrl) ? callbackUrl : "/moje-karte";
   const [pending, setPending] = useState<ProviderId | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -46,12 +41,19 @@ export function SignInButtons({ dict, callbackUrl }: SignInButtonsProps) {
         );
         setPending(null);
       }
-      // On success Better Auth redirects the browser to the provider.
     } catch {
       setError(dict.sign_in_error || "Prijava nije uspela. Pokušajte ponovo.");
       setPending(null);
     }
   };
+
+  if (providers.length === 0) {
+    return (
+      <p className="text-muted-foreground text-center text-sm">
+        {dict.sign_in_unavailable || "Prijava trenutno nije dostupna. Pokušajte kasnije."}
+      </p>
+    );
+  }
 
   return (
     <div className="space-y-3">

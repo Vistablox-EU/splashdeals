@@ -9,6 +9,7 @@ import { getClientDictionary } from "@/lib/client-dictionaries";
 import { isAccountBottomNavActive } from "@/lib/auth/account-paths";
 import { isBottomNavActive } from "@/lib/layout/bottom-nav-active";
 import { isBottomNavAlwaysVisible } from "@/lib/layout/bottom-nav-visibility";
+import { authClient } from "@/lib/auth-client";
 import type { Dict } from "@/lib/types";
 
 const SCROLL_THRESHOLD = 10;
@@ -26,6 +27,8 @@ export function BottomNav() {
   const pathname = usePathname();
   const totalItems = useServerCart((state) => state.totalItems);
   const alwaysVisible = isBottomNavAlwaysVisible(pathname, totalItems);
+  const { data: session } = authClient.useSession();
+  const isLoggedIn = !!session?.user;
   const [scrollHidden, setScrollHidden] = useState(false);
   const [dict, setDict] = useState<Dict | null>(null);
   const lastScrollY = useRef(0);
@@ -83,8 +86,10 @@ export function BottomNav() {
       kind: "path" as const,
     },
     {
-      label: dict?.nav?.account_mobile || dict?.nav?.account || "Nalog",
-      href: "/moje-karte",
+      label: isLoggedIn
+        ? dict?.nav?.account_mobile || dict?.nav?.account || "Nalog"
+        : dict?.nav?.login || "Prijava",
+      href: isLoggedIn ? "/moje-karte" : "/prijava",
       icon: "person",
       kind: "account" as const,
     },

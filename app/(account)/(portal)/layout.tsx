@@ -1,5 +1,9 @@
 import { getDictionary } from "@/lib/dictionaries";
 import { AccountPortalNav } from "@/components/account/AccountPortalNav";
+import { StaffRoleBanner } from "@/components/account/StaffRoleBanner";
+import { headers } from "next/headers";
+import { auth } from "@/app/(server)/lib/auth";
+import { isStaffOrOwnerRole } from "@/lib/auth/account-paths";
 
 /**
  * Authenticated buyer portal chrome:
@@ -8,12 +12,14 @@ import { AccountPortalNav } from "@/components/account/AccountPortalNav";
 export default async function AccountPortalLayout({ children }: { children: React.ReactNode }) {
   const dict = await getDictionary();
   const t = dict.account;
+  const session = await auth.api.getSession({ headers: await headers() });
 
   const links = [
     { href: "/moje-karte", label: t.moje_karte || "Moje karte", icon: "confirmation_number" },
-    { href: "/moje-karte/istorija", label: "Istorija", icon: "history" },
-    { href: "/omiljeni", label: "Omiljeni", icon: "favorite" },
-    { href: "/moje-recenzije", label: "Recenzije", icon: "star" },
+    { href: "/moje-karte/istorija", label: t.istorija || "Istorija kupovina", icon: "history" },
+    { href: "/omiljeni", label: t.omiljeni || "Omiljeni objekti", icon: "favorite" },
+    { href: "/moje-recenzije", label: t.moje_recenzije || "Moje recenzije", icon: "star" },
+    { href: "/nalog", label: t.profile || "Nalog", icon: "person" },
   ];
 
   return (
@@ -24,7 +30,12 @@ export default async function AccountPortalLayout({ children }: { children: Reac
         logoutLabel={t.odjava || "Odjava"}
         dict={dict}
       />
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-w-0 flex-1 space-y-6">
+        {isStaffOrOwnerRole(session?.user?.role) ? (
+          <StaffRoleBanner dict={dict} role={session?.user?.role} />
+        ) : null}
+        {children}
+      </div>
     </div>
   );
 }

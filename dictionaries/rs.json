@@ -469,7 +469,9 @@
     },
     "actions": {
       "continue": "NASTAVI KUPOVINU",
-      "download": "PREUZMI KARTE"
+      "download": "PREUZMI KARTE",
+      "view_tickets": "Pogledaj karte",
+      "view_order": "Detalji porudžbine"
     },
     "footer": {
       "email_notice": "Potvrda o transakciji je poslata na Vašu email adresu. Ukoliko ne vidite email, proverite Spam folder.",
@@ -830,7 +832,28 @@
     "error_title": "Došlo je do greške",
     "error_description": "Nismo mogli da učitamo ovu stranicu. Pokušajte ponovo ili nas kontaktirajte.",
     "error_retry": "Pokušaj ponovo",
-    "sign_in_error": "Prijava nije uspela. Pokušajte ponovo."
+    "sign_in_error": "Prijava nije uspela. Pokušajte ponovo.",
+    "profile": "Nalog",
+    "profile_desc": "Pregled i podešavanja vašeg profila",
+    "edit_profile": "Izmena profila",
+    "display_name": "Ime za prikaz",
+    "save_profile": "Sačuvaj",
+    "saving": "Čuvanje…",
+    "profile_saved": "Profil sačuvan",
+    "linked_providers": "Povezani nalozi",
+    "email_verified": "Email potvrđen",
+    "email_unverified": "Email nije potvrđen",
+    "privacy_link": "Politika privatnosti",
+    "terms_link": "Uslovi korišćenja",
+    "staff_banner_title": "Imate partnerski pristup",
+    "staff_banner_desc": "Prijavljeni ste kao partner/admin. Buyer nalog i dalje radi za karte i omiljene.",
+    "staff_banner_cta": "Otvori admin panel",
+    "sign_in_unavailable": "Prijava trenutno nije dostupna. Pokušajte kasnije.",
+    "cancel": "Otkaži",
+    "review_pending": "Čeka odobrenje",
+    "view_facility": "Pogledaj objekat",
+    "review_deleted": "Recenzija obrisana",
+    "review_saved": "Recenzija sačuvana"
   },
   "order_detail": {
     "title": "Porudžbina",
@@ -1049,7 +1072,8 @@
       "jezera": "Jezera",
       "plaze_i_kupalista": "Plaže i Kupališta",
       "vodeni_sportovi": "Vodeni Sportovi"
-    }
+    },
+    "nalog": "Nalog"
   },
   "mega_menu": {
     "loading_aria": "Učitavanje menija",
