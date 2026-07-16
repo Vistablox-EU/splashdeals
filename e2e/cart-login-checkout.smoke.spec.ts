@@ -19,11 +19,21 @@ test.describe("cart login checkout smoke", () => {
   });
 
   test("header and bottom nav cart entry points exist on homepage", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
     await expect(page.locator("header")).toBeVisible({ timeout: 30_000 });
-    const cartLink = page.locator(
-      'a[href="/cart"], button[aria-label*="korp" i], button[title*="korp" i]',
-    );
-    await expect(cartLink.first()).toBeVisible({ timeout: 30_000 });
+
+    const bottomNav = page.getByRole("navigation", { name: /mobilna navigacija/i });
+    await expect(bottomNav).toBeVisible({ timeout: 30_000 });
+
+    const cartNavLink = bottomNav.locator('a[href="/cart"]');
+    await expect(cartNavLink).toBeVisible();
+    await expect(cartNavLink).toHaveAttribute("href", "/cart");
+
+    // Explore is primary mobile search entry
+    await expect(bottomNav.locator('a[href="/search"]')).toBeVisible();
+
+    // Account lives in BottomNav on mobile (not duplicated in header)
+    await expect(bottomNav.locator('a[href="/moje-karte"]')).toBeVisible();
   });
 });

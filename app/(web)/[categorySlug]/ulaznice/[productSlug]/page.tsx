@@ -275,8 +275,8 @@ export default async function TicketProductDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Mobile sticky buy CTA above BottomNav */}
-      <div className="border-border/50 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-16 z-[999] border-t px-4 py-3 backdrop-blur-[40px] md:hidden">
+      {/* Mobile sticky buy CTA above BottomNav (offset includes safe-area) */}
+      <div className="border-border/50 bg-background/98 fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] border-t px-4 py-3 backdrop-blur-[40px] md:hidden">
         <Button
           asChild
           className="h-12 w-full rounded-2xl text-sm font-bold tracking-wide uppercase"

@@ -322,7 +322,7 @@ export function ShowcaseTicketGroups({
 
       {/* Mobile Sticky Drawer */}
       {totalItems > 0 && (
-        <div className="animate-in slide-in-from-bottom fixed right-4 bottom-20 left-4 z-[999] duration-300 md:hidden">
+        <div className="animate-in slide-in-from-bottom fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] left-4 z-[999] duration-300 md:hidden">
           <div className="mobile-glass flex items-center justify-between gap-4 rounded-3xl p-4 shadow-[0_0_25px_hsl(var(--primary)/0.1)]">
             <div className="space-y-0.5">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">

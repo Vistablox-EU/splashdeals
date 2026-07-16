@@ -44,10 +44,11 @@ export function PlatformShell({
       </a>
       <GlobalAmbient />
       {showStructuredData ? <NavigationStructuredData /> : null}
-      {/* Stacking: Header z-999 · Breadcrumb z-100 · BottomNav z-998 */}
+      {/* Stacking: Header z-999 · Breadcrumb z-100 · BottomNav z-998 · sticky CTAs z-999 above nav */}
       <Header dict={dict} />
       {showBreadcrumb ? <BreadcrumbBar facilityMap={facilityMap} /> : null}
 
+      {/* pb-16 clears BottomNav (h-16); safe-area is on the nav itself, not main */}
       <main id="main-content" className="flex-grow pt-16 pb-16 sm:pb-0">
         <React.Suspense
           fallback={

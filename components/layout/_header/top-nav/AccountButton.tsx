@@ -19,12 +19,13 @@ export function AccountButton({ dict }: AccountButtonProps) {
   const href = isLoggedIn ? "/moje-karte" : "/prijava";
   const label = isLoggedIn ? dict.nav.account || "Moj Nalog" : dict.nav.login || "Prijava";
 
+  // Mobile: BottomNav owns account entry. Desktop keeps header control.
   return (
     <Button
       asChild
       variant="ghost"
       size="sm"
-      className="h-11 min-h-11 px-4 font-medium transition-colors"
+      className="hidden h-11 min-h-11 px-4 font-medium transition-colors md:inline-flex"
     >
       <Link href={href} aria-label={label}>
         <Icon name="person" className="text-primary text-[16px]" />

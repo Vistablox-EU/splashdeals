@@ -76,8 +76,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${geistSans.variable} selection:bg-primary/20 bg-background scroll-smooth antialiased`}
         style={{
+          // Bottom inset is owned by fixed chrome (BottomNav / sticky CTAs),
+          // not body — avoids double home-indicator gap under the nav.
           paddingTop: "env(safe-area-inset-top)",
-          paddingBottom: "env(safe-area-inset-bottom)",
           paddingLeft: "env(safe-area-inset-left)",
           paddingRight: "env(safe-area-inset-right)",
         }}

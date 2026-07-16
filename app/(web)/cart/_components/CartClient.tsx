@@ -414,7 +414,7 @@ export function CartClient({
       )}
 
       {items.length > 0 && (
-        <div className="border-border/50 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-16 z-[999] border-t px-4 py-3 backdrop-blur-[40px] lg:hidden">
+        <div className="border-border/50 bg-background/98 fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] border-t px-4 py-3 backdrop-blur-[40px] md:hidden">
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">

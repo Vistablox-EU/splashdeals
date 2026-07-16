@@ -29,7 +29,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="bg-background border-border relative mt-auto overflow-hidden border-t pt-12 pb-8 sm:pt-24 sm:pb-12">
+    <footer className="bg-background border-border relative mt-auto overflow-hidden border-t pt-12 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:pt-24 md:pb-12">
       {/* Background Ambience */}
       <div className="bg-primary/5 pointer-events-none absolute top-0 left-1/4 h-[500px] w-[500px] rounded-full blur-[120px]" />
       <div className="bg-primary/5 pointer-events-none absolute right-1/4 bottom-0 h-[300px] w-[300px] rounded-full blur-[100px]" />
