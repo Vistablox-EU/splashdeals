@@ -263,6 +263,7 @@ export function CartClient({
         return;
       }
 
+      // Re-fetch authoritative cart (stale overlapping refreshes are dropped by generation token).
       await softRefresh();
       notifyUpdated();
       await revalidateAppliedPromo(discount);

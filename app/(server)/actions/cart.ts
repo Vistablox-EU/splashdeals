@@ -9,12 +9,12 @@ import { MAX_QUANTITY_PER_ITEM, type CartItem, type CartItemInput } from "@/lib/
 import { isCanonicalTicketAvailable } from "@/lib/cart/canonical-ticket";
 import {
   applyGuestCartCookie,
+  clearGuestCartCookie,
   hasGuestCartCookie,
   resolveCartPrincipal,
   type CartPrincipal,
 } from "@/app/(server)/lib/cart-principal";
 import { GUEST_CART_TTL_MS } from "@/app/(server)/lib/guest-cart-token";
-import { claimGuestCartAction } from "@/app/(server)/actions/guest-cart-claim";
 
 // ─── DB-backed Rate Limiting ─────────────────────────────────────────────────
 
@@ -369,24 +369,22 @@ export async function addToCartAction(
 
 export async function getCartAction(): Promise<ActionResult<{ items: CartItem[] }>> {
   try {
-    let principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+    const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
     if (principal.type === "anonymous") {
       return { success: true, data: { items: [] } };
     }
 
-    // Failsafe: after social login the principal is always "user". If the user cart
-    // is empty but sd_guest_cart is still present, claim/merge before returning empty.
+    // NOTE: Do NOT auto-claim guest cart here when the user cart is empty.
+    // That failsafe re-imported leftover guest items after the user intentionally
+    // emptied their cart (remove → softRefresh → claim → items come back).
+    // Guest claim runs only on login bootstrap (CartStateBootstrap / cart page mount).
     if (principal.type === "user") {
-      let cartSession = await getCartSession(principal);
-      let items = cartSession ? await readCartItems(cartSession.id) : [];
+      const cartSession = await getCartSession(principal);
+      const items = cartSession ? await readCartItems(cartSession.id) : [];
 
+      // Orphan guest cookie after empty user cart: clear so remount claim can't resurrect.
       if (items.length === 0 && (await hasGuestCartCookie())) {
-        await claimGuestCartAction();
-        principal = await resolveCartPrincipal({ createGuestIfMissing: false });
-        if (principal.type === "user") {
-          cartSession = await getCartSession(principal);
-          items = cartSession ? await readCartItems(cartSession.id) : [];
-        }
+        await clearGuestCartCookie();
       }
 
       return { success: true, data: { items } };
@@ -440,11 +438,18 @@ export async function removeFromCartAction(
         throw new Error("Korpa je izmenjena. Pokušajte ponovo.");
       }
 
-      return { success: true, data: { removed: true } } as const;
+      const remaining = await tx.cartSessionItem.count({ where: { cartId: cartSession.id } });
+      return { success: true, data: { removed: true, empty: remaining === 0 } } as const;
     });
 
-    if (result.success) revalidatePath("/cart");
-    return result;
+    if (result.success) {
+      revalidatePath("/cart");
+      // Prevent leftover guest cookie/cart from resurrecting items on next getCart/claim.
+      if (result.data?.empty) {
+        await clearGuestCartCookie();
+      }
+    }
+    return result.success ? { success: true, data: { removed: true } } : result;
   } catch (error) {
     return handleServerActionError(error, "removeFromCart");
   }
