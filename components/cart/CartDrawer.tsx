@@ -22,6 +22,7 @@ export const CartDrawer = () => {
   const notifyUpdated = useServerCart((s) => s.notifyUpdated);
   const [isMounted, setIsMounted] = React.useState(false);
   const [dict, setDict] = React.useState<Dict | null>(null);
+  const [mutatingItemId, setMutatingItemId] = React.useState<string | null>(null);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("sr-RS").format(price);
@@ -48,19 +49,44 @@ export const CartDrawer = () => {
   if (!isMounted) return null;
 
   const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
-    const result =
-      newQuantity <= 0
+    setMutatingItemId(itemId);
+    try {
+      // At or below minPeople, treat decrease as full remove (qty steppers alone were a dead end).
+      const item = items.find((i) => i.id === itemId);
+      const minQty = Math.max(1, item?.minPeople || 1);
+      const shouldRemove = newQuantity < minQty || newQuantity <= 0;
+
+      const result = shouldRemove
         ? await removeFromCartAction({ itemId })
         : await updateCartQuantityAction({ itemId, quantity: newQuantity });
 
-    if (!result.success) {
-      toast.error(result.error || dict?.cart?.update_error);
-      await refresh();
-      return;
-    }
+      if (!result.success) {
+        toast.error(result.error || dict?.cart?.update_error || dict?.cart?.remove_error);
+        await refresh();
+        return;
+      }
 
-    await refresh();
-    notifyUpdated();
+      await refresh();
+      notifyUpdated();
+    } finally {
+      setMutatingItemId(null);
+    }
+  };
+
+  const handleRemoveItem = async (itemId: string) => {
+    setMutatingItemId(itemId);
+    try {
+      const result = await removeFromCartAction({ itemId });
+      if (!result.success) {
+        toast.error(result.error || dict?.cart?.remove_error || dict?.cart?.update_error);
+        await refresh();
+        return;
+      }
+      await refresh();
+      notifyUpdated();
+    } finally {
+      setMutatingItemId(null);
+    }
   };
 
   return (
@@ -111,58 +137,96 @@ export const CartDrawer = () => {
                 <p className="text-sm font-bold tracking-widest uppercase">{dict?.cart?.empty}</p>
               </div>
             ) : (
-              items.map((item) => (
-                <div
-                  key={item.id}
-                  className="border-border bg-muted/20 hover:bg-muted/30 group relative flex gap-4 rounded-[2rem] border p-4 transition-colors"
-                >
-                  <div className="flex flex-1 flex-col justify-between py-1">
-                    <div>
-                      <h4 className="text-foreground line-clamp-2 text-sm leading-tight font-black tracking-tight uppercase italic">
-                        {item.title}
-                      </h4>
-                      <p className="text-muted-foreground mt-1 text-[10px] font-bold tracking-widest uppercase">
-                        {item.facilityName}
-                      </p>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between gap-3">
-                      <div className="border-border bg-muted/40 flex items-center overflow-hidden rounded-xl border">
+              items.map((item) => {
+                const minQty = Math.max(1, item.minPeople || 1);
+                const isMutating = mutatingItemId === item.id;
+                return (
+                  <div
+                    key={item.id}
+                    className="border-border bg-muted/20 hover:bg-muted/30 group relative flex gap-4 rounded-[2rem] border p-4 transition-colors"
+                  >
+                    <div className="flex flex-1 flex-col justify-between py-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="text-foreground line-clamp-2 text-sm leading-tight font-black tracking-tight uppercase italic">
+                            {item.title}
+                          </h4>
+                          <p className="text-muted-foreground mt-1 text-[10px] font-bold tracking-widest uppercase">
+                            {item.facilityName}
+                          </p>
+                        </div>
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                          disabled={item.quantity <= (item.minPeople || 1)}
-                          aria-label={dict?.cart?.decrease_qty}
-                          className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
+                          onClick={() => handleRemoveItem(item.id)}
+                          disabled={isMutating}
+                          aria-label={dict?.cart?.remove || "Ukloni"}
+                          className="text-muted-foreground hover:text-destructive h-11 w-11 shrink-0 rounded-xl"
                         >
-                          <Icon name="remove" className="text-[14px]" />
-                        </Button>
-                        <span className="text-foreground w-8 text-center text-xs font-black tabular-nums">
-                          {item.quantity}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                          disabled={
-                            item.quantity >=
-                            Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
-                          }
-                          aria-label={dict?.cart?.increase_qty}
-                          className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
-                        >
-                          <Icon name="add" className="text-[14px]" />
+                          <Icon name="delete" className="text-[18px]" />
                         </Button>
                       </div>
-                      <p className="text-primary text-sm font-black tabular-nums">
-                        {formatPrice(item.price * item.quantity)} RSD
-                      </p>
+                      <div className="mt-4 flex items-center justify-between gap-3">
+                        <div className="border-border bg-muted/40 flex items-center overflow-hidden rounded-xl border">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                            disabled={isMutating}
+                            aria-label={
+                              item.quantity <= minQty
+                                ? dict?.cart?.remove || "Ukloni"
+                                : dict?.cart?.decrease_qty
+                            }
+                            className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
+                          >
+                            <Icon
+                              name={item.quantity <= minQty ? "delete" : "remove"}
+                              className="text-[14px]"
+                            />
+                          </Button>
+                          <span className="text-foreground w-8 text-center text-xs font-black tabular-nums">
+                            {item.quantity}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                            disabled={
+                              isMutating ||
+                              item.quantity >=
+                                Math.min(
+                                  item.maxPeople ?? MAX_QUANTITY_PER_ITEM,
+                                  MAX_QUANTITY_PER_ITEM,
+                                )
+                            }
+                            aria-label={dict?.cart?.increase_qty}
+                            className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
+                          >
+                            <Icon name="add" className="text-[14px]" />
+                          </Button>
+                        </div>
+                        <p className="text-primary text-sm font-black tabular-nums">
+                          {formatPrice(item.price * item.quantity)} RSD
+                        </p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveItem(item.id)}
+                        disabled={isMutating}
+                        className="text-muted-foreground/80 hover:text-destructive mt-2 h-9 self-start px-0 text-[10px] font-black tracking-widest uppercase"
+                      >
+                        {dict?.cart?.remove || "Ukloni"}
+                      </Button>
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 

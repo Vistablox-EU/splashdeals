@@ -87,12 +87,27 @@ export function CartItemList({
                 type="button"
                 variant="ghost"
                 size="icon"
-                onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-                disabled={mutatingItemId === item.id || item.quantity <= (item.minPeople || 1)}
-                aria-label={cartDict?.decrease_qty}
+                onClick={() => {
+                  const minQty = Math.max(1, item.minPeople || 1);
+                  // At min qty, minus removes the line (qty steppers alone were a dead end).
+                  if (item.quantity <= minQty) {
+                    onRemove(item.id);
+                  } else {
+                    onQuantityChange(item.id, item.quantity - 1);
+                  }
+                }}
+                disabled={mutatingItemId === item.id}
+                aria-label={
+                  item.quantity <= Math.max(1, item.minPeople || 1)
+                    ? cartDict?.remove
+                    : cartDict?.decrease_qty
+                }
                 className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
               >
-                <Icon name="remove" className="text-[14px]" />
+                <Icon
+                  name={item.quantity <= Math.max(1, item.minPeople || 1) ? "delete" : "remove"}
+                  className="text-[14px]"
+                />
               </Button>
               <span className="text-foreground min-w-[32px] text-center text-sm font-bold tabular-nums">
                 {item.quantity}
