@@ -55,8 +55,14 @@ import { serialize } from "@/lib/serialize";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { validateDiscoverySlug } from "@/app/(server)/lib/data/discovery";
 import { getCategoryLabel, buildFacilitySchema, TierEntry } from "../_data";
-import { getFacility, buildTicketGroups, flattenActivePrices } from "../_data";
+import {
+  getFacility,
+  buildTicketGroups,
+  flattenActivePrices,
+  buildPriceLevelTiers,
+} from "../_data";
 import { getWeather } from "@/app/(server)/lib/weather";
+import { dbValueToSlug } from "@/lib/routing/categories";
 
 /**
  * Infer the FAQ category from question text when the data source doesn't
@@ -106,7 +112,10 @@ interface FacilityPageProps {
 
 /**
  * 🕵️ Metadata Engine — For the legacy long-segment redirect
- * 301 redirects /{category}/{facility} to /{facility} for SEO link equity
+ * 301 redirects /{category}/{facility} to /{facility} for SEO link equity.
+ * Real metadata for facility pages is built in route generateMetadata via
+ * buildFacilityMetadata (app/(web)/[categorySlug]/page.tsx and [...slug]).
+ * Do NOT implement page titles/OG here — redirects only.
  */
 export async function generateMetadata({ params }: FacilityPageProps): Promise<Metadata> {
   const { facilitySlug } = await params;
@@ -184,19 +193,50 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const firstVideo = facility.media.find((m) => m.type === "VIDEO");
   const heroMedia = explicitHero || firstVideo || facility.media[0];
 
-  // 🧠 Structured Data Block
-  const allTiers = mappedGroups.flatMap((group) => group.tiers || []) as TierEntry[];
+  // 🧠 Structured Data — price-level tiers (not product min collapse)
+  const priceLevelTiers = buildPriceLevelTiers(facility) as TierEntry[];
+  const schemaCategorySlug =
+    dbValueToSlug(facility.category) || categorySlug.toLowerCase().replace(/\s+/g, "-");
 
   const facilitySchema = buildFacilitySchema({
-    facility,
+    facility: {
+      name: facility.name,
+      slug: facility.slug,
+      category: facility.category,
+      description: facility.description,
+      publicPhone: facility.publicPhone,
+      streetName: facility.streetName,
+      streetNumber: facility.streetNumber,
+      city: facility.city,
+      postalCode: facility.postalCode,
+      lat: facility.lat,
+      lng: facility.lng,
+      createdAt: facility.createdAt,
+      logoUrl: facility.logoUrl,
+      socialLinks: facility.socialLinks,
+      media: facility.media,
+    },
     facilitySlug,
-    categorySlug,
+    categorySlug: schemaCategorySlug,
     categoryLabel,
-    allTiers,
+    allTiers: priceLevelTiers,
     heroMedia: heroMedia ?? null,
-    ticketCount,
+    ticketCount: priceLevelTiers.filter((t) => t.isEntry !== false).length || ticketCount,
     currentYear,
-    hours: facility.hours ?? [],
+    hours: (facility.hours ?? []).map((h) => ({
+      dayOfWeek: h.dayOfWeek,
+      openTime: h.openTime,
+      closeTime: h.closeTime,
+      isClosed: h.isClosed,
+    })),
+    faqs: (facility.faqs ?? [])
+      .filter((f) => f.question && f.answer)
+      .map((f) => ({ question: f.question, answer: f.answer })),
+    reviews: (facility.reviews ?? []).map((r) => ({
+      rating: r.rating,
+      comment: r.content,
+      userName: r.user?.name ?? null,
+    })),
   });
 
   // 🌤️ Fetch live weather from Open-Meteo (server-side, passed to client component)
