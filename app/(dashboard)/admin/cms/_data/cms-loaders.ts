@@ -303,29 +303,20 @@ export async function loadCmsReviews() {
 
 export async function loadCmsHubStats() {
   const now = new Date();
-  const [
-    posts,
-    pages,
-    campaigns,
-    webhooks,
-    categories,
-    tags,
-    reviews,
-    redirects,
-    scheduled,
-  ] = await Promise.all([
-    prisma.blogPost.count(),
-    prisma.page.count(),
-    prisma.campaign.count().catch(() => 0),
-    prisma.webhook.count().catch(() => 0),
-    prisma.blogCategory.count(),
-    prisma.blogTag.count(),
-    prisma.review.count().catch(() => 0),
-    prisma.redirect.count().catch(() => 0),
-    prisma.blogPost.count({
-      where: { status: "DRAFT", publishedAt: { gt: now } },
-    }),
-  ]);
+  const [posts, pages, campaigns, webhooks, categories, tags, reviews, redirects, scheduled] =
+    await Promise.all([
+      prisma.blogPost.count(),
+      prisma.page.count(),
+      prisma.campaign.count().catch(() => 0),
+      prisma.webhook.count().catch(() => 0),
+      prisma.blogCategory.count(),
+      prisma.blogTag.count(),
+      prisma.review.count().catch(() => 0),
+      prisma.redirect.count().catch(() => 0),
+      prisma.blogPost.count({
+        where: { status: "DRAFT", publishedAt: { gt: now } },
+      }),
+    ]);
 
   return {
     posts,

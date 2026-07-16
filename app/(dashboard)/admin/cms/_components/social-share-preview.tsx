@@ -89,9 +89,7 @@ export function SocialSharePreview({
                 {truncatedExcerpt}
               </p>
             )}
-            <p className="text-muted-foreground mt-1 truncate text-[10px]">
-              {pathHint}
-            </p>
+            <p className="text-muted-foreground mt-1 truncate text-[10px]">{pathHint}</p>
           </div>
         </div>
       </div>

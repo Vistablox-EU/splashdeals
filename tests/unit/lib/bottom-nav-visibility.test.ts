@@ -9,9 +9,7 @@ describe("isBottomNavAlwaysVisible", () => {
   it("keeps nav visible on cart and product purchase surfaces", () => {
     expect(isBottomNavAlwaysVisible("/cart", 0)).toBe(true);
     expect(isBottomNavAlwaysVisible("/cart/success", 0)).toBe(true);
-    expect(
-      isBottomNavAlwaysVisible("/akva-parkovi/ulaznice/dnevna-karta", 0),
-    ).toBe(true);
+    expect(isBottomNavAlwaysVisible("/akva-parkovi/ulaznice/dnevna-karta", 0)).toBe(true);
   });
 
   it("keeps nav visible when cart has items (facility mini-cart sticky)", () => {

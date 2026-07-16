@@ -44,7 +44,7 @@ export default async function CMSHubPage() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
         {statCards.map((stat) => {
           const body = (
-            <Card className="p-4 transition-colors hover:border-primary/40">
+            <Card className="hover:border-primary/40 p-4 transition-colors">
               <p className="text-muted-foreground text-xs font-bold tracking-wide uppercase">
                 {stat.label}
               </p>

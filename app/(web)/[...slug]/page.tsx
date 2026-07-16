@@ -6,10 +6,7 @@ import { buildFacilityMetadata } from "@/app/(web)/facility/_data/metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/app/(server)/lib/routing/discovery";
 import { resolveSlug, resolveLegacyTarget } from "@/app/(server)/lib/routing/resolve-slug";
 import { parseLocaleSegments } from "@/lib/locale";
-import {
-  buildCmsPageMetadata,
-  CmsPageTemplate,
-} from "@/app/(web)/_components/CmsPageTemplate";
+import { buildCmsPageMetadata, CmsPageTemplate } from "@/app/(web)/_components/CmsPageTemplate";
 
 export async function generateMetadata({
   params,

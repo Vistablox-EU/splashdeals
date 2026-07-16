@@ -1,6 +1,4 @@
-export const CMS_STATUS_BADGE_VARIANT = (
-  status: string,
-): "default" | "secondary" | "outline" => {
+export const CMS_STATUS_BADGE_VARIANT = (status: string): "default" | "secondary" | "outline" => {
   switch (status) {
     case "PUBLISHED":
       return "default";

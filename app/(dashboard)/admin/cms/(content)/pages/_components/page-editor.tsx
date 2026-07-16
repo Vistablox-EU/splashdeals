@@ -311,272 +311,278 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
         )}
         <CmsEditorShell
           main={
-          <>
-            <div className="space-y-2">
-              <Label htmlFor="title">Naslov *</Label>
-              <Input
-                id="title"
-                {...register("title")}
-                onChange={handleTitleChange}
-                placeholder="Unesi naslov strane..."
-                className="text-lg font-medium"
-              />
-              {errors.title && <p className="text-destructive text-xs">{errors.title.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="slug">Slug *</Label>
-              <Input
-                id="slug"
-                {...register("slug")}
-                placeholder="moja-strana"
-                className="font-mono text-sm"
-              />
-              {errors.slug && <p className="text-destructive text-xs">{errors.slug.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="excerpt">Kratak opis (excerpt)</Label>
-              <Textarea
-                id="excerpt"
-                {...register("excerpt")}
-                placeholder="Kratak opis strane..."
-                className="min-h-[80px] resize-none"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="coverImage">Cover slika (URL)</Label>
-              <div className="flex gap-2">
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="title">Naslov *</Label>
                 <Input
-                  id="coverImage"
-                  {...register("coverImage")}
-                  placeholder="https://..."
-                  className="flex-1"
+                  id="title"
+                  {...register("title")}
+                  onChange={handleTitleChange}
+                  placeholder="Unesi naslov strane..."
+                  className="text-lg font-medium"
                 />
-                <MediaLibrarySheet
-                  dict={(dict?.media_library as Record<string, unknown>) || {}}
-                  onSelect={(url) => setValue("coverImage", url)}
-                  trigger={
-                    <Button type="button" variant="outline" size="sm" className="shrink-0 gap-1.5">
-                      <Icon name="photo_library" className="size-4" />
-                      Pregledaj
-                    </Button>
-                  }
+                {errors.title && <p className="text-destructive text-xs">{errors.title.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="slug">Slug *</Label>
+                <Input
+                  id="slug"
+                  {...register("slug")}
+                  placeholder="moja-strana"
+                  className="font-mono text-sm"
+                />
+                {errors.slug && <p className="text-destructive text-xs">{errors.slug.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="excerpt">Kratak opis (excerpt)</Label>
+                <Textarea
+                  id="excerpt"
+                  {...register("excerpt")}
+                  placeholder="Kratak opis strane..."
+                  className="min-h-[80px] resize-none"
                 />
               </div>
-            </div>
-            <Separator />
-            <div className="space-y-2">
-              <Label>Sadržaj</Label>
-              <RichTextEditor
-                source="stranica"
-                content={watch("content") || ""}
-                onChange={(html) => setValue("content", html)}
-                placeholder="Počni da pišeš sadržaj strane..."
-              />
-            </div>
-          </>
+              <div className="space-y-2">
+                <Label htmlFor="coverImage">Cover slika (URL)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="coverImage"
+                    {...register("coverImage")}
+                    placeholder="https://..."
+                    className="flex-1"
+                  />
+                  <MediaLibrarySheet
+                    dict={(dict?.media_library as Record<string, unknown>) || {}}
+                    onSelect={(url) => setValue("coverImage", url)}
+                    trigger={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0 gap-1.5"
+                      >
+                        <Icon name="photo_library" className="size-4" />
+                        Pregledaj
+                      </Button>
+                    }
+                  />
+                </div>
+              </div>
+              <Separator />
+              <div className="space-y-2">
+                <Label>Sadržaj</Label>
+                <RichTextEditor
+                  source="stranica"
+                  content={watch("content") || ""}
+                  onChange={(html) => setValue("content", html)}
+                  placeholder="Počni da pišeš sadržaj strane..."
+                />
+              </div>
+            </>
           }
           sidebar={
-          <>
-            <div className="space-y-4 rounded-lg border p-4">
-              <h3 className="text-sm font-semibold">Status</h3>
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  value={watch("status") || "DRAFT"}
-                  onValueChange={(value) =>
-                    setValue(
-                      "status",
-                      value as "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED",
-                    )
-                  }
-                >
-                  <SelectTrigger id="status" aria-label="Status" className="w-full">
-                    <SelectValue placeholder="Izaberi status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="DRAFT">Nacrt</SelectItem>
-                    <SelectItem value="REVIEW">Na pregledu</SelectItem>
-                    <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
-                    <SelectItem value="PUBLISHED_PENDING">Objavljeno (čeka potvrdu)</SelectItem>
-                    <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="template">Šablon</Label>
-                <Select
-                  value={watch("template") || "default"}
-                  onValueChange={(value) => setValue("template", value)}
-                >
-                  <SelectTrigger id="template" aria-label="Šablon" className="w-full">
-                    <SelectValue placeholder="Izaberi šablon" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Podrazumevani</SelectItem>
-                    <SelectItem value="full-width">Puna širina</SelectItem>
-                    <SelectItem value="landing">Landing page</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="showHeader" className="cursor-pointer">
-                  Prikaži header
-                </Label>
-                <Switch
-                  id="showHeader"
-                  checked={!!watch("showHeader")}
-                  onCheckedChange={(checked) => setValue("showHeader", checked)}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="showFooter" className="cursor-pointer">
-                  Prikaži footer
-                </Label>
-                <Switch
-                  id="showFooter"
-                  checked={!!watch("showFooter")}
-                  onCheckedChange={(checked) => setValue("showFooter", checked)}
-                />
-              </div>
-
-              {/* Expiry - shown when status is PUBLISHED */}
-              {watch("status") === "PUBLISHED" && (
-                <div className="space-y-2 pt-2">
-                  <Label htmlFor="expiresAt">Ističe</Label>
-                  <Input
-                    id="expiresAt"
-                    type="datetime-local"
-                    {...register("expiresAt")}
-                    className="w-full"
-                  />
-                  {(() => {
-                    const val = watch("expiresAt");
-                    if (val) {
-                      const dt = new Date(val);
-                      if (dt > new Date()) {
-                        return (
-                          <div className="space-y-1">
-                            <p className="text-muted-foreground text-xs">
-                              Ističe{" "}
-                              {new Date(val).toLocaleDateString("sr-RS", {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </p>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="text-destructive h-auto p-0 text-xs"
-                              onClick={() => setValue("expiresAt", "")}
-                            >
-                              Otkaži istek
-                            </Button>
-                          </div>
-                        );
-                      }
+            <>
+              <div className="space-y-4 rounded-lg border p-4">
+                <h3 className="text-sm font-semibold">Status</h3>
+                <div className="space-y-2">
+                  <Label htmlFor="status">Status</Label>
+                  <Select
+                    value={watch("status") || "DRAFT"}
+                    onValueChange={(value) =>
+                      setValue(
+                        "status",
+                        value as
+                          "DRAFT" | "REVIEW" | "PUBLISHED" | "PUBLISHED_PENDING" | "ARCHIVED",
+                      )
                     }
-                    return null;
-                  })()}
+                  >
+                    <SelectTrigger id="status" aria-label="Status" className="w-full">
+                      <SelectValue placeholder="Izaberi status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="DRAFT">Nacrt</SelectItem>
+                      <SelectItem value="REVIEW">Na pregledu</SelectItem>
+                      <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
+                      <SelectItem value="PUBLISHED_PENDING">Objavljeno (čeka potvrdu)</SelectItem>
+                      <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              )}
+                <div className="space-y-2">
+                  <Label htmlFor="template">Šablon</Label>
+                  <Select
+                    value={watch("template") || "default"}
+                    onValueChange={(value) => setValue("template", value)}
+                  >
+                    <SelectTrigger id="template" aria-label="Šablon" className="w-full">
+                      <SelectValue placeholder="Izaberi šablon" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Podrazumevani</SelectItem>
+                      <SelectItem value="full-width">Puna širina</SelectItem>
+                      <SelectItem value="landing">Landing page</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="showHeader" className="cursor-pointer">
+                    Prikaži header
+                  </Label>
+                  <Switch
+                    id="showHeader"
+                    checked={!!watch("showHeader")}
+                    onCheckedChange={(checked) => setValue("showHeader", checked)}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="showFooter" className="cursor-pointer">
+                    Prikaži footer
+                  </Label>
+                  <Switch
+                    id="showFooter"
+                    checked={!!watch("showFooter")}
+                    onCheckedChange={(checked) => setValue("showFooter", checked)}
+                  />
+                </div>
 
-              <div className="flex items-center gap-2 pt-2">
-                <div className="flex-1">
-                  <Button type="submit" disabled={isPending} className="w-full">
-                    {isPending ? (
-                      <Icon name="progress_activity" className="size-4 animate-spin" />
-                    ) : (
-                      <Icon name="save" className="size-4" />
-                    )}
-                    {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
-                  </Button>
-                </div>
-                {isEditing && watch("status") === "DRAFT" && (
+                {/* Expiry - shown when status is PUBLISHED */}
+                {watch("status") === "PUBLISHED" && (
+                  <div className="space-y-2 pt-2">
+                    <Label htmlFor="expiresAt">Ističe</Label>
+                    <Input
+                      id="expiresAt"
+                      type="datetime-local"
+                      {...register("expiresAt")}
+                      className="w-full"
+                    />
+                    {(() => {
+                      const val = watch("expiresAt");
+                      if (val) {
+                        const dt = new Date(val);
+                        if (dt > new Date()) {
+                          return (
+                            <div className="space-y-1">
+                              <p className="text-muted-foreground text-xs">
+                                Ističe{" "}
+                                {new Date(val).toLocaleDateString("sr-RS", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </p>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="text-destructive h-auto p-0 text-xs"
+                                onClick={() => setValue("expiresAt", "")}
+                              >
+                                Otkaži istek
+                              </Button>
+                            </div>
+                          );
+                        }
+                      }
+                      return null;
+                    })()}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 pt-2">
+                  <div className="flex-1">
+                    <Button type="submit" disabled={isPending} className="w-full">
+                      {isPending ? (
+                        <Icon name="progress_activity" className="size-4 animate-spin" />
+                      ) : (
+                        <Icon name="save" className="size-4" />
+                      )}
+                      {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
+                    </Button>
+                  </div>
+                  {isEditing && watch("status") === "DRAFT" && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      disabled={isPending}
+                      onClick={async () => {
+                        const result = await submitForReviewAction(page!.id as string, "page");
+                        if (result.success) {
+                          toast.success("Strana poslata na pregled");
+                          router.push("/admin/cms/pages");
+                          router.refresh();
+                        } else {
+                          toast.error(result.error || "Greška pri slanju na pregled");
+                        }
+                      }}
+                    >
+                      <Icon name="rate_review" className="size-4" />
+                      Pošalji na pregled
+                    </Button>
+                  )}
                   <Button
                     type="button"
-                    variant="secondary"
-                    disabled={isPending}
-                    onClick={async () => {
-                      const result = await submitForReviewAction(page!.id as string, "page");
-                      if (result.success) {
-                        toast.success("Strana poslata na pregled");
-                        router.push("/admin/cms/pages");
-                        router.refresh();
-                      } else {
-                        toast.error(result.error || "Greška pri slanju na pregled");
-                      }
-                    }}
+                    variant="outline"
+                    onClick={() => router.push("/admin/cms/pages")}
                   >
-                    <Icon name="rate_review" className="size-4" />
-                    Pošalji na pregled
+                    Odustani
                   </Button>
-                )}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.push("/admin/cms/pages")}
-                >
-                  Odustani
-                </Button>
-              </div>
-              {/* Autosave status */}
-              <div className="flex items-center justify-end gap-2 pt-1">
-                {autosaveStatus === "saving" && (
-                  <span className="text-muted-foreground text-xs">Čuvanje...</span>
-                )}
-                {autosaveStatus === "saved" && (
-                  <span className="text-muted-foreground text-xs">
-                    Sačuvano u{" "}
-                    {new Date().toLocaleTimeString("sr-RS", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="w-full gap-2">
-                  <Icon name="search_insights" className="size-4" />
-                  SEO podešavanja
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[400px] overflow-y-auto sm:w-[480px]">
-                <SheetHeader>
-                  <SheetTitle>SEO podešavanja</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6">
-                  <SEOPanel
-                    content={watch("content") as string}
-                    previewUrl={`splashdeals.rs/${watch("slug") || "..."}`}
-                  />
                 </div>
-              </SheetContent>
-            </Sheet>
+                {/* Autosave status */}
+                <div className="flex items-center justify-end gap-2 pt-1">
+                  {autosaveStatus === "saving" && (
+                    <span className="text-muted-foreground text-xs">Čuvanje...</span>
+                  )}
+                  {autosaveStatus === "saved" && (
+                    <span className="text-muted-foreground text-xs">
+                      Sačuvano u{" "}
+                      {new Date().toLocaleTimeString("sr-RS", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  )}
+                </div>
+              </div>
 
-            <div className="space-y-3 rounded-lg border p-4">
-              <SocialSharePreview
-                title={(watch("ogTitle") as string) || (watch("title") as string) || ""}
-                coverImage={(watch("ogImage") as string) || (watch("coverImage") as string) || ""}
-                excerpt={(watch("ogDescription") as string) || (watch("excerpt") as string) || ""}
-                pathHint={`splashdeals.rs/${watch("slug") || "..."}`}
-              />
-            </div>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="w-full gap-2">
+                    <Icon name="search_insights" className="size-4" />
+                    SEO podešavanja
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[400px] overflow-y-auto sm:w-[480px]">
+                  <SheetHeader>
+                    <SheetTitle>SEO podešavanja</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6">
+                    <SEOPanel
+                      content={watch("content") as string}
+                      previewUrl={`splashdeals.rs/${watch("slug") || "..."}`}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
 
-            <div className="space-y-3 rounded-lg border p-4">
-              <ReadabilityPanel content={watch("content") as string} />
-            </div>
+              <div className="space-y-3 rounded-lg border p-4">
+                <SocialSharePreview
+                  title={(watch("ogTitle") as string) || (watch("title") as string) || ""}
+                  coverImage={(watch("ogImage") as string) || (watch("coverImage") as string) || ""}
+                  excerpt={(watch("ogDescription") as string) || (watch("excerpt") as string) || ""}
+                  pathHint={`splashdeals.rs/${watch("slug") || "..."}`}
+                />
+              </div>
 
-            <div className="space-y-3 rounded-lg border p-4">
-              <InternalLinksPanel content={watch("content") as string} />
-            </div>
-          </>
+              <div className="space-y-3 rounded-lg border p-4">
+                <ReadabilityPanel content={watch("content") as string} />
+              </div>
+
+              <div className="space-y-3 rounded-lg border p-4">
+                <InternalLinksPanel content={watch("content") as string} />
+              </div>
+            </>
           }
         />
       </form>

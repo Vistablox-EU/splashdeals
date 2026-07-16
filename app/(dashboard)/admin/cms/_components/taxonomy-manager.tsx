@@ -79,9 +79,7 @@ export function TaxonomyManager({
       const result = await createItem({
         name: newName.trim(),
         slug,
-        ...(showColor
-          ? { color: newColor, description: "", displayOrder: 0 }
-          : {}),
+        ...(showColor ? { color: newColor, description: "", displayOrder: 0 } : {}),
       });
       if (result.success) {
         toast.success(kind === "category" ? "Kategorija kreirana" : "Tag kreiran");
@@ -101,9 +99,7 @@ export function TaxonomyManager({
         const result = await updateItem(id, {
           name: editName.trim(),
           slug,
-          ...(showColor
-            ? { color: editColor, description: "", displayOrder: 0 }
-            : {}),
+          ...(showColor ? { color: editColor, description: "", displayOrder: 0 } : {}),
         });
         if (result.success) {
           toast.success(kind === "category" ? "Kategorija ažurirana" : "Tag ažuriran");
