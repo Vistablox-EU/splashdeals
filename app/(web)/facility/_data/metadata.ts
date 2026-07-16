@@ -1,9 +1,20 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
-import { getCategoryLabel, SITE_URL } from "./schemas";
+import { getCategoryLabel } from "./schemas";
 import type { FacilityWithIncludes } from "./getFacilityQuery";
 import { getFacilityBySlug as getFacility } from "./getFacilityQuery";
+import {
+  absoluteUrl,
+  buildOfferLabel,
+  facilityIndexable,
+  isEntryTicketPrice,
+  pickHeroPhotoUrl,
+  resolveSiteUrl,
+  stripBrandSuffix,
+  toNumber,
+} from "./seo-utils";
+
 export type { FacilityWithIncludes };
 
 // ── Typed helpers for ticket data ─────────────────────────────────
@@ -13,6 +24,11 @@ export interface FlattenedPrice {
   price: number | { toString: () => string };
   originalPrice: number | null | { toString: () => string };
   isActive: boolean;
+  label?: string | null;
+  saleStart?: Date | string | null;
+  saleEnd?: Date | string | null;
+  validFrom?: Date | string | null;
+  validTo?: Date | string | null;
   catTitle: string;
   prodTitle: string;
   prodDescription: string | null;
@@ -45,6 +61,11 @@ export interface TicketGroupTier {
   description: string | null;
   seasonStart: Date | null;
   seasonEnd: Date | null;
+  saleStart?: Date | string | null;
+  saleEnd?: Date | string | null;
+  catTitle?: string;
+  prodTitle?: string;
+  isEntry?: boolean;
 }
 
 export interface TicketGroup {
@@ -76,6 +97,52 @@ export function flattenActivePrices(facility: FacilityWithIncludes): FlattenedPr
   );
 }
 
+/** Price-level tiers for UI + schema (does not collapse variants). */
+export function buildPriceLevelTiers(facility: FacilityWithIncludes): TicketGroupTier[] {
+  return flattenActivePrices(facility).map((p) => {
+    const price = toNumber(p.price);
+    const originalPrice = p.originalPrice != null ? toNumber(p.originalPrice) : null;
+    return {
+      id: p.id,
+      title: p.prodTitle,
+      label: buildOfferLabel({
+        prodTitle: p.prodTitle,
+        priceLabel: p.label,
+        dayType: p.dayType,
+        timeSlot: p.timeSlot,
+      }),
+      price,
+      originalPrice: originalPrice != null && originalPrice > price ? originalPrice : null,
+      minPeople: p.minPeople || 1,
+      maxPeople: p.maxPeople || null,
+      dayType: p.dayType,
+      timeSlot: p.timeSlot,
+      isSeasonPass: p.isSeasonPass,
+      isActive: p.isActive,
+      requiresIdentity: p.requiresIdentity,
+      requiresPhoto: p.requiresPhoto,
+      imageUrl: pickHeroPhotoUrl(facility.media) || null,
+      slug: null,
+      description: p.prodDescription,
+      seasonStart: null,
+      seasonEnd: null,
+      saleStart: p.saleStart ?? p.validFrom ?? null,
+      saleEnd: p.saleEnd ?? p.validTo ?? null,
+      catTitle: p.catTitle,
+      prodTitle: p.prodTitle,
+      isEntry: isEntryTicketPrice({
+        catTitle: p.catTitle,
+        prodTitle: p.prodTitle,
+        isSeasonPass: p.isSeasonPass,
+      }),
+    };
+  });
+}
+
+/**
+ * UI groups: product-level collapse for display rails.
+ * Schema should use buildPriceLevelTiers / flattenActivePrices instead.
+ */
 export function buildTicketGroups(facility: FacilityWithIncludes): TicketGroup[] {
   if (facility.ticketCategories && facility.ticketCategories.length > 0) {
     return facility.ticketCategories.map((cat) => ({
@@ -85,28 +152,41 @@ export function buildTicketGroups(facility: FacilityWithIncludes): TicketGroup[]
       slug: cat.slug || cat.title.toLowerCase().replace(/\s+/g, "-"),
       tiers: (cat.types || [])
         .filter((prod) => prod.isActive)
-        .map((prod) => ({
-          id: prod.id,
-          title: prod.title,
-          label: prod.title,
-          price: Math.min(
-            ...(prod.prices || []).filter((p) => p.isActive).map((p) => Number(p.price)),
-          ),
-          originalPrice: null,
-          minPeople: prod.minPeople || 1,
-          maxPeople: prod.maxPeople || null,
-          dayType: null,
-          timeSlot: null,
-          isSeasonPass: prod.isSeasonPass,
-          requiresIdentity: prod.requiresIdentity,
-          requiresPhoto: prod.requiresPhoto,
-          imageUrl: prod.imageUrl || facility.media?.[0]?.url || null,
-          slug: null,
-          description: null,
-          seasonStart: null,
-          seasonEnd: null,
-          isActive: true,
-        })),
+        .map((prod) => {
+          const active = (prod.prices || []).filter((p) => p.isActive);
+          const prices = active.map((p) => toNumber(p.price));
+          const minPrice = prices.length ? Math.min(...prices) : 0;
+          const originals = active
+            .map((p) => (p.originalPrice != null ? toNumber(p.originalPrice) : null))
+            .filter((n): n is number => n != null && n > minPrice);
+          return {
+            id: prod.id,
+            title: prod.title,
+            label: prod.title,
+            price: minPrice,
+            originalPrice: originals.length ? Math.min(...originals) : null,
+            minPeople: prod.minPeople || 1,
+            maxPeople: prod.maxPeople || null,
+            dayType: null,
+            timeSlot: null,
+            isSeasonPass: prod.isSeasonPass,
+            requiresIdentity: prod.requiresIdentity,
+            requiresPhoto: prod.requiresPhoto,
+            imageUrl: prod.imageUrl || pickHeroPhotoUrl(facility.media) || null,
+            slug: prod.slug || null,
+            description: prod.description,
+            seasonStart: null,
+            seasonEnd: null,
+            isActive: true,
+            catTitle: cat.title,
+            prodTitle: prod.title,
+            isEntry: isEntryTicketPrice({
+              catTitle: cat.title,
+              prodTitle: prod.title,
+              isSeasonPass: prod.isSeasonPass,
+            }),
+          };
+        }),
     }));
   }
 
@@ -114,30 +194,11 @@ export function buildTicketGroups(facility: FacilityWithIncludes): TicketGroup[]
   if (allPrices.length > 0) {
     return [
       {
-        id: "default-group",
-        title: "Standardne Ponude",
-        description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
-        slug: "standardne-ponude",
-        tiers: allPrices.map((p) => ({
-          id: p.id,
-          title: p.prodTitle,
-          label: p.prodTitle,
-          price: Number(p.price),
-          originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
-          minPeople: p.minPeople || 1,
-          maxPeople: p.maxPeople || null,
-          dayType: p.dayType,
-          timeSlot: p.timeSlot,
-          isSeasonPass: p.isSeasonPass,
-          requiresIdentity: p.requiresIdentity,
-          requiresPhoto: p.requiresPhoto,
-          imageUrl: facility.media?.[0]?.url || null,
-          slug: null,
-          description: null,
-          seasonStart: null,
-          seasonEnd: null,
-          isActive: true,
-        })),
+        id: "default",
+        title: "Ulaznice",
+        description: null,
+        slug: "ulaznice",
+        tiers: buildPriceLevelTiers(facility),
       },
     ];
   }
@@ -145,7 +206,21 @@ export function buildTicketGroups(facility: FacilityWithIncludes): TicketGroup[]
   return [];
 }
 
-// ── Fetcher (re-exported from getFacilityQuery.ts) ───────────────
+export function getEntryTicketPrices(facility: FacilityWithIncludes): FlattenedPrice[] {
+  return flattenActivePrices(facility).filter((p) =>
+    isEntryTicketPrice({
+      catTitle: p.catTitle,
+      prodTitle: p.prodTitle,
+      isSeasonPass: p.isSeasonPass,
+    }),
+  );
+}
+
+export function getEntryMinPrice(facility: FacilityWithIncludes): number | null {
+  const entry = getEntryTicketPrices(facility);
+  if (entry.length === 0) return null;
+  return Math.min(...entry.map((t) => toNumber(t.price)));
+}
 
 export { getFacility };
 
@@ -158,62 +233,70 @@ export async function buildFacilityMetadata(
   const facility = await getFacility(facilitySlug);
   if (!facility) notFound();
 
+  const siteUrl = resolveSiteUrl();
   const currentYear = new Date().getFullYear();
   const categoryLabel = getCategoryLabel(facility.category);
+  const indexable = facilityIndexable((facility as { status?: string | null }).status ?? "ACTIVE");
 
-  // Flatten ticket data for price / count hints
-  const tickets = flattenActivePrices(facility);
-  const ticketCount = tickets.length;
+  const entryTickets = getEntryTicketPrices(facility);
+  const allTickets = flattenActivePrices(facility);
+  const ticketCount = entryTickets.length || allTickets.length;
+
+  const minPrice = getEntryMinPrice(facility);
+  const priceHint = minPrice != null ? ` Već od ${minPrice} RSD!` : "";
   const ticketHint = ticketCount > 0 ? ` | ${ticketCount} vrsta ulaznica dostupno` : "";
 
-  const minPrice =
-    ticketCount > 0
-      ? Math.min(
-          ...tickets.map((t: { price: number | { toString: () => string } }) => Number(t.price)),
-        )
-      : null;
-  const priceHint = minPrice ? ` Već od ${minPrice} RSD!` : "";
-
   const maxDiscount = calculateMaxDiscount(
-    tickets.map((t: { isActive: boolean; price: unknown; originalPrice: unknown | null }) => ({
+    entryTickets.map((t) => ({
       isActive: t.isActive,
-      price: Number(t.price),
-      originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
+      price: toNumber(t.price),
+      originalPrice: t.originalPrice != null ? toNumber(t.originalPrice) : null,
     })),
   );
 
-  // Localize and normalize name (e.g. "AquaPark Petroland" -> "Akva park Petroland")
   const localizedName = facility.name
     .replace(/\bAquaPark\b/gi, "Akva park")
     .replace(/\bAqua Park\b/gi, "Akva park");
 
+  const cityPart =
+    facility.city && !localizedName.toLowerCase().includes(facility.city.toLowerCase())
+      ? ` ${facility.city}`
+      : "";
+
   const fallbackTitle =
     maxDiscount > 0
-      ? `${localizedName} ${facility.city} Ulaznice - Uštedi do ${maxDiscount}%`
-      : `${localizedName} ${facility.city} Ulaznice ${currentYear}`;
+      ? `${localizedName}${cityPart} ulaznice — uštedi do ${maxDiscount}%`
+      : `${localizedName}${cityPart} ulaznice ${currentYear}`;
 
   const rawTitle = facility.metaTitle || fallbackTitle;
+  const title = stripBrandSuffix(rawTitle);
 
-  // Strip trailing brand suffix to prevent root layout from duplicating it
-  const title = rawTitle
-    .replace(/\s*\|\s*Splash\s*Deals\s*$/i, "")
-    .replace(/\s*\|\s*Splashdeals\s*$/i, "");
-
-  // Description
-  const fallbackDescription = `Kupi ulaznice za ${facility.name} u ${facility.city}.${priceHint} Najbolje cene za ${categoryLabel.toLowerCase()} u Srbiji na Splashdeals.`;
+  const seasonHint = ` Sezona ${currentYear}.`;
+  const fallbackDescription = `Kupi regularne ulaznice za ${facility.name}${facility.city ? ` u ${facility.city}` : ""}.${priceHint} Digitalna karta za ${categoryLabel.toLowerCase()} na Splashdeals.${seasonHint}`;
   const baseDescription =
     facility.metaDescription || facility.description?.slice(0, 140) || fallbackDescription;
-  const finalDescription = baseDescription.includes("Već od")
-    ? baseDescription
-    : `${baseDescription}${priceHint}${ticketHint}`;
 
-  // Canonical URL
-  const canonicalUrl = `${SITE_URL}/${facilitySlug}`;
+  let finalDescription = baseDescription;
+  if (!/već od|vec od/i.test(finalDescription) && priceHint) {
+    finalDescription = `${finalDescription}${priceHint}`;
+  }
+  if (!/vrsta ulaznica/i.test(finalDescription) && ticketHint) {
+    finalDescription = `${finalDescription}${ticketHint}`;
+  }
+  if (finalDescription.length > 300) {
+    finalDescription = `${finalDescription.slice(0, 297)}…`;
+  }
+
+  const canonicalUrl = absoluteUrl(`/${facilitySlug}`, siteUrl);
+  const ogImage = absoluteUrl(`/api/og/facility/${facilitySlug}`, siteUrl);
+  const heroPhoto = pickHeroPhotoUrl(facility.media);
 
   return {
     title,
     description: finalDescription,
-    robots: { index: true, follow: true },
+    robots: indexable
+      ? { index: true, follow: true }
+      : { index: false, follow: false, nocache: true },
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -229,11 +312,22 @@ export async function buildFacilityMetadata(
       siteName: "SplashDeals",
       images: [
         {
-          url: `${SITE_URL}/api/og/facility/${facilitySlug}`,
+          url: ogImage,
+          secureUrl: ogImage,
           width: 1200,
           height: 630,
-          alt: facility.name,
+          alt: `${facility.name}${facility.city ? ` — ${facility.city}` : ""}`,
         },
+        ...(heroPhoto
+          ? [
+              {
+                url: absoluteUrl(heroPhoto, siteUrl),
+                width: 1200,
+                height: 630,
+                alt: facility.name,
+              },
+            ]
+          : []),
       ],
       locale: "sr_RS",
       type: "website",
@@ -242,7 +336,7 @@ export async function buildFacilityMetadata(
       card: "summary_large_image",
       title,
       description: finalDescription,
-      images: [`${SITE_URL}/api/og/facility/${facilitySlug}`],
+      images: [ogImage],
     },
   };
 }

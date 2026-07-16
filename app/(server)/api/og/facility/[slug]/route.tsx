@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
 import { SITE_URL, getCategoryLabel } from "@/app/(web)/facility/_data/schemas";
 import { getFacility } from "@/app/(web)/facility/_data/metadata";
+import { isEntryTicketPrice } from "@/app/(web)/facility/_data/seo-utils";
 
 export const runtime = "nodejs";
 
@@ -54,27 +55,51 @@ async function renderFacilityImage(
   facilitySlug: string,
   fonts: { name: string; data: ArrayBuffer; weight: 400; style: "normal" }[],
 ): Promise<ImageResponse> {
-  // Resolve hero image
+  // Resolve hero image (prefer real photo)
   const heroImage =
     facility.media.find((m) => m.type === "PHOTO" && m.isHero)?.url ??
     facility.media.find((m) => m.type === "PHOTO" && m.isCardBackground)?.url ??
     facility.media.find((m) => m.type === "PHOTO")?.url;
 
-  // Compute pricing
-  const tickets = (facility.ticketCategories ?? []).flatMap((cat) =>
+  // Entry-ticket-only pricing for OG "od X RSD" line
+  const entryTickets = (facility.ticketCategories ?? []).flatMap((cat) =>
     (cat.types ?? []).flatMap((prod) =>
-      (prod.prices ?? []).map((p) => ({
-        isActive: p.isActive,
-        price: Number(p.price),
-        originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
-      })),
+      (prod.prices ?? [])
+        .filter((p) => p.isActive)
+        .filter((_p) =>
+          isEntryTicketPrice({
+            catTitle: cat.title,
+            prodTitle: prod.title,
+            isSeasonPass: prod.isSeasonPass,
+          }),
+        )
+        .map((p) => ({
+          isActive: true as const,
+          price: Number(p.price),
+          originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
+        })),
     ),
   );
 
-  const minPrice =
-    tickets.length > 0 ? Math.min(...tickets.filter((t) => t.isActive).map((t) => t.price)) : null;
+  const ticketsForDiscount =
+    entryTickets.length > 0
+      ? entryTickets
+      : (facility.ticketCategories ?? []).flatMap((cat) =>
+          (cat.types ?? []).flatMap((prod) =>
+            (prod.prices ?? [])
+              .filter((p) => p.isActive)
+              .map((p) => ({
+                isActive: true as const,
+                price: Number(p.price),
+                originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
+              })),
+          ),
+        );
 
-  const maxDiscount = calculateMaxDiscount(tickets);
+  const minPrice =
+    ticketsForDiscount.length > 0 ? Math.min(...ticketsForDiscount.map((t) => t.price)) : null;
+
+  const maxDiscount = calculateMaxDiscount(ticketsForDiscount);
 
   let priceLine = "";
   if (minPrice !== null && maxDiscount > 0) {
