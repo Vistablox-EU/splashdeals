@@ -1,5 +1,4 @@
 import { requireAdmin } from "@/app/(server)/lib/auth-guards";
-import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { PostEditor } from "../_components/post-editor";
 import { Icon } from "@/components/ui/Icon";
@@ -13,34 +12,16 @@ export const metadata: Metadata = {
 };
 
 export default async function EditPostPage({ params }: { params: Promise<{ "post-id": string }> }) {
-  await requireAdmin();
+  const user = await requireAdmin();
   await connection();
   const { "post-id": postId } = await params;
 
-  const post = await prisma.blogPost.findUnique({
-    where: { id: postId },
-    include: { tags: true },
-  });
+  const { loadCmsPostEditorData } = await import("@/app/(dashboard)/admin/cms/_data/cms-loaders");
+  const { post, categories, tags, postTagIds } = await loadCmsPostEditorData(postId);
 
   if (!post) {
     notFound();
   }
-
-  const categories = await prisma.blogCategory.findMany({
-    orderBy: { displayOrder: "asc" },
-  });
-  const tags = await prisma.blogTag.findMany({
-    orderBy: { name: "asc" },
-  });
-
-  const postData = {
-    ...post,
-    createdAt: post.createdAt.toISOString(),
-    updatedAt: post.updatedAt.toISOString(),
-    publishedAt: post.publishedAt?.toISOString() ?? null,
-  };
-
-  const postTagIds = post.tags.map((t) => t.tagId);
 
   const dict = await getDictionary();
 
@@ -56,16 +37,17 @@ export default async function EditPostPage({ params }: { params: Promise<{ "post
         </Link>
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Izmeni objavu</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Uredi {postData.title}</p>
+          <p className="text-muted-foreground mt-1 text-sm">Uredi {post.title as string}</p>
         </div>
       </div>
 
       <PostEditor
-        post={postData as unknown as Record<string, unknown>}
+        post={post as unknown as Record<string, unknown>}
         initialTagIds={postTagIds}
         categories={categories as unknown as Array<Record<string, unknown>>}
         tags={tags as unknown as Array<Record<string, unknown>>}
         dict={dict}
+        currentUserId={user.id}
       />
     </div>
   );

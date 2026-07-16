@@ -1,5 +1,4 @@
 import { requireAdmin } from "@/app/(server)/lib/auth-guards";
-import { prisma } from "@/app/(server)/lib/prisma";
 import { PostEditor } from "../_components/post-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
@@ -13,24 +12,11 @@ export const metadata: Metadata = {
 };
 
 export default async function NewPostPage() {
-  await requireAdmin();
+  const user = await requireAdmin();
   await connection();
 
-  const categories = await prisma.blogCategory.findMany({
-    orderBy: { displayOrder: "asc" },
-  });
-  const tags = await prisma.blogTag.findMany({
-    orderBy: { name: "asc" },
-  });
-
-  const serializedCategories = categories.map((c) => ({
-    ...c,
-  })) as unknown as Array<Record<string, unknown>>;
-
-  const serializedTags = tags.map((t) => ({
-    ...t,
-  })) as unknown as Array<Record<string, unknown>>;
-
+  const { loadCmsPostEditorData } = await import("@/app/(dashboard)/admin/cms/_data/cms-loaders");
+  const { categories, tags } = await loadCmsPostEditorData();
   const dict = await getDictionary();
 
   return (
@@ -49,7 +35,12 @@ export default async function NewPostPage() {
         </div>
       </div>
 
-      <PostEditor categories={serializedCategories} tags={serializedTags} dict={dict} />
+      <PostEditor
+        categories={categories as unknown as Array<Record<string, unknown>>}
+        tags={tags as unknown as Array<Record<string, unknown>>}
+        dict={dict}
+        currentUserId={user.id}
+      />
     </div>
   );
 }

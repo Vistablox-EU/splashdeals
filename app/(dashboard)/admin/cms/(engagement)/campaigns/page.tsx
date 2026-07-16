@@ -5,7 +5,7 @@ import { loadCmsCampaigns, loadCmsFacilities } from "@/app/(dashboard)/admin/cms
 import { CampaignsListClient } from "./_components/campaigns-list-client";
 
 export const metadata: Metadata = {
-  title: "Kampanje | CMS | Splashdeals",
+  title: "Kuponi / kampanje | CMS | Splashdeals",
 };
 
 export default async function CampaignsPage() {

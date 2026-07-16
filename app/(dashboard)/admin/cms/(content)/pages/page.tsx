@@ -1,15 +1,21 @@
 import { requireAdmin } from "@/app/(server)/lib/auth-guards";
-import { prisma } from "@/app/(server)/lib/prisma";
 import { PagesListClient } from "./_components/pages-list-client";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import { loadCmsPages, type PagesListFilter } from "@/app/(dashboard)/admin/cms/_data/cms-loaders";
 
 export const metadata: Metadata = {
   title: "Strane | CMS | Splashdeals",
 };
+
+function resolveFilter(params: { stale?: string; status?: string }): PagesListFilter {
+  if (params.status === "review") return "review";
+  if (params.stale === "true") return "stale";
+  return "all";
+}
 
 export default async function PagesPage({
   searchParams,
@@ -20,48 +26,8 @@ export default async function PagesPage({
   await connection();
 
   const params = await searchParams;
-  const isStaleFilter = params.stale === "true";
-  const isReviewFilter = params.status === "review";
-
-  const staleThreshold = new Date();
-  staleThreshold.setFullYear(staleThreshold.getFullYear() - 1);
-
-  let pages;
-  if (isReviewFilter) {
-    pages = await prisma.page.findMany({
-      where: { status: "REVIEW" },
-      orderBy: { updatedAt: "desc" },
-    });
-  } else if (isStaleFilter) {
-    pages = await prisma.page.findMany({
-      where: {
-        status: "PUBLISHED",
-        updatedAt: { lt: staleThreshold },
-        OR: [{ reviewedAt: null }, { reviewedAt: { lt: staleThreshold } }],
-      },
-      orderBy: { updatedAt: "desc" },
-    });
-  } else {
-    pages = await prisma.page.findMany({
-      orderBy: { createdAt: "desc" },
-    });
-  }
-
-  const serialized = pages.map((page) => {
-    const lastDate = page.reviewedAt
-      ? new Date(Math.max(page.updatedAt.getTime(), page.reviewedAt.getTime()))
-      : page.updatedAt;
-    const isStale = page.status === "PUBLISHED" && lastDate < staleThreshold;
-
-    return {
-      ...page,
-      createdAt: page.createdAt.toISOString(),
-      updatedAt: page.updatedAt.toISOString(),
-      publishedAt: page.publishedAt?.toISOString() ?? null,
-      reviewedAt: page.reviewedAt?.toISOString() ?? null,
-      isStale,
-    };
-  });
+  const filter = resolveFilter(params);
+  const pages = await loadCmsPages(filter);
 
   return (
     <div className="space-y-6">
@@ -69,7 +35,7 @@ export default async function PagesPage({
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Strane</h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            Upravljaj statičkim stranama, landing page-ovima i SEO meta podacima.
+            Statičke strane i landing page-ovi. Objavljene strane se serviraju na /{"{slug}"}.
           </p>
         </div>
         <Button asChild>
@@ -81,9 +47,9 @@ export default async function PagesPage({
       </div>
 
       <PagesListClient
-        pages={serialized as unknown as Array<Record<string, unknown>>}
-        isStaleFilter={isStaleFilter}
-        isReviewFilter={isReviewFilter}
+        pages={pages as unknown as Array<Record<string, unknown>>}
+        isStaleFilter={filter === "stale"}
+        isReviewFilter={filter === "review"}
       />
     </div>
   );

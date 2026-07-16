@@ -1,6 +1,6 @@
 /**
  * 🔍 Shared Slug Resolution
- * Single source of truth for resolving path segments into category or facility types.
+ * Single source of truth for resolving path segments into category, facility, or CMS page types.
  * Used by both the catch-all route ([...slug]/page.tsx) and the category route ([categorySlug]/page.tsx).
  */
 import { prisma } from "@/app/(server)/lib/prisma";
@@ -16,16 +16,18 @@ import type { Locale } from "@/lib/locale";
 export type ResolvedType =
   | { type: "category"; category: string; locale: Locale }
   | { type: "facility"; category: string; locale: Locale }
+  | { type: "page"; slug: string; locale: Locale }
   | null;
 
 /**
- * Resolve a single path segment to determine if it's a known category or facility slug.
- * Accepts both Serbian and English slugs.
+ * Resolve a single path segment to determine if it's a known category, facility, or CMS page slug.
+ * Accepts both Serbian and English slugs for categories.
  *
  * Resolution order:
  * 1. Known category slug (from registry, any locale) with DB confirmation
  * 2. Known category slug (from registry, even if DB is empty — e.g. CI)
  * 3. Active facility slug (Prisma lookup)
+ * 4. Published CMS Page (marketing.pages) — after facility/category to avoid collisions
  */
 export async function resolveSlug(firstSlug: string, locale: Locale = "sr"): Promise<ResolvedType> {
   // Map English slug to Serbian key for DB lookup
@@ -58,6 +60,25 @@ export async function resolveSlug(firstSlug: string, locale: Locale = "sr"): Pro
     const catSlug =
       dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
     return { type: "facility", category: catSlug, locale };
+  }
+
+  // 4. Published CMS static page
+  const now = new Date();
+  const page = await prisma.page.findFirst({
+    where: {
+      slug: firstSlug,
+      status: "PUBLISHED",
+      OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
+      AND: [
+        {
+          OR: [{ publishedAt: null }, { publishedAt: { lte: now } }],
+        },
+      ],
+    },
+    select: { slug: true },
+  });
+  if (page) {
+    return { type: "page", slug: page.slug, locale };
   }
 
   return null;
@@ -99,6 +120,15 @@ export async function resolveLegacyTarget(slugs: string[]): Promise<string | nul
   });
   if (facility) {
     return "/" + facility.slug;
+  }
+
+  // Fallback: published CMS page
+  const page = await prisma.page.findFirst({
+    where: { slug: lastSegment, status: "PUBLISHED" },
+    select: { slug: true },
+  });
+  if (page) {
+    return "/" + page.slug;
   }
 
   return null;

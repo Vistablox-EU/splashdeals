@@ -1,5 +1,4 @@
 import { requireAdmin } from "@/app/(server)/lib/auth-guards";
-import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { PageEditor } from "../_components/page-editor";
 import { Icon } from "@/components/ui/Icon";
@@ -8,24 +7,24 @@ import { Button } from "@/components/ui/button";
 import { getDictionary } from "@/lib/dictionaries";
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import { loadCmsPage } from "@/app/(dashboard)/admin/cms/_data/cms-loaders";
+import { toDatetimeLocal } from "@/app/(dashboard)/admin/cms/_lib/cms-editor-utils";
 
 export const metadata: Metadata = {
   title: "Izmeni stranu | CMS | Splashdeals",
 };
 
 export default async function EditPagePage({ params }: { params: Promise<{ "page-id": string }> }) {
-  await requireAdmin();
+  const user = await requireAdmin();
   await connection();
   const { "page-id": pageId } = await params;
 
-  const page = await prisma.page.findUnique({ where: { id: pageId } });
+  const page = await loadCmsPage(pageId);
   if (!page) notFound();
 
   const pageData = {
     ...page,
-    createdAt: page.createdAt.toISOString(),
-    updatedAt: page.updatedAt.toISOString(),
-    publishedAt: page.publishedAt?.toISOString() ?? null,
+    expiresAt: page.expiresAt ? toDatetimeLocal(new Date(page.expiresAt)) : "",
   };
 
   const dict = await getDictionary();
@@ -43,7 +42,11 @@ export default async function EditPagePage({ params }: { params: Promise<{ "page
           <p className="text-muted-foreground mt-1 text-sm">Uredi {pageData.title}</p>
         </div>
       </div>
-      <PageEditor page={pageData as unknown as Record<string, unknown>} dict={dict} />
+      <PageEditor
+        page={pageData as unknown as Record<string, unknown>}
+        dict={dict}
+        currentUserId={user.id}
+      />
     </div>
   );
 }

@@ -24,6 +24,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { RichTextEditor } from "../../../_components/rich-text-editor";
 import { SEOPanel } from "../../../_components/seo-panel";
+import { ReadabilityPanel } from "../../../_components/readability-panel";
+import { InternalLinksPanel } from "../../../_components/internal-links-panel";
+import { EditorPresence } from "../../../_components/editor-presence";
+import { SocialSharePreview } from "../../../_components/social-share-preview";
+import { CmsEditorShell } from "../../../_components/cms-editor-shell";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import {
@@ -56,15 +61,17 @@ const pageFormSchema = z.object({
   ogImage: z.string().optional(),
   canonicalUrl: z.string().optional(),
   robotsDirective: z.string().optional(),
+  focusKeyword: z.string().optional(),
   expiresAt: z.string().optional(),
 });
 
 interface PageEditorProps {
   page?: Record<string, unknown>;
   dict?: Record<string, unknown>;
+  currentUserId?: string;
 }
 
-export function PageEditor({ page, dict }: PageEditorProps) {
+export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!page;
@@ -91,6 +98,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
       ogImage: (page?.ogImage as string) || "",
       canonicalUrl: (page?.canonicalUrl as string) || "",
       robotsDirective: (page?.robotsDirective as string) || "",
+      focusKeyword: (page?.focusKeyword as string) || "",
       expiresAt: (page?.expiresAt as string) || "",
     },
   });
@@ -204,6 +212,9 @@ export function PageEditor({ page, dict }: PageEditorProps) {
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {isEditing && !!page?.id && currentUserId && (
+          <EditorPresence pageId={page.id as string} currentUserId={currentUserId} />
+        )}
         {/* Restore banner */}
         {showRestoreBanner && pendingAutosave && (
           <div className="mb-4 rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-800">
@@ -298,8 +309,9 @@ export function PageEditor({ page, dict }: PageEditorProps) {
             </div>
           </div>
         )}
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_380px]">
-          <div className="space-y-6">
+        <CmsEditorShell
+          main={
+          <>
             <div className="space-y-2">
               <Label htmlFor="title">Naslov *</Label>
               <Input
@@ -354,7 +366,6 @@ export function PageEditor({ page, dict }: PageEditorProps) {
             <Separator />
             <div className="space-y-2">
               <Label>Sadržaj</Label>
-              {}
               <RichTextEditor
                 source="stranica"
                 content={watch("content") || ""}
@@ -362,9 +373,10 @@ export function PageEditor({ page, dict }: PageEditorProps) {
                 placeholder="Počni da pišeš sadržaj strane..."
               />
             </div>
-          </div>
-
-          <div className="space-y-6">
+          </>
+          }
+          sidebar={
+          <>
             <div className="space-y-4 rounded-lg border p-4">
               <h3 className="text-sm font-semibold">Status</h3>
               <div className="space-y-2">
@@ -540,12 +552,33 @@ export function PageEditor({ page, dict }: PageEditorProps) {
                   <SheetTitle>SEO podešavanja</SheetTitle>
                 </SheetHeader>
                 <div className="mt-6">
-                  <SEOPanel />
+                  <SEOPanel
+                    content={watch("content") as string}
+                    previewUrl={`splashdeals.rs/${watch("slug") || "..."}`}
+                  />
                 </div>
               </SheetContent>
             </Sheet>
-          </div>
-        </div>
+
+            <div className="space-y-3 rounded-lg border p-4">
+              <SocialSharePreview
+                title={(watch("ogTitle") as string) || (watch("title") as string) || ""}
+                coverImage={(watch("ogImage") as string) || (watch("coverImage") as string) || ""}
+                excerpt={(watch("ogDescription") as string) || (watch("excerpt") as string) || ""}
+                pathHint={`splashdeals.rs/${watch("slug") || "..."}`}
+              />
+            </div>
+
+            <div className="space-y-3 rounded-lg border p-4">
+              <ReadabilityPanel content={watch("content") as string} />
+            </div>
+
+            <div className="space-y-3 rounded-lg border p-4">
+              <InternalLinksPanel content={watch("content") as string} />
+            </div>
+          </>
+          }
+        />
       </form>
     </FormProvider>
   );

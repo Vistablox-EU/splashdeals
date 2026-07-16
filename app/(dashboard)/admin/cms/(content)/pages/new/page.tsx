@@ -12,9 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default async function NewPagePage() {
-  await requireAdmin();
+  const user = await requireAdmin();
   await connection();
-
   const dict = await getDictionary();
 
   return (
@@ -28,11 +27,11 @@ export default async function NewPagePage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Nova strana</h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            Kreiraj novu statičku ili landing stranu.
+            Kreiraj novu statičku ili landing stranu. Objavljene strane su na javnom URL-u /slug.
           </p>
         </div>
       </div>
-      <PageEditor dict={dict} />
+      <PageEditor dict={dict} currentUserId={user.id} />
     </div>
   );
 }

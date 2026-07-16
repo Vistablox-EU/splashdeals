@@ -25,10 +25,12 @@ import {
 } from "@/components/ui/select";
 import { RichTextEditor } from "../../../_components/rich-text-editor";
 import { SEOPanel } from "../../../_components/seo-panel";
-import { SEOScoringPanel } from "../../../_components/seo-scoring-panel";
 import { ReadabilityPanel } from "../../../_components/readability-panel";
 import { InternalLinksPanel } from "../../../_components/internal-links-panel";
 import { EditorPresence } from "../../../_components/editor-presence";
+import { RollbackDropdown } from "../../../_components/rollback-dropdown";
+import { SocialSharePreview } from "../../../_components/social-share-preview";
+import { CmsEditorShell } from "../../../_components/cms-editor-shell";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import {
@@ -80,9 +82,10 @@ interface PostEditorProps {
   categories: Array<Record<string, unknown>>;
   tags: Array<Record<string, unknown>>;
   dict?: Record<string, unknown>;
+  currentUserId?: string;
 }
 
-export function PostEditor({ post, initialTagIds, categories, tags, dict }: PostEditorProps) {
+export function PostEditor({ post, initialTagIds, categories, tags, dict, currentUserId = "" }: PostEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!post;
@@ -263,7 +266,9 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit as SubmitHandler<any>)}>
         {/* Editor Presence */}
-        {isEditing && !!post?.id && <EditorPresence postId={post.id as string} currentUserId="" />}
+        {isEditing && !!post?.id && currentUserId && (
+          <EditorPresence postId={post.id as string} currentUserId={currentUserId} />
+        )}
         {/* Restore banner */}
         {showRestoreBanner && pendingAutosave && (
           <div className="mb-4 rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-800">
@@ -361,8 +366,19 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
             </div>
           </div>
         )}
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_380px]">
-          <div className="space-y-6">
+        <CmsEditorShell
+          main={
+          <>
+            {isEditing && !!post?.id && (
+              <RollbackDropdown
+                postId={post.id as string}
+                onRestore={(title, content, excerpt) => {
+                  setValue("title", title, { shouldDirty: true });
+                  setValue("content", content, { shouldDirty: true });
+                  setValue("excerpt", excerpt, { shouldDirty: true });
+                }}
+              />
+            )}
             <div className="space-y-2">
               <Label htmlFor="title">Naslov *</Label>
               <Input
@@ -551,9 +567,10 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                 placeholder="Počni da pišeš blog objavu... ili klikni 'AI Generiši' iznad za automatski generisan sadržaj"
               />
             </div>
-          </div>
-
-          <div className="space-y-6">
+          </>
+          }
+          sidebar={
+          <>
             <div className="space-y-4 rounded-lg border p-4">
               <h3 className="text-sm font-semibold">Status</h3>
               <div className="space-y-2">
@@ -803,9 +820,14 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
               </SheetContent>
             </Sheet>
 
-            {/* SEO Scoring Panel */}
+            {/* Social share preview */}
             <div className="space-y-3 rounded-lg border p-4">
-              <SEOScoringPanel content={watch("content") as string} />
+              <SocialSharePreview
+                title={(watch("ogTitle") as string) || (watch("title") as string) || ""}
+                coverImage={(watch("ogImage") as string) || (watch("coverImage") as string) || ""}
+                excerpt={(watch("ogDescription") as string) || (watch("excerpt") as string) || ""}
+                pathHint={`splashdeals.rs/blog/${watch("slug") || "..."}`}
+              />
             </div>
 
             {/* Readability Panel */}
@@ -817,8 +839,9 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
             <div className="space-y-3 rounded-lg border p-4">
               <InternalLinksPanel content={watch("content") as string} />
             </div>
-          </div>
-        </div>
+          </>
+          }
+        />
       </form>
     </FormProvider>
   );

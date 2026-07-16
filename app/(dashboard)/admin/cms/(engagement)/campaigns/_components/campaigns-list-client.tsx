@@ -121,9 +121,9 @@ export function CampaignsListClient({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Kampanje</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Kuponi / kampanje</h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            Upravljaj promo kodovima i popust kampanjama.
+            Marketplace kuponi i popusti po objektima. Email kampanje idu preko Listmonk-a.
           </p>
         </div>
         <Button asChild>

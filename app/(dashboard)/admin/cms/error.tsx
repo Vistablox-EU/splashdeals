@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 
-export default function CMSError({
+export default function CmsError({
   error,
   reset,
 }: {
@@ -12,7 +12,7 @@ export default function CMSError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[CMS Error]", error);
+    console.error("[cms]", error);
   }, [error]);
 
   return (
@@ -20,7 +20,7 @@ export default function CMSError({
       <Icon name="error" className="text-destructive size-12" />
       <h2 className="text-xl font-semibold">Došlo je do greške</h2>
       <p className="text-muted-foreground max-w-md text-center text-sm">
-        {error.message || "Neočekivana greška u CMS modulu."}
+        {error.message || "Neočekivana greška u CMS-u."}
       </p>
       <Button onClick={reset}>
         <Icon name="refresh" className="size-4" />

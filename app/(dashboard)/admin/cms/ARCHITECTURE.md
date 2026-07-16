@@ -1,261 +1,84 @@
-# CMS Module — Architecture & Implementation
+# CMS architecture notes (admin)
 
-## Overview
+## Route tree
 
-Enterprise-grade CMS system for Splashdeals.rs, modeled after WordPress editorial workflows. Supports blog posts, static pages, categories, tags, content revisions, SEO metadata, rich text editing, scheduled publishing, and frontend blog delivery.
+Base: `/admin/cms` (hub dashboard — not a redirect).
 
-Built on: Next.js 16 App Router, Prisma (PostgreSQL), ShadCN UI (radix-nova), TipTap editor, Zod v4.
-
----
-
-## Route Structure
-
-### Admin (under `(dashboard)` route group)
-
-The CMS admin routes are organized into **route groups** (`(content)`, `(engagement)`, `(settings)`, `(tools)`) to provide logical organization without changing any URLs. Route groups (parenthesized directories) are invisible in the URL path.
+Route groups `(content)`, `(engagement)`, `(settings)`, `(tools)` are **URL-invisible**.
 
 ```
 /admin/cms
-├── page.tsx                    → redirects to /admin/cms/posts
-├── error.tsx                   → error boundary
-├── loading.tsx                 → AdminSkeleton
-├── _components/
-│   ├── rich-text-editor.tsx    → TipTap editor with toolbar + image upload plugin
-│   ├── seo-panel.tsx           → SERP preview, OG fields, canonical, robots
-│   └── image-upload-plugin.ts  → TipTap plugin for drag-drop/paste upload
-│
-├── (content)/                  ← route group — invisible in URL
-│   ├── posts/
-│   │   ├── page.tsx                → Server component (fetches + serializes posts)
-│   │   ├── loading.tsx / error.tsx
-│   │   ├── _components/
-│   │   │   ├── posts-list-client.tsx  → TanStack table with filters, pagination, bulk ops
-│   │   │   └── post-editor.tsx        → Full form: title, slug, content, tags, SEO, publish
-│   │   ├── new/page.tsx             → Server page + PostEditor (no post prop)
-│   │   └── [post-id]/page.tsx       → Server page + PostEditor (with post prop)
-│   ├── pages/
-│   │   ├── page.tsx                 → Server component (fetches + serializes pages)
-│   │   ├── _components/
-│   │   │   ├── pages-list-client.tsx → Table with filters
-│   │   │   └── page-editor.tsx       → Form: title, slug, content, template, header/footer toggles
-│   │   ├── new/page.tsx
-│   │   └── [page-id]/page.tsx
-│   ├── categories/
-│   │   ├── page.tsx                 → Server component
-│   │   └── _components/
-│   │       └── categories-manager.tsx  → Inline CRUD with color picker, post count
-│   └── tags/
-│       ├── page.tsx                 → Server component
-│       └── _components/
-│           └── tags-manager.tsx        → Inline CRUD (SUPER_ADMIN only)
-│
-├── (engagement)/               ← route group — invisible in URL
-│   ├── reviews/
-│   ├── activity/
-│   └── campaigns/
-│
-├── (settings)/                 ← route group — invisible in URL
-│   ├── navigation/
-│   ├── webhooks/
-│   └── redirects/
-│
-└── (tools)/                    ← route group — invisible in URL
-    ├── api-docs/
-    ├── orphaned-media/
-    └── embed/
+├── posts | posts/new | posts/[post-id]
+│   └── posts/scheduled → redirects to posts?status=scheduled
+├── pages | pages/new | pages/[page-id]
+├── categories
+├── tags
+├── campaigns          # marketplace coupons/discounts (NOT listmonk email)
+├── reviews
+├── activity
+├── navigation
+├── redirects
+├── webhooks | create | [id]
+└── tools | broken-links | not-found-logs | orphaned-media | embed | api-docs
 ```
 
-### Public (under `(web)` route group)
+Secondary nav + hub links: single config in `app/(dashboard)/admin/cms/_lib/cms-nav.ts`, rendered with active state via `CmsNav`.
 
-```
-/blog
-├── page.tsx                     → Paginated grid (12/post), category badges, reading time
-└── [slug]/page.tsx              → Full article + related posts + Article JSON-LD + OG + canonical
-```
+## Public delivery
 
-### Cron / API
+| Content | Public URL |
+|---|---|
+| Blog posts | `/blog`, `/blog/[slug]`, `/blog/feed.xml` |
+| CMS static pages (`Page` model) | `/{slug}` via catch-all `app/(web)/[...slug]` after facility/category resolution |
+| Media library | `/admin/media` (outside CMS chrome) |
 
-```
-/(server)/api/cron/publish-blog/route.ts   → Vercel Cron (every 10min), publishes DRAFTs with past publishedAt
-```
+Slug resolution order (`resolveSlug`): category → facility → **published CMS page**.
 
-### Sitemap / RSS
+## Shared UI shells (SSOT)
 
-```
-/sitemap.ts                      → Blog posts added alongside facilities
-/blog/feed.xml/route.ts          → RSS 2.0 feed (50 latest posts)
-/robots.ts                       → References sitemap + RSS feed
-```
+| Shell | Path | Used by |
+|---|---|---|
+| `CmsContentTable` | `_components/cms-content-table.tsx` | posts + pages list clients (search, status filter, filter chips, bulk bar, table body, pagination) |
+| List utils | `_lib/cms-list-utils.ts` | status badge variants + `formatCmsDate` |
+| `CmsEditorShell` | `_components/cms-editor-shell.tsx` | posts + pages editors (`main` + `sidebar` two-column layout) |
+| `CmsEditorSidebarCard` | same file | optional bordered sidebar card helper |
+| `TaxonomyManager` | `_components/taxonomy-manager.tsx` | categories + tags managers (thin wrappers) |
+| Nav config | `_lib/cms-nav.ts` + `_components/cms-nav.tsx` | layout secondary nav + hub |
 
----
+Domain-specific columns, bulk actions, and form fields stay in the content clients/editors; chrome is shared.
 
-## Database Schema (all in `marketing` schema)
+## Data layer
 
-### BlogPost
-| Field | Type | Purpose |
-|-------|------|---------|
-| id | uuid | PK |
-| title | String | Display title |
-| slug | String (unique) | URL path |
-| content | Text | HTML from TipTap editor |
-| excerpt | Text? | Short summary for lists |
-| coverImage / featuredImage | String? | Hero images |
-| author | String? | Display name |
-| publishedAt | DateTime? | Publish date |
-| status | PostStatus enum | DRAFT / PUBLISHED / ARCHIVED |
-| categoryId | String? | FK → BlogCategory |
-| isFeatured | Boolean | Starred post |
-| readingTime | Int | Auto-calculated minutes |
-| metaTitle, metaDescription, ogTitle, ogDescription, ogImage | String? | SEO fields |
-| canonicalUrl | String? | Custom canonical |
-| robotsDirective | String? | noindex/nofollow override |
-| schemaMarkup | Json? | Custom JSON-LD |
+Prefer loaders in `app/(dashboard)/admin/cms/_data/cms-loaders.ts`:
 
-### BlogPostRevision
-| Field | Type | Purpose |
-|-------|------|---------|
-| id | uuid | PK |
-| postId | String | FK → BlogPost (cascade) |
-| title | String | Snapshot of title at publish |
-| content | Text | Snapshot of content at publish |
-| excerpt | Text? | Snapshot of excerpt |
-| createdAt | DateTime | Auto timestamp |
-| createdBy | String? | User ID |
+- posts, pages, categories, tags, reviews
+- webhooks, campaigns, facilities
+- hub stats, post editor bootstrap data
 
-### BlogCategory
-| Field | Type |
-|-------|------|
-| id, name, slug (unique), description, color (hex), displayOrder |
+Server mutations live in `app/(server)/actions/cms/*` (barrel: `actions/cms.ts`).  
+Internal UI → server actions only (no API routes from admin UI).
 
-### BlogTag
-| Field | Type |
-|-------|------|
-| id, name (unique), slug (unique) |
+Real-time exceptions (pre-existing external surface):
 
-### BlogPostTag (junction)
-| Field | Type |
-|-------|------|
-| postId + tagId (composite PK) |
+- `/api/cms/presence` — editor presence
+- `/api/cms/preview` — draft preview
 
-### Page
-Same SEO fields as BlogPost + `template` (default/full-width/landing), `showHeader`, `showFooter` booleans.
+## Editor features
 
----
+- TipTap rich text + content blocks + image upload/media library
+- SEO panel (includes SEO scoring once — do not double-mount)
+- Readability + internal links panels (posts and pages)
+- Social share preview (`pathHint`: blog vs page slug)
+- Autosave drafts + beforeunload guard
+- Editor presence (requires real `currentUserId` from `requireAdmin()`)
+- Post revisions: `RollbackDropdown` + `getBlogPostRevisionsAction` / `getBlogPostRevisionAction`
+- Page publish revalidates `/{slug}`; bulk page status/delete actions available
 
-## Server Actions
+## Loading / errors
 
-The monolithic `app/(server)/actions/cms.ts` has been split into **domain-specific files** under `app/(server)/actions/cms/`:
+Only `cms/loading.tsx` and `cms/error.tsx` at section root — nested duplicates removed.
 
-### File Structure
+## Naming
 
-```
-app/(server)/actions/cms/
-├── content.ts          → Posts, pages, categories, tags CRUD + bulk ops + review workflow
-├── engagement.ts       → Re-exports reviews, activity, campaigns actions
-├── settings.ts         → Re-exports navigation, redirects, webhooks actions
-└── tools.ts            → Orphan pages, broken link checker, 404 monitoring
-```
-
-The original `app/(server)/actions/cms.ts` is kept as a barrel file re-exporting from all four domain files for backward compatibility.
-
-### `content.ts` — Content CRUD
-
-#### Blog Post Actions
-- `createBlogPostAction(data, tagIds?)` — creates post + optional tag relations + initial revision on publish
-- `updateBlogPostAction(id, data, tagIds?, expectedVersion?)` — updates post + reconnects tags + saves revision on publish + auto-redirect on slug change
-- `deleteBlogPostAction(id)` — SUPER_ADMIN only
-- `getBlogPostAction(id)` — returns post + category + tagIds
-- `listBlogPostsAction()` — returns posts with category + tag count
-- `getBlogPostRevisionsAction(postId)` — lists revisions with timestamps
-- `getBlogPostRevisionAction(id)` — gets single revision content
-
-#### Page Actions
-- `createPageAction(data)` — creates page + webhook
-- `updatePageAction(id, data, expectedVersion?)` — updates page with conflict check
-- `deletePageAction(id)` — SUPER_ADMIN only
-- `getPageAction(id)` — returns page by id
-- `listPagesAction()` — returns all pages
-
-#### Category Actions
-- `createCategoryAction(data)` — creates category
-- `updateCategoryAction(id, data)` — updates category
-- `deleteCategoryAction(id)` — SUPER_ADMIN; nullifies categoryId on posts
-- `listCategoriesAction()` — returns categories with post count
-
-#### Tag Actions
-- `createTagAction(data)` — SUPER_ADMIN only
-- `updateTagAction(id, data)` — SUPER_ADMIN only
-- `deleteTagAction(id)` — SUPER_ADMIN only
-- `listTagsAction()` — returns tags with post count
-
-#### Bulk & Workflow Actions
-- `bulkUpdateBlogPostsAction(ids[], status)` — batch publish/draft/archive
-- `bulkDeleteBlogPostsAction(ids[])` — batch delete (SUPER_ADMIN)
-- `markAsReviewedAction(ids[], type)` — marks posts/pages as reviewed
-- `submitForReviewAction(id, type)` — submits for review workflow
-- `approvePostAction(id, type)` — approves and publishes
-- `rejectPostAction(id, type)` — rejects back to DRAFT
-
-#### Utilities
-- `calculateReadingTime(html)` — strips HTML, counts words, divides by 200
-- `getFacilityNamesAction()` — returns facility names for internal link suggestions
-
-### `tools.ts` — CMS Tools
-- `getOrphanPagesAction()` — finds published pages/posts with no internal links
-- `checkBrokenLinksAction()` — checks external links in published content (HEAD requests)
-- `getNotFoundLogsAction()` — returns 404 log entries
-- `clearNotFoundLogAction(id)` — clears a single 404 log entry
-
-### `engagement.ts` — Barrel Re-exports
-Re-exports from:
-- `@/app/(server)/actions/reviews` (`approveReviewAction`, `deleteReviewAction`)
-- `@/app/(server)/actions/activity` (`getActivityLogAction`)
-- `@/app/(server)/actions/campaigns` (`createCampaignAction`, `deleteCampaignAction`, `updateCampaignAction`)
-
-### `settings.ts` — Barrel Re-exports
-Re-exports from:
-- `@/app/(server)/actions/navigation` (menu/section/item CRUD, reorder, discovery)
-- `@/app/(server)/actions/redirects` (CRUD + toggle)
-- `@/app/(server)/actions/webhooks` (CRUD, test, reactivate, logs, events constant)
-
-### Import Note
-
-Route files import from the domain-specific files (e.g., `@/app/(server)/actions/cms/content`). The barrel file `@/app/(server)/actions/cms` remains available for convenience but new code should prefer the domain-specific imports.
-
----
-
-## Zod v4 Validation
-
-All schemas use `.optional()` on non-required fields to avoid runtime type mismatches. Schemas use `z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"])` for status. Slug validation: `/^[a-z0-9-]+$/`.
-
-**Important:** Zod v4 `.safeExtend()` must be used instead of `.extend()` when extending schemas with `.refine()`. Current schemas don't use refinements, so this isn't an issue yet.
-
----
-
-## Key Conventions
-
-1. **Serbian-only admin** — all labels, placeholders, toasts, and error messages are in Serbian
-2. **ShadCN theme tokens only** — no hardcoded hex colors
-3. **No `setState` in `useEffect`** — React Compiler lint rule; derived state pattern used
-4. **No Prisma Decimal spread** — CMS models use only String/Text/Boolean types, no Decimal fields to serialize
-5. **Route groups for organization** — `(content)`, `(engagement)`, `(settings)`, `(tools)` groups organize the CMS admin without affecting URLs
-6. **`@ts-nocheck` on editor files** — react-hook-form + Zod v4 resolver has type chain incompatibility; runtime is correct
-
----
-
-## NPM Dependencies Added
-
-- `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-image`, `@tiptap/extension-link`, `@tiptap/extension-placeholder`, `@tiptap/pm`
-- `slugify` — auto-generate slugs from titles
-- `reading-time` — calculate reading duration from content
-
----
-
-## Future Enhancements
-
-- **Preview mode:** `/blog/preview/[token]` route that shows draft content via Next.js Draft Mode
-- **Media library:** Centralized image browser with thumbnails in TipTap toolbar
-- **Sitemap video fix:** Blog posts with video content can get VideoObject schema
-- **Related posts model:** `BlogPostRelation` for manual editor-curated related posts
-- **Content diff viewer:** Side-by-side diff between revisions
-- **Auto-save drafts:** Debounced save to revisions table every 60s while editing
+**Kuponi / kampanje** under CMS = facility coupon campaigns (`Campaign` model).  
+Email marketing = Listmonk (separate).

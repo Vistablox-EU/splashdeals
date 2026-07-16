@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { createImageUploadPlugin } from "./image-upload-plugin";
 import { MediaLibraryDialog } from "@/app/(dashboard)/admin/media/_components/media-library-dialog";
 import { ImageBubbleMenu } from "./image-bubble-menu";
+import { ContentBlocksPanel } from "./content-blocks-panel";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -96,6 +97,9 @@ export function RichTextEditor({
   return (
     <div className="overflow-hidden rounded-lg border">
       <Toolbar editor={editor} dict={dict} source={source} />
+      <div className="border-b px-2 py-1.5">
+        <ContentBlocksPanel editor={editor} />
+      </div>
       <ImageBubbleMenu editor={editor} dict={dict} />
       <EditorContent editor={editor} />
     </div>

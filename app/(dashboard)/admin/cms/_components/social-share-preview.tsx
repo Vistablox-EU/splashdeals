@@ -7,9 +7,16 @@ interface SocialSharePreviewProps {
   title: string;
   coverImage: string;
   excerpt: string;
+  /** Path shown under previews, e.g. blog/... or page slug */
+  pathHint?: string;
 }
 
-export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePreviewProps) {
+export function SocialSharePreview({
+  title,
+  coverImage,
+  excerpt,
+  pathHint = "splashdeals.rs/blog/...",
+}: SocialSharePreviewProps) {
   const truncatedTitle = title.length > 60 ? title.slice(0, 57) + "…" : title;
   const truncatedExcerpt = excerpt
     ? excerpt.length > 120
@@ -60,7 +67,7 @@ export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePr
           {truncatedExcerpt && (
             <p className="text-muted-foreground mt-1 text-xs leading-snug">{truncatedExcerpt}</p>
           )}
-          <p className="text-muted-foreground mt-1 truncate text-[10px]">splashdeals.rs/blog/...</p>
+          <p className="text-muted-foreground mt-1 truncate text-[10px]">{pathHint}</p>
         </div>
       </div>
 
@@ -83,7 +90,7 @@ export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePr
               </p>
             )}
             <p className="text-muted-foreground mt-1 truncate text-[10px]">
-              splashdeals.rs/blog/...
+              {pathHint}
             </p>
           </div>
         </div>

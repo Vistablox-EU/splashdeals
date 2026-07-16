@@ -68,7 +68,9 @@ const pageSchema = z.object({
   ogImage: z.string().optional(),
   canonicalUrl: z.string().optional(),
   robotsDirective: z.string().optional(),
+  focusKeyword: z.string().optional(),
   publishedAt: z.string().datetime().optional().nullable(),
+  expiresAt: z.string().datetime().optional().nullable(),
 });
 
 export type PageFormValues = z.infer<typeof pageSchema>;
@@ -404,6 +406,8 @@ export async function createPageAction(
     });
 
     revalidatePath("/admin/cms/pages");
+    revalidatePath(`/${page.slug}`);
+    revalidatePath("/");
     triggerWebhooks("page.published", { id: page.id, title: page.title, slug: page.slug });
 
     // Log activity (non-blocking)
@@ -466,6 +470,8 @@ export async function updatePageAction(
 
     revalidatePath("/admin/cms/pages");
     revalidatePath(`/admin/cms/pages/${id}`);
+    revalidatePath(`/${page.slug}`);
+    revalidatePath("/");
     triggerWebhooks("page.updated", {
       id,
       title: page.title,
@@ -494,8 +500,11 @@ export async function updatePageAction(
 export async function deletePageAction(id: string): Promise<ActionResult> {
   try {
     await requireSuperAdmin();
+    const existing = await prisma.page.findUnique({ where: { id }, select: { slug: true } });
     await prisma.page.delete({ where: { id } });
     revalidatePath("/admin/cms/pages");
+    if (existing?.slug) revalidatePath(`/${existing.slug}`);
+    revalidatePath("/");
     triggerWebhooks("page.deleted", { id });
 
     // Log activity (non-blocking)
@@ -678,6 +687,47 @@ export async function bulkDeleteBlogPostsAction(
     return { success: true, data: { count: result.count } };
   } catch (error) {
     return handleServerActionError(error, "cms/bulkDelete");
+  }
+}
+
+export async function bulkUpdatePagesAction(
+  ids: string[],
+  status: "DRAFT" | "REVIEW" | "PUBLISHED" | "ARCHIVED",
+): Promise<ActionResult<{ count: number }>> {
+  try {
+    await requireSuperAdmin();
+
+    const result = await prisma.page.updateMany({
+      where: { id: { in: ids } },
+      data: {
+        status,
+        publishedAt: status === "PUBLISHED" ? new Date() : undefined,
+      },
+    });
+
+    revalidatePath("/admin/cms/pages");
+    revalidatePath("/");
+    return { success: true, data: { count: result.count } };
+  } catch (error) {
+    return handleServerActionError(error, "cms/bulkUpdatePages");
+  }
+}
+
+export async function bulkDeletePagesAction(
+  ids: string[],
+): Promise<ActionResult<{ count: number }>> {
+  try {
+    await requireSuperAdmin();
+
+    const result = await prisma.page.deleteMany({
+      where: { id: { in: ids } },
+    });
+
+    revalidatePath("/admin/cms/pages");
+    revalidatePath("/");
+    return { success: true, data: { count: result.count } };
+  } catch (error) {
+    return handleServerActionError(error, "cms/bulkDeletePages");
   }
 }
 

@@ -22,6 +22,8 @@ export {
   listTagsAction,
   bulkUpdateBlogPostsAction,
   bulkDeleteBlogPostsAction,
+  bulkUpdatePagesAction,
+  bulkDeletePagesAction,
   markAsReviewedAction,
   submitForReviewAction,
   approvePostAction,

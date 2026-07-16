@@ -6,6 +6,10 @@ import { buildFacilityMetadata } from "@/app/(web)/facility/_data/metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/app/(server)/lib/routing/discovery";
 import { resolveSlug, resolveLegacyTarget } from "@/app/(server)/lib/routing/resolve-slug";
 import { parseLocaleSegments } from "@/lib/locale";
+import {
+  buildCmsPageMetadata,
+  CmsPageTemplate,
+} from "@/app/(web)/_components/CmsPageTemplate";
 
 export async function generateMetadata({
   params,
@@ -28,6 +32,9 @@ export async function generateMetadata({
     if (resolved) {
       if (resolved.type === "facility") {
         return await buildFacilityMetadata(segments[0], resolved.category);
+      }
+      if (resolved.type === "page") {
+        return await buildCmsPageMetadata(resolved.slug);
       }
       return await getDiscoveryMetadata(segments[0]);
     }
@@ -63,6 +70,7 @@ export async function generateMetadata({
  * the custom 404 UI located in the (web) group, while automatically
  * stripping legacy locale prefixes via direct 301 redirects (no intermediate hops),
  * or serving the dynamic prefix-free facility & category listings natively.
+ * Also serves published CMS static pages when the slug does not match facility/category.
  */
 export default async function CatchAllPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
@@ -88,6 +96,9 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
             })}
           />
         );
+      }
+      if (resolved.type === "page") {
+        return <CmsPageTemplate slug={resolved.slug} />;
       }
       return (
         <DiscoveryTemplate

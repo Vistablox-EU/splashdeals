@@ -195,3 +195,176 @@ export async function loadCmsCampaign(id: string) {
     facilityIds: campaign.facilityRestrictions.map((fr) => fr.facilityId),
   };
 }
+
+export type PagesListFilter = "all" | "review" | "stale";
+
+export async function loadCmsPages(filter: PagesListFilter = "all") {
+  const staleThreshold = staleThresholdDate();
+  const now = new Date();
+
+  let pages;
+  if (filter === "review") {
+    pages = await prisma.page.findMany({
+      where: { status: "REVIEW" },
+      orderBy: { updatedAt: "desc" },
+    });
+  } else if (filter === "stale") {
+    pages = await prisma.page.findMany({
+      where: {
+        status: "PUBLISHED",
+        updatedAt: { lt: staleThreshold },
+        OR: [{ reviewedAt: null }, { reviewedAt: { lt: staleThreshold } }],
+      },
+      orderBy: { updatedAt: "desc" },
+    });
+  } else {
+    pages = await prisma.page.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  return pages.map((page) => {
+    const lastDate = page.reviewedAt
+      ? new Date(Math.max(page.updatedAt.getTime(), page.reviewedAt.getTime()))
+      : page.updatedAt;
+    const isStale = page.status === "PUBLISHED" && lastDate < staleThreshold;
+    const isScheduled =
+      page.status === "DRAFT" && !!page.publishedAt && page.publishedAt.getTime() > now.getTime();
+
+    return {
+      ...page,
+      createdAt: page.createdAt.toISOString(),
+      updatedAt: page.updatedAt.toISOString(),
+      publishedAt: page.publishedAt?.toISOString() ?? null,
+      reviewedAt: page.reviewedAt?.toISOString() ?? null,
+      expiresAt: page.expiresAt?.toISOString() ?? null,
+      isStale,
+      isScheduled,
+    };
+  });
+}
+
+export async function loadCmsPage(id: string) {
+  const page = await prisma.page.findUnique({ where: { id } });
+  if (!page) return null;
+  return {
+    ...page,
+    createdAt: page.createdAt.toISOString(),
+    updatedAt: page.updatedAt.toISOString(),
+    publishedAt: page.publishedAt?.toISOString() ?? null,
+    reviewedAt: page.reviewedAt?.toISOString() ?? null,
+    expiresAt: page.expiresAt?.toISOString() ?? null,
+  };
+}
+
+export async function loadCmsCategories() {
+  const categories = await prisma.blogCategory.findMany({
+    orderBy: { displayOrder: "asc" },
+    include: { _count: { select: { posts: true } } },
+  });
+  return categories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    slug: c.slug,
+    description: c.description,
+    color: c.color,
+    displayOrder: c.displayOrder,
+    _count: c._count,
+  }));
+}
+
+export async function loadCmsTags() {
+  const tags = await prisma.blogTag.findMany({
+    orderBy: { name: "asc" },
+    include: { _count: { select: { posts: true } } },
+  });
+  return tags.map((t) => ({
+    id: t.id,
+    name: t.name,
+    slug: t.slug,
+    postCount: t._count.posts,
+  }));
+}
+
+export async function loadCmsReviews() {
+  const reviews = await prisma.review.findMany({
+    orderBy: [{ isApproved: "asc" }, { createdAt: "desc" }],
+    include: {
+      user: { select: { id: true, name: true, email: true } },
+      facility: { select: { id: true, name: true, slug: true } },
+    },
+  });
+  return reviews.map((r) => ({
+    ...r,
+    createdAt: r.createdAt.toISOString(),
+    updatedAt: r.updatedAt.toISOString(),
+  }));
+}
+
+export async function loadCmsHubStats() {
+  const now = new Date();
+  const [
+    posts,
+    pages,
+    campaigns,
+    webhooks,
+    categories,
+    tags,
+    reviews,
+    redirects,
+    scheduled,
+  ] = await Promise.all([
+    prisma.blogPost.count(),
+    prisma.page.count(),
+    prisma.campaign.count().catch(() => 0),
+    prisma.webhook.count().catch(() => 0),
+    prisma.blogCategory.count(),
+    prisma.blogTag.count(),
+    prisma.review.count().catch(() => 0),
+    prisma.redirect.count().catch(() => 0),
+    prisma.blogPost.count({
+      where: { status: "DRAFT", publishedAt: { gt: now } },
+    }),
+  ]);
+
+  return {
+    posts,
+    pages,
+    campaigns,
+    webhooks,
+    categories,
+    tags,
+    reviews,
+    redirects,
+    scheduled,
+  };
+}
+
+export async function loadCmsPostEditorData(postId?: string) {
+  const [categories, tags, post] = await Promise.all([
+    prisma.blogCategory.findMany({ orderBy: { displayOrder: "asc" } }),
+    prisma.blogTag.findMany({ orderBy: { name: "asc" } }),
+    postId
+      ? prisma.blogPost.findUnique({
+          where: { id: postId },
+          include: { tags: true },
+        })
+      : Promise.resolve(null),
+  ]);
+
+  return {
+    categories: categories.map((c) => ({ ...c })),
+    tags: tags.map((t) => ({ ...t })),
+    post: post
+      ? {
+          ...post,
+          createdAt: post.createdAt.toISOString(),
+          updatedAt: post.updatedAt.toISOString(),
+          publishedAt: post.publishedAt?.toISOString() ?? null,
+          reviewedAt: post.reviewedAt?.toISOString() ?? null,
+          expiresAt: post.expiresAt?.toISOString() ?? null,
+        }
+      : null,
+    postTagIds: post?.tags.map((t) => t.tagId) ?? [],
+  };
+}
