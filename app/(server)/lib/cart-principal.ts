@@ -32,6 +32,27 @@ function guestRateLimitKey(tokenHash: string) {
   return `guest:${tokenHash}`;
 }
 
+/**
+ * Cookie attributes for sd_guest_cart.
+ * Production uses Domain=.splashdeals.rs so apex ↔ www OAuth does not drop the guest cart.
+ */
+export function getGuestCartCookieBaseOptions(): {
+  httpOnly: boolean;
+  secure: boolean;
+  sameSite: "lax";
+  path: string;
+  domain?: string;
+} {
+  const isProd = process.env.NODE_ENV === "production";
+  return {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: "lax",
+    path: "/",
+    ...(isProd ? { domain: process.env.COOKIE_DOMAIN || ".splashdeals.rs" } : {}),
+  };
+}
+
 export async function resolveCartPrincipal(options: {
   createGuestIfMissing: boolean;
 }): Promise<CartPrincipal> {
@@ -108,15 +129,38 @@ export async function applyGuestCartCookie(principal: CartPrincipal) {
 
   const cookieStore = await cookies();
   cookieStore.set(GUEST_CART_COOKIE_NAME, principal.rawToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
+    ...getGuestCartCookieBaseOptions(),
     maxAge: Math.floor(GUEST_CART_TTL_MS / 1000),
   });
 }
 
+/**
+ * Clear guest cart cookie for both:
+ * - domain-scoped production cookie (.splashdeals.rs)
+ * - legacy host-only cookie (no Domain) from older deploys
+ */
 export async function clearGuestCartCookie() {
   const cookieStore = await cookies();
-  cookieStore.delete(GUEST_CART_COOKIE_NAME);
+  const base = getGuestCartCookieBaseOptions();
+
+  cookieStore.set(GUEST_CART_COOKIE_NAME, "", {
+    ...base,
+    maxAge: 0,
+  });
+
+  // Host-only expire (omit domain) so pre-fix cookies are not left behind.
+  cookieStore.set(GUEST_CART_COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+}
+
+/** True when request still carries a guest cart cookie (for claim failsafe). */
+export async function hasGuestCartCookie(): Promise<boolean> {
+  const cookieStore = await cookies();
+  const value = cookieStore.get(GUEST_CART_COOKIE_NAME)?.value;
+  return Boolean(value && value.length > 0);
 }

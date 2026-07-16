@@ -9,10 +9,12 @@ import { MAX_QUANTITY_PER_ITEM, type CartItem, type CartItemInput } from "@/lib/
 import { isCanonicalTicketAvailable } from "@/lib/cart/canonical-ticket";
 import {
   applyGuestCartCookie,
+  hasGuestCartCookie,
   resolveCartPrincipal,
   type CartPrincipal,
 } from "@/app/(server)/lib/cart-principal";
 import { GUEST_CART_TTL_MS } from "@/app/(server)/lib/guest-cart-token";
+import { claimGuestCartAction } from "@/app/(server)/actions/guest-cart-claim";
 
 // ─── DB-backed Rate Limiting ─────────────────────────────────────────────────
 
@@ -367,9 +369,27 @@ export async function addToCartAction(
 
 export async function getCartAction(): Promise<ActionResult<{ items: CartItem[] }>> {
   try {
-    const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+    let principal = await resolveCartPrincipal({ createGuestIfMissing: false });
     if (principal.type === "anonymous") {
       return { success: true, data: { items: [] } };
+    }
+
+    // Failsafe: after social login the principal is always "user". If the user cart
+    // is empty but sd_guest_cart is still present, claim/merge before returning empty.
+    if (principal.type === "user") {
+      let cartSession = await getCartSession(principal);
+      let items = cartSession ? await readCartItems(cartSession.id) : [];
+
+      if (items.length === 0 && (await hasGuestCartCookie())) {
+        await claimGuestCartAction();
+        principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+        if (principal.type === "user") {
+          cartSession = await getCartSession(principal);
+          items = cartSession ? await readCartItems(cartSession.id) : [];
+        }
+      }
+
+      return { success: true, data: { items } };
     }
 
     const cartSession = await getCartSession(principal);

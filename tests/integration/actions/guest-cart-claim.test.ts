@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
   cookiesGet: vi.fn(),
+  cookiesSet: vi.fn(),
   cookiesDelete: vi.fn(),
   transaction: vi.fn(),
   cartFindUnique: vi.fn(),
@@ -23,7 +24,7 @@ vi.mock("next/headers", () => ({
   headers: vi.fn(async () => new Headers()),
   cookies: vi.fn(async () => ({
     get: mocks.cookiesGet,
-    set: vi.fn(),
+    set: mocks.cookiesSet,
     delete: mocks.cookiesDelete,
   })),
 }));
@@ -113,7 +114,15 @@ describe("claimGuestCartAction", () => {
         expiresAt: null,
       },
     });
-    expect(mocks.cookiesDelete).toHaveBeenCalledWith(GUEST_CART_COOKIE_NAME);
+    // clearGuestCartCookie expires via set(maxAge:0), not delete alone
+    expect(mocks.cookiesSet).toHaveBeenCalled();
+    const clearCalls = mocks.cookiesSet.mock.calls.filter(
+      (call: unknown[]) => call[0] === GUEST_CART_COOKIE_NAME && call[1] === "",
+    );
+    expect(clearCalls.length).toBeGreaterThanOrEqual(1);
+    expect(
+      clearCalls.some((call: unknown[]) => (call[2] as { maxAge?: number })?.maxAge === 0),
+    ).toBe(true);
   });
 
   it("returns a conflict payload when guest and user carts have different facilities", async () => {
@@ -159,6 +168,9 @@ describe("claimGuestCartAction", () => {
         userFacilityName: "Aqua Park B",
       },
     });
-    expect(mocks.cookiesDelete).not.toHaveBeenCalled();
+    const clearCalls = mocks.cookiesSet.mock.calls.filter(
+      (call: unknown[]) => call[0] === GUEST_CART_COOKIE_NAME && call[1] === "",
+    );
+    expect(clearCalls).toHaveLength(0);
   });
 });
