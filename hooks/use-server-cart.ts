@@ -12,6 +12,8 @@ type ServerCartState = {
   isHydrated: boolean;
   totalItems: number;
   totalPrice: number;
+  /** Monotonic token so overlapping refresh() calls cannot apply stale getCart results. */
+  refreshGeneration: number;
   setItems: (items: CartItem[]) => void;
   refresh: () => Promise<CartItem[]>;
   notifyUpdated: () => void;
@@ -33,6 +35,7 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
   isHydrated: false,
   totalItems: 0,
   totalPrice: 0,
+  refreshGeneration: 0,
   setItems: (items) => {
     set({
       items,
@@ -44,14 +47,21 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
   },
   refresh: async () => {
     ensureCartSyncSubscription(get);
-    set({ isLoading: true });
+    const generation = get().refreshGeneration + 1;
+    set({ isLoading: true, refreshGeneration: generation });
     try {
       const result = await getCartAction();
+      // A newer refresh started while we were in-flight — drop this response.
+      if (get().refreshGeneration !== generation) {
+        return get().items;
+      }
       const items = result.success ? ((result.data?.items || []) as CartItem[]) : [];
       get().setItems(items);
       return items;
     } catch {
-      set({ isLoading: false, isHydrated: true });
+      if (get().refreshGeneration === generation) {
+        set({ isLoading: false, isHydrated: true });
+      }
       return get().items;
     }
   },
