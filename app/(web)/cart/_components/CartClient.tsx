@@ -221,8 +221,15 @@ export function CartClient({
   }
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+    if (!itemId) return;
     setMutatingItemId(itemId);
     const previousItems = useServerCart.getState().items;
+    const target = previousItems.find((i) => i.id === itemId);
+    if (!target) {
+      setMutatingItemId(null);
+      return;
+    }
+
     // Optimistic UI so mobile steppers feel instant
     if (newQuantity <= 0) {
       useServerCart.getState().setItems(previousItems.filter((i) => i.id !== itemId));
@@ -253,7 +260,14 @@ export function CartClient({
         "items" in result.data &&
         Array.isArray(result.data.items)
       ) {
-        useServerCart.getState().setItems(result.data.items as CartItem[]);
+        const serverItems = result.data.items as CartItem[];
+        const expectedRemaining = previousItems.filter((i) => i.id !== itemId);
+        // Guard: never wipe sibling lines if server unexpectedly returns empty.
+        if (serverItems.length === 0 && expectedRemaining.length > 0) {
+          await softRefresh();
+        } else {
+          useServerCart.getState().setItems(serverItems);
+        }
       } else if (newQuantity > 0 && result.data && "item" in result.data && result.data.item) {
         const updated = result.data.item as CartItem;
         useServerCart
@@ -273,10 +287,17 @@ export function CartClient({
   };
 
   const handleRemoveItem = async (itemId: string) => {
+    if (!itemId) return;
     setMutatingItemId(itemId);
     const previousItems = useServerCart.getState().items;
-    // Optimistic remove — critical on mobile where network lag looks like “nothing happens”
-    useServerCart.getState().setItems(previousItems.filter((i) => i.id !== itemId));
+    if (!previousItems.some((i) => i.id === itemId)) {
+      setMutatingItemId(null);
+      return;
+    }
+
+    // Optimistic remove of THIS line only
+    const optimistic = previousItems.filter((i) => i.id !== itemId);
+    useServerCart.getState().setItems(optimistic);
     try {
       const result = await removeFromCartAction({ itemId });
       if (!result.success) {
@@ -286,9 +307,15 @@ export function CartClient({
         return;
       }
 
-      // Authoritative remaining items from the mutation — do NOT softRefresh (races/claim remount).
-      if (result.data?.items) {
-        useServerCart.getState().setItems(result.data.items);
+      // Authoritative remaining items from the mutation — do NOT softRefresh by default.
+      if (Array.isArray(result.data?.items)) {
+        const serverItems = result.data.items;
+        // Guard: server empty but we still expected siblings → re-fetch once.
+        if (serverItems.length === 0 && optimistic.length > 0) {
+          await softRefresh();
+        } else {
+          useServerCart.getState().setItems(serverItems);
+        }
       }
       notifyUpdated();
       await revalidateAppliedPromo(discount);

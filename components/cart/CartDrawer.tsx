@@ -59,10 +59,15 @@ export const CartDrawer = () => {
   if (!isMounted || !isDesktop) return null;
 
   const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
+    if (!itemId) return;
     setMutatingItemId(itemId);
     const previousItems = useServerCart.getState().items;
     const item = previousItems.find((i) => i.id === itemId);
-    const minQty = Math.max(1, item?.minPeople || 1);
+    if (!item) {
+      setMutatingItemId(null);
+      return;
+    }
+    const minQty = Math.max(1, item.minPeople || 1);
     const shouldRemove = newQuantity < minQty || newQuantity <= 0;
 
     if (shouldRemove) {
@@ -89,7 +94,13 @@ export const CartDrawer = () => {
         "items" in result.data &&
         Array.isArray(result.data.items)
       ) {
-        setItems(result.data.items);
+        const serverItems = result.data.items;
+        const expectedRemaining = previousItems.filter((i) => i.id !== itemId);
+        if (serverItems.length === 0 && expectedRemaining.length > 0) {
+          await refresh();
+        } else {
+          setItems(serverItems);
+        }
       } else if (!shouldRemove && result.data && "item" in result.data && result.data.item) {
         const updated = result.data.item;
         setItems(useServerCart.getState().items.map((i) => (i.id === updated.id ? updated : i)));
@@ -106,9 +117,24 @@ export const CartDrawer = () => {
   };
 
   const handleRemoveItem = async (itemId: string) => {
+    if (!itemId) return;
     setMutatingItemId(itemId);
     const previousItems = useServerCart.getState().items;
-    setItems(previousItems.filter((i) => i.id !== itemId));
+    const item = previousItems.find((i) => i.id === itemId);
+    if (!item) {
+      setMutatingItemId(null);
+      return;
+    }
+
+    // Unit-aware: decrease one when qty above min; only delete the line at min.
+    const minQty = Math.max(1, item.minPeople || 1);
+    if (item.quantity > minQty) {
+      await handleUpdateQuantity(itemId, item.quantity - 1);
+      return;
+    }
+
+    const optimistic = previousItems.filter((i) => i.id !== itemId);
+    setItems(optimistic);
     try {
       const result = await removeFromCartAction({ itemId });
       if (!result.success) {
@@ -117,8 +143,13 @@ export const CartDrawer = () => {
         await refresh();
         return;
       }
-      if (result.data?.items) {
-        setItems(result.data.items);
+      if (Array.isArray(result.data?.items)) {
+        const serverItems = result.data.items;
+        if (serverItems.length === 0 && optimistic.length > 0) {
+          await refresh();
+        } else {
+          setItems(serverItems);
+        }
       }
       notifyUpdated();
     } catch {

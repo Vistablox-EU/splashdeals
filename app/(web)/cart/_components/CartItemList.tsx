@@ -17,6 +17,23 @@ interface CartItemListProps {
   mutatingItemId?: string | null;
 }
 
+/**
+ * Remove one unit when qty is above the line minimum; only delete the whole line
+ * when already at min qty. Matches “remove a single item” (not clear cart).
+ */
+function removeOneUnitOrLine(
+  item: CartItem,
+  onQuantityChange: (itemId: string, quantity: number) => void,
+  onRemove: (itemId: string) => void,
+) {
+  const minQty = Math.max(1, item.minPeople || 1);
+  if (item.quantity > minQty) {
+    onQuantityChange(item.id, item.quantity - 1);
+    return;
+  }
+  onRemove(item.id);
+}
+
 export function CartItemList({
   items,
   dict,
@@ -62,7 +79,7 @@ export function CartItemList({
             key={item.id}
             className="bg-muted/20 border-border relative flex flex-col gap-3 p-3 sm:gap-4 sm:p-6"
           >
-            {/* Header: image + title + always-visible trash (mobile + desktop) */}
+            {/* Header: image + title + trash (unit-aware) */}
             <div className="flex min-w-0 items-start gap-3">
               {item.imageUrl && (
                 <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl sm:h-20 sm:w-20">
@@ -88,7 +105,11 @@ export function CartItemList({
                 type="button"
                 variant="ghost"
                 size="icon"
-                onClick={() => onRemove(item.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  removeOneUnitOrLine(item, onQuantityChange, onRemove);
+                }}
                 disabled={isMutating}
                 aria-label={cartDict?.remove || "Ukloni"}
                 className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive h-11 min-h-11 w-11 min-w-11 shrink-0 touch-manipulation rounded-xl"
@@ -104,7 +125,9 @@ export function CartItemList({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     // At min qty, minus fully removes the line.
                     if (atMin) {
                       onRemove(item.id);
@@ -125,7 +148,11 @@ export function CartItemList({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  onClick={() => onQuantityChange(item.id, item.quantity + 1)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onQuantityChange(item.id, item.quantity + 1);
+                  }}
                   disabled={
                     isMutating ||
                     item.quantity >=
@@ -146,7 +173,11 @@ export function CartItemList({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => onRemove(item.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    removeOneUnitOrLine(item, onQuantityChange, onRemove);
+                  }}
                   disabled={isMutating}
                   aria-label={cartDict?.remove || "Ukloni"}
                   className="text-muted-foreground hover:text-destructive mt-0.5 h-10 min-h-10 touch-manipulation px-2 text-[11px] font-black tracking-widest uppercase"
