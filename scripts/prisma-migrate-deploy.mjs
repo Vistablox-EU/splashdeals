@@ -121,8 +121,7 @@ async function main() {
 
   console.log(
     "Skipping prisma migrate deploy after retries:",
-    lastOutput.split("\n").find((l) => l.includes("Error") || l.includes("P1")) ||
-      "unknown error",
+    lastOutput.split("\n").find((l) => l.includes("Error") || l.includes("P1")) || "unknown error",
   );
   // Do not fail the Vercel build — next deploy retries; app may still be schema-current.
   process.exit(0);
