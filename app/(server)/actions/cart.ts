@@ -15,6 +15,7 @@ import {
   type CartPrincipal,
 } from "@/app/(server)/lib/cart-principal";
 import { GUEST_CART_TTL_MS } from "@/app/(server)/lib/guest-cart-token";
+import { releaseExpiredCartLocksForUser } from "@/app/(server)/lib/checkout-fulfillment";
 
 // ─── DB-backed Rate Limiting ─────────────────────────────────────────────────
 
@@ -186,6 +187,13 @@ async function getCartSession(principal: CartPrincipal, db: CartDbClient = prism
     return db.cartSession.findUnique({ where: { guestTokenHash: principal.guestTokenHash } });
   }
   return null;
+}
+
+/** Unlock abandoned checkout locks before cart mutations/reads. */
+async function ensureUserCartUnlocked(principal: CartPrincipal) {
+  if (principal.type === "user") {
+    await releaseExpiredCartLocksForUser(principal.userId);
+  }
 }
 
 async function incrementCartVersion(db: CartDbClient, cart: { id: string; version: number }) {
@@ -374,6 +382,8 @@ export async function getCartAction(): Promise<ActionResult<{ items: CartItem[] 
       return { success: true, data: { items: [] } };
     }
 
+    await ensureUserCartUnlocked(principal);
+
     // NOTE: Do NOT auto-claim guest cart here when the user cart is empty.
     // That failsafe re-imported leftover guest items after the user intentionally
     // emptied their cart (remove → softRefresh → claim → items come back).
@@ -409,6 +419,8 @@ export async function removeFromCartAction(
     if (principal.type === "anonymous" || !principal.rateLimitKey) {
       return { success: false, error: "Korpa nije pronađena." };
     }
+
+    await ensureUserCartUnlocked(principal);
 
     if (!(await checkRateLimit(principal.rateLimitKey))) {
       return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };
@@ -469,6 +481,8 @@ export async function updateCartQuantityAction(
     if (principal.type === "anonymous" || !principal.rateLimitKey) {
       return { success: false, error: "Korpa nije pronađena." };
     }
+
+    await ensureUserCartUnlocked(principal);
 
     if (!(await checkRateLimit(principal.rateLimitKey))) {
       return { success: false, error: "Previše zahteva. Pokušajte ponovo za minut." };

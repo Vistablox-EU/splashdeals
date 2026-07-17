@@ -4,7 +4,9 @@ import Stripe from "stripe";
 import { createCheckoutSession } from "@/app/(server)/lib/stripe-checkout";
 import {
   fulfillPaidCheckout,
+  forceUnlockUserCart,
   releaseCheckoutSession,
+  releaseExpiredCartLocksForUser,
 } from "@/app/(server)/lib/checkout-fulfillment";
 import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 import { sendOrderConfirmation } from "@/app/(server)/lib/email";
@@ -49,14 +51,19 @@ export async function createCheckoutSessionAction(params: {
 
 /**
  * Cancels the authenticated user's current unpaid Checkout Session and releases
- * only the cart bound to that pending transaction.
+ * the cart lock. Always attempts unlock so abandoned checkouts cannot brick remove/qty.
  */
-export async function cancelCheckoutSessionAction(): Promise<ActionResult<{ cancelled: boolean }>> {
+export async function cancelCheckoutSessionAction(): Promise<
+  ActionResult<{ cancelled: boolean; unlocked: boolean }>
+> {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user) {
       return { success: false, error: "Morate biti prijavljeni." };
     }
+
+    // First: auto-unlock expired locks (lockExpiresAt in the past).
+    const expired = await releaseExpiredCartLocksForUser(session.user.id);
 
     const transaction = await prisma.transaction.findFirst({
       where: {
@@ -66,8 +73,11 @@ export async function cancelCheckoutSessionAction(): Promise<ActionResult<{ canc
       },
       orderBy: { createdAt: "desc" },
     });
+
     if (!transaction?.stripeSession) {
-      return { success: true, data: { cancelled: false } };
+      // No open Stripe session — still force-unlock if cart is stuck locked.
+      await forceUnlockUserCart(session.user.id);
+      return { success: true, data: { cancelled: false, unlocked: true } };
     }
 
     const stripeSecret = process.env.STRIPE_SECRET_KEY;
@@ -77,15 +87,24 @@ export async function cancelCheckoutSessionAction(): Promise<ActionResult<{ canc
 
     if (stripeSession.payment_status === "paid") {
       await fulfillPaidCheckout(stripeSession);
-      return { success: true, data: { cancelled: false } };
+      return { success: true, data: { cancelled: false, unlocked: false } };
     }
     if (stripeSession.status === "open") {
       await stripe.checkout.sessions.expire(transaction.stripeSession);
     }
 
     await releaseCheckoutSession(transaction.stripeSession, "CANCELLED");
-    return { success: true, data: { cancelled: true } };
+    // Belt-and-suspenders: unlock even if version/binding mismatch blocked releaseCheckout.
+    await forceUnlockUserCart(session.user.id);
+    return { success: true, data: { cancelled: true, unlocked: true || expired.unlocked } };
   } catch (error) {
+    // Last resort unlock so a Stripe API failure cannot leave the cart bricked.
+    try {
+      const session = await auth.api.getSession({ headers: await headers() });
+      if (session?.user?.id) await forceUnlockUserCart(session.user.id);
+    } catch {
+      // ignore
+    }
     return handleServerActionError(error, "cancelCheckout");
   }
 }

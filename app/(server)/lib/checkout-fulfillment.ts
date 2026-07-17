@@ -322,3 +322,61 @@ export function releaseCheckoutTransaction(
 ) {
   return releaseCheckout({ id: transactionId }, status);
 }
+
+/**
+ * Unlock carts whose checkout lock window has expired, and expire orphan PENDING txs.
+ * Abandoned Stripe checkouts previously left carts permanently locked (remove/qty dead).
+ */
+export async function releaseExpiredCartLocksForUser(
+  userId: string,
+): Promise<{ unlocked: boolean }> {
+  const now = new Date();
+  const staleLockedAtCutoff = new Date(now.getTime() - 35 * 60 * 1000);
+
+  const unlocked = await prisma.cartSession.updateMany({
+    where: {
+      userId,
+      locked: true,
+      OR: [
+        { lockExpiresAt: { lt: now } },
+        { lockExpiresAt: null, lockedAt: { lt: staleLockedAtCutoff } },
+        { lockExpiresAt: null, lockedAt: null },
+      ],
+    },
+    data: {
+      locked: false,
+      lockedAt: null,
+      lockExpiresAt: null,
+      activeCheckoutTransactionId: null,
+    },
+  });
+
+  // Expire PENDING transactions bound to this user that are older than the lock window
+  // when cart is no longer locked (or was just unlocked).
+  await prisma.transaction.updateMany({
+    where: {
+      userId,
+      status: "PENDING",
+      createdAt: { lt: staleLockedAtCutoff },
+    },
+    data: { status: "EXPIRED" },
+  });
+
+  return { unlocked: unlocked.count > 0 };
+}
+
+/**
+ * Force-unlock the user's cart (after cancelling/expiring any open checkout).
+ * Used when lock is stuck even if Stripe session retrieval fails.
+ */
+export async function forceUnlockUserCart(userId: string): Promise<void> {
+  await prisma.cartSession.updateMany({
+    where: { userId, locked: true },
+    data: {
+      locked: false,
+      lockedAt: null,
+      lockExpiresAt: null,
+      activeCheckoutTransactionId: null,
+    },
+  });
+}
