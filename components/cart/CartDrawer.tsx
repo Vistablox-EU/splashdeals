@@ -83,7 +83,19 @@ export const CartDrawer = () => {
         return;
       }
 
-      await refresh();
+      if (
+        shouldRemove &&
+        result.data &&
+        "items" in result.data &&
+        Array.isArray(result.data.items)
+      ) {
+        setItems(result.data.items);
+      } else if (!shouldRemove && result.data && "item" in result.data && result.data.item) {
+        const updated = result.data.item;
+        setItems(useServerCart.getState().items.map((i) => (i.id === updated.id ? updated : i)));
+      } else {
+        await refresh();
+      }
       notifyUpdated();
     } catch {
       setItems(previousItems);
@@ -105,7 +117,9 @@ export const CartDrawer = () => {
         await refresh();
         return;
       }
-      await refresh();
+      if (result.data?.items) {
+        setItems(result.data.items);
+      }
       notifyUpdated();
     } catch {
       setItems(previousItems);

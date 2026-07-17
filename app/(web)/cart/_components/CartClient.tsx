@@ -125,7 +125,7 @@ export function CartClient({
     [cartDict?.promo_cleared, cartDict?.promo_invalid],
   );
 
-  // Wait for auth resolution, claim only when authenticated, then reconcile once.
+  // Wait for auth resolution, claim only once per browser session per user, then reconcile once.
   React.useEffect(() => {
     if (isAuthPending) return;
 
@@ -137,13 +137,21 @@ export function CartClient({
         if (!claimHandledRef.current) {
           claimHandledRef.current = true;
           if (authSession?.user) {
-            const claim = await claimGuestCartAction();
-            if (!active) return;
-            if (claim.success && claim.data?.action === "conflict") {
-              setConflict({
-                guestFacilityName: claim.data.guestFacilityName,
-                userFacilityName: claim.data.userFacilityName,
-              });
+            const claimKey = `sd_guest_claim:${authSession.user.id}`;
+            const alreadyClaimed =
+              typeof window !== "undefined" && sessionStorage.getItem(claimKey) === "1";
+            if (!alreadyClaimed) {
+              const claim = await claimGuestCartAction();
+              if (typeof window !== "undefined") {
+                sessionStorage.setItem(claimKey, "1");
+              }
+              if (!active) return;
+              if (claim.success && claim.data?.action === "conflict") {
+                setConflict({
+                  guestFacilityName: claim.data.guestFacilityName,
+                  userFacilityName: claim.data.userFacilityName,
+                });
+              }
             }
           }
         }
@@ -238,7 +246,22 @@ export function CartClient({
         return;
       }
 
-      await softRefresh();
+      // Prefer authoritative items from remove response — avoid extra getCart race.
+      if (
+        newQuantity <= 0 &&
+        result.data &&
+        "items" in result.data &&
+        Array.isArray(result.data.items)
+      ) {
+        useServerCart.getState().setItems(result.data.items as CartItem[]);
+      } else if (newQuantity > 0 && result.data && "item" in result.data && result.data.item) {
+        const updated = result.data.item as CartItem;
+        useServerCart
+          .getState()
+          .setItems(useServerCart.getState().items.map((i) => (i.id === updated.id ? updated : i)));
+      } else {
+        await softRefresh();
+      }
       notifyUpdated();
       await revalidateAppliedPromo(discount);
     } catch {
@@ -263,8 +286,10 @@ export function CartClient({
         return;
       }
 
-      // Re-fetch authoritative cart (stale overlapping refreshes are dropped by generation token).
-      await softRefresh();
+      // Authoritative remaining items from the mutation — do NOT softRefresh (races/claim remount).
+      if (result.data?.items) {
+        useServerCart.getState().setItems(result.data.items);
+      }
       notifyUpdated();
       await revalidateAppliedPromo(discount);
     } catch {

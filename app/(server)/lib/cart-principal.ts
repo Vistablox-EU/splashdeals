@@ -158,6 +158,32 @@ export async function clearGuestCartCookie() {
   });
 }
 
+/**
+ * Delete leftover guest cart rows for the current cookie AND clear the cookie.
+ * Used after intentional empty user cart so remount claim cannot resurrect items.
+ */
+export async function purgeGuestCartAndCookie() {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get(GUEST_CART_COOKIE_NAME)?.value;
+  if (raw) {
+    const guestTokenHash = hashGuestCartToken(raw);
+    try {
+      const guestCart = await prisma.cartSession.findUnique({
+        where: { guestTokenHash },
+        select: { id: true, userId: true },
+      });
+      // Only purge pure guest carts — never touch a cart already claimed by a user.
+      if (guestCart && !guestCart.userId) {
+        await prisma.cartSessionItem.deleteMany({ where: { cartId: guestCart.id } });
+        await prisma.cartSession.delete({ where: { id: guestCart.id } });
+      }
+    } catch {
+      // Non-fatal — cookie clear still proceeds.
+    }
+  }
+  await clearGuestCartCookie();
+}
+
 /** True when request still carries a guest cart cookie (for claim failsafe). */
 export async function hasGuestCartCookie(): Promise<boolean> {
   const cookieStore = await cookies();
