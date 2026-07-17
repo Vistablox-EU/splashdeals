@@ -18,6 +18,15 @@ const eslintConfig = defineConfig([
       "@next/next/no-img-element": "warn",
     },
   },
+  // TanStack Table's useReactTable() is a known React Compiler incompatible API
+  // (returns non-memoizable functions). No alternative hook exists; compiler skips
+  // memoization for that component. Silence the advisory warning for the CMS table.
+  {
+    files: ["app/(dashboard)/admin/cms/_components/cms-content-table.tsx"],
+    rules: {
+      "react-hooks/incompatible-library": "off",
+    },
+  },
   // Ignores
   globalIgnores([
     "scripts/**",

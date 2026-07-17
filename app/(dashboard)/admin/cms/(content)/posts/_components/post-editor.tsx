@@ -1,9 +1,9 @@
 "use client";
 // react-hook-form + zod v4 resolver type chain mismatch — runtime is correct
 
-import { useCallback, useTransition, useState, useEffect, useRef } from "react";
+import { useCallback, useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
+import { useForm, FormProvider, useWatch, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import slugify from "slugify";
@@ -96,7 +96,6 @@ export function PostEditor({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!post;
-  const clearDraftRef = useRef<() => void>(() => {});
 
   const form = useForm({
     resolver: zodResolver(postFormSchema),
@@ -128,21 +127,24 @@ export function PostEditor({
     },
   });
 
-  const [selectedTagIds, setSelectedTagIds] = useState<string[]>(initialTagIds || []);
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>(() => initialTagIds || []);
   const [aiTopic, setAiTopic] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Sync tag selection when initialTagIds changes (e.g., navigating between posts to edit)
-  useEffect(() => {
+  // Adjust tag selection when navigating between posts (render-time sync, not an effect)
+  const initialTagKey = (initialTagIds || []).join("\0");
+  const [tagSourceKey, setTagSourceKey] = useState(initialTagKey);
+  if (tagSourceKey !== initialTagKey) {
+    setTagSourceKey(initialTagKey);
     setSelectedTagIds(initialTagIds || []);
-  }, [initialTagIds]);
+  }
 
   const {
     register,
     handleSubmit,
     setValue,
     getValues,
-    watch,
+    control,
     formState: { errors, isDirty },
   } = form;
 
@@ -156,6 +158,65 @@ export function PostEditor({
     },
     [setValue, isEditing],
   );
+
+  const toggleTag = useCallback((tagId: string) => {
+    setSelectedTagIds((prev) =>
+      prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId],
+    );
+  }, []);
+
+  // --- Autosave ---
+  const autosaveKey = isEditing ? `cms-draft-${post!.id}` : "cms-draft-new";
+  const formValues = (useWatch({ control }) ?? {}) as Record<string, any>;
+
+  const {
+    status: autosaveStatus,
+    restore,
+    clearDraft,
+    migrateDraft: _migrateDraft,
+  } = useCmsAutosave(
+    autosaveKey,
+    {
+      title: (formValues.title as string) || "",
+      content: (formValues.content as string) || "",
+      excerpt: (formValues.excerpt as string) || "",
+      coverImage: (formValues.coverImage as string) || "",
+      featuredImage: (formValues.featuredImage as string) || "",
+      status: (formValues.status as string) || "DRAFT",
+      categoryId: (formValues.categoryId as string) || "",
+      metaTitle: (formValues.metaTitle as string) || "",
+      metaDescription: (formValues.metaDescription as string) || "",
+      savedAt: 0,
+    },
+    isDirty,
+  );
+
+  const [showRestoreBanner, setShowRestoreBanner] = useState(false);
+  const [pendingAutosave, setPendingAutosave] = useState<AutosaveData | null>(null);
+
+  // Check for a saved draft on mount (async boundary avoids set-state-in-effect)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const saved = restore();
+      if (saved && saved.title) {
+        setPendingAutosave(saved);
+        setShowRestoreBanner(true);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [restore, autosaveKey]);
+
+  // Warn before leaving with unsaved changes
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
 
   const onSubmit = useCallback(
     async (data: Record<string, unknown>) => {
@@ -200,7 +261,7 @@ export function PostEditor({
           : await createBlogPostAction(data as never, cleansedTags);
 
         if (result.success) {
-          clearDraftRef.current();
+          clearDraft();
           toast.success(isEditing ? "Objava ažurirana" : "Objava kreirana");
           router.push("/admin/cms/posts");
           router.refresh();
@@ -209,65 +270,8 @@ export function PostEditor({
         }
       });
     },
-    [isEditing, post, selectedTagIds, router, startTransition],
+    [isEditing, post, selectedTagIds, router, startTransition, clearDraft],
   );
-
-  const toggleTag = useCallback((tagId: string) => {
-    setSelectedTagIds((prev) =>
-      prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId],
-    );
-  }, []);
-
-  // --- Autosave ---
-  const autosaveKey = isEditing ? `cms-draft-${post!.id}` : "cms-draft-new";
-  const formValues = watch();
-
-  const {
-    status: autosaveStatus,
-    restore,
-    clearDraft,
-    migrateDraft: _migrateDraft,
-  } = useCmsAutosave(
-    autosaveKey,
-    {
-      title: (formValues.title as string) || "",
-      content: (formValues.content as string) || "",
-      excerpt: (formValues.excerpt as string) || "",
-      coverImage: (formValues.coverImage as string) || "",
-      featuredImage: (formValues.featuredImage as string) || "",
-      status: (formValues.status as string) || "DRAFT",
-      categoryId: (formValues.categoryId as string) || "",
-      metaTitle: (formValues.metaTitle as string) || "",
-      metaDescription: (formValues.metaDescription as string) || "",
-      savedAt: 0,
-    },
-    isDirty,
-  );
-  clearDraftRef.current = clearDraft;
-
-  const [showRestoreBanner, setShowRestoreBanner] = useState(false);
-  const [pendingAutosave, setPendingAutosave] = useState<AutosaveData | null>(null);
-
-  // Check for a saved draft on mount
-  useEffect(() => {
-    const saved = restore();
-    if (saved && saved.title) {
-      setPendingAutosave(saved);
-      setShowRestoreBanner(true);
-    }
-  }, [restore, autosaveKey]);
-
-  // Warn before leaving with unsaved changes
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      if (isDirty) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [isDirty]);
 
   return (
     <FormProvider {...form}>
@@ -328,7 +332,7 @@ export function PostEditor({
           </div>
         )}
         {/* REVIEW status banner */}
-        {isEditing && watch("status") === "REVIEW" && (
+        {isEditing && formValues["status"] === "REVIEW" && (
           <div className="mb-4 rounded-lg border border-yellow-400 bg-yellow-50 p-4">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-yellow-800">Ova objava čeka pregled</p>
@@ -582,7 +586,7 @@ export function PostEditor({
                 </div>
                 <RichTextEditor
                   source="blog"
-                  content={watch("content") || ""}
+                  content={formValues["content"] || ""}
                   onChange={(html) => setValue("content", html)}
                   placeholder="Počni da pišeš blog objavu... ili klikni 'AI Generiši' iznad za automatski generisan sadržaj"
                 />
@@ -596,7 +600,7 @@ export function PostEditor({
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
                   <Select
-                    value={watch("status") || "DRAFT"}
+                    value={formValues["status"] || "DRAFT"}
                     onValueChange={(value) =>
                       setValue(
                         "status",
@@ -623,13 +627,13 @@ export function PostEditor({
                   </Label>
                   <Switch
                     id="isFeatured"
-                    checked={!!watch("isFeatured")}
+                    checked={!!formValues["isFeatured"]}
                     onCheckedChange={(checked) => setValue("isFeatured", checked)}
                   />
                 </div>
 
                 {/* Scheduling - shown when status is PUBLISHED */}
-                {watch("status") === "PUBLISHED" && (
+                {formValues["status"] === "PUBLISHED" && (
                   <div className="space-y-2 pt-2">
                     <Label htmlFor="publishedAt">Datum i vreme objave</Label>
                     <Input
@@ -639,7 +643,7 @@ export function PostEditor({
                       className="w-full"
                     />
                     {(() => {
-                      const val = watch("publishedAt");
+                      const val = formValues["publishedAt"];
                       if (val) {
                         const dt = new Date(val);
                         if (dt > new Date()) {
@@ -667,7 +671,7 @@ export function PostEditor({
                 )}
 
                 {/* Expiry - shown when status is PUBLISHED */}
-                {watch("status") === "PUBLISHED" && (
+                {formValues["status"] === "PUBLISHED" && (
                   <div className="space-y-2 pt-2">
                     <Label htmlFor="expiresAt">Ističe</Label>
                     <Input
@@ -677,7 +681,7 @@ export function PostEditor({
                       className="w-full"
                     />
                     {(() => {
-                      const val = watch("expiresAt");
+                      const val = formValues["expiresAt"];
                       if (val) {
                         const dt = new Date(val);
                         if (dt > new Date()) {
@@ -715,7 +719,7 @@ export function PostEditor({
                       {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
                     </Button>
                   </div>
-                  {isEditing && watch("status") === "DRAFT" && (
+                  {isEditing && formValues["status"] === "DRAFT" && (
                     <Button
                       type="button"
                       variant="secondary"
@@ -748,7 +752,7 @@ export function PostEditor({
                       variant="outline"
                       className="gap-1.5 border-blue-300 text-blue-700 hover:bg-blue-50"
                       onClick={() => {
-                        const slug = watch("slug");
+                        const slug = formValues["slug"];
                         if (slug) {
                           window.open(`/blog/${slug}?preview=1`, "_blank");
                         } else {
@@ -781,7 +785,7 @@ export function PostEditor({
               <div className="space-y-3 rounded-lg border p-4">
                 <h3 className="text-sm font-semibold">Kategorija</h3>
                 <Select
-                  value={watch("categoryId") || ""}
+                  value={formValues["categoryId"] || ""}
                   onValueChange={(value) => setValue("categoryId", value)}
                 >
                   <SelectTrigger id="categoryId" aria-label="Kategorija" className="w-full">
@@ -836,7 +840,7 @@ export function PostEditor({
                     <SheetTitle>SEO podešavanja</SheetTitle>
                   </SheetHeader>
                   <div className="mt-6">
-                    <SEOPanel content={watch("content") as string} />
+                    <SEOPanel content={formValues["content"] as string} />
                   </div>
                 </SheetContent>
               </Sheet>
@@ -844,21 +848,27 @@ export function PostEditor({
               {/* Social share preview */}
               <div className="space-y-3 rounded-lg border p-4">
                 <SocialSharePreview
-                  title={(watch("ogTitle") as string) || (watch("title") as string) || ""}
-                  coverImage={(watch("ogImage") as string) || (watch("coverImage") as string) || ""}
-                  excerpt={(watch("ogDescription") as string) || (watch("excerpt") as string) || ""}
-                  pathHint={`splashdeals.rs/blog/${watch("slug") || "..."}`}
+                  title={(formValues["ogTitle"] as string) || (formValues["title"] as string) || ""}
+                  coverImage={
+                    (formValues["ogImage"] as string) || (formValues["coverImage"] as string) || ""
+                  }
+                  excerpt={
+                    (formValues["ogDescription"] as string) ||
+                    (formValues["excerpt"] as string) ||
+                    ""
+                  }
+                  pathHint={`splashdeals.rs/blog/${formValues["slug"] || "..."}`}
                 />
               </div>
 
               {/* Readability Panel */}
               <div className="space-y-3 rounded-lg border p-4">
-                <ReadabilityPanel content={watch("content") as string} />
+                <ReadabilityPanel content={formValues["content"] as string} />
               </div>
 
               {/* Internal Links Panel */}
               <div className="space-y-3 rounded-lg border p-4">
-                <InternalLinksPanel content={watch("content") as string} />
+                <InternalLinksPanel content={formValues["content"] as string} />
               </div>
             </>
           }

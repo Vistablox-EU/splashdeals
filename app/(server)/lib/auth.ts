@@ -4,6 +4,50 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { bearer } from "better-auth/plugins/bearer";
 
+type SocialProviderConfig = {
+  clientId: string;
+  clientSecret: string;
+};
+
+/**
+ * Only register providers that have real credentials.
+ * Empty clientId/clientSecret makes Better Auth emit build-time WARNs and
+ * registers dead OAuth routes.
+ *
+ * Apple Sign In is intentionally not wired yet (no Apple Developer account).
+ */
+function buildSocialProviders(): Record<string, SocialProviderConfig> {
+  const providers: Record<string, SocialProviderConfig> = {};
+
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    providers.google = {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    };
+  }
+
+  if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
+    providers.facebook = {
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    };
+  }
+
+  // Apple: enable only when Developer account + env vars exist.
+  // Not included for now (no Apple Developer account).
+
+  const twitterId = process.env.TWITTER_CLIENT_ID || process.env.X_CLIENT_ID;
+  const twitterSecret = process.env.TWITTER_CLIENT_SECRET || process.env.X_CLIENT_SECRET;
+  if (twitterId && twitterSecret) {
+    providers.twitter = {
+      clientId: twitterId,
+      clientSecret: twitterSecret,
+    };
+  }
+
+  return providers;
+}
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -18,24 +62,7 @@ export const auth = betterAuth({
     autoSignIn: true,
   },
 
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    },
-    facebook: {
-      clientId: process.env.FACEBOOK_CLIENT_ID || "",
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || "",
-    },
-    apple: {
-      clientId: process.env.APPLE_CLIENT_ID || "",
-      clientSecret: process.env.APPLE_CLIENT_SECRET || "",
-    },
-    twitter: {
-      clientId: process.env.X_CLIENT_ID || "",
-      clientSecret: process.env.X_CLIENT_SECRET || "",
-    },
-  },
+  socialProviders: buildSocialProviders(),
 
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days for buyers

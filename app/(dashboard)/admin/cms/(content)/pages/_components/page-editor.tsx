@@ -1,9 +1,9 @@
 "use client";
 // @ts-nocheck - react-hook-form + zod v4 resolver type chain mismatch, runtime is correct
 
-import { useCallback, useTransition, useState, useEffect, useRef } from "react";
+import { useCallback, useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import slugify from "slugify";
@@ -75,7 +75,6 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!page;
-  const clearDraftRef = useRef<() => void>(() => {});
 
   const form = useForm({
     resolver: zodResolver(pageFormSchema),
@@ -107,7 +106,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isDirty },
   } = form;
 
@@ -121,6 +120,59 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
     },
     [setValue, isEditing],
   );
+
+  // --- Autosave ---
+  const autosaveKey = isEditing ? `cms-draft-${page!.id}` : "cms-draft-new";
+  const formValues = (useWatch({ control }) ?? {}) as Record<string, any>;
+
+  const {
+    status: autosaveStatus,
+    restore,
+    clearDraft,
+    migrateDraft: _migrateDraft,
+  } = useCmsAutosave(
+    autosaveKey,
+    {
+      title: (formValues.title as string) || "",
+      content: (formValues.content as string) || "",
+      excerpt: (formValues.excerpt as string) || "",
+      coverImage: (formValues.coverImage as string) || "",
+      featuredImage: "",
+      status: (formValues.status as string) || "DRAFT",
+      categoryId: "",
+      metaTitle: (formValues.metaTitle as string) || "",
+      metaDescription: (formValues.metaDescription as string) || "",
+      savedAt: 0,
+    },
+    isDirty,
+  );
+
+  const [showRestoreBanner, setShowRestoreBanner] = useState(false);
+  const [pendingAutosave, setPendingAutosave] = useState<AutosaveData | null>(null);
+
+  // Check for a saved draft on mount (async boundary avoids set-state-in-effect)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const saved = restore();
+      if (saved && saved.title) {
+        setPendingAutosave(saved);
+        setShowRestoreBanner(true);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [restore, autosaveKey]);
+
+  // Warn before leaving with unsaved changes
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
 
   const onSubmit = useCallback(
     async (data: Record<string, unknown>) => {
@@ -146,7 +198,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
           : await createPageAction(data as never);
 
         if (result.success) {
-          clearDraftRef.current();
+          clearDraft();
           toast.success(isEditing ? "Strana ažurirana" : "Strana kreirana");
           router.push("/admin/cms/pages");
           router.refresh();
@@ -155,59 +207,8 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
         }
       });
     },
-    [isEditing, page, router, startTransition],
+    [isEditing, page, router, startTransition, clearDraft],
   );
-
-  // --- Autosave ---
-  const autosaveKey = isEditing ? `cms-draft-${page!.id}` : "cms-draft-new";
-  const formValues = watch();
-
-  const {
-    status: autosaveStatus,
-    restore,
-    clearDraft,
-    migrateDraft: _migrateDraft,
-  } = useCmsAutosave(
-    autosaveKey,
-    {
-      title: (formValues.title as string) || "",
-      content: (formValues.content as string) || "",
-      excerpt: (formValues.excerpt as string) || "",
-      coverImage: (formValues.coverImage as string) || "",
-      featuredImage: "",
-      status: (formValues.status as string) || "DRAFT",
-      categoryId: "",
-      metaTitle: (formValues.metaTitle as string) || "",
-      metaDescription: (formValues.metaDescription as string) || "",
-      savedAt: 0,
-    },
-    isDirty,
-  );
-  clearDraftRef.current = clearDraft;
-
-  const [showRestoreBanner, setShowRestoreBanner] = useState(false);
-  const [pendingAutosave, setPendingAutosave] = useState<AutosaveData | null>(null);
-
-  // Check for a saved draft on mount
-  useEffect(() => {
-    const saved = restore();
-    if (saved && saved.title) {
-      setPendingAutosave(saved);
-      setShowRestoreBanner(true);
-    }
-  }, [restore, autosaveKey]);
-
-  // Warn before leaving with unsaved changes
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      if (isDirty) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [isDirty]);
 
   return (
     <FormProvider {...form}>
@@ -264,7 +265,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
           </div>
         )}
         {/* REVIEW status banner */}
-        {isEditing && watch("status") === "REVIEW" && (
+        {isEditing && formValues["status"] === "REVIEW" && (
           <div className="mb-4 rounded-lg border border-yellow-400 bg-yellow-50 p-4">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-yellow-800">Ova strana čeka pregled</p>
@@ -373,7 +374,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                 <Label>Sadržaj</Label>
                 <RichTextEditor
                   source="stranica"
-                  content={watch("content") || ""}
+                  content={formValues["content"] || ""}
                   onChange={(html) => setValue("content", html)}
                   placeholder="Počni da pišeš sadržaj strane..."
                 />
@@ -387,7 +388,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
                   <Select
-                    value={watch("status") || "DRAFT"}
+                    value={formValues["status"] || "DRAFT"}
                     onValueChange={(value) =>
                       setValue(
                         "status",
@@ -411,7 +412,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                 <div className="space-y-2">
                   <Label htmlFor="template">Šablon</Label>
                   <Select
-                    value={watch("template") || "default"}
+                    value={formValues["template"] || "default"}
                     onValueChange={(value) => setValue("template", value)}
                   >
                     <SelectTrigger id="template" aria-label="Šablon" className="w-full">
@@ -430,7 +431,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                   </Label>
                   <Switch
                     id="showHeader"
-                    checked={!!watch("showHeader")}
+                    checked={!!formValues["showHeader"]}
                     onCheckedChange={(checked) => setValue("showHeader", checked)}
                   />
                 </div>
@@ -440,13 +441,13 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                   </Label>
                   <Switch
                     id="showFooter"
-                    checked={!!watch("showFooter")}
+                    checked={!!formValues["showFooter"]}
                     onCheckedChange={(checked) => setValue("showFooter", checked)}
                   />
                 </div>
 
                 {/* Expiry - shown when status is PUBLISHED */}
-                {watch("status") === "PUBLISHED" && (
+                {formValues["status"] === "PUBLISHED" && (
                   <div className="space-y-2 pt-2">
                     <Label htmlFor="expiresAt">Ističe</Label>
                     <Input
@@ -456,7 +457,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                       className="w-full"
                     />
                     {(() => {
-                      const val = watch("expiresAt");
+                      const val = formValues["expiresAt"];
                       if (val) {
                         const dt = new Date(val);
                         if (dt > new Date()) {
@@ -501,7 +502,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                       {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
                     </Button>
                   </div>
-                  {isEditing && watch("status") === "DRAFT" && (
+                  {isEditing && formValues["status"] === "DRAFT" && (
                     <Button
                       type="button"
                       variant="secondary"
@@ -559,8 +560,8 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                   </SheetHeader>
                   <div className="mt-6">
                     <SEOPanel
-                      content={watch("content") as string}
-                      previewUrl={`splashdeals.rs/${watch("slug") || "..."}`}
+                      content={formValues["content"] as string}
+                      previewUrl={`splashdeals.rs/${formValues["slug"] || "..."}`}
                     />
                   </div>
                 </SheetContent>
@@ -568,19 +569,25 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
 
               <div className="space-y-3 rounded-lg border p-4">
                 <SocialSharePreview
-                  title={(watch("ogTitle") as string) || (watch("title") as string) || ""}
-                  coverImage={(watch("ogImage") as string) || (watch("coverImage") as string) || ""}
-                  excerpt={(watch("ogDescription") as string) || (watch("excerpt") as string) || ""}
-                  pathHint={`splashdeals.rs/${watch("slug") || "..."}`}
+                  title={(formValues["ogTitle"] as string) || (formValues["title"] as string) || ""}
+                  coverImage={
+                    (formValues["ogImage"] as string) || (formValues["coverImage"] as string) || ""
+                  }
+                  excerpt={
+                    (formValues["ogDescription"] as string) ||
+                    (formValues["excerpt"] as string) ||
+                    ""
+                  }
+                  pathHint={`splashdeals.rs/${formValues["slug"] || "..."}`}
                 />
               </div>
 
               <div className="space-y-3 rounded-lg border p-4">
-                <ReadabilityPanel content={watch("content") as string} />
+                <ReadabilityPanel content={formValues["content"] as string} />
               </div>
 
               <div className="space-y-3 rounded-lg border p-4">
-                <InternalLinksPanel content={watch("content") as string} />
+                <InternalLinksPanel content={formValues["content"] as string} />
               </div>
             </>
           }

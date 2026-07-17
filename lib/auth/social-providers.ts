@@ -1,9 +1,11 @@
 /**
  * Which social OAuth providers are configured for buyer sign-in.
  * Only providers with both client id + secret should be shown on /prijava.
+ *
+ * Apple Sign In is intentionally omitted until an Apple Developer account exists.
  */
 
-export type BuyerSocialProviderId = "google" | "facebook" | "apple" | "twitter";
+export type BuyerSocialProviderId = "google" | "facebook" | "twitter";
 
 export type BuyerSocialProvider = {
   id: BuyerSocialProviderId;
@@ -14,7 +16,6 @@ export type BuyerSocialProvider = {
 const PROVIDER_META: BuyerSocialProvider[] = [
   { id: "google", labelKey: "sign_in_google", icon: "login" },
   { id: "facebook", labelKey: "sign_in_facebook", icon: "public" },
-  { id: "apple", labelKey: "sign_in_apple", icon: "phone_iphone" },
   { id: "twitter", labelKey: "sign_in_twitter", icon: "alternate_email" },
 ];
 
@@ -24,8 +25,6 @@ function isConfigured(id: BuyerSocialProviderId): boolean {
       return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
     case "facebook":
       return Boolean(process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET);
-    case "apple":
-      return Boolean(process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET);
     case "twitter":
       return Boolean(
         (process.env.TWITTER_CLIENT_ID || process.env.X_CLIENT_ID) &&
