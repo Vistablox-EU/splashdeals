@@ -37,12 +37,14 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
   totalPrice: 0,
   refreshGeneration: 0,
   setItems: (items) => {
+    // Bump generation so any in-flight getCart cannot overwrite optimistic mutations.
     set({
       items,
       totalItems: getCartTotalItems(items),
       totalPrice: getCartTotalPrice(items),
       isHydrated: true,
       isLoading: false,
+      refreshGeneration: get().refreshGeneration + 1,
     });
   },
   refresh: async () => {
@@ -51,12 +53,19 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
     set({ isLoading: true, refreshGeneration: generation });
     try {
       const result = await getCartAction();
-      // A newer refresh started while we were in-flight — drop this response.
+      // A newer refresh/setItems happened while we were in-flight — drop this response.
       if (get().refreshGeneration !== generation) {
         return get().items;
       }
       const items = result.success ? ((result.data?.items || []) as CartItem[]) : [];
-      get().setItems(items);
+      // Apply without bumping generation again (we already own this generation).
+      set({
+        items,
+        totalItems: getCartTotalItems(items),
+        totalPrice: getCartTotalPrice(items),
+        isHydrated: true,
+        isLoading: false,
+      });
       return items;
     } catch {
       if (get().refreshGeneration === generation) {

@@ -60,4 +60,18 @@ describe("guest cart claim decision", () => {
       cartId: "user-cart",
     });
   });
+
+  it("merges into an existing empty user cart instead of claim (unique userId)", () => {
+    expect(
+      decideGuestCartClaim({
+        guestCart: guest,
+        userCart: { id: "user-cart", facilityId: "facility-a", itemCount: 0 },
+      }),
+    ).toEqual({
+      action: "merge",
+      guestCartId: "guest-cart",
+      userCartId: "user-cart",
+      facilityId: "facility-a",
+    });
+  });
 });

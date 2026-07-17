@@ -9,8 +9,8 @@ import { MAX_QUANTITY_PER_ITEM, type CartItem, type CartItemInput } from "@/lib/
 import { isCanonicalTicketAvailable } from "@/lib/cart/canonical-ticket";
 import {
   applyGuestCartCookie,
-  clearGuestCartCookie,
   hasGuestCartCookie,
+  purgeGuestCartAndCookie,
   resolveCartPrincipal,
   type CartPrincipal,
 } from "@/app/(server)/lib/cart-principal";
@@ -382,9 +382,9 @@ export async function getCartAction(): Promise<ActionResult<{ items: CartItem[] 
       const cartSession = await getCartSession(principal);
       const items = cartSession ? await readCartItems(cartSession.id) : [];
 
-      // Orphan guest cookie after empty user cart: clear so remount claim can't resurrect.
+      // Orphan guest cookie/cart after empty user cart: purge so remount claim can't resurrect.
       if (items.length === 0 && (await hasGuestCartCookie())) {
-        await clearGuestCartCookie();
+        await purgeGuestCartAndCookie();
       }
 
       return { success: true, data: { items } };
@@ -401,7 +401,7 @@ export async function getCartAction(): Promise<ActionResult<{ items: CartItem[] 
 
 export async function removeFromCartAction(
   input: z.infer<typeof removeFromCartSchema>,
-): Promise<ActionResult<{ removed: boolean }>> {
+): Promise<ActionResult<{ removed: boolean; items: CartItem[] }>> {
   try {
     const { itemId } = removeFromCartSchema.parse(input);
 
@@ -438,18 +438,22 @@ export async function removeFromCartAction(
         throw new Error("Korpa je izmenjena. Pokušajte ponovo.");
       }
 
-      const remaining = await tx.cartSessionItem.count({ where: { cartId: cartSession.id } });
-      return { success: true, data: { removed: true, empty: remaining === 0 } } as const;
+      const remainingRows = await tx.cartSessionItem.findMany({
+        where: { cartId: cartSession.id },
+        orderBy: { createdAt: "asc" },
+      });
+      const items = remainingRows.map(toCartItem);
+      return { success: true, data: { removed: true, items, empty: items.length === 0 } } as const;
     });
 
     if (result.success) {
-      revalidatePath("/cart");
-      // Prevent leftover guest cookie/cart from resurrecting items on next getCart/claim.
+      // Avoid revalidatePath here — it remounts /cart client state and can re-run claim.
       if (result.data?.empty) {
-        await clearGuestCartCookie();
+        await purgeGuestCartAndCookie();
       }
+      return { success: true, data: { removed: true, items: result.data?.items ?? [] } };
     }
-    return result.success ? { success: true, data: { removed: true } } : result;
+    return result;
   } catch (error) {
     return handleServerActionError(error, "removeFromCart");
   }

@@ -11,6 +11,9 @@ import { claimGuestCartAction } from "@/app/(server)/actions/guest-cart-claim";
  *
  * On auth session appearance, claim/merge guest cart before refresh so
  * social login does not leave the badge empty until /cart mounts.
+ *
+ * Claim is once per browser tab session per userId (sessionStorage) so
+ * remounts after remove cannot re-import a leftover guest cart.
  */
 export function CartStateBootstrap() {
   const refresh = useServerCart((state) => state.refresh);
@@ -26,10 +29,18 @@ export function CartStateBootstrap() {
     void (async () => {
       if (userId && claimedForUserRef.current !== userId) {
         claimedForUserRef.current = userId;
-        try {
-          await claimGuestCartAction();
-        } catch {
-          // Non-fatal — getCartAction also claims when user cart is empty.
+        const claimKey = `sd_guest_claim:${userId}`;
+        const alreadyClaimed =
+          typeof window !== "undefined" && sessionStorage.getItem(claimKey) === "1";
+        if (!alreadyClaimed) {
+          try {
+            await claimGuestCartAction();
+            if (typeof window !== "undefined") {
+              sessionStorage.setItem(claimKey, "1");
+            }
+          } catch {
+            // Non-fatal — cart page mount can still claim once.
+          }
         }
       }
       if (!userId) {

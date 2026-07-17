@@ -35,18 +35,34 @@ describe("cart sync channel", () => {
   afterEach(() => {
     MockBroadcastChannel.instances = [];
     vi.unstubAllGlobals();
+    // reset tab id so next test gets a clean source
+    delete (window as Window & { __sd_cart_tab_id?: string }).__sd_cart_tab_id;
   });
 
-  it("broadcasts CART_UPDATED on the shared channel name", () => {
+  it("ignores same-tab broadcasts (prevents remove/refresh races)", () => {
     vi.stubGlobal("BroadcastChannel", MockBroadcastChannel);
     const onUpdate = vi.fn();
     const unsubscribe = subscribeToCartUpdates(onUpdate);
 
     broadcastCartUpdated();
 
-    expect(onUpdate).toHaveBeenCalledTimes(1);
+    // Same tab shares source id — must not refresh itself.
+    expect(onUpdate).toHaveBeenCalledTimes(0);
     expect(CART_SYNC_CHANNEL).toBe("splash-cart-sync");
     expect(CART_UPDATED_EVENT).toBe("CART_UPDATED");
+    unsubscribe();
+  });
+
+  it("delivers CART_UPDATED to a different tab source", () => {
+    vi.stubGlobal("BroadcastChannel", MockBroadcastChannel);
+    const onUpdate = vi.fn();
+    const unsubscribe = subscribeToCartUpdates(onUpdate);
+
+    // Simulate another tab with a different source id.
+    const foreign = new MockBroadcastChannel(CART_SYNC_CHANNEL);
+    foreign.postMessage({ type: CART_UPDATED_EVENT, source: "other-tab" });
+
+    expect(onUpdate).toHaveBeenCalledTimes(1);
     unsubscribe();
   });
 });

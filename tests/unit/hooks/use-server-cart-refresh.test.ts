@@ -87,4 +87,37 @@ describe("useServerCart refresh generation", () => {
 
     expect(useServerCart.getState().items.map((i) => i.id)).toEqual(["kept"]);
   });
+
+  it("drops in-flight getCart when setItems (optimistic remove) bumps generation", async () => {
+    let resolveSlow: (value: unknown) => void = () => undefined;
+    const slow = new Promise((resolve) => {
+      resolveSlow = resolve;
+    });
+    mocks.getCartAction.mockImplementationOnce(() => slow);
+
+    const slowPromise = useServerCart.getState().refresh();
+    // Optimistic remove while refresh is in flight
+    useServerCart.getState().setItems([]);
+
+    resolveSlow({
+      success: true,
+      data: {
+        items: [
+          {
+            id: "zombie",
+            ticketId: "t0",
+            quantity: 1,
+            title: "Must not reappear",
+            price: 100,
+            currency: "RSD",
+            facilityId: "f1",
+            updatedAt: Date.now(),
+          },
+        ],
+      },
+    });
+    await slowPromise;
+
+    expect(useServerCart.getState().items).toEqual([]);
+  });
 });

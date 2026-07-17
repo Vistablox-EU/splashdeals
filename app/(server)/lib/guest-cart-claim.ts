@@ -36,8 +36,30 @@ export function decideGuestCartClaim(input: {
     return { action: "noop" };
   }
 
-  if (!userCart || userCart.itemCount <= 0) {
+  // No user cart row yet → adopt the guest cart as the user cart.
+  if (!userCart) {
     return { action: "claim", cartId: guestCart.id };
+  }
+
+  // Empty user cart session already exists (e.g. after intentional remove-all).
+  // Prefer merge into the existing user row — never "claim" (unique userId conflict)
+  // and never treat empty user cart as missing (that resurrected deleted items).
+  if (userCart.itemCount <= 0) {
+    if (!guestCart.facilityId) {
+      return {
+        action: "conflict",
+        guestCartId: guestCart.id,
+        userCartId: userCart.id,
+        guestFacilityId: guestCart.facilityId ?? "",
+        userFacilityId: userCart.facilityId ?? "",
+      };
+    }
+    return {
+      action: "merge",
+      guestCartId: guestCart.id,
+      userCartId: userCart.id,
+      facilityId: guestCart.facilityId,
+    };
   }
 
   if (!guestCart.facilityId || !userCart.facilityId) {
