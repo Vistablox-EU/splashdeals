@@ -49,8 +49,14 @@ export function PlatformShell({
       <Header dict={dict} />
       {showBreadcrumb ? <BreadcrumbBar facilityMap={facilityMap} /> : null}
 
-      {/* pb-16 clears BottomNav (h-16); safe-area is on the nav itself, not main */}
-      <main id="main-content" className="flex-grow pt-16 pb-16 sm:pb-0">
+      {/*
+        Bottom padding clears BottomNav h-16 + iOS safe-area (nav owns safe-area padding itself).
+        Without env(safe-area), notched phones clip footer / last content under the home indicator.
+      */}
+      <main
+        id="main-content"
+        className="flex-grow pt-16 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] sm:pb-0"
+      >
         <React.Suspense
           fallback={
             <div className="bg-muted flex flex-1 animate-pulse items-center justify-center p-20" />
@@ -60,11 +66,11 @@ export function PlatformShell({
         </React.Suspense>
       </main>
 
-      <Footer />
+      <Footer dict={dict} />
       <CartStateBootstrap />
       <FavoriteIntentBootstrap />
       <CartLoader />
-      <BottomNav />
+      <BottomNav dict={dict} />
     </div>
   );
 }

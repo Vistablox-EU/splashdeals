@@ -3,7 +3,7 @@
  *
  * - `/` is active only on exact home
  * - hash links like `/#deals` are never marked active by pathname alone
- *   (avoids dual-active with home; hash matching is optional client concern)
+ * - explore hub `/akva-parkovi` uses prefix match (category listing + subpaths)
  * - other paths use prefix match
  */
 export function isBottomNavActive(pathname: string, href: string): boolean {

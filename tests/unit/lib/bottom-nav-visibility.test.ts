@@ -12,6 +12,11 @@ describe("isBottomNavAlwaysVisible", () => {
     expect(isBottomNavAlwaysVisible("/akva-parkovi/ulaznice/dnevna-karta", 0)).toBe(true);
   });
 
+  it("keeps nav visible on explore hub", () => {
+    expect(isBottomNavAlwaysVisible("/akva-parkovi", 0)).toBe(true);
+    expect(isBottomNavAlwaysVisible("/akva-parkovi/foo", 0)).toBe(true);
+  });
+
   it("keeps nav visible when cart has items (facility mini-cart sticky)", () => {
     expect(isBottomNavAlwaysVisible("/petroland", 2)).toBe(true);
     expect(isBottomNavAlwaysVisible("/support", 1)).toBe(true);
@@ -19,7 +24,7 @@ describe("isBottomNavAlwaysVisible", () => {
 
   it("allows scroll-hide on content pages with empty cart", () => {
     expect(isBottomNavAlwaysVisible("/support", 0)).toBe(false);
-    expect(isBottomNavAlwaysVisible("/akva-parkovi", 0)).toBe(false);
     expect(isBottomNavAlwaysVisible("/how-it-works", 0)).toBe(false);
+    expect(isBottomNavAlwaysVisible("/petroland", 0)).toBe(false);
   });
 });

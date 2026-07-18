@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { useServerCart } from "@/hooks/use-server-cart";
-import { getClientDictionary } from "@/lib/client-dictionaries";
 import { isAccountBottomNavActive } from "@/lib/auth/account-paths";
 import { isBottomNavActive } from "@/lib/layout/bottom-nav-active";
 import { isBottomNavAlwaysVisible } from "@/lib/layout/bottom-nav-visibility";
@@ -14,23 +13,31 @@ import type { Dict } from "@/lib/types";
 
 const SCROLL_THRESHOLD = 10;
 
+type BottomNavItem = {
+  label: string;
+  href: string;
+  icon: string;
+  kind: "path" | "account" | "cart";
+};
+
 /**
- * 📱 BottomNav — Mobile-only bottom navigation.
+ * 📱 BottomNav — Mobile-only bottom navigation (4 tabs).
  *
- * Always visible on home, cart, product pages, and whenever the cart has items
- * (sticky mini-cart / checkout CTAs stay aligned). Other routes: scroll-hide.
+ * Početna · Istraži (/akva-parkovi, indexable hub) · Korpa · Nalog/Prijava
+ * Podrška lives in footer (not a 5th tab — density + crawl graph).
  *
- * Explore → /search (primary mobile search entry; categories stay in MegaMenu).
- * Touch: min 48×48 targets; labels ≥10px for outdoor readability.
+ * Always visible on home, cart, product pages, and whenever the cart has items.
+ * Other routes: scroll-hide.
+ *
+ * Dict is server-passed from PlatformShell (no client dictionary fetch).
  */
-export function BottomNav() {
+export function BottomNav({ dict }: { dict?: Dict | null }) {
   const pathname = usePathname();
   const totalItems = useServerCart((state) => state.totalItems);
   const alwaysVisible = isBottomNavAlwaysVisible(pathname, totalItems);
   const { data: session } = authClient.useSession();
   const isLoggedIn = !!session?.user;
   const [scrollHidden, setScrollHidden] = useState(false);
-  const [dict, setDict] = useState<Dict | null>(null);
   const lastScrollY = useRef(0);
   // Track path for render-time scroll-hide reset (avoids setState-in-effect)
   const [navPath, setNavPath] = useState(pathname);
@@ -42,10 +49,6 @@ export function BottomNav() {
   }
 
   const isVisible = alwaysVisible || !scrollHidden;
-
-  useEffect(() => {
-    getClientDictionary().then(setDict);
-  }, []);
 
   useEffect(() => {
     if (alwaysVisible) return;
@@ -71,19 +74,25 @@ export function BottomNav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [alwaysVisible, pathname]);
 
-  const NAV_ITEMS = [
-    { label: dict?.nav?.home || "Početna", href: "/", icon: "home", kind: "path" as const },
+  const NAV_ITEMS: BottomNavItem[] = [
     {
-      label: dict?.nav?.explore || "Istraži",
-      href: "/search",
+      label: dict?.nav?.home || "Početna",
+      href: "/",
+      icon: "home",
+      kind: "path",
+    },
+    {
+      // SEO: indexable category hub — not noindex /search
+      label: dict?.nav?.explore || dict?.nav?.waterparks || "Istraži",
+      href: "/akva-parkovi",
       icon: "explore",
-      kind: "path" as const,
+      kind: "path",
     },
     {
       label: dict?.nav?.cart_mobile || "Korpa",
       href: "/cart",
       icon: "shopping_bag",
-      kind: "path" as const,
+      kind: "cart",
     },
     {
       label: isLoggedIn
@@ -91,44 +100,58 @@ export function BottomNav() {
         : dict?.nav?.login || "Prijava",
       href: isLoggedIn ? "/moje-karte" : "/prijava",
       icon: "person",
-      kind: "account" as const,
-    },
-    {
-      label: dict?.nav?.support_mobile || "Podrška",
-      href: "/support",
-      icon: "support_agent",
-      kind: "path" as const,
+      kind: "account",
     },
   ];
 
   return (
     <nav
-      className="border-border/50 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-0 z-[998] border-t backdrop-blur-[40px] transition-transform duration-300 ease-in-out motion-reduce:transition-none md:hidden"
+      className="border-primary/15 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-0 z-[998] border-t backdrop-blur-[40px] transition-transform duration-300 ease-in-out motion-reduce:transition-none md:hidden"
       style={{ transform: isVisible ? "translateY(0)" : "translateY(100%)" }}
       aria-label={dict?.layout?.mobile_nav_aria || "Mobilna navigacija"}
     >
-      <div className="mx-auto flex h-16 max-w-lg items-center justify-around px-1">
+      {/* Teal brand hairline */}
+      <div
+        aria-hidden
+        className="from-primary/0 via-primary/40 to-primary/0 pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r"
+      />
+      <div className="mx-auto flex h-16 max-w-lg items-center justify-around gap-0.5 px-2">
         {NAV_ITEMS.map((item) => {
           const active =
             item.kind === "account"
               ? isAccountBottomNavActive(pathname)
               : isBottomNavActive(pathname, item.href);
 
+          const cartAria =
+            item.kind === "cart" && totalItems > 0
+              ? `${item.label}, ${totalItems > 99 ? "99+" : totalItems} stavki`
+              : item.label;
+
           return (
             <Link
-              key={item.href}
+              key={`${item.kind}-${item.href}`}
               href={item.href}
-              className={`relative flex min-h-12 min-w-12 flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1 transition-colors duration-200 motion-reduce:transition-none ${
+              className={`relative flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-1.5 py-1.5 transition-colors duration-200 motion-reduce:transition-none ${
                 active
-                  ? "text-primary"
-                  : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-muted/30"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground/65 hover:text-muted-foreground hover:bg-muted/40"
               } `}
-              aria-label={item.label}
+              aria-label={cartAria}
               aria-current={active ? "page" : undefined}
             >
+              {/* Active top indicator (brand) */}
+              {active && (
+                <span
+                  aria-hidden
+                  className="bg-primary absolute top-0 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full"
+                />
+              )}
               <div className="relative">
-                {item.icon === "shopping_bag" && totalItems > 0 && (
-                  <span className="bg-primary text-primary-foreground shadow-primary/30 absolute -top-2 -right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] leading-none font-black shadow-lg">
+                {item.kind === "cart" && totalItems > 0 && (
+                  <span
+                    className="bg-primary text-primary-foreground shadow-primary/30 absolute -top-2 -right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] leading-none font-black shadow-lg"
+                    aria-hidden
+                  >
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
@@ -140,7 +163,7 @@ export function BottomNav() {
                 />
               </div>
               <span
-                className={`text-[10px] leading-none font-black tracking-[0.08em] uppercase transition-colors duration-200 motion-reduce:transition-none ${
+                className={`max-w-full truncate text-[10px] leading-none font-black tracking-[0.06em] uppercase transition-colors duration-200 motion-reduce:transition-none ${
                   active ? "text-primary" : ""
                 }`}
               >

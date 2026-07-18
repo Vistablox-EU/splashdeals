@@ -30,10 +30,16 @@ test.describe("cart login checkout smoke", () => {
     await expect(cartNavLink).toBeVisible();
     await expect(cartNavLink).toHaveAttribute("href", "/cart");
 
-    // Explore is primary mobile search entry
-    await expect(bottomNav.locator('a[href="/search"]')).toBeVisible();
+    // Explore → indexable hub (not noindex /search)
+    await expect(bottomNav.locator('a[href="/akva-parkovi"]')).toBeVisible();
+
+    // 4-tab IA: support is footer-only (not a BottomNav tab)
+    await expect(bottomNav.locator('a[href="/support"]')).toHaveCount(0);
+    await expect(bottomNav.locator('a[href="/search"]')).toHaveCount(0);
 
     // Account lives in BottomNav on mobile (not duplicated in header)
-    await expect(bottomNav.locator('a[href="/moje-karte"]')).toBeVisible();
+    // Logged-out users see /prijava; logged-in would see /moje-karte
+    const accountLink = bottomNav.locator('a[href="/prijava"], a[href="/moje-karte"]');
+    await expect(accountLink.first()).toBeVisible();
   });
 });

@@ -17,16 +17,20 @@ import type { Dict } from "@/lib/types";
  * 🌊 Footer Component
  * Integrated with Aquastream design system.
  *
- * Client shell loads dictionary + hosts hover/newsletter islands.
+ * Accepts optional server `dict` from PlatformShell; falls back to client load.
  * Brand logo uses the same asset as the header.
+ * Public hubs (akva-parkovi, support) stay crawlable here — not cart/account.
  */
-export function Footer() {
+export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
   const [isHovered, setIsHovered] = React.useState(false);
-  const [dict, setDict] = React.useState<Dict | null>(null);
+  const [clientDict, setClientDict] = React.useState<Dict | null>(null);
 
   React.useEffect(() => {
-    getClientDictionary().then(setDict);
-  }, []);
+    if (dictProp) return;
+    getClientDictionary().then(setClientDict);
+  }, [dictProp]);
+
+  const dict = dictProp ?? clientDict;
 
   return (
     <footer className="bg-background border-border relative mt-auto overflow-hidden border-t pt-12 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:pt-24 md:pb-12">
@@ -193,17 +197,17 @@ export function Footer() {
             <ul className="space-y-1">
               {[
                 {
-                  name: dict?.footer?.featured_parks || "Izdvojeni Parkovi",
-                  href: `/akva-parkovi`,
+                  name: dict?.nav?.home || "Početna",
+                  href: `/`,
                 },
                 {
-                  name: dict?.footer?.top_destinations || "Najbolje Destinacije",
+                  name: dict?.nav?.explore || dict?.nav?.waterparks || "Istraži",
                   href: `/akva-parkovi`,
                 },
                 { name: dict?.footer?.how_it_works || "Kako Funkcioniše", href: `/how-it-works` },
                 { name: dict?.footer?.support_center || "Centar za Podršku", href: `/support` },
               ].map((item) => (
-                <li key={item.name}>
+                <li key={`${item.href}-${item.name}`}>
                   <Link
                     href={item.href}
                     className="text-muted-foreground hover:text-primary group flex items-center py-3 text-sm font-bold transition-colors"
